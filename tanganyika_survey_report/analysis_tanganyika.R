@@ -72,6 +72,58 @@ data <- readRDS("hhs_cleaned.rds")
 --------------------------------------------------------------------------------
 # HOUSEHOLD AND GENERAL INFO
 
+  # Village ------------------------------------------------------ 
+by_village <- hhs_survey %>% 
+  group_by(village) %>% 
+  summarise(
+    proportion = survey_mean(vartype = "ci", na.rm = TRUE),
+    total = survey_total(vartype = "ci", na.rm = TRUE),
+    n = unweighted(n())) %>%
+  mutate(
+    percentage = round(proportion * 100, 1)
+  )
+
+# Remove unwanted columns
+by_village <- by_village %>%
+  select(village, percentage, total)
+
+ggplot(by_village, aes(x = village, y = percentage, group = village, fill = village)) +
+  geom_bar(stat = "identity", position = position_dodge(preserve = "single"), width = 0.95) +
+  scale_fill_manual(values = my_palette) +  
+  guides(fill = guide_legend(title = NULL)) +
+  labs(title = "Relationship of respondent to the household head", x = "Relationship", y = "Percentage") +
+  theme_sjplot() + 
+  theme(legend.position = "right")
+
+ggsave(filename = here::here("images", "village.png"), width = 1000, height = 600, dpi = 140, units = "px")
+write.xlsx(by_village, here::here("images", "village.xlsx"))
+    
+# Sub Village ------------------------------------------------------ 
+by_sub_village <- hhs_survey %>% 
+  group_by(sub_village) %>% 
+  summarise(
+    proportion = survey_mean(vartype = "ci", na.rm = TRUE),
+    total = survey_total(vartype = "ci", na.rm = TRUE),
+    n = unweighted(n())) %>%
+  mutate(
+    percentage = round(proportion * 100, 1)
+  )
+
+# Remove unwanted columns
+by_sub_village <- by_sub_village %>%
+  select(sub_village, percentage, total)
+
+ggplot(by_sub_village, aes(x = sub_village, y = percentage, group = sub_village, fill = sub_village)) +
+  geom_bar(stat = "identity", position = position_dodge(preserve = "single"), width = 0.95) +
+  scale_fill_manual(values = my_palette) +  
+  guides(fill = guide_legend(title = NULL)) +
+  labs(title = "Relationship of respondent to the household head", x = "Relationship", y = "Percentage") +
+  theme_sjplot() + 
+  theme(legend.position = "right")
+
+ggsave(filename = here::here("images", "sub_village.png"), width = 1000, height = 600, dpi = 140, units = "px")
+write.xlsx(by_village, here::here("images", "sub_village.xlsx"))
+
 # Q2. relationship to HH head ------------------------------------------------------ 
 by_relation <- hhs_survey %>% 
   group_by(relation_hh_head) %>% 
@@ -468,7 +520,7 @@ ggplot(by_water_safe_action_dry, aes(x = water_safe_action_dry, y = percentage, 
 ggsave(filename = here::here("images", "water_safe_action_dry.png"), width = 900, height = 700, dpi = 140, units = "px")
 write.xlsx(by_water_safe_action_dry, here::here("images", "water_safe_action_dry.xlsx"))
 
-# Q17. Main source of drinking water during wet season
+# Q17. Main source of drinking water during wet season------------------------------------------------
 by_water_source_wet <- hhs_survey %>% 
   group_by(water_source_wet) %>% 
   summarise(proportion = survey_mean(vartype = "ci", na.rm = TRUE),
@@ -493,7 +545,7 @@ ggplot(by_water_source_wet, aes(x = water_source_wet, y = percentage, group = wa
 ggsave(filename = here::here("images", "water_source_wet.png"), width = 900, height = 700, dpi = 140, units = "px")
 write.xlsx(by_water_source_wet, here::here("images", "water_source_wet.xlsx"))
 
-# Q18. Do you do anything to the water to make it safer to drink in the wet season? 
+# Q18. Do you do anything to the water to make it safer to drink in the wet season?------------------------------------------------ 
 by_water_safe_wet <- hhs_survey %>% 
   group_by(water_safe_wet) %>% 
   summarise(proportion = survey_mean(vartype = "ci", na.rm = TRUE),
@@ -518,7 +570,7 @@ ggplot(by_water_safe_wet, aes(x = water_safe_wet, y = percentage, group = water_
 ggsave(filename = here::here("images", "water_safe_wet.png"), width = 900, height = 700, dpi = 140, units = "px")
 write.xlsx(by_water_safe_wet, here::here("images", "water_safe_wet.xlsx"))
 
-# Q19. What do you usually do to make the water safer to drink? 
+# Q19. What do you usually do to make the water safer to drink?------------------------------------------------ 
 by_water_safe_action_wet <- hhs_survey %>% 
   group_by(water_safe_action_wet) %>% 
   summarise(proportion = survey_mean(vartype = "ci", na.rm = TRUE),
@@ -543,7 +595,7 @@ ggplot(by_water_safe_action_wet, aes(x = water_safe_action_wet, y = percentage, 
 ggsave(filename = here::here("images", "water_safe_action_wet.png"), width = 900, height = 700, dpi = 140, units = "px")
 write.xlsx(by_water_safe_action_wet, here::here("images", "water_safe_action_wet.xlsx"))
 
-#Q20. most advanced toilet facility used by members of your household?
+#Q20. most advanced toilet facility used by members of your household?------------------------------------------------
 by_toilet_facility <- hhs_survey %>% 
   group_by(toilet_facility) %>% 
   summarise(proportion = survey_mean(vartype = "ci", na.rm = TRUE),
@@ -568,33 +620,202 @@ ggplot(by_toilet_facility, aes(x = toilet_facility, y = percentage, group = toil
 ggsave(filename = here::here("images", "toilet_facility.png"), width = 900, height = 700, dpi = 140, units = "px")
 write.xlsx(by_toilet_facility, here::here("images", "toilet_facility.xlsx"))
 
+#Q22. do you share this facilty with other households?------------------------------------------------
+by_share_toilet_facility <- hhs_survey %>% 
+  group_by(share_toilet_facility) %>% 
+  summarise(proportion = survey_mean(vartype = "ci", na.rm = TRUE),
+            total = survey_total(vartype = "ci", na.rm = TRUE),
+            n = unweighted(n())) %>%
+  mutate(
+    percentage = round(proportion * 100, 1)
+  )
 
+# Remove unwanted columns
+by_share_toilet_facility <- by_share_toilet_facility %>%
+  select(share_toilet_facility, percentage, total)
 
-
-#PPI – average PPI of women, youth, compared to men. Are women more likely to be poor than men, and same for young people?
-
-#I am also wondering if by combining responses to gender and household head (q2 + q4), 
-#we can compare female headed households to male headed households quickly and easily on 
-#hunger, ability to send kids to school, ability to pay for health etc?
-
-#At the moment, how often does your household have to skip meals because of a lack of income?
-by_hh_gender <- hhs_survey %>%
-  filter(!is.na(hh_gender)) %>%
-  group_by(hh_gender, hh_skip_meals) %>% 
-  summarise(
-    proportion = survey_mean(vartype = "ci", na.rm = TRUE),
-    total = survey_total(vartype = "ci", na.rm = TRUE),
-    n = unweighted(n())) 
-
-ggplot(by_hh_gender, aes(x = hh_gender, y = proportion, group = fct_relevel(hh_skip_meals, c("Some days in a week", "Some days in every month", "A few days in the worst months", "Never")), fill = fct_relevel(hh_skip_meals, c("Some days in a week", "Some days in every month", "A few days in the worst months", "Never")))) +
-  geom_bar(stat = "identity", position = position_dodge(preserve = "single"), width = 0.95) +
+ggplot(by_share_toilet_facility, aes(x = share_toilet_facility, y = percentage, group = share_toilet_facility, fill = share_toilet_facility)) +
+  geom_bar(stat = "identity", position = "stack", width = 0.95) +
   scale_fill_manual(values = my_palette) +  
   guides(fill = guide_legend(title = NULL)) +
-  labs(title = "At the moment, how often does your household have to skip meals 
-because of a lack of income?", x = "Gender of Household Head", y = "Proportion of Respondents") +
+  labs(title = "do you share toilet facilty with other households?", x = "Response", y = "Percentage") +
   theme_sjplot() + 
-  theme(legend.position = c(0.85, 0.85))
+  theme(legend.position = "right")
 
-ggsave(filename = here::here("images/hh_head", "hh_skip_meals_hh_gender.png"), width = 1200, height = 600, dpi = 140, units = "px")
-write.xlsx(by_hh_gender, here::here("images/hh_head", "hh_skip_meals_hh_gender.xlsx"))
+ggsave(filename = here::here("images", "share_toilet_facility.png"), width = 900, height = 700, dpi = 140, units = "px")
+write.xlsx(by_share_toilet_facility, here::here("images", "share_toilet_facility.xlsx"))
 
+#Q23. where/how members of your household most often wash their hands?------------------------------------------------
+by_wash_hands <- hhs_survey %>% 
+  group_by(wash_hands) %>% 
+  summarise(proportion = survey_mean(vartype = "ci", na.rm = TRUE),
+            total = survey_total(vartype = "ci", na.rm = TRUE),
+            n = unweighted(n())) %>%
+  mutate(
+    percentage = round(proportion * 100, 1)
+  )
+
+# Remove unwanted columns
+by_wash_hands <- by_wash_hands %>%
+  select(wash_hands, percentage, total)
+
+ggplot(by_wash_hands, aes(x = wash_hands, y = percentage, group = wash_hands, fill = wash_hands)) +
+  geom_bar(stat = "identity", position = "stack", width = 0.95) +
+  scale_fill_manual(values = my_palette) +  
+  guides(fill = guide_legend(title = NULL)) +
+  labs(title = "where/how members of your household most often wash their hands", x = "Response", y = "Percentage") +
+  theme_sjplot() + 
+  theme(legend.position = "right")
+
+ggsave(filename = here::here("images", "wash_hands.png"), width = 900, height = 700, dpi = 140, units = "px")
+write.xlsx(by_wash_hands, here::here("images", "wash_hands.xlsx"))
+
+#Q24. Does your household have the following items?------------------------------------------------
+by_household_items <- hhs_survey %>% 
+  group_by(household_items) %>% 
+  summarise(proportion = survey_mean(vartype = "ci", na.rm = TRUE),
+            total = survey_total(vartype = "ci", na.rm = TRUE),
+            n = unweighted(n())) %>%
+  mutate(
+    percentage = round(proportion * 100, 1)
+  )
+
+# Remove unwanted columns
+by_household_items <- by_household_items %>%
+  select(household_items, percentage, total)
+
+ggplot(by_household_items, aes(x = household_items, y = percentage, group = household_items, fill = household_items)) +
+  geom_bar(stat = "identity", position = "stack", width = 0.95) +
+  scale_fill_manual(values = my_palette) +  
+  guides(fill = guide_legend(title = NULL)) +
+  labs(title = "Household Items", x = "Items", y = "Percentage") +
+  theme_sjplot() + 
+  theme(legend.position = "right")
+
+ggsave(filename = here::here("images", "household_items.png"), width = 900, height = 700, dpi = 140, units = "px")
+write.xlsx(by_household_items, here::here("images", "household_items.xlsx"))
+
+#Q25. What type of fuel does your household mainly use for cooking?------------------------------------------------
+by_fuel <- hhs_survey %>% 
+  group_by(fuel) %>% 
+  summarise(proportion = survey_mean(vartype = "ci", na.rm = TRUE),
+            total = survey_total(vartype = "ci", na.rm = TRUE),
+            n = unweighted(n())) %>%
+  mutate(
+    percentage = round(proportion * 100, 1)
+  )
+
+# Remove unwanted columns
+by_fuel <- by_fuel %>%
+  select(fuel, percentage, total)
+
+ggplot(by_fuel, aes(x = fuel, y = percentage, group = fuel, fill = fuel)) +
+  geom_bar(stat = "identity", position = "stack", width = 0.95) +
+  scale_fill_manual(values = my_palette) +  
+  guides(fill = guide_legend(title = NULL)) +
+  labs(title = "Fuel Used for Cooking", x = "Fuel Type", y = "Percentage") +
+  theme_sjplot() + 
+  theme(legend.position = "right")
+
+ggsave(filename = here::here("images", "fuel.png"), width = 900, height = 700, dpi = 140, units = "px")
+write.xlsx(by_fuel, here::here("images", "fuel.xlsx"))
+
+#Q26. Does your household have a fuel-efficient stove?------------------------------------------------
+by_fuel_efficient_stove <- hhs_survey %>% 
+  group_by(fuel_efficient_stove) %>% 
+  summarise(proportion = survey_mean(vartype = "ci", na.rm = TRUE),
+            total = survey_total(vartype = "ci", na.rm = TRUE),
+            n = unweighted(n())) %>%
+  mutate(
+    percentage = round(proportion * 100, 1)
+  )
+
+# Remove unwanted columns
+by_fuel_efficient_stove <- by_fuel_efficient_stove %>%
+  select(fuel_efficient_stove, percentage, total)
+
+ggplot(by_fuel_efficient_stove, aes(x = fuel_efficient_stove, y = percentage, group = fuel_efficient_stove, fill = fuel_efficient_stove)) +
+  geom_bar(stat = "identity", position = "stack", width = 0.95) +
+  scale_fill_manual(values = my_palette) +  
+  guides(fill = guide_legend(title = NULL)) +
+  labs(title = "Does household have a fuel-efficient stove?", x = "Response", y = "Percentage") +
+  theme_sjplot() + 
+  theme(legend.position = "right")
+
+ggsave(filename = here::here("images", "fuel_efficient_stove.png"), width = 900, height = 700, dpi = 140, units = "px")
+write.xlsx(by_fuel_efficient_stove, here::here("images", "fuel_efficient_stove.xlsx"))
+
+#Q27. How often is the fuel-efficient stove used?------------------------------------------------
+by_fuel_efficient_stove_used <- hhs_survey %>% 
+  group_by(fuel_efficient_stove_used) %>% 
+  summarise(proportion = survey_mean(vartype = "ci", na.rm = TRUE),
+            total = survey_total(vartype = "ci", na.rm = TRUE),
+            n = unweighted(n())) %>%
+  mutate(
+    percentage = round(proportion * 100, 1)
+  )
+
+# Remove unwanted columns
+by_fuel_efficient_stove_used <- by_fuel_efficient_stove_used %>%
+  select(fuel_efficient_stove_used, percentage, total)
+
+ggplot(by_fuel_efficient_stove_used, aes(x = fuel_efficient_stove_used, y = percentage, group = fuel_efficient_stove_used, fill = fuel_efficient_stove_used)) +
+  geom_bar(stat = "identity", position = "stack", width = 0.95) +
+  scale_fill_manual(values = my_palette) +  
+  guides(fill = guide_legend(title = NULL)) +
+  labs(title = "How often is the fuel-efficient stove used?", x = "Response", y = "Percentage") +
+  theme_sjplot() + 
+  theme(legend.position = "right")
+
+ggsave(filename = here::here("images", "fuel_efficient_stove_used.png"), width = 900, height = 700, dpi = 140, units = "px")
+write.xlsx(by_fuel_efficient_stove_used, here::here("images", "fuel_efficient_stove_used.xlsx"))
+
+#Q28. MAIN MATERIAL OF THE FLOOR OF THE HOUSEHOLD’S MAIN DWELLING------------------------------------------------
+by_material_floor <- hhs_survey %>% 
+  group_by(material_floor) %>% 
+  summarise(proportion = survey_mean(vartype = "ci", na.rm = TRUE),
+            total = survey_total(vartype = "ci", na.rm = TRUE),
+            n = unweighted(n())) %>%
+  mutate(
+    percentage = round(proportion * 100, 1)
+  )
+
+# Remove unwanted columns
+by_material_floor <- by_material_floor %>%
+  select(material_floor, percentage, total)
+
+ggplot(by_material_floor, aes(x = material_floor, y = percentage, group = material_floor, fill = material_floor)) +
+  geom_bar(stat = "identity", position = "stack", width = 0.95) +
+  scale_fill_manual(values = my_palette) +  
+  guides(fill = guide_legend(title = NULL)) +
+  labs(title = "Main Floor Material", x = "Material", y = "Percentage") +
+  theme_sjplot() + 
+  theme(legend.position = "right")
+
+ggsave(filename = here::here("images", "material_floor.png"), width = 900, height = 700, dpi = 140, units = "px")
+write.xlsx(by_material_floor, here::here("images", "material_floor.xlsx"))
+
+#Q28. MAIN MATERIAL OF THE FLOOR OF THE HOUSEHOLD’S MAIN DWELLING------------------------------------------------
+by_material_floor <- hhs_survey %>% 
+  group_by(material_floor) %>% 
+  summarise(proportion = survey_mean(vartype = "ci", na.rm = TRUE),
+            total = survey_total(vartype = "ci", na.rm = TRUE),
+            n = unweighted(n())) %>%
+  mutate(
+    percentage = round(proportion * 100, 1)
+  )
+
+# Remove unwanted columns
+by_material_floor <- by_material_floor %>%
+  select(material_floor, percentage, total)
+
+ggplot(by_material_floor, aes(x = material_floor, y = percentage, group = material_floor, fill = material_floor)) +
+  geom_bar(stat = "identity", position = "stack", width = 0.95) +
+  scale_fill_manual(values = my_palette) +  
+  guides(fill = guide_legend(title = NULL)) +
+  labs(title = "Main Floor Material", x = "Material", y = "Percentage") +
+  theme_sjplot() + 
+  theme(legend.position = "right")
+
+ggsave(filename = here::here("images", "material_floor.png"), width = 900, height = 700, dpi = 140, units = "px")
+write.xlsx(by_material_floor, here::here("images", "material_floor.xlsx"))
