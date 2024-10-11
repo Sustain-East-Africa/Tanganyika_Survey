@@ -260,6 +260,24 @@ gov <- gov %>%
 # BMU questions
 BMU <- tanganyika %>% select(223:247, 255:260)
 
+# List of resolution options
+resolution_options <- list("GO TO THE VILLAGE GOVERNMENT","NEGOTIATE WITH EACH OTHER","DO NOTHING",
+                           "GO TO THE WARD OR DISTRICT GOVERNMENT","OTHER","I DO NOT WANT TO ANSWER","I DON'T KNOW")
+escaped_resolution_options <- escape_special_chars(resolution_options)
+
+# Function to separate column options
+separate_options_resolutions <- function(column, escaped_options) {
+  pattern <- str_c(escaped_options, collapse = "|")
+  separated <- str_replace_all(column, pattern, function(x) paste0("|", x))
+  separated <- str_remove(separated, "^\\|")
+  return(separated)}
+
+# Applying the function to the relevant resolution column(s)
+BMU <- BMU %>%
+  mutate(across(
+    c(`78. If there is a dispute or conflict between BMUs and fishers, how do people in your village try to solve it?`),  
+    ~ separate_options_resolutions(., escaped_resolution_options)))
+
 # Fishing Section
 fishing <- tanganyika %>% select(263:277)
 
