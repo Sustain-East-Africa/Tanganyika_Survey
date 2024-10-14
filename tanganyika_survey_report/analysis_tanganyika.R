@@ -1,6 +1,7 @@
 library(tidyverse)
 library(lubridate)
 library(openxlsx)
+library(readxl)
 library(scales)
 library(googlesheets4)
 library(stats)
@@ -17,7 +18,8 @@ ggsave <- function(..., bg = 'white') ggplot2::ggsave(..., bg = bg)
 rm(list=ls())
 
 #hhs_wealth <- readRDS("hhs_cleaned_wealth.rds")
-hhs_clean <- readRDS("hhs_cleaned.rds")
+#hhs_clean <- readRDS("hhs_cleaned.rds")
+hhs_clean <- read_excel("tanganyika_survey_report/Tanganyika_Questionnaire_Sample_Responses.xlsx", sheet = "Tanganyika Questionnaire")
 head(hhs_clean)
 
 #Set survey design
