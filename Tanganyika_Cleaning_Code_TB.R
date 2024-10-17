@@ -357,7 +357,8 @@ fishing <- fishing %>%
     ~ separate_options_fishing_gear(., escaped_fishing_gear_options)))
 
 # Livelihood Practices of Fishers per Village (Excluding short response)
-fish_village <- tanganyika %>% select(313:356, 357, 358, 361, 363:376, 377:387, 390:400, 402)
+fish_village <- tanganyika %>% select(313:320, 320, 327, 333, 339, 345, 351, 357, 358, 361, 363:376, 377:387, 390:400, 402)
+colnames(fish_village) <- gsub("...\\d+", "", colnames(fish_village))
 
 # 101. <i>MAELEKEZO KWA MCHUKUA TAARIFA: WAULIZE WAHOJIWA KUONYESHA UMUHIMU WA KILA SHUGHULI YA RIZIKI. TUMIA NAMBA 1 KWA SHUGHULI ILE MUHIMU ZAIDI.</i>
 fish_ranked <- fish_village %>% select(2:7)
@@ -378,7 +379,59 @@ ggplot(fish_ranked_long, aes(x = Fish_Species, y = Importance_Rank)) +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 
 # 102. Over the past 5 years to now, which type of fish are you targeting - and in which seasons?
+fish_season <- fish_village %>% select(8:13)
+fish_season_long <- fish_season %>%
+  pivot_longer(cols = -1, 
+               names_to = "Fish_Species",
+               values_to = "Season") %>%
+  filter(!is.na(Season) & Season != "")  
 
+season_summary <- fish_season_long %>%
+  group_by(Fish_Species, Season) %>%
+  summarise(Count = n()) %>%
+  ungroup()
+
+# Create the plot
+ggplot(season_summary, aes(x = Fish_Species, y = Count, fill = Season)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  labs(title = "Seasonal Targeting of Fish Species",
+       x = "Fish Species",
+       y = "Count of Responses",
+       fill = "Season") +
+  theme_minimal()
+
+# 109. Over the past years to now, what is the highest sale prices for these kinds of fish?
+fish_price_best <- fish_village %>% select(17:23)
+fish_price_best_long <- fish_price_best %>%
+  pivot_longer(cols = -1,  
+               names_to = "Fish_Species", 
+               values_to = "Sale_Price") %>%
+  filter(!is.na(Sale_Price) & Sale_Price != "")  
+
+# 109. Over the past years to now, what is the lowest sale prices for these kinds of fish?
+fish_price_lowest <- fish_village %>% select(24:30)
+fish_price_lowest_long <- fish_price_lowest %>%
+  pivot_longer(cols = -1,  
+               names_to = "Fish_Species", 
+               values_to = "Sale_Price") %>%
+  filter(!is.na(Sale_Price) & Sale_Price != "")  
+
+# 110. 
+satisfaction <- fish_village %>% select(31:41)
+satisfaction_long <- satisfaction %>%
+  pivot_longer(cols = -1,  # Exclude the first empty column
+               names_to = "Aspect", 
+               values_to = "Satisfaction_Level") %>%
+  filter(!is.na(Satisfaction_Level) & Satisfaction_Level != "I DO NOT WANT TO ANSWER")  # Remove empty or non-numeric responses
+
+satisfaction_long <- satisfaction_long %>%
+  mutate(Satisfaction_Level = factor(Satisfaction_Level,
+                                     levels = c("1 VERY UNSATISFIED", 
+                                                "2 UNSATISFIED", 
+                                                "3 NEUTRAL", 
+                                                "4 SATISFIED", 
+                                                "5 VERY SATISFIED"),
+                                     ordered = TRUE))
 
 # Livelihood Practices of Fish Traders
 fish_traders <- tanganyika %>% select(405:407, 408:409, 412:448, 449:462, 463:473, 476:481, 482:486, 489)
