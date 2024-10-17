@@ -17,7 +17,6 @@ rm(list=ls())
 ### Preparing the data frame ###
 
 # Read excel file (shift to google spreadsheet API?)
-<<<<<<< HEAD
 tanganyika <- read_excel("tanganyika_survey_report/TNC_Tanganyika_-_Main_Questionnaire_-_all_versions_-_English_-_2024-10-15-05-07-33.xlsx", sheet = "TNC Tanganyika - Main Questi...")
 
 # Convert to date 
@@ -32,28 +31,12 @@ tanganyika <- tanganyika %>%
     end_time = format(`End Time`, "%H:%M:%S")) %>%
   select(date, start_time, end_time, everything()) %>%
   select(-`START TIME`, -`End Time`, -`ENUMERATOR TO READ OUT THE INTRODUCTION SHEET`, -`There are no right or wrong answers to questions; we are just interested in getting the true information about your household and your views. If you do not wish to proceed, please tell us why you have refused.`)
-=======
-tanganyika <- read_excel("E:/Work/DASCOT/PROJECTS/R_Projects_Dascot/Tanganyika_Survey/tanganyika_survey_report/TNC Tanganyika_survey submissions.xlsx", sheet = "TNC Tanganyika - Main Questionn")
-
-# Convert to date 
-# tanganyika <- tanganyika %>%
-#   mutate(`START TIME` = ymd_hms(`START TIME`),`End Time` = ymd_hms(`End Time`))
-
-# Extract date and time components
-# tanganyika <- tanganyika %>%
-#   mutate(
-#     date = as.Date(`START TIME`),
-#     start_time = format(`START TIME`, "%H:%M:%S"),
-#     end_time = format(`End Time`, "%H:%M:%S")) %>%
-#   select(date, start_time, end_time, everything()) 
->>>>>>> cf4ef5d8ad5838e3612b4e48bb77f70a923bb4d9
 
 # Filter data based on FPIC agreement
 tanganyika <- tanganyika %>%
   filter(`FPIC STATEMENT (AGREED OR REFUSED)
-<<<<<<< HEAD
-
-May we proceed with the interview?` == "AGREED")
+          
+          May we proceed with the interview?` == "AGREED")
 
 ### Dividing the data frame into manageable chunks (per section) and cleaning these ###
 
@@ -62,18 +45,6 @@ hh <- tanganyika %>% select(1:14)
 
 ## Water, Toilet, Assets, House Information ##
 hh_info <- tanganyika %>% select(15:18, 28:32, 43:47)
-=======
- 
- May we proceed with the interview?` == "AGREED")
-
-### Dividing the data frame into manageable chunks (per section) and cleaning these###
-
-## Household Roster and General Information ##
-hh <- tanganyika %>% select(1:15)
-
-## Water, Toilet, Assets, House Information ##
-hh_info <- tanganyika %>% select(16:19, 29:33, 43:48)
->>>>>>> cf4ef5d8ad5838e3612b4e48bb77f70a923bb4d9
 
 # Function to escape special characters in the options
 escape_special_chars <- function(options) {
@@ -102,8 +73,8 @@ hh_info <- hh_info %>%
 
 # List of toilet facility options
 toilet_facility_options <- list("VENTILATED IMPROVED PIT (VIP) LATRINE", "PIT LATRINE WITH SLAB", "PIT LATRINE WITHOUT SLAB/OPEN PIT",
-  "FLUSH/ POUR FLUSH TO PIPED SEWER SYSTEM", "FLUSH/ POUR FLUSH TO PIT LATRINE", "FLUSH/ POUR FLUSH TO ELSEWHERE",
-  "COMPOSTING TOILET/ECOSAN", "BUCKET", "NO FACILITY/BUSH/FIELD", "DID NOT GRANT PERMISSION", "OTHER", "I DO NOT WANT TO ANSWER", "I DON'T KNOW")
+                                "FLUSH/ POUR FLUSH TO PIPED SEWER SYSTEM", "FLUSH/ POUR FLUSH TO PIT LATRINE", "FLUSH/ POUR FLUSH TO ELSEWHERE",
+                                "COMPOSTING TOILET/ECOSAN", "BUCKET", "NO FACILITY/BUSH/FIELD", "DID NOT GRANT PERMISSION", "OTHER", "I DO NOT WANT TO ANSWER", "I DON'T KNOW")
 
 # Escape special characters in the toilet facility options
 escaped_toilet_facility_options <- escape_special_chars(toilet_facility_options)
@@ -118,7 +89,7 @@ separate_options_toilet <- function(column, escaped_options) {
 # Applying the function to the relevant toilet facility column(s)
 hh_info <- hh_info %>%
   mutate(across(c(`20. What type of toilet facility does your household use?`),  
-    ~ separate_options_toilet(., escaped_toilet_facility_options)))
+                ~ separate_options_toilet(., escaped_toilet_facility_options)))
 
 # List of handwashing facility options
 handwashing_facility_options <- list("HAS WATER","HAS SOAP","HAS SAND","HAS ASH","HAS TIPPY TAP","I DO NOT WANT TO ANSWER","I DON'T KNOW")
@@ -138,11 +109,7 @@ hh_info <- hh_info %>%
     ~ separate_options_handwashing(., escaped_handwashing_facility_options)))
 
 ## Household Items Questions ##
-<<<<<<< HEAD
 hh_items <- tanganyika %>% select(55:69)
-=======
-hh_items <- tanganyika %>% select(56:79)
->>>>>>> cf4ef5d8ad5838e3612b4e48bb77f70a923bb4d9
 hh_items <- hh_items %>%
   unite("combined_response", `Tanesco Power`:`A solar panel`, sep = "|", remove = FALSE)
 
@@ -153,7 +120,6 @@ hh_items_long <- hh_items %>%
 hh_items_long <- hh_items_long %>%
   relocate(Option, Response, .after = combined_response)
 
-<<<<<<< HEAD
 ## PPI Food Questions ##
 ppi_food <- tanganyika %>% select(70:75)
 ppi_food <- ppi_food %>%
@@ -170,10 +136,6 @@ house <- tanganyika %>% select(76:85)
 
 ## Household Assets ##
 hh_assets <- tanganyika %>% select(86:92)
-=======
-## Household Assets ##
-hh_assets <- tanganyika %>% select(80:86)
->>>>>>> cf4ef5d8ad5838e3612b4e48bb77f70a923bb4d9
 
 # Combine hh_assets options into one column
 hh_assets <- hh_assets %>%
@@ -190,11 +152,7 @@ ggplot(hh_assets_long, aes(x = Option, fill = Response)) +
   theme_minimal()
 
 ## Livelihoods and Credit ##
-<<<<<<< HEAD
 lh <- tanganyika %>% select(93, 109:124, 134:135, 149:153)
-=======
-lh <- tanganyika %>% select(87, 101:116, 126:127, 141:145)
->>>>>>> cf4ef5d8ad5838e3612b4e48bb77f70a923bb4d9
 
 # 31. 
 livelihood_options <- list("FISHING","FISH TRADING","FISH PROCESSING","AGRICULTURE","LIVESTOCK KEEPING","BUSINESS",
@@ -254,11 +212,7 @@ lh <- lh %>%
     ~ separate_options_borrowing_source(., escaped_borrowing_source_options)))
 
 ## Consumption and Food Security ##
-<<<<<<< HEAD
 food <- tanganyika %>% select(154:161, 176:181)
-=======
-food <- tanganyika %>% select(146:153, 169:174)
->>>>>>> cf4ef5d8ad5838e3612b4e48bb77f70a923bb4d9
 
 # List of month options
 month_options <- list("OCTOBER. 2024","SEPTEMBER. 2024","AUGUST. 2024","JULY. 2024","JUNE. 2024","MAY. 2024",
@@ -280,11 +234,7 @@ food <- food %>%
     ~ separate_options_months(., escaped_month_options)))
 
 # Governance and Participation
-<<<<<<< HEAD
 gov <- tanganyika %>% select(182:191, 201:202, 212:214, 229:231)
-=======
-gov <- tanganyika %>% select(175:184, 193:194, 204:205, 220:222)
->>>>>>> cf4ef5d8ad5838e3612b4e48bb77f70a923bb4d9
 
 # List of conflict options
 conflict_options <- list("FISHING IN PROTECTED FISH BREEDING AREAS","USING ILLEGAL FISHING GEAR","CATCHING UNDERSIZED FISH","PRIVATE (FARM) LAND BOUNDARIES",
@@ -306,7 +256,7 @@ gov <- gov %>%
 
 # List of interaction options
 conflict_parties_options <- list("AMONG LOCAL VILLAGERS","LOCAL VILLAGERS WITH PEOPLE FROM OTHER VILLAGES","LOCAL VILLAGERS WITH GOVERNMENT",
-                            "LOCAL VILLAGERS WITH IMMIGRANTS","AMONG FISHERS","BMUS WITH FISHERS","OTHER","I DO NOT WANT TO ANSWER","I DON'T KNOW")
+                                 "LOCAL VILLAGERS WITH IMMIGRANTS","AMONG FISHERS","BMUS WITH FISHERS","OTHER","I DO NOT WANT TO ANSWER","I DON'T KNOW")
 escaped_conflict_parties_options <- escape_special_chars(conflict_parties_options)
 
 # Function to separate column options
@@ -322,7 +272,6 @@ gov <- gov %>%
     c(`61. Among whom do these disputes or conflicts mostly occur?`),  
     ~ separate_options_conflict_parties(., escaped_conflict_parties_options)))
 
-<<<<<<< HEAD
 # List of interaction options for leaders
 leaders_options <- list("RELIGIOUS LEADERS", "POLITICAL PARTY LEADERS", "WITCHDOCTORS", "CIVIL SERVANTS", 
                         "POLITICAL LEADERS", "SPORTS LEADERS", "FISHING EQUIPMENT OWNERS", "FISHING EQUIPMENT LEADERS", 
@@ -345,10 +294,6 @@ gov <- gov %>%
 
 # BMU questions
 BMU <- tanganyika %>% select(232:256, 265:270)
-=======
-# BMU questions
-BMU <- tanganyika %>% select(223:247, 255:260)
->>>>>>> cf4ef5d8ad5838e3612b4e48bb77f70a923bb4d9
 
 # List of resolution options
 resolution_options <- list("GO TO THE VILLAGE GOVERNMENT","NEGOTIATE WITH EACH OTHER","DO NOTHING",
@@ -369,7 +314,6 @@ BMU <- BMU %>%
     ~ separate_options_resolutions(., escaped_resolution_options)))
 
 # Fishing Section
-<<<<<<< HEAD
 fishing <- tanganyika %>% select(272:289, 298, 312)
 
 # List of boat options
@@ -394,7 +338,7 @@ fishing <- fishing %>%
 
 # List of fishing gear options
 fishing_gear_options <- list("RING NETS (PURSE-SEINE)","LONG LINE","BEACH SEINE","LIFT NETS","GILL NETS","BASKET TRAP",
-  "MONO FILAMENT","HAND NET","POLE/HANDHELD FISHING ROD","MOSQUITO NET","OTHER","I DO NOT WANT TO ANSWER","I DON'T KNOW")
+                             "MONO FILAMENT","HAND NET","POLE/HANDHELD FISHING ROD","MOSQUITO NET","OTHER","I DO NOT WANT TO ANSWER","I DON'T KNOW")
 
 # Escape special characters in the fishing gear options
 escaped_fishing_gear_options <- escape_special_chars(fishing_gear_options)
@@ -441,17 +385,5 @@ fish_traders <- tanganyika %>% select(405:407, 408:409, 412:448, 449:462, 463:47
 
 # Livelihood Practices of Fish Processors
 fish_processors <- tanganyika %>% select(492:494, 495, 505, 506, 521, 522:528, 529:542, 543:553, 556:566, 569)
-=======
-fishing <- tanganyika %>% select(263:277)
-
-# Livelihood Practices of Fishers per Village
-fish_village <- tanganyika %>% select(280, 289, 304:395)
-
-# Livelihood Practices of Fish Traders
-fish_traders <- tanganyika %>% select(398:481)
-
-# Livelihood Practices of Fish Processors
-fish_processors <- tanganyika %>% select(484, 494:495, 510:560)
->>>>>>> cf4ef5d8ad5838e3612b4e48bb77f70a923bb4d9
 
 
