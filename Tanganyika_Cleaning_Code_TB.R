@@ -44,7 +44,6 @@ colnames(tanganyika) <- gsub("...\\d+", "", colnames(tanganyika))
 ### Dividing the data frame into manageable chunks (per section) and cleaning these ###
 ## Household Roster and General Information ##
 hh <- tanganyika %>% select(1:10, 12:14)
-colnames(hh) <- gsub("...\\d+", "", colnames(hh))
 hh <- hh %>% rename_with(~ c("date", "start_time", "end_time", "interviewer_name", 
                              "supervisor_name", "hh_code", "village", "sub_village", 
                              "FPIC", "hh_members", "respondent_code", "born_ward", 
@@ -52,7 +51,6 @@ hh <- hh %>% rename_with(~ c("date", "start_time", "end_time", "interviewer_name
 
 ## Water, Toilet, Assets, House Information ##
 hh_info <- tanganyika %>% select(15:18, 28:32, 43:47)
-colnames(hh_info) <- gsub("...\\d+", "", colnames(hh_info))
 hh_info <- hh_info %>% rename_with(~ c("drinking_water_dry", "other_drinking_water_dry", "water_treatment_dry", "treatment_method_dry", "other_water_treatment_dry", "drinking_water_wet", 
                                        "other_drinking_water_wet", "water_treatment_wet", "treatment_method_wet", "toilet_facilities", "other_toilet_facilities", 
                                        "shared_facilities", "handwashing_place", "handwashing_show"))
@@ -61,66 +59,35 @@ hh_info <- hh_info %>% rename_with(~ c("drinking_water_dry", "other_drinking_wat
 escape_special_chars <- function(options) {
   str_replace_all(options, "([\\(\\)\\[\\]\\{\\}\\+\\*\\.\\^\\$\\|])", "\\\\\\1")}
 
-# List of water treatment options
-water_treatment_options <- list("BOIL", "ADD BLEACH/CHLORINE", "STRAIN THROUGH A CLOTH", "USE WATER FILTER (CERAMIC/SAND/COMPOSITE/ETC.)", "SOLAR DISINFECTION", "LET IT STAND AND SETTLE",
-                                "OTHER", "I DO NOT WANT TO ANSWER", "I DON'T KNOW")
-
-# Escaping special characters in the options
-escaped_options <- escape_special_chars(water_treatment_options)
-
-# Function to separate column options
-separate_options <- function(column, escaped_options) {
+# General function to separate column options
+separate_options <- function(column, options) {
+  escaped_options <- escape_special_chars(options)
   pattern <- str_c(escaped_options, collapse = "|")
   separated <- str_replace_all(column, pattern, function(x) paste0("|", x))
-  separated <- str_remove(separated, "^\\|")
-  return(separated)}
+  str_remove(separated, "^\\|")}
 
-# Applying the function to the relevant columns
+# List of options for different columns
+water_treatment_options <- c("BOIL", "ADD BLEACH/CHLORINE", "STRAIN THROUGH A CLOTH", 
+                             "USE WATER FILTER (CERAMIC/SAND/COMPOSITE/ETC.)", "SOLAR DISINFECTION", 
+                             "LET IT STAND AND SETTLE", "OTHER", "I DO NOT WANT TO ANSWER", "I DON'T KNOW")
+
+toilet_facility_options <- c("VENTILATED IMPROVED PIT (VIP) LATRINE", "PIT LATRINE WITH SLAB", 
+                             "PIT LATRINE WITHOUT SLAB/OPEN PIT", "FLUSH/ POUR FLUSH TO PIPED SEWER SYSTEM", 
+                             "FLUSH/ POUR FLUSH TO PIT LATRINE", "FLUSH/ POUR FLUSH TO ELSEWHERE", 
+                             "COMPOSTING TOILET/ECOSAN", "BUCKET", "NO FACILITY/BUSH/FIELD", 
+                             "DID NOT GRANT PERMISSION", "OTHER", "I DO NOT WANT TO ANSWER", "I DON'T KNOW")
+
+handwashing_facility_options <- c("HAS WATER", "HAS SOAP", "HAS SAND", "HAS ASH", 
+                                  "HAS TIPPY TAP", "I DO NOT WANT TO ANSWER", "I DON'T KNOW")
+
+# Apply separation function to relevant columns
 hh_info <- hh_info %>%
-  mutate(across(
-    c(treatment_method_dry, treatment_method_wet), 
-    ~ separate_options(., escaped_options)))
-
-# List of toilet facility options
-toilet_facility_options <- list("VENTILATED IMPROVED PIT (VIP) LATRINE", "PIT LATRINE WITH SLAB", "PIT LATRINE WITHOUT SLAB/OPEN PIT",
-                                "FLUSH/ POUR FLUSH TO PIPED SEWER SYSTEM", "FLUSH/ POUR FLUSH TO PIT LATRINE", "FLUSH/ POUR FLUSH TO ELSEWHERE",
-                                "COMPOSTING TOILET/ECOSAN", "BUCKET", "NO FACILITY/BUSH/FIELD", "DID NOT GRANT PERMISSION", "OTHER", "I DO NOT WANT TO ANSWER", "I DON'T KNOW")
-
-# Escape special characters in the toilet facility options
-escaped_toilet_facility_options <- escape_special_chars(toilet_facility_options)
-
-# Function to separate column options
-separate_options_toilet <- function(column, escaped_options) {
-  pattern <- str_c(escaped_options, collapse = "|")
-  separated <- str_replace_all(column, pattern, function(x) paste0("|", x))
-  separated <- str_remove(separated, "^\\|")
-  return(separated)}
-
-# Applying the function to the relevant toilet facility column(s)
-hh_info <- hh_info %>%
-  mutate(across(c(toilet_facilities),  
-                ~ separate_options_toilet(., escaped_toilet_facility_options)))
-
-# List of handwashing facility options
-handwashing_facility_options <- list("HAS WATER","HAS SOAP","HAS SAND","HAS ASH","HAS TIPPY TAP","I DO NOT WANT TO ANSWER","I DON'T KNOW")
-escaped_handwashing_facility_options <- escape_special_chars(handwashing_facility_options)
-
-# Function to separate column options
-separate_options_handwashing <- function(column, escaped_options) {
-  pattern <- str_c(escaped_options, collapse = "|")
-  separated <- str_replace_all(column, pattern, function(x) paste0("|", x))
-  separated <- str_remove(separated, "^\\|")
-  return(separated)}
-
-# Applying the function to the relevant handwashing facility column(s)
-hh_info <- hh_info %>%
-  mutate(across(
-    c(handwashing_show),
-    ~ separate_options_handwashing(., escaped_handwashing_facility_options)))
+  mutate(across(c(treatment_method_dry, treatment_method_wet), ~ separate_options(., water_treatment_options))) %>%
+  mutate(across(c(toilet_facilities), ~ separate_options(., toilet_facility_options))) %>%
+  mutate(across(c(handwashing_show), ~ separate_options(., handwashing_facility_options)))
 
 ## Household Items Questions ##
 hh_items <- tanganyika %>% select(55, 57:69)
-colnames(hh_items) <- gsub("...\\d+", "", colnames(hh_items))
 hh_items <- hh_items %>% rename(household_item = 1)
 
 hh_items <- hh_items %>%
@@ -135,7 +102,6 @@ hh_items_long <- hh_items_long %>%
 
 ## PPI Food Questions ##
 ppi_food <- tanganyika %>% select(70, 72:75)
-colnames(ppi_food) <- gsub("...\\d+", "", colnames(ppi_food))
 ppi_food <- ppi_food %>% rename(ppi_food = 1)
 
 ppi_food <- ppi_food %>%
@@ -148,7 +114,6 @@ ppi_food_long <- ppi_food_long %>%
 
 ## Fuel, Floor, and Wall Materials Questions
 house <- tanganyika %>% select(76:85)
-colnames(house) <- gsub("...\\d+", "", colnames(house))
 house <- house %>% rename_with(~ c("cooking_fuel", "other_fuel", "efficient_stove", 
                                    "stove_usage", "floor_material", "other_floor", 
                                    "wall_material", "other_wall", "roof_material", 
@@ -156,7 +121,6 @@ house <- house %>% rename_with(~ c("cooking_fuel", "other_fuel", "efficient_stov
 
 ## Household Assets ##
 hh_assets <- tanganyika %>% select(86, 88:92)
-colnames(hh_assets) <- gsub("...\\d+", "", colnames(hh_assets))
 hh_assets <- hh_assets %>% rename(household_assets = 1)
 
 # Combine hh_assets options into one column
@@ -256,10 +220,8 @@ food <- food %>%
     c(`46. Over the la months, in which months, were the food shortages or worries about having enough food the worst?`),  
     ~ separate_options_months(., escaped_month_options)))
 
-# Governance and Participation
+## Governance and Participation ##
 gov <- tanganyika %>% select(182:191, 201:202, 212:214, 229:231)
-colnames(gov) <- gsub("...\\d+", "", colnames(gov))
-
 
 # List of conflict options
 conflict_options <- list("FISHING IN PROTECTED FISH BREEDING AREAS","USING ILLEGAL FISHING GEAR","CATCHING UNDERSIZED FISH","PRIVATE (FARM) LAND BOUNDARIES",
@@ -339,10 +301,8 @@ BMU <- BMU %>%
     c(`78. If there is a dispute or conflict between BMUs and fishers, how do people in your village try to solve it?`),  
     ~ separate_options_resolutions(., escaped_resolution_options)))
 
-# Fishing Section
+## Fishing Section ##
 fishing <- tanganyika %>% select(272:289, 298, 312)
-colnames(fishing) <- gsub("...\\d+", "", colnames(fishing))
-
 
 # List of boat options
 boat_options <- list("DON’T FISH FROM BOAT","CANOE WITHOUT MOTOR","LARGE BOAT WITHOUT ENGINE","LARGE BOAT WITH ENGINE",
@@ -386,7 +346,6 @@ fishing <- fishing %>%
 
 # Livelihood Practices of Fishers per Village (Excluding short response)
 fish_village <- tanganyika %>% select(313:320, 320, 327, 333, 339, 345, 351, 357, 358, 361, 363:376, 377:387, 390:400, 402)
-colnames(fish_village) <- gsub("...\\d+", "", colnames(fish_village))
 
 # 101. <i>MAELEKEZO KWA MCHUKUA TAARIFA: WAULIZE WAHOJIWA KUONYESHA UMUHIMU WA KILA SHUGHULI YA RIZIKI. TUMIA NAMBA 1 KWA SHUGHULI ILE MUHIMU ZAIDI.</i>
 fish_ranked <- fish_village %>% select(2:7)
