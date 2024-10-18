@@ -38,8 +38,10 @@ tanganyika <- tanganyika %>%
 
 May we proceed with the interview?` == "AGREED")
 
-### Dividing the data frame into manageable chunks (per section) and cleaning these ###
+# Cleaning column headers
+colnames(tanganyika) <- gsub("...\\d+", "", colnames(tanganyika))
 
+### Dividing the data frame into manageable chunks (per section) and cleaning these ###
 ## Household Roster and General Information ##
 hh <- tanganyika %>% select(1:10, 12:14)
 colnames(hh) <- gsub("...\\d+", "", colnames(hh))
