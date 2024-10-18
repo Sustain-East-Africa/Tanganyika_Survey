@@ -34,17 +34,26 @@ tanganyika <- tanganyika %>%
 
 # Filter data based on FPIC agreement
 tanganyika <- tanganyika %>%
-  filter(`FPIC STATEMENT (AGREED OR REFUSED)
-          
-          May we proceed with the interview?` == "AGREED")
+  filter(tanganyika$`FPIC STATEMENT (AGREED OR REFUSED)
+
+May we proceed with the interview?` == "AGREED")
 
 ### Dividing the data frame into manageable chunks (per section) and cleaning these ###
 
 ## Household Roster and General Information ##
-hh <- tanganyika %>% select(1:14)
+hh <- tanganyika %>% select(1:10, 12:14)
+colnames(hh) <- gsub("...\\d+", "", colnames(hh))
+hh <- hh %>% rename_with(~ c("date", "start_time", "end_time", "interviewer_name", 
+                             "supervisor_name", "hh_code", "village", "sub_village", 
+                             "FPIC", "hh_members", "respondent_code", "born_ward", 
+                             "years_lived"))
 
 ## Water, Toilet, Assets, House Information ##
 hh_info <- tanganyika %>% select(15:18, 28:32, 43:47)
+colnames(hh_info) <- gsub("...\\d+", "", colnames(hh_info))
+hh_info <- hh_info %>% rename_with(~ c("drinking_water_dry", "other_drinking_water_dry", "water_treatment_dry", "treatment_method_dry", "other_water_treatment_dry", "drinking_water_wet", 
+                                       "other_drinking_water_wet", "water_treatment_wet", "treatment_method_wet", "toilet_facilities", "other_toilet_facilities", 
+                                       "shared_facilities", "handwashing_place", "handwashing_show"))
 
 # Function to escape special characters in the options
 escape_special_chars <- function(options) {
@@ -67,8 +76,7 @@ separate_options <- function(column, escaped_options) {
 # Applying the function to the relevant columns
 hh_info <- hh_info %>%
   mutate(across(
-    c(`16. What do you usually do to make the water safer to drink in the dry season?`, 
-      `19. What do you usually do to make the water safer to drink in the wet season?`), 
+    c(treatment_method_dry, treatment_method_wet), 
     ~ separate_options(., escaped_options)))
 
 # List of toilet facility options
@@ -88,7 +96,7 @@ separate_options_toilet <- function(column, escaped_options) {
 
 # Applying the function to the relevant toilet facility column(s)
 hh_info <- hh_info %>%
-  mutate(across(c(`20. What type of toilet facility does your household use?`),  
+  mutate(across(c(toilet_facilities),  
                 ~ separate_options_toilet(., escaped_toilet_facility_options)))
 
 # List of handwashing facility options
@@ -105,11 +113,14 @@ separate_options_handwashing <- function(column, escaped_options) {
 # Applying the function to the relevant handwashing facility column(s)
 hh_info <- hh_info %>%
   mutate(across(
-    c(`22b)Can you please show me where/how members of your household most often wash their hands?`),
+    c(handwashing_show),
     ~ separate_options_handwashing(., escaped_handwashing_facility_options)))
 
 ## Household Items Questions ##
-hh_items <- tanganyika %>% select(55:69)
+hh_items <- tanganyika %>% select(55, 57:69)
+colnames(hh_items) <- gsub("...\\d+", "", colnames(hh_items))
+hh_items <- hh_items %>% rename(household_item = 1)
+
 hh_items <- hh_items %>%
   unite("combined_response", `Tanesco Power`:`A solar panel`, sep = "|", remove = FALSE)
 
@@ -121,10 +132,12 @@ hh_items_long <- hh_items_long %>%
   relocate(Option, Response, .after = combined_response)
 
 ## PPI Food Questions ##
-ppi_food <- tanganyika %>% select(70:75)
+ppi_food <- tanganyika %>% select(70, 72:75)
+colnames(ppi_food) <- gsub("...\\d+", "", colnames(ppi_food))
+ppi_food <- ppi_food %>% rename(ppi_food = 1)
+
 ppi_food <- ppi_food %>%
   unite("combined_response", `Beef`:`Wheat flour`, sep = "|", remove = FALSE)
-
 ppi_food_long <- ppi_food %>%
   pivot_longer(cols = c("Beef", "Cattle milk", "Rice", "Wheat flour"), 
                names_to = "Option", values_to = "Response")
@@ -133,14 +146,20 @@ ppi_food_long <- ppi_food_long %>%
 
 ## Fuel, Floor, and Wall Materials Questions
 house <- tanganyika %>% select(76:85)
+colnames(house) <- gsub("...\\d+", "", colnames(house))
+house <- house %>% rename_with(~ c("cooking_fuel", "other_fuel", "efficient_stove", 
+                                   "stove_usage", "floor_material", "other_floor", 
+                                   "wall_material", "other_wall", "roof_material", 
+                                   "other_roof"))
 
 ## Household Assets ##
-hh_assets <- tanganyika %>% select(86:92)
+hh_assets <- tanganyika %>% select(86, 88:92)
+colnames(hh_assets) <- gsub("...\\d+", "", colnames(hh_assets))
+hh_assets <- hh_assets %>% rename(household_assets = 1)
 
 # Combine hh_assets options into one column
 hh_assets <- hh_assets %>%
   unite("combined_response", Bicycle:`Boat with motor`, sep = "|", remove = FALSE)
-
 hh_assets_long <- hh_assets %>%
   pivot_longer(cols = c("Bicycle", "Motorbike", "Car/truck", "Canoe/boat without motor", "Boat with motor"), 
                names_to = "Option", 
@@ -153,6 +172,7 @@ ggplot(hh_assets_long, aes(x = Option, fill = Response)) +
 
 ## Livelihoods and Credit ##
 lh <- tanganyika %>% select(93, 109:124, 134:135, 149:153)
+colnames(lh) <- gsub("...\\d+", "", colnames(lh))
 
 # 31. 
 livelihood_options <- list("FISHING","FISH TRADING","FISH PROCESSING","AGRICULTURE","LIVESTOCK KEEPING","BUSINESS",
@@ -213,6 +233,7 @@ lh <- lh %>%
 
 ## Consumption and Food Security ##
 food <- tanganyika %>% select(154:161, 176:181)
+colnames(food) <- gsub("...\\d+", "", colnames(food))
 
 # List of month options
 month_options <- list("OCTOBER. 2024","SEPTEMBER. 2024","AUGUST. 2024","JULY. 2024","JUNE. 2024","MAY. 2024",
@@ -230,11 +251,13 @@ separate_options_months <- function(column, escaped_options) {
 # Applying the function to the relevant month column(s)
 food <- food %>%
   mutate(across(
-    c(`46. Over the last 12 months, in which months, were the food shortages or worries about having enough food the worst?`),  
+    c(`46. Over the la months, in which months, were the food shortages or worries about having enough food the worst?`),  
     ~ separate_options_months(., escaped_month_options)))
 
 # Governance and Participation
 gov <- tanganyika %>% select(182:191, 201:202, 212:214, 229:231)
+colnames(gov) <- gsub("...\\d+", "", colnames(gov))
+
 
 # List of conflict options
 conflict_options <- list("FISHING IN PROTECTED FISH BREEDING AREAS","USING ILLEGAL FISHING GEAR","CATCHING UNDERSIZED FISH","PRIVATE (FARM) LAND BOUNDARIES",
@@ -294,6 +317,7 @@ gov <- gov %>%
 
 # BMU questions
 BMU <- tanganyika %>% select(232:256, 265:270)
+colnames(BMU) <- gsub("...\\d+", "", colnames(BMU))
 
 # List of resolution options
 resolution_options <- list("GO TO THE VILLAGE GOVERNMENT","NEGOTIATE WITH EACH OTHER","DO NOTHING",
@@ -315,6 +339,8 @@ BMU <- BMU %>%
 
 # Fishing Section
 fishing <- tanganyika %>% select(272:289, 298, 312)
+colnames(fishing) <- gsub("...\\d+", "", colnames(fishing))
+
 
 # List of boat options
 boat_options <- list("DON’T FISH FROM BOAT","CANOE WITHOUT MOTOR","LARGE BOAT WITHOUT ENGINE","LARGE BOAT WITH ENGINE",
@@ -371,7 +397,7 @@ fish_ranked_long <- fish_ranked %>%
 
 # Sample plot of the importance of each fish species
 ggplot(fish_ranked_long, aes(x = Fish_Species, y = Importance_Rank)) +
-  geom_boxplot() +  # You can use a boxplot or another appropriate plot type
+  geom_boxplot() + 
   labs(title = "Importance of Fish Species", 
        x = "Fish Species", 
        y = "Importance Ranking") +
@@ -434,9 +460,135 @@ satisfaction_long <- satisfaction_long %>%
                                      ordered = TRUE))
 
 # Livelihood Practices of Fish Traders
-fish_traders <- tanganyika %>% select(405:407, 408:409, 412:448, 449:462, 463:473, 476:481, 482:486, 489)
+fish_traders <- tanganyika %>% select(405:407, 408:409, 412, 413, 419, 425, 431, 437, 443, 449:462, 463:473, 476:481, 482:486, 489)
+colnames(fish_traders) <- gsub("...\\d+", "", colnames(fish_traders))
+
+# 127.
+trade_season <- fish_traders %>% select(6:12)
+trade_season_long <- trade_season %>%
+  pivot_longer(cols = -1, 
+               names_to = "Fish_Species",
+               values_to = "Season") %>%
+  filter(!is.na(Season) & Season != "")  
+
+trade_summary <- fish_season_long %>%
+  group_by(Fish_Species, Season) %>%
+  summarise(Count = n()) %>%
+  ungroup()
+
+# 128. best
+trade_price_best <- fish_traders %>% select(13:19)
+trade_price_best_long <- trade_price_best %>%
+  pivot_longer(cols = -1,  
+               names_to = "Fish_Species", 
+               values_to = "Sale_Price") %>%
+  filter(!is.na(Sale_Price) & Sale_Price != "")  
+
+# 128. lowest
+trade_price_lowest <- fish_traders %>% select(20:26)
+trade_price_lowest_long <- trade_price_lowest %>%
+  pivot_longer(cols = -1,  
+               names_to = "Fish_Species", 
+               values_to = "Sale_Price") %>%
+  filter(!is.na(Sale_Price) & Sale_Price != "")
+
+# 129. trade satisfaction
+trade_satisfaction <- fish_traders %>% select(27:37)
+trade_satisfaction_long <- trade_satisfaction %>%
+  pivot_longer(cols = -1,  # Exclude the first empty column
+               names_to = "Aspect", 
+               values_to = "Satisfaction_Level") %>%
+  filter(!is.na(Satisfaction_Level) & Satisfaction_Level != "I DO NOT WANT TO ANSWER")  # Remove empty or non-numeric responses
+
+trade_satisfaction_long <- trade_satisfaction_long %>%
+  mutate(Satisfaction_Level = factor(Satisfaction_Level,
+                                     levels = c("1 VERY UNSATISFIED", 
+                                                "2 UNSATISFIED", 
+                                                "3 NEUTRAL", 
+                                                "4 SATISFIED", 
+                                                "5 VERY SATISFIED"),
+                                     ordered = TRUE))
 
 # Livelihood Practices of Fish Processors
 fish_processors <- tanganyika %>% select(492:494, 495, 505, 506, 521, 522:528, 529:542, 543:553, 556:566, 569)
+colnames(fish_processors) <- gsub("...\\d+", "", colnames(fish_processors))
+
+# 143
+processing_options <- list("SUNDRYING","SALTING","SMOKING","FREEZING","COLD STORAGE","DEEP FRYING",
+  "OTHER","I DO NOT WANT TO ANSWER","I DON'T KNOW")
+escaped_processing_options <- escape_special_chars(processing_options)
+separate_options_processing <- function(column, escaped_processing_options) {
+  pattern <- str_c(escaped_processing_options, collapse = "|")
+  separated <- str_replace_all(column, pattern, function(x) paste0("|", x))
+  separated <- str_remove(separated, "^\\|")
+  return(separated)}
+
+# Applying the function to the relevant processing column(s)
+fish_processors <- fish_processors %>%
+  mutate(across(
+    c(`143. What form of fish processing do you participate in?`),  
+    ~ separate_options_processing(., escaped_processing_options)))
 
 
+# 144
+processing_equipment_options <- list("TWIGS", "WIRE MESH", "NETS", "REFRIGERATOR", "SALT", "BASIN", 
+  "COOLBOX", "FIREWOOD", "CORRUGATED SHEET", "COOKING OIL", "COOKING POT", "OTHER", "I DO NOT WANT TO ANSWER", "I DON'T KNOW")
+
+escaped_processing_equipment_options <- escape_special_chars(processing_equipment_options)
+separate_options_processing_equipment <- function(column, escaped_options) {
+  pattern <- str_c(escaped_options, collapse = "|")
+  separated <- str_replace_all(column, pattern, function(x) paste0("|", x))
+  separated <- str_remove(separated, "^\\|")
+  return(separated)}
+
+# Applying the function to the relevant processing equipment column(s)
+fish_processors <- fish_processors %>%
+  mutate(across(
+    c(`144. What equipment and materials do you use?`),  
+    ~ separate_options_processing_equipment(., escaped_processing_equipment_options)))
+
+# 145. 
+process_season <- fish_processors %>% select(8:14)
+process_season_long <- process_season %>%
+  pivot_longer(cols = -1, 
+               names_to = "Fish_Species",
+               values_to = "Season") %>%
+  filter(!is.na(Season) & Season != "")  
+
+process_season_summary <- process_season_long %>%
+  group_by(Fish_Species, Season) %>%
+  summarise(Count = n()) %>%
+  ungroup()
+
+# 146. highest
+process_price_best <- fish_processors %>% select(15:21)
+process_price_best_long <- process_price_best %>%
+  pivot_longer(cols = -1,  
+               names_to = "Fish_Species", 
+               values_to = "Sale_Price") %>%
+  filter(!is.na(Sale_Price) & Sale_Price != "")  
+
+# 146. lowest
+process_price_lowest <- fish_processors %>% select(22:28)
+process_price_lowest_long <- process_price_lowest %>%
+  pivot_longer(cols = -1,  
+               names_to = "Fish_Species", 
+               values_to = "Sale_Price") %>%
+  filter(!is.na(Sale_Price) & Sale_Price != "")
+
+# 147. 
+processors_satisfaction <- fish_processors %>% select(29:39)
+processors_satisfaction_long <- processors_satisfaction %>%
+  pivot_longer(cols = -1,  # Exclude the first empty column
+               names_to = "Aspect", 
+               values_to = "Satisfaction_Level") %>%
+  filter(!is.na(Satisfaction_Level) & Satisfaction_Level != "I DO NOT WANT TO ANSWER")  # Remove empty or non-numeric responses
+
+processors_satisfaction_long <- processors_satisfaction_long %>%
+  mutate(Satisfaction_Level = factor(Satisfaction_Level,
+                                     levels = c("1 VERY UNSATISFIED", 
+                                                "2 UNSATISFIED", 
+                                                "3 NEUTRAL", 
+                                                "4 SATISFIED", 
+                                                "5 VERY SATISFIED"),
+                                     ordered = TRUE))
