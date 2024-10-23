@@ -19,27 +19,22 @@ rm(list=ls())
 # Read excel file (shift to google spreadsheet API?)
 tanganyika <- read_excel("tanganyika_survey_report/TNC_Tanganyika_-_Main_Questionnaire_-_all_versions_-_English_-_2024-10-15-05-07-33.xlsx", sheet = "TNC Tanganyika - Main Questi...")
 
-# Convert to date 
 tanganyika <- tanganyika %>%
-  mutate(`START TIME` = ymd_hms(`START TIME`),`End Time` = ymd_hms(`End Time`))
-
-# Extract date and time components
-tanganyika <- tanganyika %>%
-  mutate(
-    date = as.Date(`START TIME`),
-    start_time = format(`START TIME`, "%H:%M:%S"),
-    end_time = format(`End Time`, "%H:%M:%S")) %>%
+  mutate(`START TIME` = ymd_hms(`START TIME`),`End Time` = ymd_hms(`End Time`),
+         date = as.Date(`START TIME`),
+         start_time = format(`START TIME`, "%H:%M:%S"),
+         end_time = format(`End Time`, "%H:%M:%S")) %>%
   select(date, start_time, end_time, everything()) %>%
-  select(-`START TIME`, -`End Time`, -`ENUMERATOR TO READ OUT THE INTRODUCTION SHEET`, -`There are no right or wrong answers to questions; we are just interested in getting the true information about your household and your views. If you do not wish to proceed, please tell us why you have refused.`)
-
-# Filter data based on FPIC agreement
-tanganyika <- tanganyika %>%
+  select(-`START TIME`, 
+         -`End Time`, 
+         -`ENUMERATOR TO READ OUT THE INTRODUCTION SHEET`, 
+         -`There are no right or wrong answers to questions; we are just interested in getting the true information about your household and your views. If you do not wish to proceed, please tell us why you have refused.`) %>%
   filter(tanganyika$`FPIC STATEMENT (AGREED OR REFUSED)
 
 May we proceed with the interview?` == "AGREED")
 
 # Cleaning column headers
-colnames(tanganyika) <- gsub("...\\d+", "", colnames(tanganyika))
+#colnames(tanganyika) <- gsub("...\\d+", "", colnames(tanganyika))
 
 ### Dividing the data frame into manageable chunks (per section) and cleaning these ###
 ## Household Roster and General Information ##
@@ -553,3 +548,9 @@ processors_satisfaction_long <- processors_satisfaction_long %>%
                                                 "4 SATISFIED", 
                                                 "5 VERY SATISFIED"),
                                      ordered = TRUE))
+
+################################################################################
+
+tanganyika_clean <- bind_cols(hh, hh_info, hh_items, ppi_food, house, hh_assets, lh, food, gov,
+                              BMU, fishing, fish_village, fish_traders, fish_processors)
+
