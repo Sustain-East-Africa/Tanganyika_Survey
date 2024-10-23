@@ -554,3 +554,4 @@ processors_satisfaction_long <- processors_satisfaction_long %>%
 tanganyika_clean <- bind_cols(hh, hh_info, hh_items, ppi_food, house, hh_assets, lh, food, gov,
                               BMU, fishing, fish_village, fish_traders, fish_processors)
 
+saveRDS(tanganyika_clean, "tangnayika_clean.rds")
