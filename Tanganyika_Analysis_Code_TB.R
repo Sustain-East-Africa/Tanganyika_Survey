@@ -12,7 +12,20 @@ library(sjPlot)
 library(cowplot)
 library(egg)
 
+ggsave <- function(..., bg = 'white') ggplot2::ggsave(..., bg = bg)
+
+# import cleaned Tangnayika household survey data with --------------------------------- 
+rm(list=ls())
+
+tanganyika_clean <- readRDS("tanganyika_clean.rds")
+head(tanganyika_clean)
+
 # Set up Survey Design
+tanganyika_survey <- tanganyika_clean %>% 
+  as_survey_design(strata=stype, fpc=fpc, variables = c(drinking_water_dry, other_drinking_water_dry, water_treatment_dry, treatment_method_dry, other_water_treatment_dry, drinking_water_wet, 
+                                                        other_drinking_water_wet, water_treatment_wet, treatment_method_wet, toilet_facilities, other_toilet_facilities, 
+                                                        shared_facilities, handwashing_place, handwashing_show)) 
+
 
 ### List of Figures in the Tuungane Baseline Report ###
 ### Add in the cleaned data and develop plots and tables accordingly
