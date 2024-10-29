@@ -83,7 +83,7 @@ ggplot(treatment_data, aes(x = village, y = proportion, group = treatment_method
   scale_y_continuous(limits = c(0, 1)) +
   theme_minimal()
 
-# treatment_method_wet ----------------
+## treatment_method_wet ----------------
 
 treatment_wet_expanded <- tanganyika_clean %>% select(hh_code, village, treatment_method_wet, stype, fpc) %>%
   separate_rows(treatment_method_wet, sep = "\\|") %>%
@@ -106,7 +106,7 @@ ggplot(treatment_data_wet, aes(x = village, y = proportion, group = treatment_me
   scale_y_continuous(limits = c(0, 1)) +
   theme_minimal()
 
-# handwashing_show ----------------
+## handwashing_show ----------------
 
 handwashing_show_expanded <- tanganyika_clean %>% select(hh_code, village, handwashing_show, stype, fpc) %>%
   separate_rows(handwashing_show, sep = "\\|") %>%
@@ -129,6 +129,28 @@ ggplot(handwashing_show_data, aes(x = village, y = proportion, group = handwashi
   scale_y_continuous(limits = c(0, 1)) +
   theme_minimal()
 
+## household_item ----------------
+
+household_item_expanded <- tanganyika_clean %>% select(hh_code, village, household_item, stype, fpc) %>%
+  separate_rows(household_item, sep = "\\|") %>%
+  mutate(household_item = trimws(household_item)) %>% drop_na()  
+
+household_item_design <- household_item_expanded %>%
+  as_survey_design(ids = hh_code, strata = stype, fpc = fpc) # Define cluster ID to prevent fpc from >100%
+
+household_item_data <- household_item_design %>%
+  group_by(village, household_item) %>%
+  summarise(proportion = survey_mean(vartype = "ci", na.rm = TRUE), n = unweighted(n())) %>% ungroup()
+
+ggplot(household_item_data, aes(x = village, y = proportion, group = household_item, fill = household_item)) +
+  geom_bar(stat = "identity", position = position_dodge(preserve = "single"), width = 0.95) +
+  geom_errorbar(aes(ymax = pmin(proportion_upp, 1), ymin = pmax(proportion_low, 0)),
+                position = position_dodge(preserve = "single", width = 0.95), width = 0.1) +
+  guides(fill = guide_legend(title = NULL)) +
+  scale_fill_manual(values = c("#A9CCE3",  "#2E86C1", "#F5B7B1", "#D091BB", "#BBD4A6", "#FAD7A0", "#DFDFDF", SEA_palette)) +
+  labs(title = paste("Proportion of hand washing methods by village"), x = "Village", y = "Proportion of Households") +
+  scale_y_continuous(limits = c(0, 1)) +
+  theme_minimal()
 ######################################################################################################################
 ############# Livelihood and Credit Aspects of Households  ############
 ######################################################################################################################

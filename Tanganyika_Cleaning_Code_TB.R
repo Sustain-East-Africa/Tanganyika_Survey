@@ -82,30 +82,16 @@ hh_info <- hh_info %>%
   mutate(across(c(handwashing_show), ~ separate_options(., handwashing_facility_options)))
 
 ## Household Items Questions ##
-hh_items <- tanganyika %>% select(55, 57:69)
-hh_items <- hh_items %>% rename(household_item = 1)
-
+hh_items <- tanganyika %>% select(57:69)
 hh_items <- hh_items %>%
-  unite("combined_response", `Tanesco Power`:`A solar panel`, sep = "|", remove = FALSE)
-
-hh_items_long <- hh_items %>%
-  pivot_longer(cols = c("Tanesco Power","A radio","A television","A normal mobile phone","A working smartphone","An iron",
-                        "A refrigerator","A generator","A clock","A bed or mattress","A settee or sofa","A solar panel"), 
-               names_to = "Option", values_to = "Response")
-hh_items_long <- hh_items_long %>%
-  relocate(Option, Response, .after = combined_response)
+  rowwise() %>% mutate(household_item = paste(
+    names(hh_items)[c_across(everything()) == "YES"],collapse = "|")) %>% ungroup() %>% select(household_item)
 
 ## PPI Food Questions ##
-ppi_food <- tanganyika %>% select(70, 72:75)
-ppi_food <- ppi_food %>% rename(ppi_food = 1)
-
-ppi_food <- ppi_food %>%
-  unite("combined_response", `Beef`:`Wheat flour`, sep = "|", remove = FALSE)
-ppi_food_long <- ppi_food %>%
-  pivot_longer(cols = c("Beef", "Cattle milk", "Rice", "Wheat flour"), 
-               names_to = "Option", values_to = "Response")
-ppi_food_long <- ppi_food_long %>%
-  relocate(Option, Response, .after = combined_response)
+ppi <- tanganyika %>% select(72:75)
+ppi <- ppi %>%
+  rowwise() %>% mutate(ppi_food = paste(
+    names(ppi)[c_across(everything()) == "YES"],collapse = "|")) %>% ungroup() %>% select(ppi_food)
 
 ## Fuel, Floor, and Wall Materials Questions
 house <- tanganyika %>% select(76:85)
@@ -115,21 +101,10 @@ house <- house %>% rename_with(~ c("cooking_fuel", "other_fuel", "efficient_stov
                                    "other_roof"))
 
 ## Household Assets ##
-hh_assets <- tanganyika %>% select(86, 88:92)
-hh_assets <- hh_assets %>% rename(household_assets = 1)
-
-# Combine hh_assets options into one column
+hh_assets <- tanganyika %>% select(88:92)
 hh_assets <- hh_assets %>%
-  unite("combined_response", Bicycle:`Boat with motor`, sep = "|", remove = FALSE)
-hh_assets_long <- hh_assets %>%
-  pivot_longer(cols = c("Bicycle", "Motorbike", "Car/truck", "Canoe/boat without motor", "Boat with motor"), 
-               names_to = "Option", 
-               values_to = "Response")
-# Sample plot
-ggplot(hh_assets_long, aes(x = Option, fill = Response)) +
-  geom_bar(position = "dodge") +
-  labs(title = "Does any member of your household own:", x = "Options", y = "Count") +
-  theme_minimal()
+  rowwise() %>% mutate(household_assets = paste(
+    names(hh_assets)[c_across(everything()) == "YES"],collapse = "|")) %>% ungroup() %>% select(household_assets)
 
 ## Livelihoods and Credit ##
 lh <- tanganyika %>% select(93, 109:124, 134:135, 149:153)
@@ -551,7 +526,7 @@ processors_satisfaction_long <- processors_satisfaction_long %>%
 
 ################################################################################
 
-tanganyika_clean <- bind_cols(hh, hh_info, hh_items, ppi_food, house, hh_assets, lh, food, gov,
+tanganyika_clean <- bind_cols(hh, hh_info, hh_items, ppi, house, hh_assets, lh, food, gov,
                               BMU, fishing, fish_village, fish_traders, fish_processors)
 
 tanganyika_clean <- tanganyika_clean %>% 
