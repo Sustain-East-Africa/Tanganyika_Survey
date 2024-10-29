@@ -563,9 +563,10 @@ tanganyika_clean <- tanganyika_clean %>%
       village == "KICHANGANI" ~ "Kichangani")) %>%
   mutate(
     fpc = case_when(
-      village == "ISASA" ~ 200, #Total number of households in each village (strata)
-      village == "MTAKUJA" ~ 100,
-      village == "KIPILI" ~ 200,
-      village == "KICHANGANI" ~ 100))
+      village == "ISASA" ~ 40, #Total number of households in each village (strata)
+      village == "MTAKUJA" ~ 52,
+      village == "KIPILI" ~ 55,
+      village == "KICHANGANI" ~ 47))
 
 saveRDS(tanganyika_clean, "tanganyika_clean.rds")
+
