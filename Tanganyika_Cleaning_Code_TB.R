@@ -108,11 +108,13 @@ hh_assets <- hh_assets %>%
 
 ## Livelihoods and Credit ##
 lh <- tanganyika %>% select(93, 109:124, 134:135, 149:153)
-colnames(lh) <- gsub("...\\d+", "", colnames(lh))
+lh <- lh %>% rename_with(~ c("livelihood_activities", "other_livelihood", "lh_ranking", "fishing", "trading", "processing", "agriculture", 
+                             "livestock", "business", "labour", "employee", "pension", "remittance", "other_lh", "household_ability", "borrow_status",
+                             "loan_usage", "other_loan_usage", "borrowing_source", "other_borrowing_source", "not_borrowed", "not_borrowed_other", "cocoba_saccos", "mobile_money"))
 
-# 31. 
+# 31. livelihood_activities
 livelihood_options <- list("FISHING","FISH TRADING","FISH PROCESSING","AGRICULTURE","LIVESTOCK KEEPING","BUSINESS",
-                           "DAY LABOR","EMPLOYEE","PENSIONS","REMITTANCES","OTHER","I DO NOT WANT TO ANSWER","I DON'T KNOW")
+                           "DAY LABOR","EMPLOYEE","PENSIONS","REMITTANCES","OTHER", "TAILOR", "I DO NOT WANT TO ANSWER","I DON'T KNOW")
 escaped_livelihood_options <- escape_special_chars(livelihood_options)
 
 # Function to separate column options
@@ -125,7 +127,7 @@ separate_options_livelihood <- function(column, escaped_options) {
 # Applying the function to the relevant livelihood column(s)
 lh <- lh %>%
   mutate(across(
-    c(`31. Could you indicate all the different activities that members of the household engage in to obtain food or cash income for the household, including remittances and pensions?`),  # Replace with your actual column name
+    c(livelihood_activities),  
     ~ separate_options_livelihood(., escaped_livelihood_options)))
 
 # List of expense options
@@ -145,7 +147,7 @@ separate_options_loan <- function(column, escaped_options) {
 # Applying the function to the relevant expense column(s)
 lh <- lh %>%
   mutate(across(
-    c(`35. What was the money from the loans used for?`),  
+    c(loan_usage),  
     ~ separate_options_loan(., escaped_loan_options)))
 
 # List of borrowing source options
@@ -161,15 +163,15 @@ separate_options_borrowing_source <- function(column, escaped_options) {
   separated <- str_remove(separated, "^\\|")
   return(separated)}
 
-# Applying the function to the relevant borrowing source column(s)
 lh <- lh %>%
-  mutate(across(
-    c(`36. Who did you or your household members borrow from?`), 
+  mutate(across(c(borrowing_source), 
     ~ separate_options_borrowing_source(., escaped_borrowing_source_options)))
 
 ## Consumption and Food Security ##
 food <- tanganyika %>% select(154:161, 176:181)
-colnames(food) <- gsub("...\\d+", "", colnames(food))
+food <- food %>% rename_with(~ c("dagaa", "migebuka", "other_fish", "primary_source", "primary_source_other", "eat_changed", "worry_shortage", "food_shortage",
+                                 "shortage_reason", "shortage_reason_other", "food_availability", "availability_changed", "availability_reason", "availability_reason_other"))
+
 
 # List of month options
 month_options <- list("OCTOBER. 2024","SEPTEMBER. 2024","AUGUST. 2024","JULY. 2024","JUNE. 2024","MAY. 2024",
@@ -187,7 +189,7 @@ separate_options_months <- function(column, escaped_options) {
 # Applying the function to the relevant month column(s)
 food <- food %>%
   mutate(across(
-    c(`46. Over the la months, in which months, were the food shortages or worries about having enough food the worst?`),  
+    c(food_shortage),  
     ~ separate_options_months(., escaped_month_options)))
 
 ## Governance and Participation ##
