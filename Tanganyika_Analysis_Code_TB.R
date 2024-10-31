@@ -34,38 +34,41 @@ hh_info_to_plot <- c("born_ward","drinking_water_dry", "other_drinking_water_dry
 
 # Define plotting and summary table function
 hh_info_survey_variable <- function(variable_name) {
-  strat_design <- tanganyika_clean %>% as_survey_design(strata = stype, fpc = fpc, variables = c(stype, fpc, village, !!sym(variable_name)))
+  # Set survey design
+  strat_design <- tanganyika_clean %>%
+    as_survey_design(strata = stype, fpc = fpc, variables = c(stype, fpc, village, !!sym(variable_name)))
   
-  # Stratify by village and variable, calculate proportions
+  # Group by village and the current variable, then calculate proportions and totals
   village_data <- strat_design %>%
     group_by(village, !!sym(variable_name)) %>%
-    summarise(
-      proportion = survey_mean(vartype = "ci", na.rm = TRUE), 
-      n = unweighted(n()))
+    summarise(proportion = survey_mean(vartype = "ci", na.rm = TRUE), total = survey_total(vartype = "ci", na.rm = TRUE), n = unweighted(n()))
   
   # Save summary table
   summary_table <- village_data %>%
-    select(village, !!sym(variable_name), n, proportion, proportion_low, proportion_upp) %>%
-    rename(Total_Household_Responses = n, Proportion = proportion, Lower_CI = proportion_low, Upper_CI = proportion_upp)
+    select(village, !!sym(variable_name), n, total, total_low, total_upp, proportion, proportion_low, proportion_upp) %>%
+    rename(n = n, Total = total, Lower_Total_CI = total_low, Upper_Total_CI = total_upp, Proportion = proportion, Lower_Proportion_CI = proportion_low, Upper_Proportion_CI = proportion_upp)
   
   # Save summary table as CSV
   table_file_name <- here::here("images", paste0(variable_name, "_summary_table.csv"))
   write.csv(summary_table, table_file_name, row.names = FALSE)
   
+  # Create plot
   plot <- ggplot(village_data, aes(x = village, y = proportion, group = !!sym(variable_name), fill = !!sym(variable_name))) +
     geom_bar(stat = "identity", position = position_dodge(preserve = "single"), width = 0.95) +
     geom_errorbar(aes(ymax = pmin(proportion_upp, 1), ymin = pmax(proportion_low, 0)),
-                  position = position_dodge(preserve = "single", width = 0.95), width = 0.1) +
+                  position = position_dodge(preserve = "single", width = 0.95), width = 0.1)+
     guides(fill = guide_legend(title = NULL)) +
     scale_fill_manual(values = c("#A9CCE3",  "#2E86C1", "#F5B7B1", "#D091BB", "#BBD4A6", "#FAD7A0", "#DFDFDF", SEA_palette)) +
     labs(title = paste("Proportion of", variable_name, "by Village"), x = "Village", y = "Proportion of Households") +
     scale_y_continuous(limits = c(0, 1)) +
     theme_minimal()
- 
-   return(list(plot = plot, table = summary_table))}
+  
+  return(list(plot = plot, table = summary_table))}
 
 # Generate and save plots and tables
 plots_and_tables <- lapply(hh_info_to_plot, function(var) hh_info_survey_variable(var))
+
+# Save plots
 for (i in seq_along(hh_info_to_plot)) {
   plot_file_name <- here::here("images", paste0(hh_info_to_plot[i], ".png"))
   ggsave(filename = plot_file_name, plot = plots_and_tables[[i]]$plot, width = 10, height = 7)}
@@ -81,7 +84,7 @@ treatment_dry_design <- treatment_dry_expanded %>%
 
 treatment_data <- treatment_dry_design %>%
   group_by(village, treatment_method_dry) %>%
-  summarise(proportion = survey_mean(vartype = "ci", na.rm = TRUE), n = unweighted(n())) %>% ungroup()
+  summarise(proportion = survey_mean(vartype = "ci", na.rm = TRUE), total = survey_total(vartype = "ci", na.rm = TRUE), n = unweighted(n())) %>% ungroup()
 
 ggplot(treatment_data, aes(x = village, y = proportion, group = treatment_method_dry, fill = treatment_method_dry)) +
   geom_bar(stat = "identity", position = position_dodge(preserve = "single"), width = 0.95) +
@@ -104,7 +107,7 @@ treatment_wet_design <- treatment_wet_expanded %>%
 
 treatment_data_wet <- treatment_wet_design %>%
   group_by(village, treatment_method_wet) %>%
-  summarise(proportion = survey_mean(vartype = "ci", na.rm = TRUE), n = unweighted(n())) %>% ungroup()
+  summarise(proportion = survey_mean(vartype = "ci", na.rm = TRUE), total = survey_total(vartype = "ci", na.rm = TRUE), n = unweighted(n())) %>% ungroup()
 
 ggplot(treatment_data_wet, aes(x = village, y = proportion, group = treatment_method_wet, fill = treatment_method_wet)) +
   geom_bar(stat = "identity", position = position_dodge(preserve = "single"), width = 0.95) +
@@ -127,7 +130,7 @@ handwashing_show_design <- handwashing_show_expanded %>%
 
 handwashing_show_data <- handwashing_show_design %>%
   group_by(village, handwashing_show) %>%
-  summarise(proportion = survey_mean(vartype = "ci", na.rm = TRUE), n = unweighted(n())) %>% ungroup()
+  summarise(proportion = survey_mean(vartype = "ci", na.rm = TRUE), total = survey_total(vartype = "ci", na.rm = TRUE), n = unweighted(n())) %>% ungroup()
 
 ggplot(handwashing_show_data, aes(x = village, y = proportion, group = handwashing_show, fill = handwashing_show)) +
   geom_bar(stat = "identity", position = position_dodge(preserve = "single"), width = 0.95) +
@@ -150,7 +153,7 @@ household_item_design <- household_item_expanded %>%
 
 household_item_data <- household_item_design %>%
   group_by(village, household_item) %>%
-  summarise(proportion = survey_mean(vartype = "ci", na.rm = TRUE), n = unweighted(n())) %>% ungroup()
+  summarise(proportion = survey_mean(vartype = "ci", na.rm = TRUE), total = survey_total(vartype = "ci", na.rm = TRUE), n = unweighted(n())) %>% ungroup()
 
 ggplot(household_item_data, aes(x = village, y = proportion, group = household_item, fill = household_item)) +
   geom_bar(stat = "identity", position = position_dodge(preserve = "single"), width = 0.95) +
@@ -218,28 +221,29 @@ livelihood_credit_to_plot <- c("household_ability", "borrow_status", "loan_usage
 
 # Define plotting and summary table function
 livelihood_credit_survey_variable <- function(variable_name) {
-  strat_design <- tanganyika_clean %>% as_survey_design(strata = stype, fpc = fpc, variables = c(stype, fpc, village, !!sym(variable_name)))
+  # Set survey design
+  strat_design <- tanganyika_clean %>%
+    as_survey_design(strata = stype, fpc = fpc, variables = c(stype, fpc, village, !!sym(variable_name)))
   
-  # Stratify by village and variable, calculate proportions
+  # Group by village and the current variable, then calculate proportions and totals
   village_data <- strat_design %>%
     group_by(village, !!sym(variable_name)) %>%
-    summarise(
-      proportion = survey_mean(vartype = "ci", na.rm = TRUE), 
-      n = unweighted(n()))
+    summarise(proportion = survey_mean(vartype = "ci", na.rm = TRUE), total = survey_total(vartype = "ci", na.rm = TRUE), n = unweighted(n()))
   
   # Save summary table
   summary_table <- village_data %>%
-    select(village, !!sym(variable_name), n, proportion, proportion_low, proportion_upp) %>%
-    rename(Total_Household_Responses = n, Proportion = proportion, Lower_CI = proportion_low, Upper_CI = proportion_upp)
+    select(village, !!sym(variable_name), n, total, total_low, total_upp, proportion, proportion_low, proportion_upp) %>%
+    rename(n = n, Total = total, Lower_Total_CI = total_low, Upper_Total_CI = total_upp, Proportion = proportion, Lower_Proportion_CI = proportion_low, Upper_Proportion_CI = proportion_upp)
   
   # Save summary table as CSV
   table_file_name <- here::here("images", paste0(variable_name, "_summary_table.csv"))
   write.csv(summary_table, table_file_name, row.names = FALSE)
   
+  # Create plot
   plot <- ggplot(village_data, aes(x = village, y = proportion, group = !!sym(variable_name), fill = !!sym(variable_name))) +
     geom_bar(stat = "identity", position = position_dodge(preserve = "single"), width = 0.95) +
     geom_errorbar(aes(ymax = pmin(proportion_upp, 1), ymin = pmax(proportion_low, 0)),
-                  position = position_dodge(preserve = "single", width = 0.95), width = 0.1) +
+                  position = position_dodge(preserve = "single", width = 0.95), width = 0.1)+
     guides(fill = guide_legend(title = NULL)) +
     scale_fill_manual(values = c("#A9CCE3",  "#2E86C1", "#F5B7B1", "#D091BB", "#BBD4A6", "#FAD7A0", "#DFDFDF", SEA_palette)) +
     labs(title = paste("Proportion of", variable_name, "by Village"), x = "Village", y = "Proportion of Households") +
@@ -249,7 +253,9 @@ livelihood_credit_survey_variable <- function(variable_name) {
   return(list(plot = plot, table = summary_table))}
 
 # Generate and save plots and tables
-plots_and_tables <- lapply(livelihood_credit_to_plot, function(var) livelihood_credit_survey_variable(var))
+plots_and_tables <- lapply(hh_info_to_plot, function(var) livelihood_credit_survey_variable(var))
+
+# Save plots
 for (i in seq_along(livelihood_credit_to_plot)) {
   plot_file_name <- here::here("images", paste0(livelihood_credit_to_plot[i], ".png"))
   ggsave(filename = plot_file_name, plot = plots_and_tables[[i]]$plot, width = 10, height = 7)}
@@ -296,8 +302,7 @@ food_survey_variable <- function(variable_name) {
   village_data <- strat_design %>%
     group_by(village, !!sym(variable_name)) %>%
     summarise(
-      proportion = survey_mean(vartype = "ci", na.rm = TRUE), 
-      n = unweighted(n()))
+      proportion = survey_mean(vartype = "ci", na.rm = TRUE), total = survey_total(vartype = "ci", na.rm = TRUE), n = unweighted(n()))
   
   # Save summary table
   summary_table <- village_data %>%
@@ -327,6 +332,175 @@ for (i in seq_along(food_to_plot)) {
   ggsave(filename = plot_file_name, plot = plots_and_tables[[i]]$plot, width = 10, height = 7)}
 
 
+######################################################################################################################
+############# Governance  ############
+######################################################################################################################
+
+# List of variables to plot
+gov_to_plot <- c("hh_influence", "people_trusted", "nearby_trusted", "government_trusted", "village_membership", "meeting_attendance", "disputes_conflicts", 
+                 "more_less", "conflict_other", "parties_other", "fair_resolution", "other_influential", "leader_position", "BMU_activity") 
+
+# Define plotting function
+gov_survey_variable <- function(variable_name) {
+  strat_design <- tanganyika_clean %>% as_survey_design(strata = stype, fpc = fpc, variables = c(stype, fpc, village, !!sym(variable_name)))
+  
+  # Stratify by village and variable, calculate proportions
+  village_data <- strat_design %>%
+    group_by(village, !!sym(variable_name)) %>%
+    summarise(
+      proportion = survey_mean(vartype = "ci", na.rm = TRUE), 
+      total = survey_total(vartype = "ci", na.rm = TRUE),
+      n = unweighted(n()))
+  
+  # Save summary table
+  summary_table <- village_data %>%
+    select(village, !!sym(variable_name), n, proportion, proportion_low, proportion_upp) %>%
+    rename(Total_Household_Responses = n, Proportion = proportion, Lower_CI = proportion_low, Upper_CI = proportion_upp)
+  
+  # Save summary table as CSV
+  table_file_name <- here::here("images", paste0(variable_name, "_summary_table.csv"))
+  write.csv(summary_table, table_file_name, row.names = FALSE)
+  
+  plot <- ggplot(village_data, aes(x = village, y = proportion, group = !!sym(variable_name), fill = !!sym(variable_name))) +
+    geom_bar(stat = "identity", position = position_dodge(preserve = "single"), width = 0.95) +
+    geom_errorbar(aes(ymax = pmin(proportion_upp, 1), ymin = pmax(proportion_low, 0)),
+                  position = position_dodge(preserve = "single", width = 0.95), width = 0.1) +
+    guides(fill = guide_legend(title = NULL)) +
+    scale_fill_manual(values = c("#A9CCE3",  "#2E86C1", "#F5B7B1", "#D091BB", "#BBD4A6", "#FAD7A0", "#DFDFDF", SEA_palette)) +
+    labs(title = paste("Proportion of", variable_name, "by Village"), x = "Village", y = "Proportion of Households") +
+    scale_y_continuous(limits = c(0, 1)) +
+    theme_minimal()
+  
+  return(list(plot = plot, table = summary_table))}
+
+# Generate and save plots and tables
+plots_and_tables <- lapply(gov_to_plot, function(var) gov_survey_variable(var))
+for (i in seq_along(gov_to_plot)) {
+  plot_file_name <- here::here("images", paste0(gov_to_plot[i], ".png"))
+  ggsave(filename = plot_file_name, plot = plots_and_tables[[i]]$plot, width = 10, height = 7)}
+
+## group_name -----------------
+
+## conflict_reason ---------------
+
+conflict_reason_expanded <- tanganyika_clean %>% select(hh_code, village, conflict_reason, stype, fpc) %>%
+  separate_rows(conflict_reason, sep = "\\|") %>%
+  mutate(conflict_reason = trimws(conflict_reason)) %>% drop_na()  
+
+conflict_reason_design <- conflict_reason_expanded %>%
+  as_survey_design(strata = stype, fpc = fpc)
+
+conflict_reason_data <- conflict_reason_design %>%
+  group_by(village, conflict_reason) %>%
+  summarise(proportion = survey_mean(vartype = "ci", na.rm = TRUE), total = survey_total(vartype = "ci", na.rm = TRUE), n = unweighted(n())) %>% ungroup()
+
+ggplot(conflict_reason_data, aes(x = village, y = proportion, group = conflict_reason, fill = conflict_reason)) +
+  geom_bar(stat = "identity", position = position_dodge(preserve = "single"), width = 0.95) +
+  geom_errorbar(aes(ymax = pmin(proportion_upp, 1), ymin = pmax(proportion_low, 0)),
+                position = position_dodge(preserve = "single", width = 0.95), width = 0.1) +
+  guides(fill = guide_legend(title = NULL)) +
+  scale_fill_manual(values = c("#A9CCE3",  "#2E86C1", "#F5B7B1", "#D091BB", "#BBD4A6", "#FAD7A0", "#DFDFDF", SEA_palette)) +
+  labs(title = paste("Proportion of conflict reasons by village"), x = "Village", y = "Proportion of Households") +
+  scale_y_continuous(limits = c(0, 1)) +
+  theme_minimal()
+
+## conflict_parties ----------------
+
+conflict_parties_expanded <- tanganyika_clean %>% select(hh_code, village, conflict_parties, stype, fpc) %>%
+  separate_rows(conflict_parties, sep = "\\|") %>%
+  mutate(conflict_parties = trimws(conflict_parties)) %>% drop_na()  
+
+conflict_parties_design <- conflict_parties_expanded %>%
+  as_survey_design(strata = stype, fpc = fpc)
+
+conflict_parties_data <- conflict_parties_design %>%
+  group_by(village, conflict_parties) %>%
+  summarise(proportion = survey_mean(vartype = "ci", na.rm = TRUE), total = survey_total(vartype = "ci", na.rm = TRUE), n = unweighted(n())) %>% ungroup()
+
+ggplot(conflict_parties_data, aes(x = village, y = proportion, group = conflict_parties, fill = conflict_parties)) +
+  geom_bar(stat = "identity", position = position_dodge(preserve = "single"), width = 0.95) +
+  geom_errorbar(aes(ymax = pmin(proportion_upp, 1), ymin = pmax(proportion_low, 0)),
+                position = position_dodge(preserve = "single", width = 0.95), width = 0.1) +
+  guides(fill = guide_legend(title = NULL)) +
+  scale_fill_manual(values = c("#A9CCE3",  "#2E86C1", "#F5B7B1", "#D091BB", "#BBD4A6", "#FAD7A0", "#DFDFDF", SEA_palette)) +
+  labs(title = paste("Proportion of conflict reasons by village"), x = "Village", y = "Proportion of Households") +
+  scale_y_continuous(limits = c(0, 1)) +
+  theme_minimal()
+
+## influential_leaders ---------------
+
+influential_leaders_expanded <- tanganyika_clean %>% select(hh_code, village, influential_leaders, stype, fpc) %>%
+  separate_rows(influential_leaders, sep = "\\|") %>%
+  mutate(influential_leaders = trimws(influential_leaders)) %>% drop_na()  
+
+influential_leaders_design <- influential_leaders_expanded %>%
+  as_survey_design(strata = stype, fpc = fpc)
+
+influential_leaders_data <- influential_leaders_design %>%
+  group_by(village, influential_leaders) %>%
+  summarise(proportion = survey_mean(vartype = "ci", na.rm = TRUE), total = survey_total(vartype = "ci", na.rm = TRUE), n = unweighted(n())) %>% ungroup()
+
+ggplot(influential_leaders_data, aes(x = village, y = proportion, group = influential_leaders, fill = influential_leaders)) +
+  geom_bar(stat = "identity", position = position_dodge(preserve = "single"), width = 0.95) +
+  geom_errorbar(aes(ymax = pmin(proportion_upp, 1), ymin = pmax(proportion_low, 0)),
+                position = position_dodge(preserve = "single", width = 0.95), width = 0.1) +
+  guides(fill = guide_legend(title = NULL)) +
+  scale_fill_manual(values = c("#A9CCE3",  "#2E86C1", "#F5B7B1", "#D091BB", "#BBD4A6", "#FAD7A0", "#DFDFDF", SEA_palette)) +
+  labs(title = paste("Proportion of conflict reasons by village"), x = "Village", y = "Proportion of Households") +
+  scale_y_continuous(limits = c(0, 1)) +
+  theme_minimal()
+
+
+######################################################################################################################
+############# Governance  ############
+######################################################################################################################
+
+# List of variables to plot
+gov_to_plot <- c("hh_influence", "people_trusted", "nearby_trusted", "government_trusted", "village_membership", "meeting_attendance", "disputes_conflicts", 
+                 "more_less", "conflict_other", "parties_other", "fair_resolution", "other_influential", "leader_position", "BMU_activity") 
+
+# Define plotting function
+gov_survey_variable <- function(variable_name) {
+  strat_design <- tanganyika_clean %>% as_survey_design(strata = stype, fpc = fpc, variables = c(stype, fpc, village, !!sym(variable_name)))
+  
+  # Stratify by village and variable, calculate proportions
+  village_data <- strat_design %>%
+    group_by(village, !!sym(variable_name)) %>%
+    summarise(
+      proportion = survey_mean(vartype = "ci", na.rm = TRUE), 
+      total = survey_total(vartype = "ci", na.rm = TRUE),
+      n = unweighted(n()))
+  
+  # Save summary table  
+  summary_table <- village_data %>%
+    select(village, !!sym(variable_name), n, proportion, proportion_low, proportion_upp) %>%
+    rename(Total_Household_Responses = n, Proportion = proportion, Lower_CI = proportion_low, Upper_CI = proportion_upp)
+  
+  # Save summary table as CSV
+  table_file_name <- here::here("images", paste0(variable_name, "_summary_table.csv"))
+  write.csv(summary_table, table_file_name, row.names = FALSE)
+  
+  plot <- ggplot(village_data, aes(x = village, y = proportion, group = !!sym(variable_name), fill = !!sym(variable_name))) +
+    geom_bar(stat = "identity", position = position_dodge(preserve = "single"), width = 0.95) +
+    geom_errorbar(aes(ymax = pmin(proportion_upp, 1), ymin = pmax(proportion_low, 0)),
+                  position = position_dodge(preserve = "single", width = 0.95), width = 0.1) +
+    guides(fill = guide_legend(title = NULL)) +
+    scale_fill_manual(values = c("#A9CCE3",  "#2E86C1", "#F5B7B1", "#D091BB", "#BBD4A6", "#FAD7A0", "#DFDFDF", SEA_palette)) +
+    labs(title = paste("Proportion of", variable_name, "by Village"), x = "Village", y = "Proportion of Households") +
+    scale_y_continuous(limits = c(0, 1)) +
+    theme_minimal()
+  
+  return(list(plot = plot, table = summary_table))}
+
+# Generate and save plots and tables
+plots_and_tables <- lapply(gov_to_plot, function(var) gov_survey_variable(var))
+for (i in seq_along(gov_to_plot)) {
+  plot_file_name <- here::here("images", paste0(gov_to_plot[i], ".png"))
+  ggsave(filename = plot_file_name, plot = plots_and_tables[[i]]$plot, width = 10, height = 7)}
+
+######################################################################################################################
+############# Beach Management Units (BMU)  ############
+######################################################################################################################
 
 ### List of Figures in the Tuungane Baseline Report ###
 ### Add in the cleaned data and develop plots and tables accordingly

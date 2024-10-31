@@ -194,10 +194,13 @@ food <- food %>%
 
 ## Governance and Participation ##
 gov <- tanganyika %>% select(182:191, 201:202, 212:214, 229:231)
+gov <- gov %>% rename_with(~ c("hh_influence", "people_trusted", "nearby_trusted", "government_trusted", "village_membership", "group_name", "meeting_attendance", "disputes_conflicts", 
+                               "more_less", "conflict_reason", "conflict_other", "conflict_parties", "parties_other", "fair_resolution", "influential_leaders", "other_influential", "leader_position", "BMU_activity"))
+
 
 # List of conflict options
 conflict_options <- list("FISHING IN PROTECTED FISH BREEDING AREAS","USING ILLEGAL FISHING GEAR","CATCHING UNDERSIZED FISH","PRIVATE (FARM) LAND BOUNDARIES",
-                         "FISHING IN THE NATIONAL PARK","OTHER","I DO NOT WANT TO ANSWER","I DON'T KNOW")
+                        "CLOSURE OF THE LAKE CAUSING THE COMMUNITY TO BE UNABLE TO FISH","FISHING IN THE NATIONAL PARK","OTHER","I DO NOT WANT TO ANSWER","I DON'T KNOW")
 escaped_conflict_options <- escape_special_chars(conflict_options)
 
 # Function to separate column options
@@ -210,7 +213,7 @@ separate_options_conflicts <- function(column, escaped_options) {
 # Applying the function to the relevant conflict column(s)
 gov <- gov %>%
   mutate(across(
-    c(`60. Can you describe what these disputes or conflicts are mostly about?`),  
+    c(conflict_reason),  
     ~ separate_options_conflicts(., escaped_conflict_options)))
 
 # List of interaction options
@@ -228,7 +231,7 @@ separate_options_conflict_parties <- function(column, escaped_options) {
 # Applying the function to the relevant interaction column
 gov <- gov %>%
   mutate(across(
-    c(`61. Among whom do these disputes or conflicts mostly occur?`),  
+    c(conflict_parties),  
     ~ separate_options_conflict_parties(., escaped_conflict_parties_options)))
 
 # List of interaction options for leaders
@@ -248,7 +251,7 @@ separate_options_leaders <- function(column, escaped_options) {
 # Applying the function to the relevant interaction column for leaders
 gov <- gov %>%
   mutate(across(
-    c(`63. Who do you regard as your “influential leaders” – for instance a local leader whom you respect and who you think is good at raising awareness in your village about important communal issues?`),  
+    c(influential_leaders),  
     ~ separate_options_leaders(., escaped_leaders_options)))
 
 # BMU questions
@@ -540,10 +543,10 @@ tanganyika_clean <- tanganyika_clean %>%
       village == "KICHANGANI" ~ "Kichangani")) %>%
   mutate(
     fpc = case_when(
-      village == "ISASA" ~ 40, #Total number of households in each village (strata)
-      village == "MTAKUJA" ~ 52,
-      village == "KIPILI" ~ 55,
-      village == "KICHANGANI" ~ 47))
+      village == "ISASA" ~ 281, #Total number of households in each village (strata)
+      village == "MTAKUJA" ~ 364,
+      village == "KIPILI" ~ 383,
+      village == "KICHANGANI" ~ 325))
 
 saveRDS(tanganyika_clean, "tanganyika_clean.rds")
 
