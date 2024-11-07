@@ -335,128 +335,13 @@ fish_village <- fish_village %>% rename_with(~ c("fish_importance", "dagaa_impor
                                                  "satisfaction", "satisfaction_skills", "tools_used", "catch_gained", "market_supply", "satisfaction_purchase", "satisfaction_market", "satisfaction_income", "satisfaction_capital", "business_skills", "organization_support",
                                                  "fishing_challenges", "fishing_opportunities", "bmu_helpfulness", "group_membership", "cooperative", "cocoba_group", "other_group", "other_group_specify", "tnc_support", "other_agency_support", "name_agency", "group_helpfulness", "group_challenges", "group_improvements", "activity_long_term"))
 
-# 101. <i>MAELEKEZO KWA MCHUKUA TAARIFA: WAULIZE WAHOJIWA KUONYESHA UMUHIMU WA KILA SHUGHULI YA RIZIKI. TUMIA NAMBA 1 KWA SHUGHULI ILE MUHIMU ZAIDI.</i>
-fish_ranked <- fish_village %>% select(2:7)
-
-# Reshape the data from wide to long format
-fish_ranked_long <- fish_ranked %>%
-  pivot_longer(cols = everything(),
-               names_to = "Fish_Species",
-               values_to = "Importance_Rank")
-
-# Sample plot of the importance of each fish species
-ggplot(fish_ranked_long, aes(x = Fish_Species, y = Importance_Rank)) +
-  geom_boxplot() + 
-  labs(title = "Importance of Fish Species", 
-       x = "Fish Species", 
-       y = "Importance Ranking") +
-  theme_minimal() +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1))
-
-# 102. Over the past 5 years to now, which type of fish are you targeting - and in which seasons?
-fish_season <- fish_village %>% select(8:14)
-fish_season_long <- fish_season %>%
-  pivot_longer(cols = -1, 
-               names_to = "Fish_Species",
-               values_to = "Season") %>%
-  filter(!is.na(Season) & Season != "")  
-
-season_summary <- fish_season_long %>%
-  group_by(Fish_Species, Season) %>%
-  summarise(Count = n()) %>%
-  ungroup()
-
-# Create the plot
-ggplot(season_summary, aes(x = Fish_Species, y = Count, fill = Season)) +
-  geom_bar(stat = "identity", position = "dodge") +
-  labs(title = "Seasonal Targeting of Fish Species",
-       x = "Fish Species",
-       y = "Count of Responses",
-       fill = "Season") +
-  theme_minimal()
-
-# 109. Over the past years to now, what is the highest sale prices for these kinds of fish?
-fish_price_best <- fish_village %>% select(21:27)
-fish_price_best_long <- fish_price_best %>%
-  pivot_longer(cols = -1,  
-               names_to = "Fish_Species", 
-               values_to = "Sale_Price") %>%
-  filter(!is.na(Sale_Price) & Sale_Price != "")  
-
-# 109. Over the past years to now, what is the lowest sale prices for these kinds of fish?
-fish_price_lowest <- fish_village %>% select(28:34)
-fish_price_lowest_long <- fish_price_lowest %>%
-  pivot_longer(cols = -1,  
-               names_to = "Fish_Species", 
-               values_to = "Sale_Price") %>%
-  filter(!is.na(Sale_Price) & Sale_Price != "")  
-
-# 110. 
-satisfaction <- fish_village %>% select(35:45)
-satisfaction_long <- satisfaction %>%
-  pivot_longer(cols = -1,  # Exclude the first empty column
-               names_to = "Aspect", 
-               values_to = "Satisfaction_Level") %>%
-  filter(!is.na(Satisfaction_Level) & Satisfaction_Level != "I DO NOT WANT TO ANSWER")  # Remove empty or non-numeric responses
-
-satisfaction_long <- satisfaction_long %>%
-  mutate(Satisfaction_Level = factor(Satisfaction_Level,
-                                     levels = c("1 VERY UNSATISFIED", 
-                                                "2 UNSATISFIED", 
-                                                "3 NEUTRAL", 
-                                                "4 SATISFIED", 
-                                                "5 VERY SATISFIED"),
-                                     ordered = TRUE))
-
 # Livelihood Practices of Fish Traders
-fish_traders <- tanganyika %>% select(405:407, 408:409, 412, 413, 419, 425, 431, 437, 443, 449:462, 463:473, 476:481, 482:486, 489)
-colnames(fish_traders) <- gsub("...\\d+", "", colnames(fish_traders))
-
-# 127.
-trade_season <- fish_traders %>% select(6:12)
-trade_season_long <- trade_season %>%
-  pivot_longer(cols = -1, 
-               names_to = "Fish_Species",
-               values_to = "Season") %>%
-  filter(!is.na(Season) & Season != "")  
-
-trade_summary <- fish_season_long %>%
-  group_by(Fish_Species, Season) %>%
-  summarise(Count = n()) %>%
-  ungroup()
-
-# 128. best
-trade_price_best <- fish_traders %>% select(13:19)
-trade_price_best_long <- trade_price_best %>%
-  pivot_longer(cols = -1,  
-               names_to = "Fish_Species", 
-               values_to = "Sale_Price") %>%
-  filter(!is.na(Sale_Price) & Sale_Price != "")  
-
-# 128. lowest
-trade_price_lowest <- fish_traders %>% select(20:26)
-trade_price_lowest_long <- trade_price_lowest %>%
-  pivot_longer(cols = -1,  
-               names_to = "Fish_Species", 
-               values_to = "Sale_Price") %>%
-  filter(!is.na(Sale_Price) & Sale_Price != "")
-
-# 129. trade satisfaction
-trade_satisfaction <- fish_traders %>% select(27:37)
-trade_satisfaction_long <- trade_satisfaction %>%
-  pivot_longer(cols = -1,  # Exclude the first empty column
-               names_to = "Aspect", 
-               values_to = "Satisfaction_Level") %>%
-  filter(!is.na(Satisfaction_Level) & Satisfaction_Level != "I DO NOT WANT TO ANSWER")  # Remove empty or non-numeric responses
-
-trade_satisfaction_long <- trade_satisfaction_long %>%
-  mutate(Satisfaction_Level = factor(Satisfaction_Level,
-                                     levels = c("1 VERY UNSATISFIED", 
-                                                "2 UNSATISFIED", 
-                                                "3 NEUTRAL", 
-                                                "4 SATISFIED", 
-                                                "5 VERY SATISFIED"),
-                                     ordered = TRUE))
+fish_traders <- tanganyika %>% select(406:412, 413, 419, 425, 431, 437, 443, 449:462, 463:473, 474:481, 482:486, 489)
+fish_traders <- fish_traders %>% rename_with(~ c("trader_present", "trader_code", "trading_form", "trading_form_other", "supply_chain", "fish_sell", "trade_target_type", "dagaa_trade_season", "migebuka_trade_season", "kungura_trade_season", "ngege_trade_season", "kuhe_trade_season", "sangara_trade_season", 
+                                                 "trade_best", "dagaa_trade_best", "migebuka_trade_best", "kungura_trade_best", "ngege_trade_best", "kuhe_trade_best", "sangara_trade_best",
+                                                 "trade_worst", "dagaa_trade_worst", "migebuka_trade_worst", "kungura_trade_worst", "ngege_trade_worst", "kuhe_trade_worst", "sangara_trade_worst",
+                                                 "satisfaction_trade", "satisfaction_trade_skills", "trade_tools_used", "trade_productivity", "trade_market_supply", "satisfaction_purchase", "trade_market", "trade_income", "trade_capital", "trade_business_skills", "_trade_organization_support",
+                                                 "trading_challenges", "trading_opportunities", "business_group_membership", "cooperative_fico", "cooperative_fico_name", "cocoba_savings", "cocoba_savings_name", "other_trading_group", "other_trading_group_name", "trading_group_helpfulness", "trading_tnc_supported", "trading_other_agency", "trading_other_agency_name", "trading_long_term"))
 
 # Livelihood Practices of Fish Processors
 fish_processors <- tanganyika %>% select(492:494, 495, 505, 506, 521, 522:528, 529:542, 543:553, 556:566, 569)

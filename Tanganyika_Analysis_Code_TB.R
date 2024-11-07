@@ -11,6 +11,7 @@ library(srvyr, warn.conflicts = FALSE)
 library(sjPlot)
 library(cowplot)
 library(egg)
+library(sea)
 
 ggsave <- function(..., bg = 'white') ggplot2::ggsave(..., bg = bg)
 rm(list=ls())
@@ -667,6 +668,7 @@ ggplot(fishing_gear_data, aes(x = village, y = proportion, group = fishing_gear,
 # List of variables to plot
 fish_village_to_plot <- c("time_input", "time_comparison", "catch_comparison", "bmu_helpfulness", "group_membership", "cooperative", "cocoba_group", "other_group", "tnc_support", 
                           "dagaa_season", "migebuka_season", "kungura_season", "ngege_season", "kuhe_season", "sangara_season",
+                          "satisfaction_skills", "tools_used", "catch_gained", "market_supply", "satisfaction_purchase", "satisfaction_market", "satisfaction_income", "satisfaction_capital", "business_skills", "organization_support",
                           "other_agency_support", "name_agency", "group_helpfulness", "group_challenges", "group_improvements", "activity_long_term")
 
 # Define plotting function
@@ -850,6 +852,57 @@ fish_worst_price_results <- aggregate_fish_worst_price_plot()
 ggsave(filename = here::here("images", "aggregate_fish_worst_price.png"), 
        plot = fish_worst_price_results$plot, width = 12, height = 8)
 
+######################################################################################################################
+############# Fish Trading Practices per Village ############
+######################################################################################################################
+
+# List of variables to plot
+fish_traders_to_plot <- c("trader_present", "trader_code", "trading_form", "trading_form_other", "supply_chain", "fish_sell", "trade_target_type", "dagaa_trade_season", "migebuka_trade_season", "kungura_trade_season", "ngege_trade_season", "kuhe_trade_season", "sangara_trade_season", 
+                          "trade_best", "dagaa_trade_best", "migebuka_trade_best", "kungura_trade_best", "ngege_trade_best", "kuhe_trade_best", "sangara_trade_best",
+                          "trade_worst", "dagaa_trade_worst", "migebuka_trade_worst", "kungura_trade_worst", "ngege_trade_worst", "kuhe_trade_worst", "sangara_trade_worst",
+                          "satisfaction_trade", "satisfaction_trade_skills", "trade_tools_used", "trade_productivity", "trade_market_supply", "satisfaction_purchase", "trade_market", "trade_income", "trade_capital", "trade_business_skills", "_trade_organization_support",
+                          "trading_challenges", "trading_opportunities", "business_group_membership", "cooperative_fico", "cooperative_fico_name", "cocoba_savings", "cocoba_savings_name", "other_trading_group", "other_trading_group_name", "trading_group_helpfulness", "trading_tnc_supported", "trading_other_agency", "trading_other_agency_name", "trading_long_term")
+
+# Define plotting function
+fish_traders_survey_variable <- function(variable_name) {
+  strat_design <- tanganyika_clean %>% 
+    as_survey_design(strata = stype, fpc = fpc, variables = c(stype, fpc, village, !!sym(variable_name)))
+  
+  # Stratify by village and variable, calculate proportions
+  village_data <- strat_design %>%
+    group_by(village, !!sym(variable_name)) %>%
+    summarise(
+      proportion = survey_mean(vartype = "ci", na.rm = TRUE), 
+      total = survey_total(vartype = "ci", na.rm = TRUE),
+      n = unweighted(n())) %>%
+    filter(!is.na(!!sym(variable_name)))
+  
+  # Save summary table  
+  summary_table <- village_data %>%
+    select(village, !!sym(variable_name), n, proportion, proportion_low, proportion_upp) %>%
+    rename(Total_Household_Responses = n, Proportion = proportion, Lower_CI = proportion_low, Upper_CI = proportion_upp)
+  
+  # Save summary table as CSV
+  table_file_name <- here::here("images", paste0(variable_name, "_summary_table.csv"))
+  write.csv(summary_table, table_file_name, row.names = FALSE)
+  
+  plot <- ggplot(village_data, aes(x = village, y = proportion, group = !!sym(variable_name), fill = !!sym(variable_name))) +
+    geom_bar(stat = "identity", position = position_dodge(preserve = "single"), width = 0.95) +
+    geom_errorbar(aes(ymax = pmin(proportion_upp, 1), ymin = pmax(proportion_low, 0)),
+                  position = position_dodge(preserve = "single", width = 0.95), width = 0.1) +
+    guides(fill = guide_legend(title = NULL)) +
+    scale_fill_manual(values = c("#A9CCE3",  "#2E86C1", "#F5B7B1", "#D091BB", "#BBD4A6", "#FAD7A0", "#DFDFDF", SEA_palette)) +
+    labs(title = paste("Proportion of", variable_name, "by Village"), x = "Village", y = "Proportion of Households") +
+    scale_y_continuous(limits = c(0, 1)) +
+    theme_minimal()
+  
+  return(list(plot = plot, table = summary_table))}
+
+# Generate and save plots and tables
+plots_and_tables <- lapply(fish_traders_to_plot, function(var) fish_traders_survey_variable(var))
+for (i in seq_along(fish_traders_to_plot)) {
+  plot_file_name <- here::here("images", paste0(fish_traders_to_plot[i], ".png"))
+  ggsave(filename = plot_file_name, plot = plots_and_tables[[i]]$plot, width = 10, height = 7)}
 
 ### List of Figures in the Tuungane Baseline Report ###
 ### Add in the cleaned data and develop plots and tables accordingly
