@@ -256,7 +256,11 @@ gov <- gov %>%
 
 # BMU questions
 BMU <- tanganyika %>% select(232:256, 265:270)
-colnames(BMU) <- gsub("...\\d+", "", colnames(BMU))
+BMU <- BMU %>% rename_with(~ c("awareness_bmu", "bmu_member","tnc_support_bmu", "agency_support", "agency_other", "bmu_women", "bmu_youth", "bmu_activity", "meetings", "patrolling", 
+                               "illegal_fishing", "illegal_gears", "raise_awareness", "collect_fees", "engage_activities", "forms_revenue", "forms_other", "collect_data", "other_activity",
+                               "other_specify_bmu", "good_leaders", "leaders_elected", "trust_collaboration", "conflcit_interest", "conflict_resolution", "resolution_other", "bmu_bylaws", 
+                               "bylaws_followed", "bmu_practice", "bmu_challenges", "bmu_improved"))
+
 
 # List of resolution options
 resolution_options <- list("GO TO THE VILLAGE GOVERNMENT","NEGOTIATE WITH EACH OTHER","DO NOTHING",
@@ -273,11 +277,15 @@ separate_options_resolutions <- function(column, escaped_options) {
 # Applying the function to the relevant resolution column(s)
 BMU <- BMU %>%
   mutate(across(
-    c(`78. If there is a dispute or conflict between BMUs and fishers, how do people in your village try to solve it?`),  
+    c(conflict_resolution),  
     ~ separate_options_resolutions(., escaped_resolution_options)))
 
 ## Fishing Section ##
 fishing <- tanganyika %>% select(272:289, 298, 312)
+fishing <- fishing %>% rename_with(~ c("fisher_present", "fisher_code", "fisheries_resources", "rights_access", "security_rights", "relationship_officer", "current_problems", 
+                                       "decision_making", "participation_description", "satisfaction_involvement", "awareness_reserves", "purpose_reserves", "opinion_reserves", 
+                                       "opinion_reason", "sustainability_population", "sufficiency_fish", "sufficiency_reasons", "boat_type", "fishing_gear", "gear_other"))
+
 
 # List of boat options
 boat_options <- list("DON’T FISH FROM BOAT","CANOE WITHOUT MOTOR","LARGE BOAT WITHOUT ENGINE","LARGE BOAT WITH ENGINE",
@@ -296,7 +304,7 @@ separate_options_boats <- function(column, escaped_options) {
 # Applying the function to the relevant boat column(s)
 fishing <- fishing %>%
   mutate(across(
-    c(`99. Thinking about fishing, which boat type do you currently use, if any?`),  
+    c(boat_type),  
     ~ separate_options_boats(., escaped_boat_options)))
 
 # List of fishing gear options
@@ -316,11 +324,16 @@ separate_options_fishing_gear <- function(column, escaped_options) {
 # Applying the function to the relevant fishing gear column(s)
 fishing <- fishing %>%
   mutate(across(
-    c(`100. Which types of fishing gear do you currently use:`),  
+    c(fishing_gear),  
     ~ separate_options_fishing_gear(., escaped_fishing_gear_options)))
 
 # Livelihood Practices of Fishers per Village (Excluding short response)
-fish_village <- tanganyika %>% select(313:320, 320, 327, 333, 339, 345, 351, 357, 358, 361, 363:376, 377:387, 390:400, 402)
+fish_village <- tanganyika %>% select(313:320, 321, 327, 333, 339, 345, 351, 357:362, 363:376, 377:387, 388, 389, 390:400, 401, 402)
+fish_village <- fish_village %>% rename_with(~ c("fish_importance", "dagaa_importance", "migebuka_importance", "kungura_importance", "ngege_importance", "kuhe_importance", "sangara_importance", "target_type", "dagaa_season", "migebuka_season", "kungura_season", "ngege_season", "kuhe_season", "sangara_season", "time_input", "time_comparison", "time_reason", "selling_destination", "catch_comparison", "catch_reason",
+                                                 "sale_price_best", "dagaa_best", "migebuka_best", "kungura_best", "ngege_best", "kuhe_best", "sangara_best",
+                                                 "sale_price_worst", "dagaa_worst", "migembuka_worst", "kungura_worst", "ngege_worst", "kuhe_worst", "sangara_worst",
+                                                 "satisfaction", "satisfaction_skills", "tools_used", "catch_gained", "market_supply", "satisfaction_purchase", "satisfaction_market", "satisfaction_income", "satisfaction_capital", "business_skills", "organization_support",
+                                                 "fishing_challenges", "fishing_opportunities", "bmu_helpfulness", "group_membership", "cooperative", "cocoba_group", "other_group", "other_group_specify", "tnc_support", "other_agency_support", "name_agency", "group_helpfulness", "group_challenges", "group_improvements", "activity_long_term"))
 
 # 101. <i>MAELEKEZO KWA MCHUKUA TAARIFA: WAULIZE WAHOJIWA KUONYESHA UMUHIMU WA KILA SHUGHULI YA RIZIKI. TUMIA NAMBA 1 KWA SHUGHULI ILE MUHIMU ZAIDI.</i>
 fish_ranked <- fish_village %>% select(2:7)
@@ -341,7 +354,7 @@ ggplot(fish_ranked_long, aes(x = Fish_Species, y = Importance_Rank)) +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 
 # 102. Over the past 5 years to now, which type of fish are you targeting - and in which seasons?
-fish_season <- fish_village %>% select(8:13)
+fish_season <- fish_village %>% select(8:14)
 fish_season_long <- fish_season %>%
   pivot_longer(cols = -1, 
                names_to = "Fish_Species",
@@ -363,7 +376,7 @@ ggplot(season_summary, aes(x = Fish_Species, y = Count, fill = Season)) +
   theme_minimal()
 
 # 109. Over the past years to now, what is the highest sale prices for these kinds of fish?
-fish_price_best <- fish_village %>% select(17:23)
+fish_price_best <- fish_village %>% select(21:27)
 fish_price_best_long <- fish_price_best %>%
   pivot_longer(cols = -1,  
                names_to = "Fish_Species", 
@@ -371,7 +384,7 @@ fish_price_best_long <- fish_price_best %>%
   filter(!is.na(Sale_Price) & Sale_Price != "")  
 
 # 109. Over the past years to now, what is the lowest sale prices for these kinds of fish?
-fish_price_lowest <- fish_village %>% select(24:30)
+fish_price_lowest <- fish_village %>% select(28:34)
 fish_price_lowest_long <- fish_price_lowest %>%
   pivot_longer(cols = -1,  
                names_to = "Fish_Species", 
@@ -379,7 +392,7 @@ fish_price_lowest_long <- fish_price_lowest %>%
   filter(!is.na(Sale_Price) & Sale_Price != "")  
 
 # 110. 
-satisfaction <- fish_village %>% select(31:41)
+satisfaction <- fish_village %>% select(35:45)
 satisfaction_long <- satisfaction %>%
   pivot_longer(cols = -1,  # Exclude the first empty column
                names_to = "Aspect", 

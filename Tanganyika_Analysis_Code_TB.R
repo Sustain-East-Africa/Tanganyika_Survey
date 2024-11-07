@@ -216,7 +216,7 @@ ggplot(household_assets_data, aes(x = village, y = proportion, group = household
 ######################################################################################################################
 
 # List of variables to plot
-livelihood_credit_to_plot <- c("household_ability", "borrow_status", "loan_usage", "other_loan_usage", "borrowing_source", 
+livelihood_credit_to_plot <- c("household_ability", "borrow_status", "other_loan_usage", 
                                "other_borrowing_source", "not_borrowed", "not_borrowed_other", "cocoba_saccos", "mobile_money") 
 
 # Define plotting and summary table function
@@ -253,7 +253,7 @@ livelihood_credit_survey_variable <- function(variable_name) {
   return(list(plot = plot, table = summary_table))}
 
 # Generate and save plots and tables
-plots_and_tables <- lapply(hh_info_to_plot, function(var) livelihood_credit_survey_variable(var))
+plots_and_tables <- lapply(livelihood_credit_to_plot, function(var) livelihood_credit_survey_variable(var))
 
 # Save plots
 for (i in seq_along(livelihood_credit_to_plot)) {
@@ -285,6 +285,51 @@ ggplot(livelihood_activities_data, aes(x = village, y = proportion, group = live
 
 ## livelihood ranking ---------------
 
+## loan_usage --------------
+
+loan_usage_expanded <- tanganyika_clean %>% select(hh_code, village, loan_usage, stype, fpc) %>%
+  separate_rows(loan_usage, sep = "\\|") %>%
+  mutate(loan_usage = trimws(loan_usage)) %>% drop_na()  
+
+loan_usage_design <- loan_usage_expanded %>%
+  as_survey_design(strata = stype, fpc = fpc)
+
+loan_usage_data <- loan_usage_design %>%
+  group_by(village, loan_usage) %>%
+  summarise(proportion = survey_mean(vartype = "ci", na.rm = TRUE), total = survey_total(vartype = "ci", na.rm = TRUE), n = unweighted(n())) %>% ungroup()
+
+ggplot(loan_usage_data, aes(x = village, y = proportion, group = loan_usage, fill = loan_usage)) +
+  geom_bar(stat = "identity", position = position_dodge(preserve = "single"), width = 0.95) +
+  geom_errorbar(aes(ymax = pmin(proportion_upp, 1), ymin = pmax(proportion_low, 0)),
+                position = position_dodge(preserve = "single", width = 0.95), width = 0.1) +
+  guides(fill = guide_legend(title = NULL)) +
+  scale_fill_manual(values = c("#A9CCE3",  "#2E86C1", "#F5B7B1", "#D091BB", "#BBD4A6", "#FAD7A0", "#DFDFDF", SEA_palette)) +
+  labs(title = paste("Proportion of loan usage by village"), x = "Village", y = "Proportion of Households") +
+  scale_y_continuous(limits = c(0, 1)) +
+  theme_minimal()
+
+## borrowing_source ---------------
+
+borrowing_source_expanded <- tanganyika_clean %>% select(hh_code, village, borrowing_source, stype, fpc) %>%
+  separate_rows(borrowing_source, sep = "\\|") %>%
+  mutate(borrowing_source = trimws(borrowing_source)) %>% drop_na()  
+
+borrowing_source_design <- borrowing_source_expanded %>%
+  as_survey_design(strata = stype, fpc = fpc)
+
+borrowing_source_data <- borrowing_source_design %>%
+  group_by(village, borrowing_source) %>%
+  summarise(proportion = survey_mean(vartype = "ci", na.rm = TRUE), total = survey_total(vartype = "ci", na.rm = TRUE), n = unweighted(n())) %>% ungroup()
+
+ggplot(borrowing_source_data, aes(x = village, y = proportion, group = borrowing_source, fill = borrowing_source)) +
+  geom_bar(stat = "identity", position = position_dodge(preserve = "single"), width = 0.95) +
+  geom_errorbar(aes(ymax = pmin(proportion_upp, 1), ymin = pmax(proportion_low, 0)),
+                position = position_dodge(preserve = "single", width = 0.95), width = 0.1) +
+  guides(fill = guide_legend(title = NULL)) +
+  scale_fill_manual(values = c("#A9CCE3",  "#2E86C1", "#F5B7B1", "#D091BB", "#BBD4A6", "#FAD7A0", "#DFDFDF", SEA_palette)) +
+  labs(title = paste("Proportion of borrowing sources by village"), x = "Village", y = "Proportion of Households") +
+  scale_y_continuous(limits = c(0, 1)) +
+  theme_minimal()
 
 ######################################################################################################################
 ############# Consumption and Food Security  ############
@@ -450,17 +495,16 @@ ggplot(influential_leaders_data, aes(x = village, y = proportion, group = influe
   scale_y_continuous(limits = c(0, 1)) +
   theme_minimal()
 
-
 ######################################################################################################################
-############# Governance  ############
+############# Beach Management Units (BMU)  ############
 ######################################################################################################################
 
 # List of variables to plot
-gov_to_plot <- c("hh_influence", "people_trusted", "nearby_trusted", "government_trusted", "village_membership", "meeting_attendance", "disputes_conflicts", 
-                 "more_less", "conflict_other", "parties_other", "fair_resolution", "other_influential", "leader_position", "BMU_activity") 
+BMU_to_plot <- c("awareness_bmu", "bmu_member","tnc_support_bmu", "agency_support", "agency_other", "bmu_women", "bmu_youth", 
+                  "good_leaders", "leaders_elected", "trust_collaboration", "conflcit_interest", "bmu_bylaws", "bylaws_followed", "bmu_practice")
 
 # Define plotting function
-gov_survey_variable <- function(variable_name) {
+BMU_survey_variable <- function(variable_name) {
   strat_design <- tanganyika_clean %>% as_survey_design(strata = stype, fpc = fpc, variables = c(stype, fpc, village, !!sym(variable_name)))
   
   # Stratify by village and variable, calculate proportions
@@ -469,7 +513,8 @@ gov_survey_variable <- function(variable_name) {
     summarise(
       proportion = survey_mean(vartype = "ci", na.rm = TRUE), 
       total = survey_total(vartype = "ci", na.rm = TRUE),
-      n = unweighted(n()))
+      n = unweighted(n())) %>%
+    filter(!is.na(!!sym(variable_name)))
   
   # Save summary table  
   summary_table <- village_data %>%
@@ -493,14 +538,318 @@ gov_survey_variable <- function(variable_name) {
   return(list(plot = plot, table = summary_table))}
 
 # Generate and save plots and tables
-plots_and_tables <- lapply(gov_to_plot, function(var) gov_survey_variable(var))
-for (i in seq_along(gov_to_plot)) {
-  plot_file_name <- here::here("images", paste0(gov_to_plot[i], ".png"))
+plots_and_tables <- lapply(BMU_to_plot, function(var) BMU_survey_variable(var))
+for (i in seq_along(BMU_to_plot)) {
+  plot_file_name <- here::here("images", paste0(BMU_to_plot[i], ".png"))
   ggsave(filename = plot_file_name, plot = plots_and_tables[[i]]$plot, width = 10, height = 7)}
 
+## bmu_activity --------------
+
+## conflict_resolution ------------
+conflict_resolution_expanded <- tanganyika_clean %>% select(hh_code, village, conflict_resolution, stype, fpc) %>%
+  separate_rows(conflict_resolution, sep = "\\|") %>%
+  mutate(conflict_resolution = trimws(conflict_resolution)) %>% drop_na()  
+
+conflict_resolution_design <- conflict_resolution_expanded %>%
+  as_survey_design(strata = stype, fpc = fpc)
+
+conflict_resolution_data <- conflict_resolution_design %>%
+  group_by(village, conflict_resolution) %>%
+  summarise(proportion = survey_mean(vartype = "ci", na.rm = TRUE), total = survey_total(vartype = "ci", na.rm = TRUE), n = unweighted(n())) %>% ungroup()
+
+ggplot(conflict_resolution_data, aes(x = village, y = proportion, group = conflict_resolution, fill = conflict_resolution)) +
+  geom_bar(stat = "identity", position = position_dodge(preserve = "single"), width = 0.95) +
+  geom_errorbar(aes(ymax = pmin(proportion_upp, 1), ymin = pmax(proportion_low, 0)),
+                position = position_dodge(preserve = "single", width = 0.95), width = 0.1) +
+  guides(fill = guide_legend(title = NULL)) +
+  scale_fill_manual(values = c("#A9CCE3",  "#2E86C1", "#F5B7B1", "#D091BB", "#BBD4A6", "#FAD7A0", "#DFDFDF", SEA_palette)) +
+  labs(title = paste("Proportion of conflict resolutions by village"), x = "Village", y = "Proportion of Households") +
+  scale_y_continuous(limits = c(0, 1)) +
+  theme_minimal()
+
 ######################################################################################################################
-############# Beach Management Units (BMU)  ############
+############# Fishing  ############
 ######################################################################################################################
+
+# List of variables to plot
+fishing_to_plot <- c("fisheries_resources", "rights_access", "security_rights", "relationship_officer", "decision_making", 
+                     "satisfaction_involvement", "awareness_reserves", "purpose_reserves", "sustainability_population", "sufficiency_fish")
+
+# Define plotting function
+fishing_survey_variable <- function(variable_name) {
+  strat_design <- tanganyika_clean %>% as_survey_design(strata = stype, fpc = fpc, variables = c(stype, fpc, village, !!sym(variable_name)))
+  
+  # Stratify by village and variable, calculate proportions
+  village_data <- strat_design %>%
+    group_by(village, !!sym(variable_name)) %>%
+    summarise(
+      proportion = survey_mean(vartype = "ci", na.rm = TRUE), 
+      total = survey_total(vartype = "ci", na.rm = TRUE),
+      n = unweighted(n())) %>%
+    filter(!is.na(!!sym(variable_name)))
+  
+  # Save summary table  
+  summary_table <- village_data %>%
+    select(village, !!sym(variable_name), n, proportion, proportion_low, proportion_upp) %>%
+    rename(Total_Household_Responses = n, Proportion = proportion, Lower_CI = proportion_low, Upper_CI = proportion_upp)
+  
+  # Save summary table as CSV
+  table_file_name <- here::here("images", paste0(variable_name, "_summary_table.csv"))
+  write.csv(summary_table, table_file_name, row.names = FALSE)
+  
+  plot <- ggplot(village_data, aes(x = village, y = proportion, group = !!sym(variable_name), fill = !!sym(variable_name))) +
+    geom_bar(stat = "identity", position = position_dodge(preserve = "single"), width = 0.95) +
+    geom_errorbar(aes(ymax = pmin(proportion_upp, 1), ymin = pmax(proportion_low, 0)),
+                  position = position_dodge(preserve = "single", width = 0.95), width = 0.1) +
+    guides(fill = guide_legend(title = NULL)) +
+    scale_fill_manual(values = c("#A9CCE3",  "#2E86C1", "#F5B7B1", "#D091BB", "#BBD4A6", "#FAD7A0", "#DFDFDF", SEA_palette)) +
+    labs(title = paste("Proportion of", variable_name, "by Village"), x = "Village", y = "Proportion of Households") +
+    scale_y_continuous(limits = c(0, 1)) +
+    theme_minimal()
+  
+  return(list(plot = plot, table = summary_table))}
+
+# Generate and save plots and tables
+plots_and_tables <- lapply(fishing_to_plot, function(var) fishing_survey_variable(var))
+for (i in seq_along(fishing_to_plot)) {
+  plot_file_name <- here::here("images", paste0(fishing_to_plot[i], ".png"))
+  ggsave(filename = plot_file_name, plot = plots_and_tables[[i]]$plot, width = 10, height = 7)}
+
+## boat_type --------------
+boat_type_expanded <- tanganyika_clean %>% select(hh_code, village, boat_type, stype, fpc) %>%
+  separate_rows(boat_type, sep = "\\|") %>%
+  mutate(boat_type = trimws(boat_type)) %>% drop_na()  
+
+boat_type_design <- boat_type_expanded %>%
+  as_survey_design(strata = stype, fpc = fpc)
+
+boat_type_data <- boat_type_design %>%
+  group_by(village, boat_type) %>%
+  summarise(proportion = survey_mean(vartype = "ci", na.rm = TRUE), total = survey_total(vartype = "ci", na.rm = TRUE), n = unweighted(n())) %>% ungroup()
+
+ggplot(boat_type_data, aes(x = village, y = proportion, group = boat_type, fill = boat_type)) +
+  geom_bar(stat = "identity", position = position_dodge(preserve = "single"), width = 0.95) +
+  geom_errorbar(aes(ymax = pmin(proportion_upp, 1), ymin = pmax(proportion_low, 0)),
+                position = position_dodge(preserve = "single", width = 0.95), width = 0.1) +
+  guides(fill = guide_legend(title = NULL)) +
+  scale_fill_manual(values = c("#A9CCE3",  "#2E86C1", "#F5B7B1", "#D091BB", "#BBD4A6", "#FAD7A0", "#DFDFDF", SEA_palette)) +
+  labs(title = paste("Proportion of boat types used for fishing by village"), x = "Village", y = "Proportion of Households") +
+  scale_y_continuous(limits = c(0, 1)) +
+  theme_minimal()
+
+## fishing_gear ---------------
+
+fishing_gear_expanded <- tanganyika_clean %>% select(hh_code, village, fishing_gear, stype, fpc) %>%
+  separate_rows(fishing_gear, sep = "\\|") %>%
+  mutate(fishing_gear = trimws(fishing_gear)) %>% drop_na()  
+
+fishing_gear_design <- fishing_gear_expanded %>%
+  as_survey_design(strata = stype, fpc = fpc)
+
+fishing_gear_data <- fishing_gear_design %>%
+  group_by(village, fishing_gear) %>%
+  summarise(proportion = survey_mean(vartype = "ci", na.rm = TRUE), total = survey_total(vartype = "ci", na.rm = TRUE), n = unweighted(n())) %>% ungroup()
+
+ggplot(fishing_gear_data, aes(x = village, y = proportion, group = fishing_gear, fill = fishing_gear)) +
+  geom_bar(stat = "identity", position = position_dodge(preserve = "single"), width = 0.95) +
+  geom_errorbar(aes(ymax = pmin(proportion_upp, 1), ymin = pmax(proportion_low, 0)),
+                position = position_dodge(preserve = "single", width = 0.95), width = 0.1) +
+  guides(fill = guide_legend(title = NULL)) +
+  scale_fill_manual(values = c("#A9CCE3",  "#2E86C1", "#F5B7B1", "#D091BB", "#BBD4A6", "#FAD7A0", "#DFDFDF", SEA_palette)) +
+  labs(title = paste("Proportion of fishing gear used by village"), x = "Village", y = "Proportion of Households") +
+  scale_y_continuous(limits = c(0, 1)) +
+  theme_minimal()
+
+######################################################################################################################
+############# Fishing Practices per Village ############
+######################################################################################################################
+
+# List of variables to plot
+fish_village_to_plot <- c("time_input", "time_comparison", "catch_comparison", "bmu_helpfulness", "group_membership", "cooperative", "cocoba_group", "other_group", "tnc_support", 
+                          "dagaa_season", "migebuka_season", "kungura_season", "ngege_season", "kuhe_season", "sangara_season",
+                          "other_agency_support", "name_agency", "group_helpfulness", "group_challenges", "group_improvements", "activity_long_term")
+
+# Define plotting function
+fish_village_survey_variable <- function(variable_name) {
+  strat_design <- tanganyika_clean %>% 
+    as_survey_design(strata = stype, fpc = fpc, variables = c(stype, fpc, village, !!sym(variable_name)))
+  
+  # Stratify by village and variable, calculate proportions
+  village_data <- strat_design %>%
+    group_by(village, !!sym(variable_name)) %>%
+    summarise(
+      proportion = survey_mean(vartype = "ci", na.rm = TRUE), 
+      total = survey_total(vartype = "ci", na.rm = TRUE),
+      n = unweighted(n())) %>%
+    filter(!is.na(!!sym(variable_name)))
+  
+  # Save summary table  
+  summary_table <- village_data %>%
+    select(village, !!sym(variable_name), n, proportion, proportion_low, proportion_upp) %>%
+    rename(Total_Household_Responses = n, Proportion = proportion, Lower_CI = proportion_low, Upper_CI = proportion_upp)
+  
+  # Save summary table as CSV
+  table_file_name <- here::here("images", paste0(variable_name, "_summary_table.csv"))
+  write.csv(summary_table, table_file_name, row.names = FALSE)
+  
+  plot <- ggplot(village_data, aes(x = village, y = proportion, group = !!sym(variable_name), fill = !!sym(variable_name))) +
+    geom_bar(stat = "identity", position = position_dodge(preserve = "single"), width = 0.95) +
+    geom_errorbar(aes(ymax = pmin(proportion_upp, 1), ymin = pmax(proportion_low, 0)),
+                  position = position_dodge(preserve = "single", width = 0.95), width = 0.1) +
+    guides(fill = guide_legend(title = NULL)) +
+    scale_fill_manual(values = c("#A9CCE3",  "#2E86C1", "#F5B7B1", "#D091BB", "#BBD4A6", "#FAD7A0", "#DFDFDF", SEA_palette)) +
+    labs(title = paste("Proportion of", variable_name, "by Village"), x = "Village", y = "Proportion of Households") +
+    scale_y_continuous(limits = c(0, 1)) +
+    theme_minimal()
+  
+  return(list(plot = plot, table = summary_table))}
+
+# Generate and save plots and tables
+plots_and_tables <- lapply(fish_village_to_plot, function(var) fish_village_survey_variable(var))
+for (i in seq_along(fish_village_to_plot)) {
+  plot_file_name <- here::here("images", paste0(fish_village_to_plot[i], ".png"))
+  ggsave(filename = plot_file_name, plot = plots_and_tables[[i]]$plot, width = 10, height = 7)}
+
+## fish_importance -----------
+
+fish_importance_vars <- c("dagaa_importance", "migebuka_importance", "kungura_importance", "ngege_importance", "kuhe_importance", "sangara_importance")
+
+fish_importance_long <- tanganyika_clean %>%
+  pivot_longer(cols = all_of(fish_importance_vars), names_to = "Fish_Species", values_to = "Importance") %>%
+  mutate(Fish_Species = str_replace(Fish_Species, "_importance", "") %>% str_to_title())
+
+strat_design <- fish_importance_long %>%
+  as_survey_design(strata = stype, fpc = fpc, variables = c(stype, fpc, village, Fish_Species, Importance))
+
+# Summarize and plot function
+aggregate_fish_importance_plot <- function() {
+  # Calculate mean importance scores stratified by village and fish species
+  village_data <- strat_design %>%
+    group_by(village, Fish_Species) %>%
+    summarise(
+      mean_importance = survey_mean(Importance, vartype = "ci", na.rm = TRUE),
+      n = unweighted(n()))
+  
+  # Create a summary table
+  summary_table <- village_data %>%
+    select(village, Fish_Species, n, mean_importance, mean_importance_low, mean_importance_upp) %>%
+    rename(
+      Total_Household_Responses = n,
+      Mean_Importance = mean_importance,
+      Lower_CI = mean_importance_low,
+      Upper_CI = mean_importance_upp)
+  
+  # Save summary table as CSV
+  table_file_name <- here::here("images", "fish_species_importance_summary_table.csv")
+  write.csv(summary_table, table_file_name, row.names = FALSE)
+  
+  # Create the combined plot for all fish species
+  plot <- ggplot(village_data, aes(x = village, y = mean_importance, fill = Fish_Species)) +
+    geom_bar(stat = "identity", position = position_dodge(), width = 0.8) +
+    geom_errorbar(aes(ymin = mean_importance_low, ymax = mean_importance_upp),
+                  position = position_dodge(width = 0.8), width = 0.2) +
+    labs(title = "Average Importance of Fish Species by Village", x = "Village", y = "Mean Importance Score", fill = "Fish Species") + 
+    scale_y_continuous(limits = c(0, 6)) +
+    theme_minimal() + scale_fill_manual(values = c("#A9CCE3", "#2E86C1", "#F5B7B1", "#D091BB", "#BBD4A6", "#FAD7A0"))  # Customize colors
+  
+  return(list(plot = plot, table = summary_table))}
+
+# Generate and save the plot and summary table
+fish_importance_results <- aggregate_fish_importance_plot()
+ggsave(filename = here::here("images", "aggregate_fish_importance.png"), 
+       plot = fish_importance_results$plot, width = 12, height = 8)
+
+## sale_price_best -----------
+
+best_price_vars <- c("dagaa_best", "migebuka_best", "kungura_best", "ngege_best", "kuhe_best", "sangara_best")
+
+tanganyika_long_best <- tanganyika_clean %>%
+  pivot_longer(cols = all_of(best_price_vars), names_to = "Fish_Species", values_to = "Best_Price") %>%
+  mutate(Fish_Species = str_replace(Fish_Species, "_best", "") %>% str_to_title())
+
+strat_design_best <- tanganyika_long_best %>%
+  as_survey_design(strata = stype, fpc = fpc, variables = c(stype, fpc, village, Fish_Species, Best_Price))
+
+aggregate_fish_best_price_plot <- function() {
+  # Calculate mean best prices stratified by village and fish species
+  village_data_best <- strat_design_best %>%
+    group_by(village, Fish_Species) %>%
+    summarise(
+      mean_best_price = survey_mean(Best_Price, vartype = "ci", na.rm = TRUE),
+      n = unweighted(n()))
+
+  summary_table_best <- village_data_best %>%
+    select(village, Fish_Species, n, mean_best_price, mean_best_price_low, mean_best_price_upp) %>%
+    rename(
+      Total_Household_Responses = n,
+      Mean_Best_Price = mean_best_price,
+      Lower_CI = mean_best_price_low,
+      Upper_CI = mean_best_price_upp)
+  
+  # Save summary table as CSV
+  table_file_name_best <- here::here("images", "fish_species_best_price_summary_table.csv")
+  write.csv(summary_table_best, table_file_name_best, row.names = FALSE)
+  
+  # Create the combined plot for all fish species' best sale prices
+  plot <- ggplot(village_data_best, aes(x = village, y = mean_best_price, fill = Fish_Species)) +
+    geom_bar(stat = "identity", position = position_dodge(), width = 0.8) +
+    geom_errorbar(aes(ymin = mean_best_price_low, ymax = mean_best_price_upp),
+                  position = position_dodge(width = 0.8), width = 0.2) +
+    labs(title = "Average Best Sale Price of Fish Species by Village", x = "Village", y = "Mean Best Price", fill = "Fish Species") +
+    theme_minimal() +
+    scale_fill_manual(values = c("#A9CCE3", "#2E86C1", "#F5B7B1", "#D091BB", "#BBD4A6", "#FAD7A0"))  
+  return(list(plot = plot, table = summary_table_best))}
+
+# Generate and save the plot and summary table
+fish_best_price_results <- aggregate_fish_best_price_plot()
+ggsave(filename = here::here("images", "aggregate_fish_best_price.png"), 
+       plot = fish_best_price_results$plot, width = 12, height = 8)
+
+
+## sale_price_worst -----------
+
+worst_price_vars <- c("dagaa_worst", "migembuka_worst", "kungura_worst", "ngege_worst", "kuhe_worst", "sangara_worst")
+
+tanganyika_long_worst <- tanganyika_clean %>%
+  pivot_longer(cols = all_of(worst_price_vars), names_to = "Fish_Species", values_to = "Worst_Price") %>%
+  mutate(Fish_Species = str_replace(Fish_Species, "_worst", "") %>% str_to_title())
+
+strat_design_worst <- tanganyika_long_worst %>%
+  as_survey_design(strata = stype, fpc = fpc, variables = c(stype, fpc, village, Fish_Species, Worst_Price))
+
+# Summarize and plot function for worst sale prices
+aggregate_fish_worst_price_plot <- function() {
+  # Calculate mean worst prices stratified by village and fish species
+  village_data_worst <- strat_design_worst %>%
+    group_by(village, Fish_Species) %>%
+    summarise(
+      mean_worst_price = survey_mean(Worst_Price, vartype = "ci", na.rm = TRUE),
+      n = unweighted(n()))
+
+  summary_table_worst <- village_data_worst %>%
+    select(village, Fish_Species, n, mean_worst_price, mean_worst_price_low, mean_worst_price_upp) %>%
+    rename(
+      Total_Household_Responses = n,
+      Mean_Worst_Price = mean_worst_price,
+      Lower_CI = mean_worst_price_low,
+      Upper_CI = mean_worst_price_upp)
+
+  table_file_name_worst <- here::here("images", "fish_species_worst_price_summary_table.csv")
+  write.csv(summary_table_worst, table_file_name_worst, row.names = FALSE)
+
+  plot <- ggplot(village_data_worst, aes(x = village, y = mean_worst_price, fill = Fish_Species)) +
+    geom_bar(stat = "identity", position = position_dodge(), width = 0.8) +
+    geom_errorbar(aes(ymin = mean_worst_price_low, ymax = mean_worst_price_upp),
+                  position = position_dodge(width = 0.8), width = 0.2) +
+    labs(title = "Average Worst Sale Price of Fish Species by Village", x = "Village", y = "Mean Worst Price", fill = "Fish Species") + 
+    theme_minimal() + scale_fill_manual(values = c("#A9CCE3", "#2E86C1", "#F5B7B1", "#D091BB", "#BBD4A6", "#FAD7A0")) 
+  return(list(plot = plot, table = summary_table_worst))}
+
+# Generate and save the plot and summary table
+fish_worst_price_results <- aggregate_fish_worst_price_plot()
+ggsave(filename = here::here("images", "aggregate_fish_worst_price.png"), 
+       plot = fish_worst_price_results$plot, width = 12, height = 8)
+
 
 ### List of Figures in the Tuungane Baseline Report ###
 ### Add in the cleaned data and develop plots and tables accordingly
