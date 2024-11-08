@@ -16,22 +16,25 @@ rm(list=ls())
 
 ### Preparing the data frame ###
 
-# Read excel file (shift to google spreadsheet API?)
-tanganyika <- read_excel("tanganyika_survey_report/TNC_Tanganyika_-_Main_Questionnaire_-_all_versions_-_English_-_2024-10-15-05-07-33.xlsx", sheet = "TNC Tanganyika - Main Questi...")
+# Read excel file
+tanganyika <- read_excel("tanganyika_survey_report/Tanganyika_Responses.xlsx", sheet = "TNC Tanganyika - Main Questionn")
 
 tanganyika <- tanganyika %>%
-  mutate(`START TIME` = ymd_hms(`START TIME`),`End Time` = ymd_hms(`End Time`),
-         date = as.Date(`START TIME`),
-         start_time = format(`START TIME`, "%H:%M:%S"),
-         end_time = format(`End Time`, "%H:%M:%S")) %>%
+  mutate(`START TIME` = as.Date(`START TIME`),
+         `End Time` = as.Date(`End Time`),
+         date = `START TIME`,
+         start_time = as.character(date),
+         end_time = as.character(date)) %>%
   select(date, start_time, end_time, everything()) %>%
   select(-`START TIME`, 
          -`End Time`, 
          -`ENUMERATOR TO READ OUT THE INTRODUCTION SHEET`, 
          -`There are no right or wrong answers to questions; we are just interested in getting the true information about your household and your views. If you do not wish to proceed, please tell us why you have refused.`) %>%
-  filter(tanganyika$`FPIC STATEMENT (AGREED OR REFUSED)
+  # Filter for agreed responses
+  filter(`FPIC STATEMENT (AGREED OR REFUSED)
+ 
+ May we proceed with the interview?` == "AGREED")
 
-May we proceed with the interview?` == "AGREED")
 
 # Cleaning column headers
 #colnames(tanganyika) <- gsub("...\\d+", "", colnames(tanganyika))
@@ -340,92 +343,12 @@ fish_traders <- tanganyika %>% select(406:412, 413, 419, 425, 431, 437, 443, 449
 fish_traders <- fish_traders %>% rename_with(~ c("trader_present", "trader_code", "trading_form", "trading_form_other", "supply_chain", "fish_sell", "trade_target_type", "dagaa_trade_season", "migebuka_trade_season", "kungura_trade_season", "ngege_trade_season", "kuhe_trade_season", "sangara_trade_season", 
                                                  "trade_best", "dagaa_trade_best", "migebuka_trade_best", "kungura_trade_best", "ngege_trade_best", "kuhe_trade_best", "sangara_trade_best",
                                                  "trade_worst", "dagaa_trade_worst", "migebuka_trade_worst", "kungura_trade_worst", "ngege_trade_worst", "kuhe_trade_worst", "sangara_trade_worst",
-                                                 "satisfaction_trade", "satisfaction_trade_skills", "trade_tools_used", "trade_productivity", "trade_market_supply", "satisfaction_purchase", "trade_market", "trade_income", "trade_capital", "trade_business_skills", "_trade_organization_support",
+                                                 "satisfaction_trade", "satisfaction_trade_skills", "trade_tools_used", "trade_productivity", "trade_market_supply", "satisfaction_trade_purchase", "trade_market", "trade_income", "trade_capital", "trade_business_skills", "_trade_organization_support",
                                                  "trading_challenges", "trading_opportunities", "business_group_membership", "cooperative_fico", "cooperative_fico_name", "cocoba_savings", "cocoba_savings_name", "other_trading_group", "other_trading_group_name", "trading_group_helpfulness", "trading_tnc_supported", "trading_other_agency", "trading_other_agency_name", "trading_long_term"))
 
 # Livelihood Practices of Fish Processors
 fish_processors <- tanganyika %>% select(492:494, 495, 505, 506, 521, 522:528, 529:542, 543:553, 556:566, 569)
 colnames(fish_processors) <- gsub("...\\d+", "", colnames(fish_processors))
-
-# 143
-processing_options <- list("SUNDRYING","SALTING","SMOKING","FREEZING","COLD STORAGE","DEEP FRYING",
-  "OTHER","I DO NOT WANT TO ANSWER","I DON'T KNOW")
-escaped_processing_options <- escape_special_chars(processing_options)
-separate_options_processing <- function(column, escaped_processing_options) {
-  pattern <- str_c(escaped_processing_options, collapse = "|")
-  separated <- str_replace_all(column, pattern, function(x) paste0("|", x))
-  separated <- str_remove(separated, "^\\|")
-  return(separated)}
-
-# Applying the function to the relevant processing column(s)
-fish_processors <- fish_processors %>%
-  mutate(across(
-    c(`143. What form of fish processing do you participate in?`),  
-    ~ separate_options_processing(., escaped_processing_options)))
-
-
-# 144
-processing_equipment_options <- list("TWIGS", "WIRE MESH", "NETS", "REFRIGERATOR", "SALT", "BASIN", 
-  "COOLBOX", "FIREWOOD", "CORRUGATED SHEET", "COOKING OIL", "COOKING POT", "OTHER", "I DO NOT WANT TO ANSWER", "I DON'T KNOW")
-
-escaped_processing_equipment_options <- escape_special_chars(processing_equipment_options)
-separate_options_processing_equipment <- function(column, escaped_options) {
-  pattern <- str_c(escaped_options, collapse = "|")
-  separated <- str_replace_all(column, pattern, function(x) paste0("|", x))
-  separated <- str_remove(separated, "^\\|")
-  return(separated)}
-
-# Applying the function to the relevant processing equipment column(s)
-fish_processors <- fish_processors %>%
-  mutate(across(
-    c(`144. What equipment and materials do you use?`),  
-    ~ separate_options_processing_equipment(., escaped_processing_equipment_options)))
-
-# 145. 
-process_season <- fish_processors %>% select(8:14)
-process_season_long <- process_season %>%
-  pivot_longer(cols = -1, 
-               names_to = "Fish_Species",
-               values_to = "Season") %>%
-  filter(!is.na(Season) & Season != "")  
-
-process_season_summary <- process_season_long %>%
-  group_by(Fish_Species, Season) %>%
-  summarise(Count = n()) %>%
-  ungroup()
-
-# 146. highest
-process_price_best <- fish_processors %>% select(15:21)
-process_price_best_long <- process_price_best %>%
-  pivot_longer(cols = -1,  
-               names_to = "Fish_Species", 
-               values_to = "Sale_Price") %>%
-  filter(!is.na(Sale_Price) & Sale_Price != "")  
-
-# 146. lowest
-process_price_lowest <- fish_processors %>% select(22:28)
-process_price_lowest_long <- process_price_lowest %>%
-  pivot_longer(cols = -1,  
-               names_to = "Fish_Species", 
-               values_to = "Sale_Price") %>%
-  filter(!is.na(Sale_Price) & Sale_Price != "")
-
-# 147. 
-processors_satisfaction <- fish_processors %>% select(29:39)
-processors_satisfaction_long <- processors_satisfaction %>%
-  pivot_longer(cols = -1,  # Exclude the first empty column
-               names_to = "Aspect", 
-               values_to = "Satisfaction_Level") %>%
-  filter(!is.na(Satisfaction_Level) & Satisfaction_Level != "I DO NOT WANT TO ANSWER")  # Remove empty or non-numeric responses
-
-processors_satisfaction_long <- processors_satisfaction_long %>%
-  mutate(Satisfaction_Level = factor(Satisfaction_Level,
-                                     levels = c("1 VERY UNSATISFIED", 
-                                                "2 UNSATISFIED", 
-                                                "3 NEUTRAL", 
-                                                "4 SATISFIED", 
-                                                "5 VERY SATISFIED"),
-                                     ordered = TRUE))
 
 ################################################################################
 
@@ -438,13 +361,47 @@ tanganyika_clean <- tanganyika_clean %>%
       village == "ISASA" ~ "Isasa",
       village == "MTAKUJA" ~ "Mtakuja",
       village == "KIPILI" ~ "Kipili",
-      village == "KICHANGANI" ~ "Kichangani")) %>%
+      village == "KICHANGANI" ~ "Kichangani",
+      village == "MANDA KERENGE" ~ "Manda Kerenge",
+      village == "NTANGANYIKA" ~ "Ntanganyika",
+      village == "KALUNGU" ~ "Kalungu",
+      village == "MKINGA" ~ "Mkinga",
+      village == "MAJENGO MAPYA" ~ "Majengo Mapya",
+      village == "MANDA UHURU" ~ "Manda Uhuru",
+      village == "MPASA" ~ "Mpasa",
+      village == "KILAMBO CHA MKOLECHI" ~ "Kilambo cha Mkolechi",
+      village == "KALA" ~ "Kala",
+      village == "TUNDU" ~ "Tundu",
+      village == "WAMPEMBE" ~ "Wampembe",
+      village == "LYAPINDA" ~ "Lyapinda",
+      village == "KATENGE" ~ "Katenge",
+      village == "KIZUMBI" ~ "Kizumbi",
+      village == "NG'ANGA" ~ "Ng'anga",
+      village == "IZINGA" ~ "Izinga",
+      village == "MWINZA" ~ "Mwinza")) %>%
   mutate(
     fpc = case_when(
       village == "ISASA" ~ 281, #Total number of households in each village (strata)
       village == "MTAKUJA" ~ 364,
       village == "KIPILI" ~ 383,
-      village == "KICHANGANI" ~ 325))
+      village == "KICHANGANI" ~ 325,
+      village == "MANDA KERENGE" ~ 656,
+      village == "NTANGANYIKA" ~ 229,
+      village == "KALUNGU" ~ 566,
+      village == "MKINGA" ~ 325,
+      village == "MAJENGO MAPYA" ~ 210,
+      village == "MANDA UHURU" ~ 147,
+      village == "MPASA" ~ 795,
+      village == "KILAMBO CHA MKOLECHI" ~ 344,
+      village == "KALA" ~ 358,
+      village == "TUNDU" ~ 301,
+      village == "WAMPEMBE" ~ 802,
+      village == "LYAPINDA" ~ 600,
+      village == "KATENGE" ~ 143,
+      village == "KIZUMBI" ~ 293,
+      village == "NG'ANGA" ~ 172,
+      village == "IZINGA" ~ 527,
+      village == "MWINZA" ~ 356))
 
 saveRDS(tanganyika_clean, "tanganyika_clean.rds")
 

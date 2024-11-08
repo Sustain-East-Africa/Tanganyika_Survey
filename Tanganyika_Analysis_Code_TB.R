@@ -92,7 +92,7 @@ ggplot(treatment_data, aes(x = village, y = proportion, group = treatment_method
   geom_errorbar(aes(ymax = pmin(proportion_upp, 1), ymin = pmax(proportion_low, 0)),
                 position = position_dodge(preserve = "single", width = 0.95), width = 0.1) +
   guides(fill = guide_legend(title = NULL)) +
-  scale_fill_manual(values = c("#A9CCE3",  "#2E86C1", "#F5B7B1", "#D091BB", "#BBD4A6", "#FAD7A0", "#DFDFDF", SEA_palette)) +
+  scale_fill_manual(values = c( SEA_palette, "#A9CCE3",  "#2E86C1", "#F5B7B1", "#D091BB", "#BBD4A6", "#FAD7A0", "#DFDFDF")) +
   labs(title = paste("Proportion of dry season water treatment methods by village"), x = "Village", y = "Proportion of Households") +
   scale_y_continuous(limits = c(0, 1)) +
   theme_minimal()
