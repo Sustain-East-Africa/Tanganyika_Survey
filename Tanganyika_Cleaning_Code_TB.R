@@ -14,7 +14,18 @@ library(egg)
 
 rm(list=ls())
 
-### Preparing the data frame ###
+
+### Preparing the survey demographic data frame ###
+
+# Read excel file
+survey_demo <- read_excel("tanganyika_survey_report/Tanganyika_Responses.xlsx", sheet = "repeat_detail") %>%
+  rename_with(~ c("code", "relationship_hh_head", "sex", "age", "attending_school", "education_level", 
+                  "marital_status", "activity", "activity_reviewed", "other_activity", "fishing"), .cols = 1:11) %>%
+  mutate(code = toupper(gsub("\\.0$", "", code)))
+
+saveRDS(survey_demo, "survey_demo.rds")
+
+### Preparing the survey submissions data frame ###
 
 # Read excel file
 tanganyika <- read_excel("tanganyika_survey_report/Tanganyika_Responses.xlsx", sheet = "TNC Tanganyika - Main Questionn")

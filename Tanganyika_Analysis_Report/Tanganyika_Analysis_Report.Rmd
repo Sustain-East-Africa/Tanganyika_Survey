@@ -1,10 +1,8 @@
 ---
-title: "Report Title"
-# subtitle: "Subtitle"
+title: "Baseline Study for the Tuungane Health and Conservation Project"
+# subtitle: "subtitle"
 author: 
-  - "Peadar Brehony"
-  - "Peter Tyrrell"
-  - "Tom Bachmann"
+  - "Sustain East Africa"
 date: "November 2024"
 output: 
   sea::sea_paged:
@@ -185,24 +183,146 @@ Ex magna consectetur consectetur est pariatur id. Excepteur proident laborum com
 
 `r wrap_double_page("img/lion_img.jpg", caption = "Figure 4. The location of the conservancies and corridors (khaki) - note Nairrabala is a potential conservancy, currently designated as a corridor - National Parks (green).")`
 
-
+# Population pyramid
 ```{r}
-library(ggplot2)
+age_levels <- c("<5", "5-9", "10-14", "15-19", "20-24", "25-29", "30-34",
+                "35-39", "40-44", "45-49", "50-54", "55-59", "60-64",
+                "65-69", "70-74", "75-79", "80+")
 
-# map of the world
-world <- rnaturalearth::ne_countries(scale = "small", returnclass = "sf")
+# Categorize age groups and ensure they have the correct order
+demo <- demo %>%
+  mutate(age_group = case_when(
+    age >= 80 ~ "80+",
+    age >= 75 & age < 80 ~ "75-79",
+    age >= 70 & age < 75 ~ "70-74",
+    age >= 65 & age < 70 ~ "65-69",
+    age >= 60 & age < 65 ~ "60-64",
+    age >= 55 & age < 60 ~ "55-59",
+    age >= 50 & age < 55 ~ "50-54",
+    age >= 45 & age < 50 ~ "45-49",
+    age >= 40 & age < 45 ~ "40-44",
+    age >= 35 & age < 40 ~ "35-39",
+    age >= 30 & age < 35 ~ "30-34",
+    age >= 25 & age < 30 ~ "25-29",
+    age >= 20 & age < 25 ~ "20-24",
+    age >= 15 & age < 20 ~ "15-19",
+    age >= 10 & age < 15 ~ "10-14",
+    age >= 5 & age < 10 ~ "5-9",
+    age < 5 ~ "<5"
+  )) %>%
+  mutate(age_group = factor(age_group, levels = age_levels))  # Set factor levels for ordering
 
-p <- ggplot(world) +
-  geom_sf(aes(fill = income_grp),
-          color = "lightgrey") +
-  sea::scale_fill_sea_discrete(reverse = TRUE) +
-  guides(fill = "none") +
-  theme_void()
+# Calculate overall percentages by age group and gender, excluding unwanted sex value
+total_count <- nrow(demo %>% filter(sex != "I DO NOT WANT TO ANSWER"))  # Total population count for reference
+
+demo_summary <- demo %>%
+  filter(sex != "I DO NOT WANT TO ANSWER") %>%
+  count(age_group, sex) %>%
+  mutate(percentage = n / total_count * 100)  # Calculate percentage of entire population
+
+# Plot population pyramid
+ggplot(demo_summary, aes(x = age_group, y = ifelse(sex == "MALE", -percentage, percentage), fill = sex)) +
+  geom_bar(stat = "identity", width = 0.8) +
+  coord_flip() +
+  scale_y_continuous(labels = abs, limits = c(-10, 10)) +
+  labs(title = "Population Pyramid", x = "Age Group", y = "Percentage of Total Population") +
+  scale_fill_manual(values = c("MALE" =  "#3d5919", "FEMALE" =  "#a4b792")) +
+  theme_minimal()
 ```
 
 `r wrap_double_page(p)`
 
 \newpage
+
+# Self-assessment of the ability to meet daily needs at village level
+
+# Land acquisition method in percentage of all plots
+
+# Crops grown
+
+# Farming problems
+
+# Proportion of households with at least one fisher at village level
+
+# The importance of fishing and agriculture for fishers’ income
+
+# Type of fishing boats used at village level
+
+# Fishing gear
+
+# Percent of the catch that is eaten
+
+# Relative importance of different species at village level
+
+# Will there be sufficient fish in the future?
+
+# Frequency of fish consumption
+
+# Change in the consumption of fish compared to 5 years ago
+
+# Asset ownership
+
+# Transport ownership
+
+# Main water source in the dry and wet season: % of households using a source
+
+# Main type of water treatment in the dry season
+
+# Number of rooms used for sleeping
+
+# Age-specific school attendance rates
+
+# Proportion of households that borrowed money in the last year at village level
+
+# Distribution of borrowed amounts
+
+# Purpose of the loan
+
+# Source of loans
+
+# Reason for not having borrowed any money in the previous year
+
+# Composite wellbeing indicator: mean scores
+
+# Perception of the relationship between TANAPA and the village at village level
+
+# Knowledge about an environmental management committee in the village
+
+# Proportion that attended a public village meeting
+
+# Statement: “There is sufficient forest close to this village to meet our day-to-day needs.”
+
+# Statements: “Deforestation causes siltation” and “Siltation is harmful to fish”
+
+# Statements about protection of village forests, and chimpanzees
+
+# Statement: “Mahale Mountains National Park should continue to be protected” by village.
+
+# Statement: “The national park provides benefits for our community.”
+
+Proportion of households that collect forest products
+
+Number of different forest products collected
+
+Age and sex of the person responsible for the collection of forest products
+
+Proportion of households that collect and sell some of the forest products.
+
+Source of firewood
+
+Proportion of households that think the village population has increased over the last 5 years
+
+Problems caused by population growth
+
+Occurrence of disputes at village level
+
+Disease prevalence
+
+Change in access to medical care compared to 5 years ago at village level
+
+Diet: frequency of eating fruit & vegetables, fish, and meat or poultry
+
+
 
 ```{r, message = FALSE, include= FALSE}
 # path
@@ -225,6 +345,69 @@ mtcars |>
 # Findings
 
 Nulla consequat deserunt anim labore dolor nulla anim et. Id officia nostrud officia pariatur eiusmod velit id elit sit ut duis pariatur duis. Officia et veniam cupidatat sint velit nisi ut. Duis enim est labore ea laborum officia ad occaecat ex non tempor commodo ea tempor elit. Eu reprehenderit amet duis irure aute proident Lorem laborum do eu. Cillum eiusmod irure sint id dolor do amet. Ad sunt sunt voluptate anim qui aliqua voluptate.
+
+```{r}
+
+# Define plotting and summary table function for a single survey variable
+hh_info_survey_variable <- function(variable_name, data = tanganyika_clean) {
+  # Set survey design
+  strat_design <- data %>%
+    as_survey_design(strata = stype, fpc = fpc, variables = c(stype, fpc, village, !!sym(variable_name)))
+  
+  # Group by village and the specified variable, then calculate proportions and totals
+  village_data <- strat_design %>%
+    group_by(village, !!sym(variable_name)) %>%
+    summarise(
+      proportion = survey_mean(vartype = "ci", na.rm = TRUE), 
+      total = survey_total(vartype = "ci", na.rm = TRUE), 
+      n = unweighted(n())
+    )
+  
+  # Prepare summary table
+  summary_table <- village_data %>%
+    select(village, !!sym(variable_name), n, total, total_low, total_upp, proportion, proportion_low, proportion_upp) %>%
+    rename(
+      Total = total, 
+      Lower_Total_CI = total_low, 
+      Upper_Total_CI = total_upp, 
+      Proportion = proportion, 
+      Lower_Proportion_CI = proportion_low, 
+      Upper_Proportion_CI = proportion_upp
+    )
+  
+  # Save summary table as CSV
+  table_file_name <- here::here("images", paste0(variable_name, "_summary_table.csv"))
+  write.csv(summary_table, table_file_name, row.names = FALSE)
+  
+  # Create plot
+  plot <- ggplot(village_data, aes(x = village, y = proportion, group = !!sym(variable_name), fill = !!sym(variable_name))) +
+    geom_bar(stat = "identity", position = position_dodge(preserve = "single"), width = 0.95) +
+    geom_errorbar(aes(ymax = pmin(proportion_upp, 1), ymin = pmax(proportion_low, 0)),
+                  position = position_dodge(preserve = "single", width = 0.95), width = 0.1) +
+    guides(fill = guide_legend(title = NULL)) +
+    scale_fill_manual(values = c("#A9CCE3", "#2E86C1", "#F5B7B1", "#D091BB", "#BBD4A6", "#FAD7A0", "#DFDFDF", SEA_palette)) +
+    labs(
+      title = paste("Proportion of", variable_name, "by Village"),
+      x = "Village", 
+      y = "Proportion of Households"
+    ) +
+    scale_y_continuous(limits = c(0, 1)) +
+    theme_minimal()
+  
+  # Return both plot and summary table
+  list(plot = plot, table = summary_table)
+}
+
+```
+
+
+
+```{r}
+# Plot and summary table for born_ward variable
+output <- hh_info_survey_variable("born_ward")
+output$plot  # Display plot
+output$table  # Display summary table if needed
+```
 
 ## Some more title
 

@@ -23,6 +23,57 @@ SEA_palette <- c("#d77e5e", "#a4b792", "#e6e7e2", "#3d5919", "#202C39", "#381D2A
 tanganyika_clean <- readRDS("tanganyika_clean.rds")
 head(tanganyika_clean)
 
+demo <- readRDS("survey_demo.rds")
+
+######################################################################################################################
+############# Population Pyramid  ############
+######################################################################################################################
+# Define age groups with factor levels to ensure correct order
+age_levels <- c("<5", "5-9", "10-14", "15-19", "20-24", "25-29", "30-34",
+                "35-39", "40-44", "45-49", "50-54", "55-59", "60-64",
+                "65-69", "70-74", "75-79", "80+")
+
+# Categorize age groups and ensure they have the correct order
+demo <- demo %>%
+  mutate(age_group = case_when(
+    age >= 80 ~ "80+",
+    age >= 75 & age < 80 ~ "75-79",
+    age >= 70 & age < 75 ~ "70-74",
+    age >= 65 & age < 70 ~ "65-69",
+    age >= 60 & age < 65 ~ "60-64",
+    age >= 55 & age < 60 ~ "55-59",
+    age >= 50 & age < 55 ~ "50-54",
+    age >= 45 & age < 50 ~ "45-49",
+    age >= 40 & age < 45 ~ "40-44",
+    age >= 35 & age < 40 ~ "35-39",
+    age >= 30 & age < 35 ~ "30-34",
+    age >= 25 & age < 30 ~ "25-29",
+    age >= 20 & age < 25 ~ "20-24",
+    age >= 15 & age < 20 ~ "15-19",
+    age >= 10 & age < 15 ~ "10-14",
+    age >= 5 & age < 10 ~ "5-9",
+    age < 5 ~ "<5"
+  )) %>%
+  mutate(age_group = factor(age_group, levels = age_levels))  # Set factor levels for ordering
+
+# Calculate overall percentages by age group and gender, excluding unwanted sex value
+total_count <- nrow(demo %>% filter(sex != "I DO NOT WANT TO ANSWER"))  # Total population count for reference
+
+demo_summary <- demo %>%
+  filter(sex != "I DO NOT WANT TO ANSWER") %>%
+  count(age_group, sex) %>%
+  mutate(percentage = n / total_count * 100)  # Calculate percentage of entire population
+
+# Plot population pyramid
+ggplot(demo_summary, aes(x = age_group, y = ifelse(sex == "MALE", -percentage, percentage), fill = sex)) +
+  geom_bar(stat = "identity", width = 0.8) +
+  coord_flip() +
+  scale_y_continuous(labels = abs, limits = c(-10, 10)) +
+  labs(title = "Population Pyramid", x = "Age Group", y = "Percentage of Total Population") +
+  scale_fill_manual(values = c("MALE" =  "#3d5919", "FEMALE" =  "#a4b792")) +
+  theme_minimal()
+
+
 ######################################################################################################################
 ############# Survey based household information (water provision & toilet facilities)  ############
 ######################################################################################################################
@@ -903,98 +954,3 @@ plots_and_tables <- lapply(fish_traders_to_plot, function(var) fish_traders_surv
 for (i in seq_along(fish_traders_to_plot)) {
   plot_file_name <- here::here("images", paste0(fish_traders_to_plot[i], ".png"))
   ggsave(filename = plot_file_name, plot = plots_and_tables[[i]]$plot, width = 10, height = 7)}
-
-### List of Figures in the Tuungane Baseline Report ###
-### Add in the cleaned data and develop plots and tables accordingly
-
-# Population pyramid 
-
-# Self-assessment of the ability to meet daily needs at village level
-
-# Land acquisition method in percentage of all plots 
-
-# Crops grown 
-
-# Farming problems 
-
-# Proportion of households with at least one fisher at village level 
-
-# The importance of fishing and agriculture for fishers’ income 
-
-# Type of fishing boats used at village level 
-
-# Fishing gear 
-
-# Percent of the catch that is eaten 
-
-# Relative importance of different species at village level 
-
-# Will there be sufficient fish in the future?
-
-# Frequency of fish consumption 
-
-# Change in the consumption of fish compared to 5 years ago 
-
-# Asset ownership 
-
-# Transport ownership 
-
-# Main water source in the dry and wet season: % of households using a source 
-
-# Main type of water treatment in the dry season 
-
-# Number of rooms used for sleeping 
-
-# Age-specific school attendance rates 
-
-# Proportion of households that borrowed money in the last year at village level 
-
-# Distribution of borrowed amounts 
-
-# Purpose of the loan 
-
-# Source of loans 
-
-# Reason for not having borrowed any money in the previous year 
-
-# Composite wellbeing indicator: mean scores 
-
-# Perception of the relationship between TANAPA and the village at village level 
-
-# Knowledge about an environmental management committee in the village 
-
-# Proportion that attended a public village meeting 
-
-# Statement: “There is sufficient forest close to this village to meet our day-to-day needs.” 
-
-# Statements: “Deforestation causes siltation” and “Siltation is harmful to fish” 
-
-# Statements about protection of village forests, and chimpanzees 
-
-# Statement: “Mahale Mountains National Park should continue to be protected” by village. 
-
-# Statement: “The national park provides benefits for our community.” 
-
-# Proportion of households that collect forest products 
-
-# Number of different forest products collected 
-
-# Age and sex of the person responsible for the collection of forest products 
-
-# Proportion of households that collect and sell some of the forest products. 
-
-# Source of firewood 
-
-# Proportion of households that think the village population has increased over the last 5 years 
-
-# Problems caused by population growth 
-
-# Occurrence of disputes at village level 
-
-# Disease prevalence 
-
-# Change in access to medical care compared to 5 years ago at village level 
-
-# Diet: frequency of eating fruit & vegetables, fish, and meat or poultry 
-
-
