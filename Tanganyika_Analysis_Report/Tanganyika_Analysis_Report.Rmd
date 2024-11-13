@@ -293,6 +293,9 @@ ggplot(demo_summary, aes(x = age_group, y = ifelse(sex == "MALE", -percentage, p
 # Statement: “There is sufficient forest close to this village to meet our day-to-day needs.”
 
 # Statements: “Deforestation causes siltation” and “Siltation is harmful to fish”
+```{r}
+
+```
 
 # Statements about protection of village forests, and chimpanzees
 
