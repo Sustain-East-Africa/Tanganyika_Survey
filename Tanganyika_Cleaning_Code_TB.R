@@ -20,9 +20,19 @@ rm(list=ls())
 # Read excel file
 survey_demo <- read_excel("tanganyika_survey_report/Tanganyika_Responses.xlsx", sheet = "repeat_detail") %>%
   rename_with(~ c("code", "relationship_hh_head", "sex", "age", "attending_school", "education_level", 
-                  "marital_status", "activity", "activity_reviewed", "other_activity", "fishing"), .cols = 1:11) %>%
-  mutate(code = toupper(gsub("\\.0$", "", code)))
-
+                  "marital_status", "activity", "activity_reviewed", "other_activity", "fishing"), .cols = 1:11) %>% #Renames the first 11 columns of the repeat_details sheet
+  mutate(code = toupper(gsub("\\s+", "", gsub("\\.0$", "", code))),        # Cleans the household IDs in the "code" column by removing ".0" and spacing as well as changing to upper case
+           code = case_when(
+               code == "759D" & sex == "FEMALE" ~ "759E",  # Change Female "759D" to "759E" 
+               code == "658E658D" ~ "658E", 
+               code == "830" & relationship_hh_head == "SON OR DAUGHTER" ~ "830D",
+               code == "458M" ~ "458N",
+               code == "458L" ~ "458M",
+               code == "458" & relationship_hh_head == "GRANDCHILD" ~ "458L", # Reordering family member in 458 due to Grandchild 458L having been labelled as 458 initially
+               code == 
+               # code == "123A" & age > 30 ~ "123B",
+             TRUE ~ code))                 # Keep all other codes as they are
+         
 saveRDS(survey_demo, "survey_demo.rds")
 
 ### Preparing the survey submissions data frame ###
@@ -31,13 +41,13 @@ saveRDS(survey_demo, "survey_demo.rds")
 tanganyika <- read_excel("tanganyika_survey_report/Tanganyika_Responses.xlsx", sheet = "TNC Tanganyika - Main Questionn")
 
 tanganyika <- tanganyika %>%
-  mutate(`START TIME` = as.Date(`START TIME`),
+  mutate(`START TIME...1` = as.Date(`START TIME...1`),
          `End Time` = as.Date(`End Time`),
-         date = `START TIME`,
+         date = `START TIME...1`,
          start_time = as.character(date),
          end_time = as.character(date)) %>%
   select(date, start_time, end_time, everything()) %>%
-  select(-`START TIME`, 
+  select(-`START TIME...1`, 
          -`End Time`, 
          -`ENUMERATOR TO READ OUT THE INTRODUCTION SHEET`, 
          -`There are no right or wrong answers to questions; we are just interested in getting the true information about your household and your views. If you do not wish to proceed, please tell us why you have refused.`) %>%
