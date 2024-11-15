@@ -123,15 +123,64 @@ survey_demo <- read_excel("tanganyika_survey_report/Tanganyika_Responses.xlsx", 
                code == "5642F" & age == 10 ~ "5642G",
                code == "5294E" & age == 0 ~ "5294G",
                code == "5847" & age == 22 ~ "5847A",
-               code == "6840" & age == 20 ~ "6840A",
-               code == "6840A" & age == 67 ~ "6840",
-              
-               
-               # code == "123A" & age > 30 ~ "123B",
-             TRUE ~ code),
-    relationship_hh_head = case_when(code == "903" ~ "HEAD OF THE HOUSEHOLD",
+               code == "6840" & age == 20 ~ "6840A", 
+               code == "6840A" & age == 67 ~ "6840", # appending correct ID to household head label
+               code == "6475" & age == 26 ~ "6475A", 
+               code == "6475A" & age == 30 ~ "6475",
+               code == "6470" & age == 50 ~ "6470A", 
+               code == "6470A" & age == 55 ~ "6470",
+               code == "6474" & age == 19 ~ "6474A", 
+               code == "6474A" & age == 20 ~ "6474",
+               code == "6480" & age == 65 ~ "6480A", 
+               code == "6480A" & age == 68 ~ "6480",
+               TRUE ~ code),
+    relationship_hh_head = case_when(code == "903" ~ "HEAD OF THE HOUSEHOLD", # appending household head label to correct ID
                                      code == "3245" ~ "HEAD OF THE HOUSEHOLD",
-             TRUE ~ relationship_hh_head)) %>%
+                                     code == "2205B" ~ "SON OR DAUGHTER", # son was labelled as husband or wife
+                                     code == "3845C" ~ "SON OR DAUGHTER", # Daughter was mislabeled as wife 
+                                     code == "4537B" ~ "OTHER RELATIVE", # 45 yr old divorced female mislabeled as son or daughter
+                                     code == "3381D" ~ "SON OR DAUGHTER", # 14 year old female was mislabeled as a parent amongst other siblings
+                                     code == "3381E" ~ "SON OR DAUGHTER", # 10 year old male was mislabeled as a parent amongst other siblings
+             TRUE ~ relationship_hh_head),
+    sex = case_when(code == "3258A" ~ "FEMALE", # Partner of male head of household was mislabeled as male
+                    code == "6761A" ~ "FEMALE", # Wife of the head of household was mislabeled as male
+                    TRUE ~ sex),
+    fishing = case_when(code == "658A" ~ "NO", # Household member listed fish processing, not fishing
+                        code == "571" ~ "NO", # Household member listed fish trading, not fishing
+                        code == "571A" ~ "NO", # Household member listed fish trading, not fishing
+                        code == "704" ~ "NO", # Household member listed fish trading, not fishing
+                        code == "704A" ~ "NO", # Household member listed fish trading, not fishing
+                        code == "730A" ~ "NO", # Household member listed fish trading, not fishing
+                        code == "528" ~ "NO", # Household member listed fish trading, not fishing
+                        code == "135" ~ "NO", # Household member listed fish trading, not fishing
+                        code == "895" ~ "NO", # Household member listed fish trading, not fishing
+                        code == "905A" ~ "NO", # Household member listed fish processing, not fishing
+                        code == "625" ~ "YES", # Household member listed fishing
+                        code == "1063" ~ "NO", # Household member not involved in fishing
+                        code == "1923" ~ "YES", # Household member listed fishing
+                        code == "1591" ~ "YES", # Household member listed fishing
+                        code == "1287" ~ "NO", # Household member listed fish trading, not fishing
+                        code == "1953F" ~ "NO", # Household member not involved in fishing
+                        code == "1968" ~ "NO", # Household member not involved in fishing
+                        code == "2379" ~ "NO", # Household member not involved in fishing
+                        code == "2535" ~ "NO", # Household member not involved in fishing
+                        code == "2834" ~ "NO", # Household member not involved in fishing
+                        code == "3350" ~ "YES", # Household member listed fishing
+                        code == "338A" ~ "YES", # Household member listed fishing
+                        code == "338F" ~ "YES", # Household member listed fishing
+                        code == "332A" ~ "YES", # Household member listed fishing
+                        code == "3359B" ~ "YES", # Household member listed fishing
+                        code == "2267A" ~ "YES", # Household member listed fishing
+                        code == "2267C" ~ "YES", # Household member listed fishing
+                        code == "4531A" ~ "YES", # Household member listed fishing
+                        code == "4532A" ~ "YES", # Household member listed fishing
+                        code == "4533A" ~ "YES", # Household member listed fishing
+                        TRUE ~ fishing),
+    relationship_hh_head = if_else(code == "2834A", "WIFE OR HUSBAND", relationship_hh_head), sex = if_else(code == "2834A", "FEMALE", sex), # Wife was initially labelled as male household head with ID 2834A
+    relationship_hh_head = if_else(relationship_hh_head == "CO-WIFE", "WIFE OR HUSBAND", relationship_hh_head)) %>% # change all instances of "co-wife to "wife or husband"
+  mutate(main_activity = if_else(!is.na(activity_reviewed), activity_reviewed, coalesce(activity, activity_reviewed))) %>%
+  select(-activity, -activity_reviewed) %>%  # Remove the activity and activity_reviewed columns after replacing with the corrected "main_activity" column that accounts for translation error
+  relocate(main_activity, .after = marital_status) %>% # move main_activity column to correct position 
          filter(!(code == "3272" & relationship_hh_head == "PARENT"))
          
 saveRDS(survey_demo, "survey_demo.rds")
@@ -157,6 +206,13 @@ tanganyika <- tanganyika %>%
  
  May we proceed with the interview?` == "AGREED")
 
+## Addressing data validation issues and incorrect submission entries
+
+tanganyika <- tanganyika %>%
+  mutate(
+    `31. Could you indicate all the different activities that members of the household engage in to obtain food or cash income for the household, including remittances and pensions?/TAILOR` = if_else(`HOUSEHOLD ID CODE` == 3124, 1, `31. Could you indicate all the different activities that members of the household engage in to obtain food or cash income for the household, including remittances and pensions?/TAILOR`), # 3124A mentioned being a tailor in household roster, this was not accounted for in Q.31
+    `31. Could you indicate all the different activities that members of the household engage in to obtain food or cash income for the household, including remittances and pensions?/OTHER` = if_else(`HOUSEHOLD ID CODE` == 3024, 1, `31. Could you indicate all the different activities that members of the household engage in to obtain food or cash income for the household, including remittances and pensions?/OTHER`), # 3024B mentioned being a carpenter in household roster, this was not accounted for in Q.31
+    `31a) You selected 'Other', please specify` = if_else(`HOUSEHOLD ID CODE` == 3024, "Fundi selemara", `31a) You selected 'Other', please specify`))
 
 # Cleaning column headers
 #colnames(tanganyika) <- gsub("...\\d+", "", colnames(tanganyika))
