@@ -209,10 +209,31 @@ tanganyika <- tanganyika %>%
 ## Addressing data validation issues and incorrect submission entries
 
 tanganyika <- tanganyika %>%
+  rename(code = colnames(tanganyika)[12]) %>%
   mutate(
+    code = toupper(gsub("\\s+", "", gsub("\\.0$", "", code))),  
+    code = gsub("[\r\n]", "", code),
     `31. Could you indicate all the different activities that members of the household engage in to obtain food or cash income for the household, including remittances and pensions?/TAILOR` = if_else(`HOUSEHOLD ID CODE` == 3124, 1, `31. Could you indicate all the different activities that members of the household engage in to obtain food or cash income for the household, including remittances and pensions?/TAILOR`), # 3124A mentioned being a tailor in household roster, this was not accounted for in Q.31
     `31. Could you indicate all the different activities that members of the household engage in to obtain food or cash income for the household, including remittances and pensions?/OTHER` = if_else(`HOUSEHOLD ID CODE` == 3024, 1, `31. Could you indicate all the different activities that members of the household engage in to obtain food or cash income for the household, including remittances and pensions?/OTHER`), # 3024B mentioned being a carpenter in household roster, this was not accounted for in Q.31
-    `31a) You selected 'Other', please specify` = if_else(`HOUSEHOLD ID CODE` == 3024, "Fundi selemara", `31a) You selected 'Other', please specify`))
+    `31a) You selected 'Other', please specify` = if_else(`HOUSEHOLD ID CODE` == 3024, "Fundi selemara", `31a) You selected 'Other', please specify`),
+    `HOUSEHOLD ID CODE` = case_when(`HOUSEHOLD ID CODE` == "4000" & `Please help me with the number of the people who normally sleep and eat their meals together in this household, starting with the household head, then the immediate family and then the extended family and other household members.` == 1 ~ "3948",
+                                    `HOUSEHOLD ID CODE` == "1542" ~ "3216",
+                                    `HOUSEHOLD ID CODE` == "3598" ~ "3579",
+                                    `HOUSEHOLD ID CODE` == "6678" ~ "5697",
+                                    TRUE ~ as.character(`HOUSEHOLD ID CODE`)),
+      code = case_when(code == "1475" & `HOUSEHOLD ID CODE` == "1479" ~ "1479", 
+                       code == "15641564A1564B1564C" ~ "1564",
+                       code == "3295" ~ "1559",
+                       code == "3038" ~ "2038",
+                       code == "3490" ~ "3480",
+                       code == "3034" ~ "3430",
+                       code == "33053305A3305B3305C3305D3305E3305F" ~ "3305", # submitted all hh members isntead of one
+                       code == "30063006A3006B3006C3006D3006E3006F" ~ "3006",
+                       code == "7280" ~ "7283",
+                       TRUE ~ code),
+    `Please help me with the number of the people who normally sleep and eat their meals together in this household, starting with the household head, then the immediate family and then the extended family and other household members.` = case_when(`Please help me with the number of the people who normally sleep and eat their meals together in this household, starting with the household head, then the immediate family and then the extended family and other household members.` == 5 & `HOUSEHOLD ID CODE` == "3803" ~ 6,
+                                                                                                                                                                                                                                                        `Please help me with the number of the people who normally sleep and eat their meals together in this household, starting with the household head, then the immediate family and then the extended family and other household members.` == 4 & `HOUSEHOLD ID CODE` == "7991" ~ 5,
+                                                                                                                                                                                                                                                        TRUE ~ `Please help me with the number of the people who normally sleep and eat their meals together in this household, starting with the household head, then the immediate family and then the extended family and other household members.`))
 
 # Cleaning column headers
 #colnames(tanganyika) <- gsub("...\\d+", "", colnames(tanganyika))
@@ -288,10 +309,12 @@ hh_assets <- hh_assets %>%
     names(hh_assets)[c_across(everything()) == "YES"],collapse = "|")) %>% ungroup() %>% select(household_assets)
 
 ## Livelihoods and Credit ##
-lh <- tanganyika %>% select(93, 109:124, 134:135, 149:153)
-lh <- lh %>% rename_with(~ c("livelihood_activities", "other_livelihood", "lh_ranking", "fishing", "trading", "processing", "agriculture", 
+lh <- tanganyika %>% select(6, 93, 109:124, 134:135, 149:153)
+lh <- lh %>% rename_with(~ c("hh_code","livelihood_activities", "other_livelihood", "lh_ranking", "fishing", "trading", "processing", "agriculture", 
                              "livestock", "business", "labour", "employee", "pension", "remittance", "other_lh", "household_ability", "borrow_status",
-                             "loan_usage", "other_loan_usage", "borrowing_source", "other_borrowing_source", "not_borrowed", "not_borrowed_other", "cocoba_saccos", "mobile_money"))
+                             "loan_usage", "other_loan_usage", "borrowing_source", "other_borrowing_source", "not_borrowed", "not_borrowed_other", "cocoba_saccos", "mobile_money")) %>%
+                         mutate(trading = case_when(trading == 2 & hh_code == "4188" ~ 1, TRUE ~ trading),
+                                business = case_when(business == 3 & hh_code == "4188" ~ 2, TRUE ~ business)) %>% select(-1) # Append ranking for household ID 4188 
 
 # 31. livelihood_activities
 livelihood_options <- list("FISHING","FISH TRADING","FISH PROCESSING","AGRICULTURE","LIVESTOCK KEEPING","BUSINESS",
@@ -465,7 +488,13 @@ BMU <- BMU %>%
 fishing <- tanganyika %>% select(272:289, 298, 312)
 fishing <- fishing %>% rename_with(~ c("fisher_present", "fisher_code", "fisheries_resources", "rights_access", "security_rights", "relationship_officer", "current_problems", 
                                        "decision_making", "participation_description", "satisfaction_involvement", "awareness_reserves", "purpose_reserves", "opinion_reserves", 
-                                       "opinion_reason", "sustainability_population", "sufficiency_fish", "sufficiency_reasons", "boat_type", "fishing_gear", "gear_other"))
+                                       "opinion_reason", "sustainability_population", "sufficiency_fish", "sufficiency_reasons", "boat_type", "fishing_gear", "gear_other")) %>%
+  mutate(fisher_code = toupper(gsub("\\s+", "", gsub("\\.0$", "", fisher_code))),        # Cleans the household IDs in the "code" column by removing ".0" and spacing as well as changing to upper case
+         fisher_code = gsub("[\r\n]", "", fisher_code),  
+         fisher_code = case_when(
+           fisher_code == "7728" ~ "7302", 
+           fisher_code == "1384" ~ "1382", 
+           fisher_code == "1.5316B2.5316C" ~ "5316", TRUE ~ fisher_code)) # Append correct household ID code for the fisher that's present
 
 
 # List of boat options
