@@ -17,7 +17,7 @@ ggsave <- function(..., bg = 'white') ggplot2::ggsave(..., bg = bg)
 rm(list=ls())
 
 # Add Sustain East Africa colour pallette
-SEA_palette <- c("#d77e5e", "#a4b792", "#e6e7e2", "#3d5919", "#202C39", "#381D2A", "#000000","#202C39", "#d77e5e")
+SEA_palette <- c("#d77e5e", "#a4b792", "#e6e7e2", "#3d5919", "#202C39", "#381D2A", "#000000")
 
 # import cleaned Tanganyika household survey data with --------------------------------- 
 tanganyika_clean <- readRDS("tanganyika_clean.rds")
