@@ -110,7 +110,7 @@ hh_info_survey_variable <- function(variable_name) {
     geom_errorbar(aes(ymax = pmin(proportion_upp, 1), ymin = pmax(proportion_low, 0)),
                   position = position_dodge(preserve = "single", width = 0.95), width = 0.1)+
     guides(fill = guide_legend(title = NULL)) +
-    scale_fill_manual(values = c("#A9CCE3",  "#2E86C1", "#F5B7B1", "#D091BB", "#BBD4A6", "#FAD7A0", "#DFDFDF", SEA_palette)) +
+    scale_fill_manual(values = c("#A9CCE3",  "#2E86C1", "#F5B7B1", "#D091BB", "#BBD4A6", "#FAD7A0", "#DFDFDF","brown" , SEA_palette)) +
     labs(title = paste("Proportion of", variable_name, "by Village"), x = "Village", y = "Proportion of Households") +
     scale_y_continuous(limits = c(0, 1)) +
     theme_minimal()
@@ -201,7 +201,7 @@ household_item_expanded <- tanganyika_clean %>% select(hh_code, village, househo
   mutate(household_item = trimws(household_item)) %>% drop_na()  
 
 household_item_design <- household_item_expanded %>%
-  as_survey_design(ids = hh_code, strata = stype, fpc = fpc) # Define cluster ID to prevent fpc from >100%
+  as_survey_design(ids = hh_code, strata = stype, fpc = fpc, nest = TRUE)
 
 household_item_data <- household_item_design %>%
   group_by(village, household_item) %>%

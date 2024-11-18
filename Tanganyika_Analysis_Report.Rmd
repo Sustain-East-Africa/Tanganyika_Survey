@@ -53,6 +53,7 @@ SEA_palette <- c("#d77e5e", "#a4b792", "#e6e7e2", "#3d5919", "#202C39", "#381D2A
 
 # Load data
 tanganyika_clean <- readRDS("tanganyika_clean.rds")
+demo <- readRDS("survey_demo.rds")
 
 # Set survey design
 tanganyika_survey <- tanganyika_clean %>%
@@ -139,15 +140,8 @@ Highlight findings
 
 <div class="section-rust">
 
-### Principal livelihoods of the households
-
-Residents surrounding
-
-
-# Population pyramid
-```{r}
-demo <- readRDS("survey_demo.rds")
-
+# Population Pyramid
+```{r, fig.cap='Population pyramid', fig.align='center', out.width = '70%'}
 age_levels <- c("<5", "5-9", "10-14", "15-19", "20-24", "25-29", "30-34",
                 "35-39", "40-44", "45-49", "50-54", "55-59", "60-64",
                 "65-69", "70-74", "75-79", "80+")
@@ -195,98 +189,131 @@ ggplot(demo_summary, aes(x = age_group, y = ifelse(sex == "MALE", -percentage, p
 
 :::
 
-\newpage
+```{r,  fig.cap='Main type of water treatment in the dry season', fig.align='center', out.width = '70%'}
 
-# Self-assessment of the ability to meet daily needs at village level
+treatment_dry_expanded <- tanganyika_clean %>% select(hh_code, village, treatment_method_dry, stype, fpc) %>%
+  separate_rows(treatment_method_dry, sep = "\\|") %>%
+  mutate(treatment_method_dry = trimws(treatment_method_dry)) %>% drop_na()  
 
-# Land acquisition method in percentage of all plots
+treatment_dry_design <- treatment_dry_expanded %>%
+  as_survey_design(strata = stype, fpc = fpc)
 
-# Crops grown
+treatment_data <- treatment_dry_design %>%
+  group_by(village, treatment_method_dry) %>%
+  summarise(proportion = survey_mean(vartype = "ci", na.rm = TRUE), total = survey_total(vartype = "ci", na.rm = TRUE), n = unweighted(n())) %>% ungroup()
 
-# Farming problems
+ggplot(treatment_data, aes(x = village, y = proportion * 100, group = treatment_method_dry, fill = treatment_method_dry)) +
+  geom_bar(stat = "identity", position = position_dodge(preserve = "single"), width = 0.95) +
+  geom_errorbar(aes(ymax = pmin(proportion_upp * 100, 100), ymin = pmax(proportion_low * 100, 0)),
+                position = position_dodge(preserve = "single", width = 0.95), width = 0.1) +
+  guides(fill = guide_legend(title = NULL)) +
+  scale_fill_manual(values = c(SEA_palette)) +
+  labs(x = "Village", y = "Percentage of Households") +
+  sea::scale_fill_sea_discrete() +
+  sea::theme_sea() + 
+  theme(legend.position = "top", legend.direction = "horizontal", legend.justification = "center", axis.text.x = element_text(angle = 45, hjust = 1))
 
-# Proportion of households with at least one fisher at village level
 
-# The importance of fishing and agriculture for fishers’ income
+```
 
-# Type of fishing boats used at village level
 
-# Fishing gear
+Self-assessment of the ability to meet daily needs at village level
 
-# Percent of the catch that is eaten
+```{r,  fig.cap='Self-assessment of the ability to meet daily needs at village level', fig.align='center', out.width = '70%'}
 
-# Relative importance of different species at village level
+village_data <- tanganyika_survey %>%
+  group_by(village, household_ability) %>%
+  summarise(proportion = survey_mean(vartype = "ci", na.rm = TRUE), total = survey_total(vartype = "ci", na.rm = TRUE), n = unweighted(n()))
+  
+ggplot(village_data, aes(x = village, y = proportion*100, group = household_ability, fill = household_ability)) +
+  geom_bar(stat = "identity", position = position_dodge(preserve = "single"), width = 0.95) +
+  geom_errorbar(
+    aes(ymax = pmin(proportion_upp, 1), ymin = pmax(proportion_low, 0)),
+    position = position_dodge(preserve = "single", width = 0.95), width = 0.1) +
+  guides(fill = guide_legend(title = NULL)) +
+  scale_fill_manual(values = c(SEA_palette)) +
+  labs(x = "Village", y = "Percentage of Households") +
+  sea::scale_fill_sea_discrete() +
+  sea::theme_sea() + 
+  theme(legend.position = "top", legend.direction = "horizontal", legend.justification = "center", axis.text.x = element_text(angle = 45, hjust = 1))
 
-# Will there be sufficient fish in the future?
 
-# Frequency of fish consumption
+```
 
-# Change in the consumption of fish compared to 5 years ago
+Type of fishing boats used at village level
 
-# Asset ownership
-
-# Transport ownership
-
-# Main water source in the dry and wet season: % of households using a source
-
-# Main type of water treatment in the dry season
-
-# Number of rooms used for sleeping
-
-# Age-specific school attendance rates
-
-# Proportion of households that borrowed money in the last year at village level
-
-# Distribution of borrowed amounts
-
-# Purpose of the loan
-
-# Source of loans
-
-# Reason for not having borrowed any money in the previous year
-
-# Composite wellbeing indicator: mean scores
-
-# Perception of the relationship between TANAPA and the village at village level
-
-# Knowledge about an environmental management committee in the village
-
-# Proportion that attended a public village meeting
-
-# Statement: “There is sufficient forest close to this village to meet our day-to-day needs.”
-
-# Statements: “Deforestation causes siltation” and “Siltation is harmful to fish”
 ```{r}
 
 ```
 
-# Statements about protection of village forests, and chimpanzees
+Household items
 
-# Statement: “Mahale Mountains National Park should continue to be protected” by village.
+```{r,  fig.cap='Household item ownership', fig.align='center', out.width = '70%'}
+household_item_expanded <- tanganyika_clean %>% select(hh_code, village, household_item, stype, fpc) %>%
+  separate_rows(household_item, sep = "\\|") %>%
+  mutate(household_item = trimws(household_item)) %>% drop_na()  
 
-# Statement: “The national park provides benefits for our community.”
+household_item_design <- household_item_expanded %>%
+  as_survey_design(ids = hh_code, strata = stype, fpc = fpc, nest = TRUE)
 
-Proportion of households that collect forest products
+household_item_data <- household_item_design %>%
+  group_by(household_item) %>%
+  summarise(
+    proportion = survey_mean(vartype = "ci", na.rm = TRUE),
+    total = survey_total(vartype = "ci", na.rm = TRUE),
+    n = unweighted(n())) %>% ungroup()
 
-Number of different forest products collected
+# Create the plot
+ggplot(household_item_data, aes(x = household_item, y = proportion * 100, fill = household_item)) +
+  geom_bar(stat = "identity", width = 0.8) +
+  geom_errorbar(aes(ymax = pmin(proportion_upp, 1), ymin = pmax(proportion_low, 0)),
+                width = 0.2) +
+  guides(fill = guide_legend(title = NULL)) +
+  labs(x = "Household Items", y = "Percentage of Household Ownership") +
+  sea::scale_fill_sea_discrete() +
+  sea::theme_sea() + 
+  theme(legend.position = "top", legend.direction = "horizontal", legend.justification = "center", axis.text.x = element_text(angle = 45, hjust = 1))
 
-Age and sex of the person responsible for the collection of forest products
 
-Proportion of households that collect and sell some of the forest products.
+```
 
-Source of firewood
+Proportion of households that borrowed money in the last year at village level
+```{r}
 
-Proportion of households that think the village population has increased over the last 5 years
+```
 
-Problems caused by population growth
+Purpose of the loan
 
-Occurrence of disputes at village level
+```{r}
 
-Disease prevalence
+```
 
-Change in access to medical care compared to 5 years ago at village level
+Source of loans
 
-Diet: frequency of eating fruit & vegetables, fish, and meat or poultry
+```{r}
+
+```
+
+Reason for not having borrowed any money in the previous year
+
+```{r}
+
+```
+
+Relative importance of different species at village level
+
+```{r}
+
+```
+
+
+### Principal livelihoods of the households
+
+Residents surrounding
+### Principal livelihoods of the households
+
+Residents surrounding
+
 
 ```{r}
 
@@ -351,35 +378,3 @@ output$table  # Display summary table if needed
 <div id="refs">
 ## Bibliography
 </div>
-
-<!-- grey section - for appendix only -->
-<div class="appendix-section-grey">
-
-# Appendix
-
-## Appendix 1
-
-Ex magna consectetur consectetur est pariatur id. Excepteur proident laborum commodo voluptate officia cupidatat commodo ad laborum nulla. Qui ea proident amet fugiat officia consequat fugiat esse sit fugiat in dolor ipsum laborum. Est irure ipsum nisi nostrud commodo duis laborum cupidatat esse ex nostrud consequat officia ad. Proident et ex aliqua in esse sint do reprehenderit voluptate enim cillum duis deserunt irure enim. In laborum sit ipsum aliquip elit do elit nulla nisi laboris voluptate.
-
-\newpage
-
-## Appendix 2
-
-```{r}
-mtcars %>%
-  head(20) %>%
-  sea::sea_table(
-    dark_color = "darkgrey",
-    pale_color = sea_colors("grey"),
-    third_color = "white"
-  ) |>
-  flextable::autofit()
-```
-
-```{r, fig.cap='Image example bis', fig.align='center', out.width = '90%'}
-knitr::include_graphics('img/img_example.jpg')
-```
-
-
-</div>
-
