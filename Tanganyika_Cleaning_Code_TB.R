@@ -559,8 +559,16 @@ colnames(fish_processors) <- gsub("...\\d+", "", colnames(fish_processors))
 
 ################################################################################
 
+# Add locations
+
+loc <- tanganyika %>% select(574:576)
+loc <- loc %>% rename_with(~ c("locat", "locatn_lat", "locatn_long"))
+
+
+################################################################################
+
 tanganyika_clean <- bind_cols(hh, hh_info, hh_items, ppi, house, hh_assets, lh, food, gov,
-                              BMU, fishing, fish_village, fish_traders, fish_processors)
+                              BMU, fishing, fish_village, fish_traders, fish_processors, loc)
 
 tanganyika_clean <- tanganyika_clean %>% 
   mutate(

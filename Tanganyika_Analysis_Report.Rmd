@@ -3,7 +3,7 @@ title: "Baseline Study for the Tuungane Health and Conservation Project"
 subtitle: "Social Assessment of Lake Tanganyika Households"
 author: 
   - "Sustain East Africa"
-date: "March 2024"
+date: "November 2024"
 output: 
   sea::sea_paged:
     draft_watermark: true
@@ -46,10 +46,18 @@ library(cowplot)
 library(egg)
 library(tibble)
 library(fontawesome)
-library(sea)
+library(mapview)
+library(sf)
+library(dplyr)
+library(readxl)
+library(readr)
+library(leaflet)
+library(tidyr)
 
 #Sustain EA colour palette
-SEA_palette <- c("#d77e5e", "#a4b792", "#e6e7e2", "#3d5919", "#202C39", "#381D2A", "#000000")
+SEA_palette <- c("#d77e5e", "#a4b792", "#e6e7e2", "#3d5919", "#202C39", "#381D2A", "#000000",
+                 "#f2a084", "#b9c9b1", "#f0f1ed", "#5b7a2e", "#404b58", "#522a3b", "#1a1a1a", 
+                 "#b15e42", "#839c7a", "#d2d2c8", "#293c14", "#151d29", "#2a171e", "#3c3c3c")
 
 # Load data
 tanganyika_clean <- readRDS("tanganyika_clean.rds")
@@ -58,6 +66,14 @@ demo <- readRDS("survey_demo.rds")
 # Set survey design
 tanganyika_survey <- tanganyika_clean %>%
     as_survey_design(strata = stype, fpc = fpc)
+
+# Create village clusters for plotting
+cluster_1_villages <- c("IZINGA", "KALA", "KATENGE", "KILAMBO CHA MKOLECHI", 
+                        "KIZUMBI", "LYAPINDA", "MPASA", "MWINZA", "NG'ANGA", 
+                        "TUNDU", "WAMPEMBE")
+cluster_2_villages <- c("ISASA", "KALUNGU", "KICHANGANI", "KIPILI", 
+                        "MAJENGO MAPYA", "MANDA KERENGE", "MANDA UHURU", 
+                        "MKINGA", "MTAKUJA", "NTANGANYIKA")
 ```
 
 ### Disclaimer
@@ -140,7 +156,15 @@ Highlight findings
 
 <div class="section-rust">
 
-# Population Pyramid
+Map of villages by household sample size
+
+```{r, fig.cap='Map of lake Tanganyika with sample sizes from each locations', fig.align='center', out.width = '70%'}
+knitr::include_graphics('img/village_sample_size_map.png')
+```
+
+
+Population Pyramid
+
 ```{r, fig.cap='Population pyramid', fig.align='center', out.width = '70%'}
 age_levels <- c("<5", "5-9", "10-14", "15-19", "20-24", "25-29", "30-34",
                 "35-39", "40-44", "45-49", "50-54", "55-59", "60-64",
@@ -181,10 +205,10 @@ demo_summary <- demo %>%
 ggplot(demo_summary, aes(x = age_group, y = ifelse(sex == "MALE", -percentage, percentage), fill = sex)) +
   geom_bar(stat = "identity", width = 0.8) +
   coord_flip() +
-  scale_y_continuous(labels = abs, limits = c(-10, 10)) +
-  labs(title = "Population Pyramid", x = "Age Group", y = "Percentage of Total Population") +
-  scale_fill_manual(values = c("MALE" =  "#3d5919", "FEMALE" =  "#a4b792")) +
-  theme_minimal()
+  scale_y_continuous(labels = function(x) paste0(abs(x), "%"), limits = c(-10, 10)) +
+  labs(x = "Age Group", y = "Percentage of Total Population") +
+  sea::scale_fill_sea_discrete() +
+  sea::theme_sea()
 ```
 
 :::
@@ -195,11 +219,14 @@ treatment_dry_expanded <- tanganyika_clean %>% select(hh_code, village, treatmen
   separate_rows(treatment_method_dry, sep = "\\|") %>%
   mutate(treatment_method_dry = trimws(treatment_method_dry)) %>% drop_na()  
 
+treatment_dry_expanded <- treatment_dry_expanded %>%
+  mutate(cluster = case_when(village %in% cluster_1_villages ~ "Cluster 1", village %in% cluster_2_villages ~ "Cluster 2", TRUE ~ "Other"))
+
 treatment_dry_design <- treatment_dry_expanded %>%
   as_survey_design(strata = stype, fpc = fpc)
 
 treatment_data <- treatment_dry_design %>%
-  group_by(village, treatment_method_dry) %>%
+  group_by(village, cluster, treatment_method_dry) %>%
   summarise(proportion = survey_mean(vartype = "ci", na.rm = TRUE), total = survey_total(vartype = "ci", na.rm = TRUE), n = unweighted(n())) %>% ungroup()
 
 ggplot(treatment_data, aes(x = village, y = proportion * 100, group = treatment_method_dry, fill = treatment_method_dry)) +
@@ -207,11 +234,14 @@ ggplot(treatment_data, aes(x = village, y = proportion * 100, group = treatment_
   geom_errorbar(aes(ymax = pmin(proportion_upp * 100, 100), ymin = pmax(proportion_low * 100, 0)),
                 position = position_dodge(preserve = "single", width = 0.95), width = 0.1) +
   guides(fill = guide_legend(title = NULL)) +
-  scale_fill_manual(values = c(SEA_palette)) +
+  scale_fill_manual(values = SEA_palette) +
   labs(x = "Village", y = "Percentage of Households") +
   sea::scale_fill_sea_discrete() +
   sea::theme_sea() + 
-  theme(legend.position = "top", legend.direction = "horizontal", legend.justification = "center", axis.text.x = element_text(angle = 45, hjust = 1))
+  theme(legend.position = "bottom",  legend.direction = "horizontal",  legend.justification = "center", 
+        axis.text.x = element_text(angle = 45, hjust = 1), strip.text = element_blank(), legend.box = 
+        "horizontal") + facet_wrap(~cluster, ncol = 1, scales = "free_x")
+
 
 
 ```
@@ -223,35 +253,70 @@ Self-assessment of the ability to meet daily needs at village level
 
 village_data <- tanganyika_survey %>%
   group_by(village, household_ability) %>%
-  summarise(proportion = survey_mean(vartype = "ci", na.rm = TRUE), total = survey_total(vartype = "ci", na.rm = TRUE), n = unweighted(n()))
-  
-ggplot(village_data, aes(x = village, y = proportion*100, group = household_ability, fill = household_ability)) +
+  summarise(
+    proportion = survey_mean(vartype = "ci", na.rm = TRUE), 
+    total = survey_total(vartype = "ci", na.rm = TRUE), 
+    n = unweighted(n())) %>%
+  mutate(cluster = case_when(village %in% cluster_1_villages ~ "Cluster 1", village %in% cluster_2_villages ~ "Cluster 2"))
+
+ggplot(village_data, aes(x = village, y = proportion * 100, group = household_ability, fill = household_ability)) +
   geom_bar(stat = "identity", position = position_dodge(preserve = "single"), width = 0.95) +
   geom_errorbar(
-    aes(ymax = pmin(proportion_upp, 1), ymin = pmax(proportion_low, 0)),
-    position = position_dodge(preserve = "single", width = 0.95), width = 0.1) +
-  guides(fill = guide_legend(title = NULL)) +
-  scale_fill_manual(values = c(SEA_palette)) +
+    aes(ymax = pmin(proportion_upp, 1) * 100, ymin = pmax(proportion_low, 0) * 100),
+    position = position_dodge(preserve = "single", width = 0.95), 
+    width = 0.1) +
+  guides(fill = guide_legend(title = NULL, nrow = 2)) +
+  scale_fill_manual(values = SEA_palette) +
   labs(x = "Village", y = "Percentage of Households") +
   sea::scale_fill_sea_discrete() +
   sea::theme_sea() + 
-  theme(legend.position = "top", legend.direction = "horizontal", legend.justification = "center", axis.text.x = element_text(angle = 45, hjust = 1))
-
+  theme(legend.position = "top",  legend.direction = "horizontal",  legend.justification = "center", 
+        axis.text.x = element_text(angle = 45, hjust = 1), strip.text = element_blank(), legend.box = 
+        "horizontal") + facet_wrap(~cluster, ncol = 1, scales = "free_x") +
+  scale_y_continuous(labels = label_percent(scale = 1))
 
 ```
 
 Type of fishing boats used at village level
 
-```{r}
+```{r,  fig.cap='Type of fishing boats used at village level', fig.align='center', out.width = '80%'}
+boat_type_expanded <- tanganyika_clean %>% select(hh_code, village, boat_type, stype, fpc) %>%
+  separate_rows(boat_type, sep = "\\|") %>%
+  mutate(boat_type = trimws(boat_type)) %>% drop_na()  
+
+boat_type_expanded <- boat_type_expanded %>%
+  mutate(cluster = case_when(village %in% cluster_1_villages ~ "Cluster 1", village %in% cluster_2_villages
+                             ~ "Cluster 2", TRUE ~ "Other"))
+
+boat_type_design <- boat_type_expanded %>%
+  as_survey_design(strata = stype, fpc = fpc)
+
+boat_type_data <- boat_type_design %>%
+  group_by(village, cluster, boat_type) %>%
+  summarise(proportion = survey_mean(vartype = "ci", na.rm = TRUE), total = survey_total(vartype = "ci", na.rm = TRUE), n = unweighted(n())) %>% ungroup()
+
+ggplot(boat_type_data, aes(x = village, y = proportion * 100, group = boat_type, fill = boat_type)) +
+  geom_bar(stat = "identity", position = position_dodge(preserve = "single"), width = 0.95) +
+  geom_errorbar(aes(ymax = pmin(proportion_upp * 100, 100), ymin = pmax(proportion_low * 100, 0)),
+                position = position_dodge(preserve = "single", width = 0.95), width = 0.1) +
+  guides(fill = guide_legend(title = NULL)) +
+  labs(x = "Village", y = "Percentage of Households") +
+  sea::scale_fill_sea_discrete() +
+  sea::theme_sea() + 
+  theme(legend.position = "top",  legend.direction = "horizontal",  legend.justification = "center", 
+        axis.text.x = element_text(angle = 45, hjust = 1), strip.text = element_blank(), legend.box = 
+        "horizontal") + facet_wrap(~cluster, ncol = 1, scales = "free_x") +
+  scale_y_continuous(labels = label_percent(scale = 1))
 
 ```
 
-Household items
+# Household items
 
-```{r,  fig.cap='Household item ownership', fig.align='center', out.width = '70%'}
+```{r,  fig.cap='Household item ownership', fig.align='center', out.width = '80%'}
 household_item_expanded <- tanganyika_clean %>% select(hh_code, village, household_item, stype, fpc) %>%
   separate_rows(household_item, sep = "\\|") %>%
-  mutate(household_item = trimws(household_item)) %>% drop_na()  
+  mutate(household_item = trimws(household_item)) %>% 
+  filter(!is.na(household_item) & household_item != "") %>% drop_na()  
 
 household_item_design <- household_item_expanded %>%
   as_survey_design(ids = hh_code, strata = stype, fpc = fpc, nest = TRUE)
@@ -266,7 +331,7 @@ household_item_data <- household_item_design %>%
 # Create the plot
 ggplot(household_item_data, aes(x = household_item, y = proportion * 100, fill = household_item)) +
   geom_bar(stat = "identity", width = 0.8) +
-  geom_errorbar(aes(ymax = pmin(proportion_upp, 1), ymin = pmax(proportion_low, 0)),
+  geom_errorbar(aes(ymax = pmin(proportion_upp, 1)*100, ymin = pmax(proportion_low, 0)*100),
                 width = 0.2) +
   guides(fill = guide_legend(title = NULL)) +
   labs(x = "Household Items", y = "Percentage of Household Ownership") +
@@ -277,32 +342,102 @@ ggplot(household_item_data, aes(x = household_item, y = proportion * 100, fill =
 
 ```
 
-Proportion of households that borrowed money in the last year at village level
-```{r}
+# Proportion of households that borrowed money in the last year at village level
+```{r,  fig.cap='Proportion of households that borrowed money in the last year at village level', fig.align='center', out.width = '80%'}
+village_data <- tanganyika_survey %>%
+  group_by(village, borrow_status) %>%
+  summarise(proportion = survey_mean(vartype = "ci", na.rm = TRUE), 
+            total = survey_total(vartype = "ci", na.rm = TRUE), 
+            n = unweighted(n())) %>%
+  mutate(cluster = case_when(village %in% cluster_1_villages ~ "Cluster 1", village %in% cluster_2_villages ~ "Cluster 2"))
+
+# Filter for "YES" entries in borrow_status
+village_data_yes <- village_data %>%
+  filter(borrow_status == "YES")
+
+# Create the plot
+ggplot(village_data_yes, aes(x = village, y = proportion * 100, group = borrow_status, fill = borrow_status)) +
+  geom_bar(stat = "identity", position = position_dodge(preserve = "single"), width = 0.95) +
+  geom_errorbar(
+    aes(ymax = pmin(proportion_upp, 1) * 100, ymin = pmax(proportion_low, 0) * 100),
+    position = position_dodge(preserve = "single", width = 0.95), 
+    width = 0.1) +
+  # Add percentage labels above the error bars
+  geom_text(aes(label = paste0(round(proportion * 100, 1), "%")), 
+            position = position_dodge(width = 0.95), 
+            vjust = -1.5, size = 3) +  # Adjust 'vjust' to move labels above error bars
+  guides(fill = guide_legend(title = NULL, nrow = 2)) +
+  scale_fill_manual(values = SEA_palette) +
+  sea::scale_fill_sea_discrete() +
+  sea::theme_sea() + 
+  theme(
+    legend.position = "none",  
+    axis.text.x = element_text(angle = 45, hjust = 1), 
+    strip.text = element_blank(), 
+    axis.text.y = element_blank(),  
+    axis.title.x = element_blank(),  
+    axis.title.y = element_blank()) + 
+  facet_wrap(~cluster, ncol = 1, scales = "free_x") +
+  scale_y_continuous(labels = NULL)  
+
 
 ```
 
-Purpose of the loan
+# Reason for not having borrowed any money in the previous year
 
-```{r}
+```{r,  fig.cap='Reason for not having borrowed any money in the previous year', fig.align='center', out.width = '70%'}
+village_data <- tanganyika_survey %>%
+    group_by(not_borrowed) %>%
+    summarise(proportion = survey_mean(vartype = "ci", na.rm = TRUE), total = survey_total(vartype = "ci", na.rm = TRUE), n = unweighted(n())) %>% drop_na()
 
-```
-
-Source of loans
-
-```{r}
-
-```
-
-Reason for not having borrowed any money in the previous year
-
-```{r}
-
+ggplot(village_data, aes(x = not_borrowed, y = proportion * 100, fill = not_borrowed)) +
+  geom_bar(stat = "identity", width = 0.8) +
+  geom_errorbar(aes(ymax = pmin(proportion_upp, 1) * 100, ymin = pmax(proportion_low, 0) *100), width = 0.2) +
+  guides(fill = guide_legend(title = NULL)) +
+  labs(x = NULL, y = "Percentage of Household Ownership") +  
+  sea::scale_fill_sea_discrete() +
+  sea::theme_sea() + 
+  theme(legend.position = "right", legend.direction = "vertical", axis.text.x = element_blank()) +
+  scale_y_continuous(labels = label_percent(scale = 1))
 ```
 
 Relative importance of different species at village level
 
 ```{r}
+fish_importance_vars <- c("dagaa_importance", "migebuka_importance", "kungura_importance", "ngege_importance", "kuhe_importance", "sangara_importance")
+
+# Reshape the data to long format
+fish_importance_long <- tanganyika_clean %>%
+  pivot_longer(cols = all_of(fish_importance_vars), names_to = "fish_species", values_to = "Importance")%>%
+  mutate(Fish_Species = str_replace(fish_species, "_importance", "") %>% str_to_title())
+
+fish_importance_long <- fish_importance_long %>%
+  mutate(cluster = case_when(village %in% cluster_1_villages ~ "Cluster 1", village %in% cluster_2_villages
+                             ~ "Cluster 2", TRUE ~ "Other"))
+
+fish_importance_design <- fish_importance_long %>%
+  as_survey_design(strata = stype, fpc = fpc, variables = c(stype, fpc, village, cluster, fish_species, Importance))
+
+
+village_data <- fish_importance_design %>%
+    group_by(village, cluster, fish_species) %>%
+    summarise(proportion = survey_mean(vartype = "ci", na.rm = TRUE), total = survey_total(vartype = "ci", na.rm = TRUE), n = unweighted(n())) %>% ungroup()
+
+  # Create the combined plot for all fish species
+ggplot(village_data, aes(x = village, y = proportion * 100, group = fish_species, fill = fish_species)) +
+  geom_bar(stat = "identity", position = position_dodge(preserve = "single"), width = 0.95) +
+  geom_errorbar(aes(ymax = pmin(proportion_upp * 100, 100), ymin = pmax(proportion_low * 100, 0)),
+                position = position_dodge(preserve = "single", width = 0.95), width = 0.1) +
+  guides(fill = guide_legend(title = NULL)) +
+  labs(x = "Village", y = "Percentage of Households") +
+  sea::scale_fill_sea_discrete() +
+  sea::theme_sea() + 
+  theme(legend.position = "top",  legend.direction = "horizontal",  legend.justification = "center", 
+        axis.text.x = element_text(angle = 45, hjust = 1), strip.text = element_blank(), legend.box = 
+        "horizontal") + facet_wrap(~cluster, ncol = 1, scales = "free_x") +
+  scale_y_continuous(labels = label_percent(scale = 1))
+ 
+
 
 ```
 
