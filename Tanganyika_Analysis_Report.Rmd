@@ -6,7 +6,7 @@ author:
 date: "November 2024"
 output: 
   sea::sea_paged:
-    draft_watermark: true
+    draft_watermark: false
     remove_footer_title: true
     number_sections: false
     front_cover:
@@ -76,6 +76,8 @@ cluster_2_villages <- c("ISASA", "KALUNGU", "KICHANGANI", "KIPILI",
                         "MKINGA", "MTAKUJA", "NTANGANYIKA")
 ```
 
+::: 
+
 ### Disclaimer
 
 Disclaimer
@@ -97,21 +99,11 @@ Acknowledgements
 ::: {.section-gunmetal-inverse}
 # Summary
 
-## Context
-
-Provide breif overview of context.
-
-## Key findings
-
-### Positive social impacts
-
-Provide Broad overview of key findings
+Provide broad overview of key findings
 
 :::
 
 # Introduction
-
-Introduction
 
 </div>
 
@@ -120,41 +112,6 @@ Introduction
 
 <!-- quote -->
 > This is how to do a quote
-
-
-```{r}
-sea::add_lot_link(caption = 'Caption of table with flextable')
-
-mtcars %>%
-  head(7) %>%
-  sea::sea_table(
-    dark_color = sea_colors("rust_orange"),
-    pale_color = sea_colors("grey"),
-    third_color = "white"
-  ) |>
-  flextable::autofit()
-```
-:::
-:::
-
-</article>
-
-<!-- inverse rust page -->
-
-::: {.section-rust-inverse}
-# Findings
-
-## Characteristics of the respondents
-
-### Household head's gender, age, and average number of children
-
-Highlight findings
-
-:::
-
-<!-- rust page -->
-
-<div class="section-rust">
 
 Map of villages by household sample size
 
@@ -212,6 +169,29 @@ ggplot(demo_summary, aes(x = age_group, y = ifelse(sex == "MALE", -percentage, p
 ```
 
 :::
+:::
+
+</article>
+
+<!-- inverse rust page -->
+
+::: {.section-rust-inverse}
+# Findings
+
+## Characteristics of the respondents
+
+### Household head's gender, age, and average number of children
+
+Highlight findings
+
+:::
+
+<!-- rust page -->
+
+<div class="section-rust">
+
+
+:::
 
 ```{r,  fig.cap='Main type of water treatment in the dry season', fig.align='center', out.width = '70%'}
 
@@ -239,17 +219,42 @@ ggplot(treatment_data, aes(x = village, y = proportion * 100, group = treatment_
   sea::scale_fill_sea_discrete() +
   sea::theme_sea() + 
   theme(legend.position = "bottom",  legend.direction = "horizontal",  legend.justification = "center", 
-        axis.text.x = element_text(angle = 45, hjust = 1), strip.text = element_blank(), legend.box = 
-        "horizontal") + facet_wrap(~cluster, ncol = 1, scales = "free_x")
+        axis.text.x = element_text(size = 8), strip.text = element_blank(), legend.box = 
+        "horizontal") + facet_wrap(~cluster, ncol = 1, scales = "free_x")+
+  scale_x_discrete(labels = function(x) str_wrap(x, width = 10))
 
 
+
+```
+
+Main type of water treatment in the dry season 
+
+```{r,  fig.cap='Main type of water treatment in the dry season', fig.align='center', out.width = '80%'}
+village_data <- tanganyika_survey %>%
+  group_by(drinking_water_dry) %>%
+  summarise(
+    proportion = survey_mean(vartype = "ci", na.rm = TRUE), 
+    total = survey_total(vartype = "ci", na.rm = TRUE), 
+    n = unweighted(n()))
+
+ggplot(village_data, aes(x = drinking_water_dry, y = proportion * 100, fill = drinking_water_dry)) +
+  geom_bar(stat = "identity", width = 0.8) +
+  geom_errorbar(aes(ymax = pmin(proportion_upp, 1)*100, ymin = pmax(proportion_low, 0)*100),
+                width = 0.2) +
+  guides(fill = guide_legend(title = NULL)) +
+  labs(x = "Household Items", y = "") +
+  sea::scale_fill_sea_discrete() +
+  sea::theme_sea() + 
+  theme(legend.position = "top", legend.direction = "horizontal", legend.justification = "center", axis.text.x = element_text(size = 8))+
+  scale_y_continuous(labels = label_percent(scale = 1))+
+  scale_x_discrete(labels = function(x) str_wrap(x, width = 10))
 
 ```
 
 
 Self-assessment of the ability to meet daily needs at village level
 
-```{r,  fig.cap='Self-assessment of the ability to meet daily needs at village level', fig.align='center', out.width = '70%'}
+```{r,  fig.cap='Self-assessment of the ability to meet daily needs at village level', fig.align='center', out.width = '90%'}
 
 village_data <- tanganyika_survey %>%
   group_by(village, household_ability) %>%
@@ -271,9 +276,10 @@ ggplot(village_data, aes(x = village, y = proportion * 100, group = household_ab
   sea::scale_fill_sea_discrete() +
   sea::theme_sea() + 
   theme(legend.position = "top",  legend.direction = "horizontal",  legend.justification = "center", 
-        axis.text.x = element_text(angle = 45, hjust = 1), strip.text = element_blank(), legend.box = 
+        axis.text.x = element_text(size = 8), strip.text = element_blank(), legend.box = 
         "horizontal") + facet_wrap(~cluster, ncol = 1, scales = "free_x") +
-  scale_y_continuous(labels = label_percent(scale = 1))
+  scale_y_continuous(labels = label_percent(scale = 1))+
+  scale_x_discrete(labels = function(x) str_wrap(x, width = 10))
 
 ```
 
@@ -304,15 +310,16 @@ ggplot(boat_type_data, aes(x = village, y = proportion * 100, group = boat_type,
   sea::scale_fill_sea_discrete() +
   sea::theme_sea() + 
   theme(legend.position = "top",  legend.direction = "horizontal",  legend.justification = "center", 
-        axis.text.x = element_text(angle = 45, hjust = 1), strip.text = element_blank(), legend.box = 
+        axis.text.x = element_text(size = 8), strip.text = element_blank(), legend.box = 
         "horizontal") + facet_wrap(~cluster, ncol = 1, scales = "free_x") +
-  scale_y_continuous(labels = label_percent(scale = 1))
+  scale_y_continuous(labels = label_percent(scale = 1))+
+  scale_x_discrete(labels = function(x) str_wrap(x, width = 10))
 
 ```
 
-# Household items
+Household items
 
-```{r,  fig.cap='Household item ownership', fig.align='center', out.width = '80%'}
+```{r,  fig.cap='Household item ownership', fig.align='center', out.width = '100%'}
 household_item_expanded <- tanganyika_clean %>% select(hh_code, village, household_item, stype, fpc) %>%
   separate_rows(household_item, sep = "\\|") %>%
   mutate(household_item = trimws(household_item)) %>% 
@@ -337,12 +344,14 @@ ggplot(household_item_data, aes(x = household_item, y = proportion * 100, fill =
   labs(x = "Household Items", y = "Percentage of Household Ownership") +
   sea::scale_fill_sea_discrete() +
   sea::theme_sea() + 
-  theme(legend.position = "top", legend.direction = "horizontal", legend.justification = "center", axis.text.x = element_text(angle = 45, hjust = 1))
+  theme(legend.position = "top", legend.direction = "horizontal", legend.justification = "center", axis.text.x = element_text(angle = 45, hjust = 1))+
+  scale_y_continuous(labels = label_percent(scale = 1))
 
 
 ```
 
-# Proportion of households that borrowed money in the last year at village level
+Proportion of households that borrowed money in the last year at village level
+
 ```{r,  fig.cap='Proportion of households that borrowed money in the last year at village level', fig.align='center', out.width = '80%'}
 village_data <- tanganyika_survey %>%
   group_by(village, borrow_status) %>%
@@ -372,18 +381,20 @@ ggplot(village_data_yes, aes(x = village, y = proportion * 100, group = borrow_s
   sea::theme_sea() + 
   theme(
     legend.position = "none",  
-    axis.text.x = element_text(angle = 45, hjust = 1), 
+    axis.text.x = element_text(size=8), 
     strip.text = element_blank(), 
     axis.text.y = element_blank(),  
     axis.title.x = element_blank(),  
     axis.title.y = element_blank()) + 
   facet_wrap(~cluster, ncol = 1, scales = "free_x") +
-  scale_y_continuous(labels = NULL)  
+  scale_x_discrete(labels = function(x) str_wrap(x, width = 10))+
+  scale_y_continuous(labels = NULL) +
+  scale_x_discrete(labels = function(x) str_wrap(x, width = 10))
 
 
 ```
 
-# Reason for not having borrowed any money in the previous year
+Reason for not having borrowed any money in the previous year
 
 ```{r,  fig.cap='Reason for not having borrowed any money in the previous year', fig.align='center', out.width = '70%'}
 village_data <- tanganyika_survey %>%
@@ -406,37 +417,52 @@ Relative importance of different species at village level
 ```{r}
 fish_importance_vars <- c("dagaa_importance", "migebuka_importance", "kungura_importance", "ngege_importance", "kuhe_importance", "sangara_importance")
 
-# Reshape the data to long format
 fish_importance_long <- tanganyika_clean %>%
-  pivot_longer(cols = all_of(fish_importance_vars), names_to = "fish_species", values_to = "Importance")%>%
-  mutate(Fish_Species = str_replace(fish_species, "_importance", "") %>% str_to_title())
+  pivot_longer(cols = all_of(fish_importance_vars), names_to = "Fish_Species", values_to = "Importance") %>%
+  mutate(Fish_Species = str_replace(Fish_Species, "_importance", "") %>% str_to_title())
 
 fish_importance_long <- fish_importance_long %>%
   mutate(cluster = case_when(village %in% cluster_1_villages ~ "Cluster 1", village %in% cluster_2_villages
                              ~ "Cluster 2", TRUE ~ "Other"))
 
-fish_importance_design <- fish_importance_long %>%
-  as_survey_design(strata = stype, fpc = fpc, variables = c(stype, fpc, village, cluster, fish_species, Importance))
+strat_design <- fish_importance_long %>%
+  as_survey_design(strata = stype, fpc = fpc)
 
+aggregate_fish_importance <- strat_design %>%
+  group_by(village, cluster, Fish_Species) %>%
+  summarise(
+    mean_importance = survey_mean(Importance, vartype = "ci", na.rm = TRUE),
+    mean_importance_low = survey_mean(Importance, vartype = "ci", na.rm = TRUE, level = 0.95)[["ci_low"]],
+    mean_importance_upp = survey_mean(Importance, vartype = "ci", na.rm = TRUE, level = 0.95)[["ci_upp"]],
+    n = unweighted(n())
+  ) %>%
+  ungroup() %>%
+  group_by(village) %>%
+  mutate(
+    total_importance = sum(mean_importance, na.rm = TRUE), # Total importance per village
+    mean_importance_percent = (mean_importance / total_importance) * 100, # Relative percentage
+    mean_importance_percent_low = (mean_importance_low / total_importance) * 100, # Lower bound of percentage
+    mean_importance_percent_upp = (mean_importance_upp / total_importance) * 100  # Upper bound of percentage
+  )
 
-village_data <- fish_importance_design %>%
-    group_by(village, cluster, fish_species) %>%
-    summarise(proportion = survey_mean(vartype = "ci", na.rm = TRUE), total = survey_total(vartype = "ci", na.rm = TRUE), n = unweighted(n())) %>% ungroup()
-
-  # Create the combined plot for all fish species
-ggplot(village_data, aes(x = village, y = proportion * 100, group = fish_species, fill = fish_species)) +
+# Plot using relative percentages
+ggplot(aggregate_fish_importance, aes(x = village, y = mean_importance_percent, group = Fish_Species, fill = Fish_Species)) +
   geom_bar(stat = "identity", position = position_dodge(preserve = "single"), width = 0.95) +
-  geom_errorbar(aes(ymax = pmin(proportion_upp * 100, 100), ymin = pmax(proportion_low * 100, 0)),
-                position = position_dodge(preserve = "single", width = 0.95), width = 0.1) +
-  guides(fill = guide_legend(title = NULL)) +
-  labs(x = "Village", y = "Percentage of Households") +
+  geom_errorbar(aes(ymin = mean_importance_percent_low, ymax = mean_importance_percent_upp),
+                position = position_dodge(width = 0.95), width = 0.2) +
+  labs(x = "Village", y = "Relative Importance (%)") +
+  guides(fill = guide_legend(title = NULL)) + # Remove legend title
   sea::scale_fill_sea_discrete() +
   sea::theme_sea() + 
-  theme(legend.position = "top",  legend.direction = "horizontal",  legend.justification = "center", 
-        axis.text.x = element_text(angle = 45, hjust = 1), strip.text = element_blank(), legend.box = 
-        "horizontal") + facet_wrap(~cluster, ncol = 1, scales = "free_x") +
-  scale_y_continuous(labels = label_percent(scale = 1))
- 
+  theme(legend.position = "top", 
+        legend.direction = "horizontal", 
+        legend.justification = "center", 
+        axis.text.x = element_text(size = 8), 
+        strip.text = element_blank(), 
+        legend.box = "horizontal") + 
+  facet_wrap(~cluster, ncol = 1, scales = "free_x")+
+  scale_y_continuous(labels = label_percent(scale = 1))+
+  scale_x_discrete(labels = function(x) str_wrap(x, width = 10))
 
 
 ```
@@ -512,4 +538,3 @@ output$table  # Display summary table if needed
 <!-- putting bibliography before appendix -->
 <div id="refs">
 ## Bibliography
-</div>

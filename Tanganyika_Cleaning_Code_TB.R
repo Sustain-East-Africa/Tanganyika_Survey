@@ -554,8 +554,13 @@ fish_traders <- fish_traders %>% rename_with(~ c("trader_present", "trader_code"
                                                  "trading_challenges", "trading_opportunities", "business_group_membership", "cooperative_fico", "cooperative_fico_name", "cocoba_savings", "cocoba_savings_name", "other_trading_group", "other_trading_group_name", "trading_group_helpfulness", "trading_tnc_supported", "trading_other_agency", "trading_other_agency_name", "trading_long_term"))
 
 # Livelihood Practices of Fish Processors
-fish_processors <- tanganyika %>% select(492:494, 495, 505, 506, 521, 522:528, 529:542, 543:553, 556:566, 569)
-colnames(fish_processors) <- gsub("...\\d+", "", colnames(fish_processors))
+fish_processors <- tanganyika %>% select(493,494, 495, 505, 506, 521, 522:528, 529:542, 543:553, 556:566, 569)
+fish_processors <- fish_processors %>% rename_with(~ c("processor_present", "processor_code", "processing_form", "processing_form_other", "processing_equipment", "processing_equipment_other", "processing_target_type", "dagaa_process_season", "migebuka_process_season", "kungura_process_season", "ngege_process_season", "kuhe_process_season", "sangara_process_season", 
+                                                 "process_best", "dagaa_process_best", "migebuka_process_best", "kungura_process_best", "ngege_process_best", "kuhe_process_best", "sangara_process_best",
+                                                 "process_worst", "dagaa_process_worst", "migebuka_process_worst", "kungura_process_worst", "ngege_process_worst", "kuhe_process_worst", "sangara_process_worst",
+                                                 "satisfaction_process", "satisfaction_process_skills", "process_tools_used", "process_productivity", "process_market_supply", "satisfaction_process_materials", "process_market", "process_income", "process_capital", "process_business_skills", "process_organization_support",
+                                                 "process_business_group_membership", "cooperative_fico_process", "cooperative_fico_name_process", "cocoba_savings_process", "cocoba_savings_name_process", "other_process_group", "other_process_group_name", "process_tnc_supported", "process_other_agency", "process_other_agency_name", "process_group_helpfulness", "process_long_term"))
+
 
 ################################################################################
 
