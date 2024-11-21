@@ -14,11 +14,12 @@ library(egg)
 
 rm(list=ls())
 
+################################################################################
 
 ### Preparing the survey demographic data frame ###
 
 # Read excel file
-survey_demo <- read_excel("tanganyika_survey_report/Tanganyika_Responses.xlsx", sheet = "repeat_detail") %>%
+survey_demo <- read_excel("LTP_Baseline_2024_Raw.xlsx", sheet = "repeat_detail") %>%
   rename_with(~ c("code", "relationship_hh_head", "sex", "age", "attending_school", "education_level", 
                   "marital_status", "activity", "activity_reviewed", "other_activity", "fishing"), .cols = 1:11) %>% #Renames the first 11 columns of the repeat_details sheet
   mutate(code = toupper(gsub("\\s+", "", gsub("\\.0$", "", code))),        # Cleans the household IDs in the "code" column by removing ".0" and spacing as well as changing to upper case
@@ -185,11 +186,14 @@ survey_demo <- read_excel("tanganyika_survey_report/Tanganyika_Responses.xlsx", 
          
 saveRDS(survey_demo, "survey_demo.rds")
 
+################################################################################
+
 ### Preparing the survey submissions data frame ###
 
 # Read excel file
-tanganyika <- read_excel("tanganyika_survey_report/Tanganyika_Responses.xlsx", sheet = "TNC Tanganyika - Main Questionn")
+tanganyika <- read_excel("LTP_Baseline_2024_Raw.xlsx", sheet = "TNC Tanganyika - Main Questionn")
 
+# Edit date, start time, and end time 
 tanganyika <- tanganyika %>%
   mutate(`START TIME...1` = as.Date(`START TIME...1`),
          `End Time` = as.Date(`End Time`),
@@ -221,35 +225,34 @@ tanganyika <- tanganyika %>%
                                     `HOUSEHOLD ID CODE` == "3598" ~ "3579",
                                     `HOUSEHOLD ID CODE` == "6678" ~ "5697",
                                     TRUE ~ as.character(`HOUSEHOLD ID CODE`)),
-      code = case_when(code == "1475" & `HOUSEHOLD ID CODE` == "1479" ~ "1479", 
-                       code == "15641564A1564B1564C" ~ "1564",
-                       code == "3295" ~ "1559",
-                       code == "3038" ~ "2038",
-                       code == "3490" ~ "3480",
-                       code == "3034" ~ "3430",
-                       code == "33053305A3305B3305C3305D3305E3305F" ~ "3305", # submitted all hh members isntead of one
-                       code == "30063006A3006B3006C3006D3006E3006F" ~ "3006",
-                       code == "7280" ~ "7283",
+      code = case_when(code == "1475" & `HOUSEHOLD ID CODE` == "1479" ~ "1479", # submitted wrong household ID code
+                       code == "15641564A1564B1564C" ~ "1564", # submitted multiple household ID codes
+                       code == "3295" ~ "1559", # submitted wrong household ID code
+                       code == "3038" ~ "2038", # submitted wrong household ID code
+                       code == "3490" ~ "3480", # submitted wrong household ID code
+                       code == "3034" ~ "3430", # submitted wrong household ID code
+                       code == "33053305A3305B3305C3305D3305E3305F" ~ "3305", # submitted all household members instead of one
+                       code == "30063006A3006B3006C3006D3006E3006F" ~ "3006", # submitted all household members instead of one
+                       code == "7280" ~ "7283", # submitted wrong household ID code
                        TRUE ~ code),
-    `Please help me with the number of the people who normally sleep and eat their meals together in this household, starting with the household head, then the immediate family and then the extended family and other household members.` = case_when(`Please help me with the number of the people who normally sleep and eat their meals together in this household, starting with the household head, then the immediate family and then the extended family and other household members.` == 5 & `HOUSEHOLD ID CODE` == "3803" ~ 6,
-                                                                                                                                                                                                                                                        `Please help me with the number of the people who normally sleep and eat their meals together in this household, starting with the household head, then the immediate family and then the extended family and other household members.` == 4 & `HOUSEHOLD ID CODE` == "7991" ~ 5,
+    `Please help me with the number of the people who normally sleep and eat their meals together in this household, starting with the household head, then the immediate family and then the extended family and other household members.` = case_when(`Please help me with the number of the people who normally sleep and eat their meals together in this household, starting with the household head, then the immediate family and then the extended family and other household members.` == 5 & `HOUSEHOLD ID CODE` == "3803" ~ 6, # submitted wrong numbe rof people in hosuehold
+                                                                                                                                                                                                                                                        `Please help me with the number of the people who normally sleep and eat their meals together in this household, starting with the household head, then the immediate family and then the extended family and other household members.` == 4 & `HOUSEHOLD ID CODE` == "7991" ~ 5, # submitted wrong numbe rof people in hosuehold
                                                                                                                                                                                                                                                         TRUE ~ `Please help me with the number of the people who normally sleep and eat their meals together in this household, starting with the household head, then the immediate family and then the extended family and other household members.`))
 
-# Cleaning column headers
-#colnames(tanganyika) <- gsub("...\\d+", "", colnames(tanganyika))
+################################################################################
 
 ### Dividing the data frame into manageable chunks (per section) and cleaning these ###
 ## Household Roster and General Information ##
-hh <- tanganyika %>% select(1:10, 12:14)
-hh <- hh %>% rename_with(~ c("date", "start_time", "end_time", "interviewer_name", 
+hh <- tanganyika %>% select(1, 4:10, 12:14)
+hh <- hh %>% rename_with(~ c("date", "interviewer_name", 
                              "supervisor_name", "hh_code", "village", "sub_village", 
                              "FPIC", "hh_members", "respondent_code", "born_ward", 
                              "years_lived"))
 
 ## Water, Toilet, Assets, House Information ##
-hh_info <- tanganyika %>% select(15:18, 28:32, 43:47)
+hh_info <- tanganyika %>% select(15:18, 28:32, 42:47)
 hh_info <- hh_info %>% rename_with(~ c("drinking_water_dry", "other_drinking_water_dry", "water_treatment_dry", "treatment_method_dry", "other_water_treatment_dry", "drinking_water_wet", 
-                                       "other_drinking_water_wet", "water_treatment_wet", "treatment_method_wet", "toilet_facilities", "other_toilet_facilities", 
+                                       "other_drinking_water_wet", "water_treatment_wet", "treatment_method_wet", "other_treatment_method_wet", "toilet_facilities", "other_toilet_facilities", 
                                        "shared_facilities", "handwashing_place", "handwashing_show"))
 
 # Function to escape special characters in the options
@@ -283,11 +286,15 @@ hh_info <- hh_info %>%
   mutate(across(c(toilet_facilities), ~ separate_options(., toilet_facility_options))) %>%
   mutate(across(c(handwashing_show), ~ separate_options(., handwashing_facility_options)))
 
+################################################################################
+
 ## Household Items Questions ##
 hh_items <- tanganyika %>% select(57:69)
 hh_items <- hh_items %>%
   rowwise() %>% mutate(household_item = paste(
     names(hh_items)[c_across(everything()) == "YES"],collapse = "|")) %>% ungroup() %>% select(household_item)
+
+################################################################################
 
 ## PPI Food Questions ##
 ppi <- tanganyika %>% select(72:75)
@@ -297,10 +304,10 @@ ppi <- ppi %>%
 
 ## Fuel, Floor, and Wall Materials Questions
 house <- tanganyika %>% select(76:85)
-house <- house %>% rename_with(~ c("cooking_fuel", "other_fuel", "efficient_stove", 
-                                   "stove_usage", "floor_material", "other_floor", 
-                                   "wall_material", "other_wall", "roof_material", 
-                                   "other_roof"))
+house <- house %>% rename_with(~ c("cooking_fuel", "other_fuel", "efficient_stove", "stove_usage", "floor_material", "other_floor", 
+                                   "wall_material", "other_wall", "roof_material", "other_roof"))
+
+################################################################################
 
 ## Household Assets ##
 hh_assets <- tanganyika %>% select(88:92)
@@ -308,13 +315,19 @@ hh_assets <- hh_assets %>%
   rowwise() %>% mutate(household_assets = paste(
     names(hh_assets)[c_across(everything()) == "YES"],collapse = "|")) %>% ungroup() %>% select(household_assets)
 
+################################################################################
+
 ## Livelihoods and Credit ##
 lh <- tanganyika %>% select(6, 93, 109:124, 134:135, 149:153)
 lh <- lh %>% rename_with(~ c("hh_code","livelihood_activities", "other_livelihood", "lh_ranking", "fishing", "trading", "processing", "agriculture", 
                              "livestock", "business", "labour", "employee", "pension", "remittance", "other_lh", "household_ability", "borrow_status",
                              "loan_usage", "other_loan_usage", "borrowing_source", "other_borrowing_source", "not_borrowed", "not_borrowed_other", "cocoba_saccos", "mobile_money")) %>%
                          mutate(trading = case_when(trading == 2 & hh_code == "4188" ~ 1, TRUE ~ trading),
-                                business = case_when(business == 3 & hh_code == "4188" ~ 2, TRUE ~ business)) %>% select(-1) # Append ranking for household ID 4188 
+                                business = case_when(business == 3 & hh_code == "4188" ~ 2, TRUE ~ business), # Append ranking for household ID 4188 
+                                other_livelihood = if_else(hh_code == "483", NA_character_, other_livelihood),
+                                other_lh = if_else(hh_code == "483", NA_real_, other_lh),
+                                employee = if_else(hh_code == "483", 3, employee),
+                                livelihood_activities = if_else(hh_code == "483", "FISHING AGRICULTURE EMPLOYEE", livelihood_activities)) %>% select(-1) # Append ranking for household ID 438 
 
 # 31. livelihood_activities
 livelihood_options <- list("FISHING","FISH TRADING","FISH PROCESSING","AGRICULTURE","LIVESTOCK KEEPING","BUSINESS",
@@ -371,11 +384,12 @@ lh <- lh %>%
   mutate(across(c(borrowing_source), 
     ~ separate_options_borrowing_source(., escaped_borrowing_source_options)))
 
+################################################################################
+
 ## Consumption and Food Security ##
 food <- tanganyika %>% select(154:161, 176:181)
 food <- food %>% rename_with(~ c("dagaa", "migebuka", "other_fish", "primary_source", "primary_source_other", "eat_changed", "worry_shortage", "food_shortage",
                                  "shortage_reason", "shortage_reason_other", "food_availability", "availability_changed", "availability_reason", "availability_reason_other"))
-
 
 # List of month options
 month_options <- list("OCTOBER. 2024","SEPTEMBER. 2024","AUGUST. 2024","JULY. 2024","JUNE. 2024","MAY. 2024",
@@ -396,11 +410,12 @@ food <- food %>%
     c(food_shortage),  
     ~ separate_options_months(., escaped_month_options)))
 
-## Governance and Participation ##
+################################################################################
+
+# Governance and Participation #
 gov <- tanganyika %>% select(182:191, 201:202, 212:214, 229:231)
 gov <- gov %>% rename_with(~ c("hh_influence", "people_trusted", "nearby_trusted", "government_trusted", "village_membership", "group_name", "meeting_attendance", "disputes_conflicts", 
                                "more_less", "conflict_reason", "conflict_other", "conflict_parties", "parties_other", "fair_resolution", "influential_leaders", "other_influential", "leader_position", "BMU_activity"))
-
 
 # List of conflict options
 conflict_options <- list("FISHING IN PROTECTED FISH BREEDING AREAS","USING ILLEGAL FISHING GEAR","CATCHING UNDERSIZED FISH","PRIVATE (FARM) LAND BOUNDARIES",
@@ -458,13 +473,14 @@ gov <- gov %>%
     c(influential_leaders),  
     ~ separate_options_leaders(., escaped_leaders_options)))
 
+################################################################################
+
 # BMU questions
 BMU <- tanganyika %>% select(232:256, 265:270)
 BMU <- BMU %>% rename_with(~ c("awareness_bmu", "bmu_member","tnc_support_bmu", "agency_support", "agency_other", "bmu_women", "bmu_youth", "bmu_activity", "meetings", "patrolling", 
                                "illegal_fishing", "illegal_gears", "raise_awareness", "collect_fees", "engage_activities", "forms_revenue", "forms_other", "collect_data", "other_activity",
                                "other_specify_bmu", "good_leaders", "leaders_elected", "trust_collaboration", "conflcit_interest", "conflict_resolution", "resolution_other", "bmu_bylaws", 
                                "bylaws_followed", "bmu_practice", "bmu_challenges", "bmu_improved"))
-
 
 # List of resolution options
 resolution_options <- list("GO TO THE VILLAGE GOVERNMENT","NEGOTIATE WITH EACH OTHER","DO NOTHING",
@@ -484,7 +500,9 @@ BMU <- BMU %>%
     c(conflict_resolution),  
     ~ separate_options_resolutions(., escaped_resolution_options)))
 
-## Fishing Section ##
+################################################################################
+
+# Fishing Section
 fishing <- tanganyika %>% select(272:289, 298, 312)
 fishing <- fishing %>% rename_with(~ c("fisher_present", "fisher_code", "fisheries_resources", "rights_access", "security_rights", "relationship_officer", "current_problems", 
                                        "decision_making", "participation_description", "satisfaction_involvement", "awareness_reserves", "purpose_reserves", "opinion_reserves", 
@@ -495,7 +513,6 @@ fishing <- fishing %>% rename_with(~ c("fisher_present", "fisher_code", "fisheri
            fisher_code == "7728" ~ "7302", 
            fisher_code == "1384" ~ "1382", 
            fisher_code == "1.5316B2.5316C" ~ "5316", TRUE ~ fisher_code)) # Append correct household ID code for the fisher that's present
-
 
 # List of boat options
 boat_options <- list("DON’T FISH FROM BOAT","CANOE WITHOUT MOTOR","LARGE BOAT WITHOUT ENGINE","LARGE BOAT WITH ENGINE",
@@ -537,38 +554,41 @@ fishing <- fishing %>%
     c(fishing_gear),  
     ~ separate_options_fishing_gear(., escaped_fishing_gear_options)))
 
+################################################################################
+
 # Livelihood Practices of Fishers per Village (Excluding short response)
-fish_village <- tanganyika %>% select(313:320, 321, 327, 333, 339, 345, 351, 357:362, 363:376, 377:387, 388, 389, 390:400, 401, 402)
+fish_village <- tanganyika %>% select(313:320, 321, 327, 333, 339, 345, 351, 357:362, 363:376, 377:387, 388, 389, 390:400, 401:404)
 fish_village <- fish_village %>% rename_with(~ c("fish_importance", "dagaa_importance", "migebuka_importance", "kungura_importance", "ngege_importance", "kuhe_importance", "sangara_importance", "target_type", "dagaa_season", "migebuka_season", "kungura_season", "ngege_season", "kuhe_season", "sangara_season", "time_input", "time_comparison", "time_reason", "selling_destination", "catch_comparison", "catch_reason",
                                                  "sale_price_best", "dagaa_best", "migebuka_best", "kungura_best", "ngege_best", "kuhe_best", "sangara_best",
                                                  "sale_price_worst", "dagaa_worst", "migembuka_worst", "kungura_worst", "ngege_worst", "kuhe_worst", "sangara_worst",
                                                  "satisfaction", "satisfaction_skills", "tools_used", "catch_gained", "market_supply", "satisfaction_purchase", "satisfaction_market", "satisfaction_income", "satisfaction_capital", "business_skills", "organization_support",
-                                                 "fishing_challenges", "fishing_opportunities", "bmu_helpfulness", "group_membership", "cooperative", "cocoba_group", "other_group", "other_group_specify", "tnc_support", "other_agency_support", "name_agency", "group_helpfulness", "group_challenges", "group_improvements", "activity_long_term"))
+                                                 "fishing_challenges", "fishing_opportunities", "bmu_helpfulness", "group_membership", "cooperative", "cocoba_group", "other_group", "other_group_specify", "tnc_support", "other_agency_support", "name_agency", "group_helpfulness", "group_challenges", "group_improvements", "activity_long_term", "activity_long_term_why", "fishing_environmental_impact"))
+
+################################################################################
 
 # Livelihood Practices of Fish Traders
-fish_traders <- tanganyika %>% select(406:412, 413, 419, 425, 431, 437, 443, 449:462, 463:473, 474:481, 482:486, 489)
+fish_traders <- tanganyika %>% select(406:412, 413, 419, 425, 431, 437, 443, 449:462, 463:473, 474:481, 482:488, 489:491)
 fish_traders <- fish_traders %>% rename_with(~ c("trader_present", "trader_code", "trading_form", "trading_form_other", "supply_chain", "fish_sell", "trade_target_type", "dagaa_trade_season", "migebuka_trade_season", "kungura_trade_season", "ngege_trade_season", "kuhe_trade_season", "sangara_trade_season", 
                                                  "trade_best", "dagaa_trade_best", "migebuka_trade_best", "kungura_trade_best", "ngege_trade_best", "kuhe_trade_best", "sangara_trade_best",
                                                  "trade_worst", "dagaa_trade_worst", "migebuka_trade_worst", "kungura_trade_worst", "ngege_trade_worst", "kuhe_trade_worst", "sangara_trade_worst",
-                                                 "satisfaction_trade", "satisfaction_trade_skills", "trade_tools_used", "trade_productivity", "trade_market_supply", "satisfaction_trade_purchase", "trade_market", "trade_income", "trade_capital", "trade_business_skills", "_trade_organization_support",
-                                                 "trading_challenges", "trading_opportunities", "business_group_membership", "cooperative_fico", "cooperative_fico_name", "cocoba_savings", "cocoba_savings_name", "other_trading_group", "other_trading_group_name", "trading_group_helpfulness", "trading_tnc_supported", "trading_other_agency", "trading_other_agency_name", "trading_long_term"))
+                                                 "satisfaction_trade", "satisfaction_trade_skills", "trade_tools_used", "trade_productivity", "trade_market_supply", "satisfaction_trade_purchase", "trade_market", "trade_income", "trade_capital", "trade_business_skills", "trade_organization_support",
+                                                 "trading_challenges", "trading_opportunities", "business_group_membership", "cooperative_fico", "cooperative_fico_name", "cocoba_savings", "cocoba_savings_name", "other_trading_group", "other_trading_group_name", "trading_group_helpfulness", "trading_tnc_supported", "trading_other_agency", "trading_other_agency_name", "trading_group_challenges", "trading_group_opportunities", "trading_long_term", "trading_long_term_why", "trading_environmental_impact"))
+
+################################################################################
 
 # Livelihood Practices of Fish Processors
-fish_processors <- tanganyika %>% select(493,494, 495, 505, 506, 521, 522:528, 529:542, 543:553, 556:566, 569)
+fish_processors <- tanganyika %>% select(493,494, 495, 505, 506, 521, 522:528, 529:542, 543:555, 556:568, 569:571)
 fish_processors <- fish_processors %>% rename_with(~ c("processor_present", "processor_code", "processing_form", "processing_form_other", "processing_equipment", "processing_equipment_other", "processing_target_type", "dagaa_process_season", "migebuka_process_season", "kungura_process_season", "ngege_process_season", "kuhe_process_season", "sangara_process_season", 
                                                  "process_best", "dagaa_process_best", "migebuka_process_best", "kungura_process_best", "ngege_process_best", "kuhe_process_best", "sangara_process_best",
                                                  "process_worst", "dagaa_process_worst", "migebuka_process_worst", "kungura_process_worst", "ngege_process_worst", "kuhe_process_worst", "sangara_process_worst",
-                                                 "satisfaction_process", "satisfaction_process_skills", "process_tools_used", "process_productivity", "process_market_supply", "satisfaction_process_materials", "process_market", "process_income", "process_capital", "process_business_skills", "process_organization_support",
-                                                 "process_business_group_membership", "cooperative_fico_process", "cooperative_fico_name_process", "cocoba_savings_process", "cocoba_savings_name_process", "other_process_group", "other_process_group_name", "process_tnc_supported", "process_other_agency", "process_other_agency_name", "process_group_helpfulness", "process_long_term"))
-
+                                                 "satisfaction_process", "satisfaction_process_skills", "process_tools_used", "process_productivity", "process_market_supply", "satisfaction_process_materials", "process_market", "process_income", "process_capital", "process_business_skills", "process_organization_support", "processing_challenges", "processing_opportunities",
+                                                 "process_business_group_membership", "cooperative_fico_process", "cooperative_fico_name_process", "cocoba_savings_process", "cocoba_savings_name_process", "other_process_group", "other_process_group_name", "process_tnc_supported", "process_other_agency", "process_other_agency_name", "process_group_helpfulness", "process_group_challenges", "process_group_opportunities",  "process_long_term", "process_long_term_why", "processing_environmental_impact"))
 
 ################################################################################
 
 # Add locations
-
 loc <- tanganyika %>% select(574:576)
 loc <- loc %>% rename_with(~ c("locat", "locatn_lat", "locatn_long"))
-
 
 ################################################################################
 
@@ -623,5 +643,5 @@ tanganyika_clean <- tanganyika_clean %>%
       village == "IZINGA" ~ 527,
       village == "MWINZA" ~ 356))
 
-saveRDS(tanganyika_clean, "tanganyika_clean.rds")
-
+saveRDS(tanganyika_clean, "LTP_Baseline_2024_Clean.rds")
+write.xlsx(tanganyika_clean, "LTP_Baseline_2024_Clean.xlsx")
