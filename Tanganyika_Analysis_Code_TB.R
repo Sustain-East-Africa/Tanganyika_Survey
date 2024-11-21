@@ -20,7 +20,7 @@ rm(list=ls())
 SEA_palette <- c("#d77e5e", "#a4b792", "#e6e7e2", "#3d5919", "#202C39", "#381D2A", "#000000")
 
 # import cleaned Tanganyika household survey data with --------------------------------- 
-tanganyika_clean <- readRDS("tanganyika_clean.rds")
+tanganyika_clean <- readRDS("LTP_Baseline_2024_Clean.rds")
 head(tanganyika_clean)
 
 demo <- readRDS("survey_demo.rds")
