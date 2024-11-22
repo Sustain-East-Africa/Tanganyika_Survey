@@ -290,22 +290,31 @@ hh_info <- hh_info %>%
 
 ## Household Items Questions ##
 hh_items <- tanganyika %>% select(57:69)
+hh_items <- hh_items %>% rename_with(~ c("tanesco_power","radio", "television","mobile_phone", "smartphone", "iron", "refrigerator", "generator", "clock", "bed_mattress", "sofa", "table", "solar_panel"))
 hh_items <- hh_items %>%
-  rowwise() %>% mutate(household_item = paste(
-    names(hh_items)[c_across(everything()) == "YES"],collapse = "|")) %>% ungroup() %>% select(household_item)
+  rowwise() %>%
+  mutate(household_item = paste(names(hh_items)[c_across(everything()) == "YES"], collapse = "|")) %>%
+  ungroup()
+hh_items <- hh_items %>%
+  select(household_item, everything())
 
 ################################################################################
 
 ## PPI Food Questions ##
 ppi <- tanganyika %>% select(72:75)
-ppi <- ppi %>%
-  rowwise() %>% mutate(ppi_food = paste(
-    names(ppi)[c_across(everything()) == "YES"],collapse = "|")) %>% ungroup() %>% select(ppi_food)
+ppi <- ppi %>% rename_with(~ c("beef", "milk", "rice", "flour"))
+
+# ppi <- ppi %>%
+#   rowwise() %>% mutate(ppi_food = paste(
+#     names(ppi)[c_across(everything()) == "YES"],collapse = "|")) %>% ungroup() %>% select(ppi_food)
 
 ## Fuel, Floor, and Wall Materials Questions
 house <- tanganyika %>% select(76:85)
-house <- house %>% rename_with(~ c("cooking_fuel", "other_fuel", "efficient_stove", "stove_usage", "floor_material", "other_floor", 
-                                   "wall_material", "other_wall", "roof_material", "other_roof"))
+house <- house %>% rename_with(~ c("cooking_fuel", "other_cooking_fuel", "efficient_stoce", "efficient_stove_use", "floor_material", "other_floor_material", 
+                                   "wall_material", "other_wall_material", "roof_material", "other_roof_material"))
+
+# house <- house %>% rename_with(~ c("cooking_fuel", "other_fuel", "efficient_stove", "stove_usage", "floor_material", "other_floor", 
+#                                    "wall_material", "other_wall", "roof_material", "other_roof"))
 
 ################################################################################
 
@@ -642,6 +651,19 @@ tanganyika_clean <- tanganyika_clean %>%
       village == "NG'ANGA" ~ 172,
       village == "IZINGA" ~ 527,
       village == "MWINZA" ~ 356))
+
+# Merge the specific columns from survey_demo into tanganyika_clean
+tanganyika_clean <- merge(
+  tanganyika_clean,
+  survey_demo[, c("code", "sex", "age", "education_level", "marital_status", "main_activity")],
+  by.x = "hh_code",    # Column in tanganyika_clean
+  by.y = "code",       # Column in survey_demo
+  all.x = FALSE,       # Only retain rows with matching IDs
+  all.y = FALSE        # Optional: ensures only matching rows are included (default FALSE)
+)
+
+tanganyika_clean <- tanganyika_clean[, c("date", "hh_code", "sex", "age", "education_level", "marital_status", "main_activity",
+                               setdiff(names(tanganyika_clean), c("date", "hh_code", "sex", "age", "education_level", "marital_status", "main_activity")))]
 
 saveRDS(tanganyika_clean, "LTP_Baseline_2024_Clean.rds")
 write.xlsx(tanganyika_clean, "LTP_Baseline_2024_Clean.xlsx")
