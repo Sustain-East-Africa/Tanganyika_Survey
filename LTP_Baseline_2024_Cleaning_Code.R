@@ -569,7 +569,7 @@ fishing <- fishing %>%
 fish_village <- tanganyika %>% select(313:320, 321, 327, 333, 339, 345, 351, 357:362, 363:376, 377:387, 388, 389, 390:400, 401:404)
 fish_village <- fish_village %>% rename_with(~ c("fish_importance", "dagaa_importance", "migebuka_importance", "kungura_importance", "ngege_importance", "kuhe_importance", "sangara_importance", "target_type", "dagaa_season", "migebuka_season", "kungura_season", "ngege_season", "kuhe_season", "sangara_season", "time_input", "time_comparison", "time_reason", "selling_destination", "catch_comparison", "catch_reason",
                                                  "sale_price_best", "dagaa_best", "migebuka_best", "kungura_best", "ngege_best", "kuhe_best", "sangara_best",
-                                                 "sale_price_worst", "dagaa_worst", "migembuka_worst", "kungura_worst", "ngege_worst", "kuhe_worst", "sangara_worst",
+                                                 "sale_price_worst", "dagaa_worst", "migebuka_worst", "kungura_worst", "ngege_worst", "kuhe_worst", "sangara_worst",
                                                  "satisfaction", "satisfaction_skills", "tools_used", "catch_gained", "market_supply", "satisfaction_purchase", "satisfaction_market", "satisfaction_income", "satisfaction_capital", "business_skills", "organization_support",
                                                  "fishing_challenges", "fishing_opportunities", "bmu_helpfulness", "group_membership", "cooperative", "cocoba_group", "other_group", "other_group_specify", "tnc_support", "other_agency_support", "name_agency", "group_helpfulness", "group_challenges", "group_improvements", "activity_long_term", "activity_long_term_why", "fishing_environmental_impact"))
 

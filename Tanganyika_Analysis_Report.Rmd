@@ -846,6 +846,79 @@ combined_table %>%
   flextable::autofit()
 ```
 
+```{r}
+summary_by_village <- tanganyika_survey %>%
+  filter(!is.na(handwashing_place) & handwashing_place != "I DO NOT WANT TO ANSWER" & handwashing_place != "I DON'T KNOW") %>% 
+  group_by(village, handwashing_place) %>%
+  summarise(
+    proportion = survey_mean(vartype = "ci", na.rm = TRUE)  # Weighted proportion
+  ) %>%
+  ungroup()
+
+# Reshape the data to have "Yes" and "No" as columns
+handwashing_place_table <- summary_by_village %>%
+  select(village, handwashing_place, proportion) %>%
+  pivot_wider(names_from = handwashing_place, values_from = proportion)
+
+# Rename columns for clarity
+colnames(handwashing_place_table) <- c("village", "No", "Yes")
+
+# Format the proportion table values as percentages with one decimal point and add % sign
+handwashing_place_table <- handwashing_place_table %>%
+  mutate(across(c("Yes", "No"), ~ paste0(round(. * 100, 1), "%")))
+
+handwashing_show_expanded <- tanganyika_clean %>% select(hh_code, village, handwashing_show, stype, fpc) %>%
+  separate_rows(handwashing_show, sep = "\\|") %>%
+  mutate(handwashing_show = trimws(handwashing_show)) %>% drop_na()  
+
+handwashing_show_design <- handwashing_show_expanded %>%
+  as_survey_design(strata = stype, fpc = fpc)
+
+summary_by_village <- handwashing_show_design %>%
+  group_by(village, handwashing_show) %>%
+  summarise(proportion = survey_mean(vartype = "ci", na.rm = TRUE), total = survey_total(vartype = "ci", na.rm = TRUE), n = unweighted(n())) %>% ungroup()
+
+handwashing_table <- summary_by_village %>%
+  select(village, handwashing_show, proportion) %>%
+  pivot_wider(names_from = handwashing_show, values_from = proportion   )
+
+# Rename columns for clarity
+colnames(handwashing_table) <- c("Village", "Soap", "Tippy Tap", "Water")
+
+# Format the proportion table values as percentages with one decimal point and add % sign, leave NA as blank
+handwashing_table <- handwashing_table %>%
+  mutate(across(c("Soap", "Tippy Tap", "Water"),
+                ~ ifelse(is.na(.), "", paste0(round(. * 100, 1), "%"))))
+
+# Combine the 'Yes' column from share_facility_table with toilet_table
+combined_table <- handwashing_table %>%
+  left_join(
+    handwashing_place_table %>% select(village, `Handwashing Place Available` = Yes),
+    by = c("Village" = "village")
+  )
+
+# Reorder columns to place 'Shared Facility - Yes' on the left
+combined_table <- combined_table %>%
+  select(`Village`, `Handwashing Place Available`, everything())
+
+# Ensure NA values are replaced with blanks
+combined_table <- combined_table %>%
+  mutate(across(everything(), ~ ifelse(is.na(.), "", .)))
+
+add_lot_link(caption = 'Handwashing at village level (%)')
+
+# Add the flextable with a caption
+combined_table %>%
+  sea::sea_table(
+    dark_color = sea_colors("gunmetal"),
+    pale_color = sea_colors("grey"),
+    third_color = "white"
+  ) %>%
+  flextable::width(width = 0.5)
+
+```
+
+
 </div>
 \newpage
 
@@ -913,7 +986,7 @@ proportion_table %>%
     pale_color = sea_colors("grey"),
     third_color = "white"
   ) %>%
-  flextable::autofit()  
+  flextable::width(width = 0.5)  
 ```
 
 </div>
@@ -1047,24 +1120,6 @@ ggplot(village_data, aes(x = reorder(not_borrowed, -proportion), y = proportion 
 
 ```
 
-```{r}
-village_data <- tanganyika_survey %>%
-    group_by(not_borrowed) %>%
-    summarise(proportion = survey_mean(vartype = "ci", na.rm = TRUE), total = survey_total(vartype = "ci", na.rm = TRUE), n = unweighted(n())) %>% drop_na()
-
-ggplot(village_data, aes(x = reorder(not_borrowed, -proportion), y = proportion * 100, fill = reorder(not_borrowed, -proportion))) +
-  geom_bar(stat = "identity", width = 0.8) +
-  geom_errorbar(aes(ymax = pmin(proportion_upp, 1) * 100, ymin = pmax(proportion_low, 0) * 100), width = 0.2) +
-  guides(fill = guide_legend(title = NULL)) + 
-  labs(x = NULL, y = NULL) +  
-  sea::scale_fill_sea_discrete() +
-  sea::theme_sea() + 
-  theme(legend.position = "none", axis.text.x = element_text(angle = 45, hjust = 1)) +
-  scale_y_continuous(labels = label_percent(scale = 1))+
-  scale_x_discrete(labels = c("Afraid to be in debt", "Process too\ndifficult", "No need", "Lack of sufficient\neducation on loans", "Repayment time\ntoo short", "Other", "No collateral\nfor loan"))
-
-```
-
 ```{r, fig.cap='Household membership of a COCOBA, SACCO, or FICO at village level (%)', fig.align='center', out.width = '90%'}
 village_data <- tanganyika_survey %>%
   group_by(village, cocoba_saccos) %>%
@@ -1133,6 +1188,490 @@ ggplot(village_data_yes, aes(x = village, y = proportion * 100, group = mobile_m
   scale_y_continuous(labels = label_percent(scale = 1)) +
   scale_x_discrete(labels = function(x) str_wrap(x, width = 10))
 ```
+
+## Fishers
+
+```{r, fig.cap='Self-assessment of fisheries resource management over the past five years', fig.align='center', out.width = '90%'}
+village_data <- tanganyika_survey %>%
+  filter(!is.na(fisheries_resources) & fisheries_resources != "I DO NOT WANT TO ANSWER") %>% 
+    group_by(fisheries_resources) %>%
+    summarise(proportion = survey_mean(vartype = "ci", na.rm = TRUE), total = survey_total(vartype = "ci", na.rm = TRUE), n = unweighted(n())) %>% drop_na()
+
+ggplot(village_data, aes(x = fct_relevel(fisheries_resources, "VERY BAD", "BAD", "NEUTRAL", "GOOD", "VERY GOOD"), y = proportion * 100, fill = fisheries_resources)) +
+  geom_bar(stat = "identity", width = 0.8) +
+  geom_errorbar(aes(ymax = pmin(proportion_upp, 1) * 100, ymin = pmax(proportion_low, 0) * 100), width = 0.2) +
+  guides(fill = guide_legend(title = NULL)) + 
+  labs(x = NULL, y = NULL) +  
+  sea::scale_fill_sea_discrete(4) +
+  sea::theme_sea() + 
+  theme(legend.position = "none", axis.text.x = element_text(size = 10)) +
+  scale_y_continuous(labels = label_percent(scale = 1))+
+  scale_x_discrete(labels = c("Very Bad", "Bad", "Neutral", "Good", "Very Good"))
+
+```
+
+```{r}
+summary_by_village <- tanganyika_survey %>%
+  filter(!is.na(rights_access) & rights_access != "I DON'T KNOW") %>% 
+  group_by(village, rights_access) %>%
+  summarise(
+    proportion = survey_mean(vartype = "ci", na.rm = TRUE)  # Weighted proportion
+  ) %>%
+  ungroup()
+
+# Reshape the data to have "Yes" and "No" as columns
+rights_access_table <- summary_by_village %>%
+  select(village, rights_access, proportion) %>%
+  pivot_wider(names_from = rights_access, values_from = proportion)
+
+# Rename columns for clarity
+colnames(rights_access_table) <- c("Village", "No", "Not Sure", "Yes")
+
+# Format the proportion table values as percentages with one decimal point and add % sign
+rights_access_table <- rights_access_table %>%
+  mutate(across(c("No", "Not Sure", "Yes"),  ~ if_else(is.na(.), "", paste0(round(. * 100, 1), "%"))))
+
+
+summary_by_village <- tanganyika_survey %>%
+  filter(!is.na(security_rights) & security_rights != "I DON'T KNOW") %>% 
+  group_by(village, security_rights) %>%
+  summarise(
+    proportion = survey_mean(vartype = "ci", na.rm = TRUE)  # Weighted proportion
+  ) %>%
+  ungroup()
+
+# Reshape the data to have "Yes" and "No" as columns
+security_rights_table <- summary_by_village %>%
+  select(village, security_rights, proportion) %>%
+  pivot_wider(names_from = security_rights, values_from = proportion)
+
+# Rename columns for clarity
+colnames(security_rights_table) <- c("Village", "No", "Not Sure", "Yes")
+
+# Format the proportion table values as percentages with one decimal point and add % sign
+security_rights_table <- security_rights_table %>%
+  mutate(across(c("No", "Not Sure", "Yes"),  ~ if_else(is.na(.), "", paste0(round(. * 100, 1), "%"))))
+
+
+summary_by_village <- tanganyika_survey %>%
+  filter(!is.na(decision_making) & decision_making != "I DON'T KNOW") %>% 
+  group_by(village, decision_making) %>%
+  summarise(
+    proportion = survey_mean(vartype = "ci", na.rm = TRUE)  # Weighted proportion
+  ) %>%
+  ungroup()
+
+# Reshape the data to have "Yes" and "No" as columns
+decision_making_table <- summary_by_village %>%
+  select(village, decision_making, proportion) %>%
+  pivot_wider(names_from = decision_making, values_from = proportion)
+
+# Rename columns for clarity
+colnames(decision_making_table) <- c("Village", "No", "Yes", "Not Sure")
+
+# Format the proportion table values as percentages with one decimal point and add % sign
+decision_making_table <- decision_making_table %>%
+  mutate(across(c("No", "Not Sure", "Yes"), ~ if_else(is.na(.), "", paste0(round(. * 100, 1), "%"))))
+
+combined_table <- rights_access_table %>%
+  select(Village, `Rights to access and use fishery resources are being upheld by regulatory and/or communal systems` = Yes) %>%  
+  left_join(security_rights_table %>% select(Village, `Happy with the current security of your rights over fisheries resources` = Yes), by = "Village") %>%
+  left_join(decision_making_table %>% select(Village, `Involved in decision-making processes regarding fisheries resources` = Yes), by = "Village")
+
+add_lot_link(caption = 'Access rights, security, and decision making around fisheries resources at village level (%)')
+
+# Add the flextable with a caption
+combined_table %>%
+  sea::sea_table(
+    dark_color = sea_colors("gunmetal"),
+    pale_color = sea_colors("grey"),
+    third_color = "white"
+  ) %>%
+  flextable::autofit()
+```
+
+```{r}
+summary_by_village <- tanganyika_survey %>%
+  filter(!is.na(awareness_reserves) & awareness_reserves != "I DON'T KNOW") %>% 
+  group_by(village, awareness_reserves) %>%
+  summarise(
+    proportion = survey_mean(vartype = "ci", na.rm = TRUE)  # Weighted proportion
+  ) %>%
+  ungroup()
+
+# Reshape the data to have "Yes" and "No" as columns
+awareness_reserves_table <- summary_by_village %>%
+  select(village, awareness_reserves, proportion) %>%
+  pivot_wider(names_from = awareness_reserves, values_from = proportion)
+
+# Rename columns for clarity
+colnames(awareness_reserves_table) <- c("Village", "Yes", "No", "Not Sure")
+
+# Format the proportion table values as percentages with one decimal point and add % sign
+awareness_reserves_table <- awareness_reserves_table %>%
+  mutate(across(c("No", "Not Sure", "Yes"),  ~ if_else(is.na(.), "", paste0(round(. * 100, 1), "%"))))
+
+
+summary_by_village <- tanganyika_survey %>%
+  filter(!is.na(purpose_reserves) & purpose_reserves != "I DON'T KNOW") %>% 
+  group_by(village, purpose_reserves) %>%
+  summarise(
+    proportion = survey_mean(vartype = "ci", na.rm = TRUE)  # Weighted proportion
+  ) %>%
+  ungroup()
+
+# Reshape the data to have "Yes" and "No" as columns
+purpose_reserves_table <- summary_by_village %>%
+  select(village, purpose_reserves, proportion) %>%
+  pivot_wider(names_from = purpose_reserves, values_from = proportion)
+
+# Rename columns for clarity
+colnames(purpose_reserves_table) <- c("Village", "Yes", "No", "Not Sure")
+
+# Format the proportion table values as percentages with one decimal point and add % sign
+purpose_reserves_table <- purpose_reserves_table %>%
+  mutate(across(c("No", "Not Sure", "Yes"),  ~ if_else(is.na(.), "", paste0(round(. * 100, 1), "%"))))
+
+
+summary_by_village <- tanganyika_survey %>%
+  filter(!is.na(opinion_reserves) & opinion_reserves != "I DON'T KNOW") %>% 
+  group_by(village, opinion_reserves) %>%
+  summarise(
+    proportion = survey_mean(vartype = "ci", na.rm = TRUE)  # Weighted proportion
+  ) %>%
+  ungroup()
+
+# Reshape the data to have "Yes" and "No" as columns
+opinion_reserves_table <- summary_by_village %>%
+  select(village, opinion_reserves, proportion) %>%
+  pivot_wider(names_from = opinion_reserves, values_from = proportion)
+
+# Rename columns for clarity
+colnames(opinion_reserves_table) <- c("Village", "No", "Not Sure", "Yes")
+
+# Format the proportion table values as percentages with one decimal point and add % sign
+opinion_reserves_table <- opinion_reserves_table %>%
+  mutate(across(c("No", "Not Sure", "Yes"), ~ if_else(is.na(.), "", paste0(round(. * 100, 1), "%"))))
+
+combined_table <- awareness_reserves_table %>%
+  select(Village, `Aware of fish reserves` = Yes) %>%  
+  left_join(purpose_reserves_table %>% select(Village, `Aware of fish reserve purpose` = Yes), by = "Village") %>%
+  left_join(opinion_reserves_table %>% select(Village, `Think fish reserves are a good idea` = Yes), by = "Village")
+
+add_lot_link(caption = 'Awareness and acceptance of fish reserves at village level (%)')
+
+# Add the flextable with a caption
+combined_table %>%
+  sea::sea_table(
+    dark_color = sea_colors("gunmetal"),
+    pale_color = sea_colors("grey"),
+    third_color = "white"
+  ) %>%
+  flextable::autofit()
+
+```
+
+```{r, fig.cap='At the moment, do you think the current number of fish in the lake is sufficient to meet the fishing, food, and livelihood needs of the community?', fig.align='center', out.width = '90%'}
+
+village_data <- tanganyika_survey %>%
+   filter(!is.na(sustainability_population) & sustainability_population != "I DON'T KNOW") %>% 
+    group_by(sustainability_population) %>%
+    summarise(proportion = survey_mean(vartype = "ci", na.rm = TRUE), total = survey_total(vartype = "ci", na.rm = TRUE), n = unweighted(n())) %>% drop_na()
+
+ggplot(village_data, aes(x = fct_relevel(sustainability_population, "YES", "NO", "NOT SURE"), y = proportion * 100, fill = sustainability_population)) +
+  geom_bar(stat = "identity", width = 0.8) +
+  geom_errorbar(aes(ymax = pmin(proportion_upp, 1) * 100, ymin = pmax(proportion_low, 0) * 100), width = 0.2) +
+  guides(fill = guide_legend(title = NULL)) + 
+  labs(x = NULL, y = NULL) +  
+  sea::scale_fill_sea_discrete(4) +
+  sea::theme_sea() + 
+  theme(legend.position = "none", axis.text.x = element_text(size = 10)) +
+  scale_y_continuous(labels = label_percent(scale = 1))+
+  scale_x_discrete(labels = c("Yes", "No", "Not Sure"))
+```
+
+```{r, fig.cap='In the future, do you think there will be sufficient fish for the communities', fig.align='center', out.width = '90%'}
+village_data <- tanganyika_survey %>%
+   filter(!is.na(sufficiency_fish) & sufficiency_fish != "I DON'T KNOW") %>% 
+    group_by(sufficiency_fish) %>%
+    summarise(proportion = survey_mean(vartype = "ci", na.rm = TRUE), total = survey_total(vartype = "ci", na.rm = TRUE), n = unweighted(n())) %>% drop_na()
+
+ggplot(village_data, aes(x = fct_relevel(sufficiency_fish, "YES", "NO", "NOT SURE"), y = proportion * 100, fill = sufficiency_fish)) +
+  geom_bar(stat = "identity", width = 0.8) +
+  geom_errorbar(aes(ymax = pmin(proportion_upp, 1) * 100, ymin = pmax(proportion_low, 0) * 100), width = 0.2) +
+  guides(fill = guide_legend(title = NULL)) + 
+  labs(x = NULL, y = NULL) +  
+  sea::scale_fill_sea_discrete(4) +
+  sea::theme_sea() + 
+  theme(legend.position = "none", axis.text.x = element_text(size = 10)) +
+  scale_y_continuous(labels = label_percent(scale = 1))+
+  scale_x_discrete(labels = c("Yes", "No", "Not Sure"))
+```
+
+```{r, fig.cap='Type of fishing gear used at village level (%)', fig.align='center', out.width = '90%'}
+fishing_gear_expanded <- tanganyika_clean %>% select(hh_code, village, fishing_gear, stype, fpc) %>%
+  separate_rows(fishing_gear, sep = "\\|") %>%
+  mutate(fishing_gear = trimws(fishing_gear)) %>% drop_na()  
+
+fishing_gear_expanded <- fishing_gear_expanded %>%
+  mutate(cluster = case_when(village %in% cluster_1_villages ~ "Cluster 1", village %in% cluster_2_villages ~ "Cluster 2", TRUE ~ "Other"))
+
+fishing_gear_design <- fishing_gear_expanded %>%
+  as_survey_design(strata = stype, fpc = fpc)
+
+fishing_gear_data <- fishing_gear_design %>%
+  group_by(village, cluster, fishing_gear) %>%
+  summarise(proportion = survey_mean(vartype = "ci", na.rm = TRUE), total = survey_total(vartype = "ci", na.rm = TRUE), n = unweighted(n())) %>% ungroup()
+
+ggplot(fishing_gear_data, aes(x = village, y = proportion * 100, group = fishing_gear, fill = fishing_gear)) +
+  geom_bar(stat = "identity", position = position_dodge(preserve = "single"), width = 0.95) +
+  geom_errorbar(aes(ymax = pmin(proportion_upp * 100, 100), ymin = pmax(proportion_low * 100, 0)),
+                position = position_dodge(preserve = "single", width = 0.95), width = 0.1) +
+  guides(fill = guide_legend(title = NULL)) +
+  labs(x = "", y = "Percentage of Households") +
+  sea::scale_fill_sea_discrete() +
+  sea::theme_sea() + 
+  theme(legend.position = "bottom",  legend.direction = "horizontal",  legend.justification = "center", 
+        axis.text.x = element_text(size = 7), strip.text = element_blank(), legend.box = 
+        "horizontal") + facet_wrap(~cluster, ncol = 1, scales = "free_x") +
+  scale_y_continuous(labels = label_percent(scale = 1))+
+  scale_x_discrete(labels = function(x) str_wrap(x, width = 10))
+
+```
+
+```{r, fig.cap='Seasonal targeting of fish species over the past five years', fig.align='center', out.width = '90%'}
+# Define target type variables
+target_type_vars <- c("dagaa_season", "migebuka_season", "kungura_season", 
+                      "ngege_season", "kuhe_season", "sangara_season")
+
+# Pivot longer and clean Fish_Species names
+target_type_long <- tanganyika_clean %>%
+  pivot_longer(cols = all_of(target_type_vars), 
+               names_to = "Fish_Species", 
+               values_to = "Season") %>%
+  mutate(Fish_Species = str_replace(Fish_Species, "_season", "") %>% str_to_title())
+
+# Consolidate and clean `Season` values
+target_type_long <- target_type_long %>%
+  mutate(
+    Season = case_when(
+      str_detect(Season, "ALL SEASONS") & str_detect(Season, "RAINY SEASON") ~ "ALL SEASONS",
+      str_detect(Season, "ALL SEASONS") & str_detect(Season, "DRY SEASON") ~ "ALL SEASONS",
+      str_detect(Season, "RAINY SEASON") & str_detect(Season, "DRY SEASON") ~ "ALL SEASONS",
+      Season == "I DON'T KNOW" ~ NA_character_,  
+      TRUE ~ Season))
+
+# Create survey design
+strat_design <- target_type_long %>%
+  as_survey_design(strata = stype, fpc = fpc)
+
+# Summarize by Fish_Species and Season
+aggregate_target_type <- strat_design %>%
+  group_by(Fish_Species, Season) %>%
+  summarise(mean_season = survey_mean(vartype = "ci", na.rm = TRUE), n = unweighted(n())) %>% ungroup()
+
+# Calculate percentages and handle totals
+aggregate_target_type <- aggregate_target_type %>%
+  filter(!is.na(Season) & Season != "NONE") %>% 
+  group_by(Fish_Species) %>%
+  mutate(
+    total_season = sum(mean_season, na.rm = TRUE), # Total importance per Fish_Species
+    mean_season_percent = (mean_season / total_season) * 100, # Relative percentage
+    mean_season_percent_low = (mean_season_low / total_season) * 100,  # Lower bound of percentage
+    mean_season_percent_upp = (mean_season_upp / total_season) * 100   # Upper bound of percentage
+  ) %>%
+  ungroup()
+
+# Plotting
+ggplot(aggregate_target_type, aes(x = Fish_Species, y = mean_season_percent, group = Season, fill = Season)) +
+  geom_bar(stat = "identity", position = position_dodge(preserve = "single"), width = 0.95) +
+  geom_errorbar(aes(ymin = mean_season_percent_low, ymax = mean_season_percent_upp),
+                position = position_dodge(width = 0.95), width = 0.2) +
+  labs(x = NULL, y = NULL) +
+  guides(fill = guide_legend(title = NULL)) + 
+  sea::scale_fill_sea_discrete() +
+  sea::theme_sea() + 
+  theme(legend.position = "top", 
+        legend.direction = "horizontal", 
+        legend.justification = "center", 
+        axis.text.x = element_text(size = 10), 
+        strip.text = element_blank(), 
+        legend.box = "horizontal") + 
+  scale_y_continuous(labels = label_percent(scale = 1)) +
+  scale_x_discrete(labels = function(x) str_wrap(x, width = 10))
+
+```
+
+```{r}
+# Summarize the data by village shared_facilities
+summary_time_comparison <- tanganyika_survey %>%
+  filter(!is.na(time_comparison) & time_comparison != "I DO NOT WANT TO ANSWER" & time_comparison != "I DON'T KNOW") %>% 
+  group_by(time_comparison) %>%
+  summarise(proportion = survey_mean(vartype = "ci", na.rm = TRUE)) %>% ungroup()
+
+# Reshape the data to have "Yes" and "No" as columns
+time_comparison_table <- summary_time_comparison %>%
+  select(time_comparison, proportion) %>%
+  pivot_wider(names_from = time_comparison, values_from = proportion)
+
+# Rename columns for clarity
+colnames(time_comparison_table) <- c("Less", "More", "Not Sure", "Same")
+
+# Format the proportion table values as percentages with one decimal point and add % sign
+time_comparison_table <- time_comparison_table %>%
+  mutate(across(c("Less", "More", "Not Sure", "Same"), ~ paste0(round(. * 100, 1), "%")))
+
+# Summarize the data by village shared_facilities
+summary_catch_comparison <- tanganyika_survey %>%
+  filter(!is.na(catch_comparison) & catch_comparison != "I DO NOT WANT TO ANSWER" & catch_comparison != "I DON'T KNOW") %>% 
+  group_by(catch_comparison) %>%
+  summarise(proportion = survey_mean(vartype = "ci", na.rm = TRUE)) %>% ungroup()
+
+# Reshape the data to have "Yes" and "No" as columns
+catch_comparison_table <- summary_catch_comparison %>%
+  select(catch_comparison, proportion) %>%
+  pivot_wider(names_from = catch_comparison, values_from = proportion)
+
+# Rename columns for clarity
+colnames(catch_comparison_table) <- c("Less", "More", "Not Sure", "Same")
+
+# Format the proportion table values as percentages with one decimal point and add % sign
+catch_comparison_table <- catch_comparison_table %>%
+  mutate(across(c("Less", "More", "Not Sure", "Same"), ~ paste0(round(. * 100, 1), "%")))
+
+# Reshape time_comparison_table to match the structure we need
+time_comparison_table_long <- time_comparison_table %>%
+  pivot_longer(cols = c("Less", "More", "Not Sure", "Same"), 
+               names_to = "Response", 
+               values_to = "Time_Comparison") 
+
+# Reshape catch_comparison_table to match the structure we need
+catch_comparison_table_long <- catch_comparison_table %>%
+  pivot_longer(cols = c("Less", "More", "Not Sure", "Same"), 
+               names_to = "Response", 
+               values_to = "Catch_Comparison")
+
+# Combine both tables by Response (which will align the rows based on "Less", "Same", and "More")
+combined_table <- left_join(time_comparison_table_long, catch_comparison_table_long, by = "Response")
+
+# Format the final table for better readability
+# Rename columns and response labels
+combined_table <- combined_table %>%
+  mutate(
+    Response = recode(Response, 
+                      "Less" = "Decreased", 
+                      "Same" = "No Change", 
+                      "More" = "Increased", 
+                      "Not Sure" = "Not Sure"),
+    `Change in time needed to get to grounds compared to 5 years ago (%)` = Time_Comparison,
+    `Change in average catch per trip compared to 5 years ago (%)` = Catch_Comparison
+  ) %>% select(Response, 
+         `Change in time needed to get to grounds compared to 5 years ago (%)`, 
+         `Change in average catch per trip compared to 5 years ago (%)`)
+
+# Add the flextable with a caption
+combined_table %>%
+  sea::sea_table(
+    dark_color = sea_colors("gunmetal"),
+    pale_color = sea_colors("grey"),
+    third_color = "white"
+  ) %>%
+  flextable::autofit()
+
+```
+
+```{r, fig.cap='Highest sale prices (TSh) of fish species over the past five years', fig.align='center', out.width = '90%'}
+# Define target type variables for best values
+target_type_best_vars <- c("dagaa_best", "migebuka_best", "kungura_best", 
+                           "ngege_best", "kuhe_best", "sangara_best")
+
+# Pivot longer and clean Fish_Species names
+target_type_best_long <- tanganyika_clean %>%
+  pivot_longer(cols = all_of(target_type_best_vars), 
+               names_to = "Fish_Species", 
+               values_to = "Best_Value") %>%
+  mutate(Fish_Species = str_replace(Fish_Species, "_best", "") %>% str_to_title())
+
+# Replace 97 with NA to treat as missing
+target_type_best_long <- target_type_best_long %>%
+  mutate(Best_Value = ifelse(Best_Value == 97, NA, Best_Value))
+
+# Create survey design
+strat_design_best <- target_type_best_long %>%
+  as_survey_design(strata = stype, fpc = fpc)
+
+# Summarize by Fish_Species and display Best_Value
+aggregate_target_best <- strat_design_best %>%
+  group_by(Fish_Species) %>%
+  summarise(
+    mean_best_value = survey_mean(Best_Value, vartype = "ci", na.rm = TRUE),
+    n = unweighted(n())
+  ) %>%
+  ungroup()
+
+# Plotting the Best Value numbers (raw values)
+ggplot(aggregate_target_best, aes(x = Fish_Species, y = mean_best_value, fill = Fish_Species)) +
+  geom_bar(stat = "identity", width = 0.75) +
+  geom_errorbar(aes(ymin = mean_best_value_low, ymax = mean_best_value_upp), width = 0.2) +
+  labs(x = NULL, y = NULL) +
+  guides(fill = guide_legend(title = NULL)) + 
+  sea::scale_fill_sea_discrete() +
+  sea::theme_sea() + 
+  theme(legend.position = "none", 
+        axis.text.x = element_text(size = 10), 
+        strip.text = element_blank(), 
+        legend.box = "horizontal") +
+  scale_x_discrete(labels = function(x) str_wrap(x, width = 10)) +
+  scale_y_continuous(labels = scales::label_comma())
+
+```
+
+```{r, fig.cap='Lowest sale prices (TSh) of fish species over the past five years', fig.align='center', out.width = '90%'}
+# Define target type variables for worst values
+target_type_worst_vars <- c("dagaa_worst", "migebuka_worst", "kungura_worst", 
+                            "ngege_worst", "kuhe_worst", "sangara_worst")
+
+# Pivot longer and clean Fish_Species names
+target_type_worst_long <- tanganyika_clean %>%
+  pivot_longer(cols = all_of(target_type_worst_vars), 
+               names_to = "Fish_Species", 
+               values_to = "Worst_Value") %>%
+  mutate(Fish_Species = str_replace(Fish_Species, "_worst", "") %>% str_to_title())
+
+# Replace 97 with NA to treat as missing
+target_type_worst_long <- target_type_worst_long %>%
+  mutate(Worst_Value = ifelse(Worst_Value == 97, NA, Worst_Value))
+
+# Create survey design
+strat_design_worst <- target_type_worst_long %>%
+  as_survey_design(strata = stype, fpc = fpc)
+
+# Summarize by Fish_Species and display Worst_Value
+aggregate_target_worst <- strat_design_worst %>%
+  group_by(Fish_Species) %>%
+  summarise(
+    mean_worst_value = survey_mean(Worst_Value, vartype = "ci", na.rm = TRUE),
+    n = unweighted(n())
+  ) %>%
+  ungroup()
+
+# Plotting the Worst Value numbers (raw values)
+ggplot(aggregate_target_worst, aes(x = Fish_Species, y = mean_worst_value, fill = Fish_Species)) +
+  geom_bar(stat = "identity", width = 0.75) +
+  geom_errorbar(aes(ymin = mean_worst_value_low, ymax = mean_worst_value_upp), width = 0.2) +
+  labs(x = NULL, y = NULL) +
+  guides(fill = guide_legend(title = NULL)) + 
+  sea::scale_fill_sea_discrete() +
+  sea::theme_sea() + 
+  theme(legend.position = "none", 
+        axis.text.x = element_text(size = 10), 
+        strip.text = element_blank(), 
+        legend.box = "horizontal") +
+  scale_x_discrete(labels = function(x) str_wrap(x, width = 10)) +
+  scale_y_continuous(labels = scales::label_comma())
+
+```
+
 
 </div>
 
