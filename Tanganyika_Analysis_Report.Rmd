@@ -1350,6 +1350,138 @@ ggplot(village_data_yes, aes(x = village, y = proportion * 100, group = tnc_supp
 ```
 
 
+```{r}
+summary_by_village <- tanganyika_survey %>%
+  filter(!is.na(BMU_activity) & BMU_activity != "I DON'T KNOW") %>% 
+  group_by(village, BMU_activity) %>%
+  summarise(
+    proportion = survey_mean(vartype = "ci", na.rm = TRUE)  # Weighted proportion
+  ) %>%
+  ungroup()
+
+# Reshape the data to have "Yes" and "No" as columns
+BMU_activity_table <- summary_by_village %>%
+  select(village, BMU_activity, proportion) %>%
+  pivot_wider(names_from = BMU_activity, values_from = proportion)
+
+# Rename columns for clarity
+colnames(BMU_activity_table) <- c("Village", "No", "Yes")
+
+# Format the proportion table values as percentages with one decimal point and add % sign
+BMU_activity_table <- BMU_activity_table %>%
+  mutate(across(c("No", "Yes"),  ~ if_else(is.na(.), "", paste0(round(. * 100, 1), "%"))))
+
+summary_by_village <- tanganyika_survey %>%
+  filter(!is.na(awareness_bmu) & awareness_bmu != "I DON'T KNOW") %>% 
+  group_by(village, awareness_bmu) %>%
+  summarise(
+    proportion = survey_mean(vartype = "ci", na.rm = TRUE)) %>% ungroup()
+
+# Reshape the data to have "Yes" and "No" as columns
+awareness_bmu_table <- summary_by_village %>%
+  select(village, awareness_bmu, proportion) %>%
+  pivot_wider(names_from = awareness_bmu, values_from = proportion)
+
+# Rename columns for clarity
+colnames(awareness_bmu_table) <- c("Village", "No", "Yes", "Not Sure")
+
+# Format the proportion table values as percentages with one decimal point and add % sign
+awareness_bmu_table <- awareness_bmu_table %>%
+  mutate(across(c("No", "Yes"),  ~ if_else(is.na(.), "", paste0(round(. * 100, 1), "%"))))
+
+
+summary_by_village <- tanganyika_survey %>%
+  filter(!is.na(bmu_member) & bmu_member != "I DON'T KNOW") %>% 
+  group_by(village, bmu_member) %>%
+  summarise(
+    proportion = survey_mean(vartype = "ci", na.rm = TRUE)) %>% ungroup()
+
+# Reshape the data to have "Yes" and "No" as columns
+bmu_member_table <- summary_by_village %>%
+  select(village, bmu_member, proportion) %>%
+  pivot_wider(names_from = bmu_member, values_from = proportion)
+
+# Rename columns for clarity
+colnames(bmu_member_table) <- c("Village", "No", "Not Sure", "Yes")
+
+# Format the proportion table values as percentages with one decimal point and add % sign
+bmu_member_table <- bmu_member_table %>%
+  mutate(across(c("No", "Yes"), ~ if_else(is.na(.), "", paste0(round(. * 100, 1), "%"))))
+
+summary_by_village <- tanganyika_survey %>%
+  filter(!is.na(tnc_support_bmu) & tnc_support_bmu != "I DON'T KNOW") %>% 
+  group_by(village, tnc_support_bmu) %>%
+  summarise(
+    proportion = survey_mean(vartype = "ci", na.rm = TRUE)) %>% ungroup()
+
+# Reshape the data to have "Yes" and "No" as columns
+tnc_support_table <- summary_by_village %>%
+  select(village, tnc_support_bmu, proportion) %>%
+  pivot_wider(names_from = tnc_support_bmu, values_from = proportion)
+
+# Rename columns for clarity
+colnames(tnc_support_table) <- c("Village", "Yes", "Not Sure", "No")
+
+# Format the proportion table values as percentages with one decimal point and add % sign
+tnc_support_table <- tnc_support_table %>%
+  mutate(across(c("Yes", "No", "Not Sure"), ~ if_else(is.na(.), "", paste0(round(. * 100, 1), "%"))))
+
+summary_by_village <- tanganyika_survey %>%
+  filter(!is.na(bmu_women) & bmu_women != "I DON'T KNOW") %>% 
+  group_by(village, bmu_women) %>%
+  summarise(
+    proportion = survey_mean(vartype = "ci", na.rm = TRUE)) %>% ungroup()
+
+# Reshape the data to have "Yes" and "No" as columns
+bmu_women_table <- summary_by_village %>%
+  select(village, bmu_women, proportion) %>%
+  pivot_wider(names_from = bmu_women, values_from = proportion)
+
+# Rename columns for clarity
+colnames(bmu_women_table) <- c("Village", "Not Sure", "Yes", "No")
+
+# Format the proportion table values as percentages with one decimal point and add % sign
+bmu_women_table <- bmu_women_table %>%
+  mutate(across(c("Yes", "No", "Not Sure"), ~ if_else(is.na(.), "", paste0(round(. * 100, 1), "%"))))
+
+summary_by_village <- tanganyika_survey %>%
+  filter(!is.na(bmu_youth) & bmu_youth != "I DON'T KNOW") %>% 
+  group_by(village, bmu_youth) %>%
+  summarise(
+    proportion = survey_mean(vartype = "ci", na.rm = TRUE)) %>% ungroup()
+
+# Reshape the data to have "Yes" and "No" as columns
+bmu_youth_table <- summary_by_village %>%
+  select(village, bmu_youth, proportion) %>%
+  pivot_wider(names_from = bmu_youth, values_from = proportion)
+
+# Rename columns for clarity
+colnames(bmu_youth_table) <- c("Village", "Not Sure", "Yes", "No")
+
+# Format the proportion table values as percentages with one decimal point and add % sign
+bmu_youth_table <- bmu_youth_table %>%
+  mutate(across(c("Yes", "No", "Not Sure"), ~ if_else(is.na(.), "", paste0(round(. * 100, 1), "%"))))
+
+combined_table <- awareness_bmu_table %>%
+  select(Village, `Aware of BMUs` = Yes) %>%  
+  left_join(BMU_activity_table %>% select(Village, `Has participated in BMU activity` = Yes), by = "Village") %>%
+  left_join(bmu_member_table %>% select(Village, `Member of BMU` = Yes), by = "Village") %>%
+  left_join(tnc_support_table %>% select(Village, `BMU is TNC supported` = Yes), by = "Village") %>%
+  left_join(bmu_women_table %>% select(Village, `Women in BMU leadership` = Yes), by = "Village") %>%
+  left_join(bmu_youth_table %>% select(Village, `Youth in BMU` = Yes), by = "Village") 
+
+add_lot_link(caption = 'BMU awareness and participation at village level (%)')
+
+# Add the flextable with a caption
+combined_table %>%
+  sea::sea_table(
+    dark_color = sea_colors("gunmetal"),
+    pale_color = sea_colors("grey"),
+    third_color = "white"
+  ) %>%
+  flextable::autofit()
+```
+
 
 ## Fishers
 
@@ -2114,138 +2246,6 @@ combined_table %>%
   ) %>%
   flextable::autofit()
 
-```
-
-```{r}
-summary_by_village <- tanganyika_survey %>%
-  filter(!is.na(BMU_activity) & BMU_activity != "I DON'T KNOW") %>% 
-  group_by(village, BMU_activity) %>%
-  summarise(
-    proportion = survey_mean(vartype = "ci", na.rm = TRUE)  # Weighted proportion
-  ) %>%
-  ungroup()
-
-# Reshape the data to have "Yes" and "No" as columns
-BMU_activity_table <- summary_by_village %>%
-  select(village, BMU_activity, proportion) %>%
-  pivot_wider(names_from = BMU_activity, values_from = proportion)
-
-# Rename columns for clarity
-colnames(BMU_activity_table) <- c("Village", "No", "Yes")
-
-# Format the proportion table values as percentages with one decimal point and add % sign
-BMU_activity_table <- BMU_activity_table %>%
-  mutate(across(c("No", "Yes"),  ~ if_else(is.na(.), "", paste0(round(. * 100, 1), "%"))))
-
-summary_by_village <- tanganyika_survey %>%
-  filter(!is.na(awareness_bmu) & awareness_bmu != "I DON'T KNOW") %>% 
-  group_by(village, awareness_bmu) %>%
-  summarise(
-    proportion = survey_mean(vartype = "ci", na.rm = TRUE)) %>% ungroup()
-
-# Reshape the data to have "Yes" and "No" as columns
-awareness_bmu_table <- summary_by_village %>%
-  select(village, awareness_bmu, proportion) %>%
-  pivot_wider(names_from = awareness_bmu, values_from = proportion)
-
-# Rename columns for clarity
-colnames(awareness_bmu_table) <- c("Village", "No", "Yes", "Not Sure")
-
-# Format the proportion table values as percentages with one decimal point and add % sign
-awareness_bmu_table <- awareness_bmu_table %>%
-  mutate(across(c("No", "Yes"),  ~ if_else(is.na(.), "", paste0(round(. * 100, 1), "%"))))
-
-
-summary_by_village <- tanganyika_survey %>%
-  filter(!is.na(bmu_member) & bmu_member != "I DON'T KNOW") %>% 
-  group_by(village, bmu_member) %>%
-  summarise(
-    proportion = survey_mean(vartype = "ci", na.rm = TRUE)) %>% ungroup()
-
-# Reshape the data to have "Yes" and "No" as columns
-bmu_member_table <- summary_by_village %>%
-  select(village, bmu_member, proportion) %>%
-  pivot_wider(names_from = bmu_member, values_from = proportion)
-
-# Rename columns for clarity
-colnames(bmu_member_table) <- c("Village", "No", "Not Sure", "Yes")
-
-# Format the proportion table values as percentages with one decimal point and add % sign
-bmu_member_table <- bmu_member_table %>%
-  mutate(across(c("No", "Yes"), ~ if_else(is.na(.), "", paste0(round(. * 100, 1), "%"))))
-
-summary_by_village <- tanganyika_survey %>%
-  filter(!is.na(tnc_support_bmu) & tnc_support_bmu != "I DON'T KNOW") %>% 
-  group_by(village, tnc_support_bmu) %>%
-  summarise(
-    proportion = survey_mean(vartype = "ci", na.rm = TRUE)) %>% ungroup()
-
-# Reshape the data to have "Yes" and "No" as columns
-tnc_support_table <- summary_by_village %>%
-  select(village, tnc_support_bmu, proportion) %>%
-  pivot_wider(names_from = tnc_support_bmu, values_from = proportion)
-
-# Rename columns for clarity
-colnames(tnc_support_table) <- c("Village", "Yes", "Not Sure", "No")
-
-# Format the proportion table values as percentages with one decimal point and add % sign
-tnc_support_table <- tnc_support_table %>%
-  mutate(across(c("Yes", "No", "Not Sure"), ~ if_else(is.na(.), "", paste0(round(. * 100, 1), "%"))))
-
-summary_by_village <- tanganyika_survey %>%
-  filter(!is.na(bmu_women) & bmu_women != "I DON'T KNOW") %>% 
-  group_by(village, bmu_women) %>%
-  summarise(
-    proportion = survey_mean(vartype = "ci", na.rm = TRUE)) %>% ungroup()
-
-# Reshape the data to have "Yes" and "No" as columns
-bmu_women_table <- summary_by_village %>%
-  select(village, bmu_women, proportion) %>%
-  pivot_wider(names_from = bmu_women, values_from = proportion)
-
-# Rename columns for clarity
-colnames(bmu_women_table) <- c("Village", "Not Sure", "Yes", "No")
-
-# Format the proportion table values as percentages with one decimal point and add % sign
-bmu_women_table <- bmu_women_table %>%
-  mutate(across(c("Yes", "No", "Not Sure"), ~ if_else(is.na(.), "", paste0(round(. * 100, 1), "%"))))
-
-summary_by_village <- tanganyika_survey %>%
-  filter(!is.na(bmu_youth) & bmu_youth != "I DON'T KNOW") %>% 
-  group_by(village, bmu_youth) %>%
-  summarise(
-    proportion = survey_mean(vartype = "ci", na.rm = TRUE)) %>% ungroup()
-
-# Reshape the data to have "Yes" and "No" as columns
-bmu_youth_table <- summary_by_village %>%
-  select(village, bmu_youth, proportion) %>%
-  pivot_wider(names_from = bmu_youth, values_from = proportion)
-
-# Rename columns for clarity
-colnames(bmu_youth_table) <- c("Village", "Not Sure", "Yes", "No")
-
-# Format the proportion table values as percentages with one decimal point and add % sign
-bmu_youth_table <- bmu_youth_table %>%
-  mutate(across(c("Yes", "No", "Not Sure"), ~ if_else(is.na(.), "", paste0(round(. * 100, 1), "%"))))
-
-combined_table <- awareness_bmu_table %>%
-  select(Village, `Aware of BMUs` = Yes) %>%  
-  left_join(BMU_activity_table %>% select(Village, `Has participated in BMU activity` = Yes), by = "Village") %>%
-  left_join(bmu_member_table %>% select(Village, `Member of BMU` = Yes), by = "Village") %>%
-  left_join(tnc_support_table %>% select(Village, `BMU is TNC supported` = Yes), by = "Village") %>%
-  left_join(bmu_women_table %>% select(Village, `Women in BMU leadership` = Yes), by = "Village") %>%
-  left_join(bmu_youth_table %>% select(Village, `Youth in BMU` = Yes), by = "Village") 
-
-add_lot_link(caption = 'BMU awareness and participation at village level (%)')
-
-# Add the flextable with a caption
-combined_table %>%
-  sea::sea_table(
-    dark_color = sea_colors("gunmetal"),
-    pale_color = sea_colors("grey"),
-    third_color = "white"
-  ) %>%
-  flextable::autofit()
 ```
 
 
