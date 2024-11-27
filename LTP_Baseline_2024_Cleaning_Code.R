@@ -583,6 +583,25 @@ fish_traders <- fish_traders %>% rename_with(~ c("trader_present", "trader_code"
                                                  "satisfaction_trade", "satisfaction_trade_skills", "trade_tools_used", "trade_productivity", "trade_market_supply", "satisfaction_trade_purchase", "trade_market", "trade_income", "trade_capital", "trade_business_skills", "trade_organization_support",
                                                  "trading_challenges", "trading_opportunities", "business_group_membership", "cooperative_fico", "cooperative_fico_name", "cocoba_savings", "cocoba_savings_name", "other_trading_group", "other_trading_group_name", "trading_group_helpfulness", "trading_tnc_supported", "trading_other_agency", "trading_other_agency_name", "trading_group_challenges", "trading_group_opportunities", "trading_long_term", "trading_long_term_why", "trading_environmental_impact"))
 
+# List of processing equipment options
+processing_form_options <- list("SUNDRYING", "SALTING", "SMOKING", "FREEZING", "COLD STORAGE", "DEEP FRYING", "OTHER", "I DO NOT WANT TO ANSWER", "I DON'T KNOW")
+
+# Escape special characters in the options
+escaped_processing_form_options <- escape_special_chars(processing_form_options)
+
+# Function to separate column options
+separate_options_processing_form <- function(column, escaped_options) {
+  pattern <- str_c(escaped_options, collapse = "|")
+  separated <- str_replace_all(column, pattern, function(x) paste0("|", x))
+  separated <- str_remove(separated, "^\\|")
+  return(separated)}
+
+# Applying the function to the relevant column(s)
+fish_processors <- fish_processors %>%
+  mutate(across(
+    c(processing_form),  
+    ~ separate_options_processing_form(., escaped_processing_form_options)))
+
 ################################################################################
 
 # Livelihood Practices of Fish Processors
@@ -592,6 +611,46 @@ fish_processors <- fish_processors %>% rename_with(~ c("processor_present", "pro
                                                  "process_worst", "dagaa_process_worst", "migebuka_process_worst", "kungura_process_worst", "ngege_process_worst", "kuhe_process_worst", "sangara_process_worst",
                                                  "satisfaction_process", "satisfaction_process_skills", "process_tools_used", "process_productivity", "process_market_supply", "satisfaction_process_materials", "process_market", "process_income", "process_capital", "process_business_skills", "process_organization_support", "processing_challenges", "processing_opportunities",
                                                  "process_business_group_membership", "cooperative_fico_process", "cooperative_fico_name_process", "cocoba_savings_process", "cocoba_savings_name_process", "other_process_group", "other_process_group_name", "process_tnc_supported", "process_other_agency", "process_other_agency_name", "process_group_helpfulness", "process_group_challenges", "process_group_opportunities",  "process_long_term", "process_long_term_why", "processing_environmental_impact"))
+
+# List of processing equipment options
+processing_form_options <- list("SUNDRYING", "SALTING", "SMOKING", "FREEZING", "COLD STORAGE", "DEEP FRYING", "OTHER", "I DO NOT WANT TO ANSWER", "I DON'T KNOW")
+
+# Escape special characters in the options
+escaped_processing_form_options <- escape_special_chars(processing_form_options)
+
+# Function to separate column options
+separate_options_processing_form <- function(column, escaped_options) {
+  pattern <- str_c(escaped_options, collapse = "|")
+  separated <- str_replace_all(column, pattern, function(x) paste0("|", x))
+  separated <- str_remove(separated, "^\\|")
+  return(separated)}
+
+# Applying the function to the relevant column(s)
+fish_processors <- fish_processors %>%
+  mutate(across(
+    c(processing_form),  
+    ~ separate_options_processing_form(., escaped_processing_form_options)))
+
+# List of processing equipment options
+processing_equipment_options <- list("TWIGS", "WIRE MESH", "NETS", "REFRIGERATOR", "SALT", "BASIN",
+                                     "COOLBOX", "FIREWOOD", "CORRUGATED SHEET", "COOKING OIL", "COOKING POT",
+                                     "OTHER", "I DO NOT WANT TO ANSWER", "I DON'T KNOW")
+
+# Escape special characters in the options
+escaped_processing_equipment_options <- escape_special_chars(processing_equipment_options)
+
+# Function to separate column options
+separate_options_processing_equipment <- function(column, escaped_options) {
+  pattern <- str_c(escaped_options, collapse = "|")
+  separated <- str_replace_all(column, pattern, function(x) paste0("|", x))
+  separated <- str_remove(separated, "^\\|")
+  return(separated)}
+
+# Applying the function to the relevant column(s)
+fish_processors <- fish_processors %>%
+  mutate(across(
+    c(processing_equipment),  
+    ~ separate_options_processing_equipment(., escaped_processing_equipment_options)))
 
 ################################################################################
 
