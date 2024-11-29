@@ -492,8 +492,8 @@ BMU <- BMU %>% rename_with(~ c("awareness_bmu", "bmu_member","tnc_support_bmu", 
                                "bylaws_followed", "bmu_practice", "bmu_challenges", "bmu_improved"))
 
 # List of resolution options
-resolution_options <- list("GO TO THE VILLAGE GOVERNMENT","NEGOTIATE WITH EACH OTHER","DO NOTHING",
-                           "GO TO THE WARD OR DISTRICT GOVERNMENT","OTHER","I DO NOT WANT TO ANSWER","I DON'T KNOW")
+resolution_options <- list("GO TO VILLAGE GOVERNMENT","NEGOTIATE WITH EACH OTHER","DO NOTHING",
+                           "GO TO WARD OR DISTRICT GOVERNMENT","OTHER","I DO NOT WANT TO ANSWER","I DON'T KNOW")
 escaped_resolution_options <- escape_special_chars(resolution_options)
 
 # Function to separate column options
@@ -583,25 +583,6 @@ fish_traders <- fish_traders %>% rename_with(~ c("trader_present", "trader_code"
                                                  "satisfaction_trade", "satisfaction_trade_skills", "trade_tools_used", "trade_productivity", "trade_market_supply", "satisfaction_trade_purchase", "trade_market", "trade_income", "trade_capital", "trade_business_skills", "trade_organization_support",
                                                  "trading_challenges", "trading_opportunities", "business_group_membership", "cooperative_fico", "cooperative_fico_name", "cocoba_savings", "cocoba_savings_name", "other_trading_group", "other_trading_group_name", "trading_group_helpfulness", "trading_tnc_supported", "trading_other_agency", "trading_other_agency_name", "trading_group_challenges", "trading_group_opportunities", "trading_long_term", "trading_long_term_why", "trading_environmental_impact"))
 
-# List of processing equipment options
-processing_form_options <- list("SUNDRYING", "SALTING", "SMOKING", "FREEZING", "COLD STORAGE", "DEEP FRYING", "OTHER", "I DO NOT WANT TO ANSWER", "I DON'T KNOW")
-
-# Escape special characters in the options
-escaped_processing_form_options <- escape_special_chars(processing_form_options)
-
-# Function to separate column options
-separate_options_processing_form <- function(column, escaped_options) {
-  pattern <- str_c(escaped_options, collapse = "|")
-  separated <- str_replace_all(column, pattern, function(x) paste0("|", x))
-  separated <- str_remove(separated, "^\\|")
-  return(separated)}
-
-# Applying the function to the relevant column(s)
-fish_processors <- fish_processors %>%
-  mutate(across(
-    c(processing_form),  
-    ~ separate_options_processing_form(., escaped_processing_form_options)))
-
 ################################################################################
 
 # Livelihood Practices of Fish Processors
@@ -686,30 +667,30 @@ tanganyika_clean <- tanganyika_clean %>%
       village == "KIZUMBI" ~ "Kizumbi",
       village == "NG'ANGA" ~ "Ng'anga",
       village == "IZINGA" ~ "Izinga",
-      village == "MWINZA" ~ "Mwinza")) %>%
+      village == "MWINZA" ~ "Mwinza"), village = stype) %>%
   mutate(
     fpc = case_when(
-      village == "ISASA" ~ 281, #Total number of households in each village (strata)
-      village == "MTAKUJA" ~ 364,
-      village == "KIPILI" ~ 383,
-      village == "KICHANGANI" ~ 325,
-      village == "MANDA KERENGE" ~ 656,
-      village == "NTANGANYIKA" ~ 229,
-      village == "KALUNGU" ~ 566,
-      village == "MKINGA" ~ 325,
-      village == "MAJENGO MAPYA" ~ 210,
-      village == "MANDA UHURU" ~ 147,
-      village == "MPASA" ~ 795,
-      village == "KILAMBO CHA MKOLECHI" ~ 344,
-      village == "KALA" ~ 358,
-      village == "TUNDU" ~ 301,
-      village == "WAMPEMBE" ~ 802,
-      village == "LYAPINDA" ~ 600,
-      village == "KATENGE" ~ 143,
-      village == "KIZUMBI" ~ 293,
-      village == "NG'ANGA" ~ 172,
-      village == "IZINGA" ~ 527,
-      village == "MWINZA" ~ 356))
+      village == "Isasa" ~ 281, #Total number of households in each village (strata)
+      village == "Mtakuja" ~ 364,
+      village == "Kipili" ~ 383,
+      village == "Kichangani" ~ 325,
+      village == "Manda Kerenge" ~ 656,
+      village == "Ntanganyika" ~ 229,
+      village == "Kalungu" ~ 566,
+      village == "Mkinga" ~ 325,
+      village == "Majengo Mapya" ~ 210,
+      village == "Manda Uhuru" ~ 147,
+      village == "Mpasa" ~ 795,
+      village == "Kilambo cha Mkolechi" ~ 344,
+      village == "Kala" ~ 358,
+      village == "Tundu" ~ 301,
+      village == "Wampembe" ~ 802,
+      village == "Lyapinda" ~ 600,
+      village == "Katenge" ~ 143,
+      village == "Kizumbi" ~ 293,
+      village == "Ng'anga" ~ 172,
+      village == "Izinga" ~ 527,
+      village == "Mwinza" ~ 356))
 
 # Merge the specific columns from survey_demo into tanganyika_clean
 tanganyika_clean <- merge(

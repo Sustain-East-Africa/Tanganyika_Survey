@@ -68,12 +68,12 @@ tanganyika_survey <- tanganyika_clean %>%
     as_survey_design(strata = stype, fpc = fpc)
 
 # Create village clusters for plotting
-cluster_1_villages <- c("IZINGA", "KALA", "KATENGE", "KILAMBO CHA MKOLECHI", 
-                        "KIZUMBI", "LYAPINDA", "MPASA", "MWINZA", "NG'ANGA", 
-                        "TUNDU", "WAMPEMBE")
-cluster_2_villages <- c("ISASA", "KALUNGU", "KICHANGANI", "KIPILI", 
-                        "MAJENGO MAPYA", "MANDA KERENGE", "MANDA UHURU", 
-                        "MKINGA", "MTAKUJA", "NTANGANYIKA")
+cluster_1_villages <- c("Izinga", "Kala", "Katenge", "Kilambo cha Mkolechi", 
+                        "Kizumbi", "Lyapinda", "Mpasa", "Mwinza", "Ng'anga", 
+                        "Tundu", "Wampembe")
+cluster_2_villages <- c("Isasa", "Kalungu", "Kichangani", "Kipili", 
+                        "Majengo Mapya", "Manda Kerenge", "Manda Uhuru", 
+                        "Mkinga", "Mtakuja", "Ntanganyika")
 ```
 
 \newpage
@@ -1046,7 +1046,7 @@ loan_usage_design <- loan_usage_expanded %>%
   as_survey_design(ids = hh_code, strata = stype, fpc = fpc, nest = TRUE)
 
 loan_usage_data <- loan_usage_design %>%
-  filter(!(village == "NG'ANGA")) %>% # Ng'anga only contains one priamry sampling unit (PSU)
+  filter(!(village == "Ng'anga")) %>% # Ng'anga only contains one priamry sampling unit (PSU)
   group_by(loan_usage) %>%
   summarise(
     proportion = survey_mean(vartype = "ci", na.rm = TRUE),
@@ -1078,7 +1078,7 @@ borrowing_source_design <- borrowing_source_expanded %>%
   as_survey_design(ids = hh_code, strata = stype, fpc = fpc, nest = TRUE)
 
 borrowing_source_data <- borrowing_source_design %>%
-  filter(!(village == "NG'ANGA")) %>% # Ng'anga only contains one priamry sampling unit (PSU)
+  filter(!(village == "Ng'anga")) %>% # Ng'anga only contains one priamry sampling unit (PSU)
   group_by(borrowing_source) %>%
   summarise(
     proportion = survey_mean(vartype = "ci", na.rm = TRUE),
@@ -1191,7 +1191,7 @@ ggplot(village_data_yes, aes(x = village, y = proportion * 100, group = mobile_m
 
 ## Beach Management Units (BMU)
 
-```{r, fig.cap='Household participation in BMU activities over the past 12 months at village leve (%)', fig.align='center', out.width = '90%'}
+```{r, fig.cap='Household participation in BMU activities over the past 12 months at village level (%)', fig.align='center', out.width = '90%'}
 village_data <- tanganyika_survey %>%
   group_by(village, BMU_activity) %>%
   summarise(proportion = survey_mean(vartype = "ci", na.rm = TRUE), 
@@ -1230,7 +1230,7 @@ ggplot(village_data_yes, aes(x = village, y = proportion * 100, group = BMU_acti
 ```
 
 
-```{r, fig.cap='Household awareness of BMUs at village leve (%)', fig.align='center', out.width = '90%'}
+```{r, fig.cap='Household awareness of BMUs at village level (%)', fig.align='center', out.width = '90%'}
 village_data <- tanganyika_survey %>%
   group_by(village, awareness_bmu) %>%
   summarise(proportion = survey_mean(vartype = "ci", na.rm = TRUE), 
@@ -1270,7 +1270,7 @@ ggplot(village_data_yes, aes(x = village, y = proportion * 100, group = awarenes
 
 
 
-```{r, fig.cap='BMU membership at village leve (%)', fig.align='center', out.width = '90%'}
+```{r, fig.cap='BMU membership at village level (%)', fig.align='center', out.width = '90%'}
 
 village_data <- tanganyika_survey %>%
   group_by(village, bmu_member) %>%
@@ -1310,7 +1310,7 @@ ggplot(village_data_yes, aes(x = village, y = proportion * 100, group = bmu_memb
 ```
 
 
-```{r, fig.cap='BMU membership at village leve (%)', fig.align='center', out.width = '90%'}
+```{r, fig.cap='BMU membership at village level (%)', fig.align='center', out.width = '90%'}
 
 village_data <- tanganyika_survey %>%
   group_by(village, tnc_support_bmu) %>%
@@ -1481,6 +1481,193 @@ combined_table %>%
   ) %>%
   flextable::autofit()
 ```
+
+```{r, fig.cap='An indication of frequency for BMU activities', fig.align='center', out.width = '90%'}
+# Define the mapping for satisfaction levels
+activity_mapping <- c(
+  "NEVER" = 1,
+  "RARELY" = 2,
+  "FREQUENTLY" = 3)
+
+activity_columns <- c("meetings", "patrolling", "illegal_fishing", "illegal_gears", "raise_awareness", "collect_fees", "engage_activities", "forms_revenue", "collect_data", "other_activity")
+
+# Convert columns to numeric values
+tanganyika_clean <- tanganyika_clean %>%
+  mutate(across(all_of(activity_columns), 
+                ~ recode(., !!!activity_mapping)))
+
+# Pivot longer to reshape the data
+activity_long <- tanganyika_clean %>%
+  pivot_longer(cols = all_of(activity_columns), names_to = "Activity", values_to = "Frequency")
+
+# Create survey design
+activity_long <- activity_long %>%
+  filter(!is.na(Frequency))
+
+activity_long <- activity_long %>%
+  group_by(stype) %>%
+  mutate(fpc = ifelse(n() > first(fpc), n(), first(fpc))) %>%
+  ungroup()
+
+# Proceed with the survey design creation
+strat_design_activity <- activity_long %>%
+  as_survey_design(strata = stype, fpc = fpc)
+
+# Summarize satisfaction values
+aggregate_activity <- strat_design_activity %>%
+  group_by(Activity) %>%
+  summarise(
+    mean_activity_value = survey_mean(Frequency, vartype = "ci", na.rm = TRUE),
+    n = unweighted(n())
+  ) %>%
+  ungroup()
+
+# Plotting Satisfaction Values
+ggplot(aggregate_activity, aes(x = reorder(Activity, -mean_activity_value), y = mean_activity_value, fill = Activity)) +
+  geom_bar(stat = "identity", width = 0.75) +
+  labs(x = NULL, y = NULL) +
+  guides(fill = guide_legend(title = NULL)) + 
+  sea::scale_fill_sea_discrete() +
+  sea::theme_sea() + 
+  theme(legend.position = "none", 
+        axis.text.x = element_text(angle = 45, hjust = 1), 
+        strip.text = element_blank(), 
+        legend.box = "horizontal") +
+  scale_y_continuous(limits = c(0,3), breaks = 1:3, labels = c("Never", "Rarely", "Frequently"))+
+  scale_x_discrete(labels = c("Raising awareness about\nconserving the lake", "Controlling illegal\nfishing", "Controlling illegal\nfishing gear", "Patrolling", 
+                              "Colelcting Data", "Meetings", "Collect fees or levies\nfrom outside fishers", "Engage in\nbusiness activities", "Collect other\nforms of revenue"))
+
+```
+
+
+```{r, fig.cap='Do you think the BMU has good leaders?', fig.align='center', out.width = '90%'}
+village_data <- tanganyika_survey %>%
+   filter(!is.na(good_leaders) & good_leaders != "I DON'T KNOW") %>% 
+    group_by(good_leaders) %>%
+    summarise(proportion = survey_mean(vartype = "ci", na.rm = TRUE), total = survey_total(vartype = "ci", na.rm = TRUE), n = unweighted(n())) %>% drop_na()
+
+ggplot(village_data, aes(x = fct_relevel(good_leaders, "YES", "NO", "NOT SURE"), y = proportion * 100, fill = good_leaders)) +
+  geom_bar(stat = "identity", width = 0.8) +
+  geom_errorbar(aes(ymax = pmin(proportion_upp, 1) * 100, ymin = pmax(proportion_low, 0) * 100), width = 0.2) +
+  guides(fill = guide_legend(title = NULL)) + 
+  labs(x = NULL, y = NULL) +  
+  sea::scale_fill_sea_discrete(4) +
+  sea::theme_sea() + 
+  theme(legend.position = "none", axis.text.x = element_text(size = 10)) +
+  scale_y_continuous(labels = label_percent(scale = 1))+
+  scale_x_discrete(labels = c("Yes", "No", "Not Sure"))
+```
+
+
+```{r, fig.cap='Were BMU leaders elected or chosen fairly?', fig.align='center', out.width = '90%'}
+village_data <- tanganyika_survey %>%
+   filter(!is.na(leaders_elected) & leaders_elected != "I DON'T KNOW") %>% 
+    group_by(leaders_elected) %>%
+    summarise(proportion = survey_mean(vartype = "ci", na.rm = TRUE), total = survey_total(vartype = "ci", na.rm = TRUE), n = unweighted(n())) %>% drop_na()
+
+ggplot(village_data, aes(x = fct_relevel(leaders_elected, "YES", "NO", "NOT SURE"), y = proportion * 100, fill = leaders_elected)) +
+  geom_bar(stat = "identity", width = 0.8) +
+  geom_errorbar(aes(ymax = pmin(proportion_upp, 1) * 100, ymin = pmax(proportion_low, 0) * 100), width = 0.2) +
+  guides(fill = guide_legend(title = NULL)) + 
+  labs(x = NULL, y = NULL) +  
+  sea::scale_fill_sea_discrete(4) +
+  sea::theme_sea() + 
+  theme(legend.position = "none", axis.text.x = element_text(size = 10)) +
+  scale_y_continuous(labels = label_percent(scale = 1))+
+  scale_x_discrete(labels = c("Yes", "No", "Not Sure"))
+```
+
+
+```{r, fig.cap='Were BMU leaders elected or chosen fairly?', fig.align='center', out.width = '90%'}
+village_data <- tanganyika_survey %>%
+   filter(!is.na(trust_collaboration) & trust_collaboration != "I DON'T KNOW" & 
+            trust_collaboration != "I DO NOT WANT TO ANSWER" & trust_collaboration != "NOT SURE") %>% 
+    group_by(trust_collaboration) %>%
+    summarise(proportion = survey_mean(vartype = "ci", na.rm = TRUE), total = survey_total(vartype = "ci", na.rm = TRUE), n = unweighted(n())) %>% drop_na()
+
+ggplot(village_data, aes(x = fct_relevel(trust_collaboration, "GOOD", "AVERAGE", "BAD"), y = proportion * 100, fill = trust_collaboration)) +
+  geom_bar(stat = "identity", width = 0.8) +
+  geom_errorbar(aes(ymax = pmin(proportion_upp, 1) * 100, ymin = pmax(proportion_low, 0) * 100), width = 0.2) +
+  guides(fill = guide_legend(title = NULL)) + 
+  labs(x = NULL, y = NULL) +  
+  sea::scale_fill_sea_discrete(4) +
+  sea::theme_sea() + 
+  theme(legend.position = "none", axis.text.x = element_text(size = 10)) +
+  scale_y_continuous(labels = label_percent(scale = 1))+
+  scale_x_discrete(labels = c("Good", "Average", "Bad"))
+```
+
+```{r}
+summary_by_village <- tanganyika_survey %>%
+  filter(!is.na(conflcit_interest) & conflcit_interest != "I DON'T KNOW" & conflcit_interest != "I DO NOT WANT TO ANSWER") %>% 
+  group_by(village, conflcit_interest) %>%
+  summarise(
+    proportion = survey_mean(vartype = "ci", na.rm = TRUE)) %>% ungroup()
+
+# Reshape the data to have "Yes" and "No" as columns
+conflict_table <- summary_by_village %>%
+  select(village, conflcit_interest, proportion) %>%
+  pivot_wider(names_from = conflcit_interest, values_from = proportion)
+
+# Rename columns for clarity
+colnames(conflict_table) <- c("Village", "No", "Not Sure", "Yes")
+
+# Format the proportion table values as percentages with one decimal point and add % sign
+conflict_table <- conflict_table %>%
+  mutate(across(c("No", "Not Sure", "Yes"),  ~ if_else(is.na(.), "", paste0(round(. * 100, 1), "%"))))
+
+expanded <- tanganyika_clean %>% select(hh_code, village, conflict_resolution, stype, fpc) %>%
+  separate_rows(conflict_resolution, sep = "\\|") %>%
+  mutate(conflict_resolution = trimws(conflict_resolution)) %>% drop_na()  
+
+expanded <- expanded %>%
+  mutate(cluster = case_when(village %in% cluster_1_villages ~ "Cluster 1", village %in% cluster_2_villages ~ "Cluster 2", TRUE ~ "Other"))
+
+design <- expanded %>%
+  as_survey_design(strata = stype, fpc = fpc)
+
+conflict_resolution_data <- design %>%
+  filter(!(village == "Mwinza")) %>% # Mwinza only contains one priamry sampling unit (PSU)
+  group_by(village, cluster, conflict_resolution) %>%
+  summarise(proportion = survey_mean(vartype = "ci", na.rm = TRUE), total = survey_total(vartype = "ci", na.rm = TRUE), n = unweighted(n())) %>% ungroup()
+
+# Reshape the data to have "Yes" and "No" as columns
+proportion_table <- conflict_resolution_data %>%
+  select(village, conflict_resolution, proportion) %>%
+  pivot_wider(
+    names_from = conflict_resolution,    # Use `drinking_water_dry` values as column names
+    values_from = proportion   # Fill with the proportion values
+  )
+
+# Rename columns for clarity
+colnames(proportion_table) <- c("Village", "Go to ward or district government", "Negotiate with each other", "Do nothing", "Go to village government", "I don't know", "There are no conflicts between BMUs and fishers", "Other")
+
+# Format the proportion table values as percentages with one decimal point and add % sign, leave NA as blank
+proportion_table <- proportion_table %>%
+  mutate(across(c("Go to ward or district government", "Negotiate with each other", "Do nothing", "Go to village government", "I don't know", "There are no conflicts between BMUs and fishers", "Other"),
+                ~ ifelse(is.na(.), "", paste0(round(. * 100, 1), "%"))))
+
+combined_table <- conflict_table %>%
+  select(Village, `Conflicts of interest indicated` = Yes) %>%
+  left_join(proportion_table %>% select(Village, `Go to ward or district government`, `Negotiate with each other`, `Go to village government`, `Do nothing`), by = "Village") 
+
+add_lot_link(caption = 'Conflict of interest and/or power struggle between village leaders and BMU (%)')
+
+# Add the flextable with a caption
+combined_table %>%
+  sea::sea_table(
+    dark_color = sea_colors("gunmetal"),
+    pale_color = sea_colors("grey"),
+    third_color = "white") %>%
+  flextable::autofit() %>%
+  add_header_row(
+    values = c("", "", "Conflict resolution measures", ""),
+    colwidths = c(1, 1, 4),
+    top = TRUE) %>% align(part = "header", align = "center")  # Center align the header row
+
+
+```
+
 
 
 ## Fishers
@@ -2643,7 +2830,7 @@ processing_form_design <- processing_form_expanded %>%
   as_survey_design(strata = stype, fpc = fpc)
 
 processing_form_data <- processing_form_design %>%
-  filter(!(village == "NG'ANGA")) %>% # Ng'anga only contains one priamry sampling unit (PSU)
+  filter(!(village == "Ng'anga")) %>% # Ng'anga only contains one priamry sampling unit (PSU)
   group_by(village, cluster, processing_form) %>%
   summarise(proportion = survey_mean(vartype = "ci", na.rm = TRUE), total = survey_total(vartype = "ci", na.rm = TRUE), n = unweighted(n())) %>% ungroup()
 
@@ -2675,7 +2862,7 @@ processing_equipment_design <- processing_equipment_expanded %>%
   as_survey_design(strata = stype, fpc = fpc)
 
 processing_equipment_data <- processing_equipment_design %>%
-   filter(!(village == "NG'ANGA")) %>% # Ng'anga only contains one priamry sampling unit (PSU)
+   filter(!(village == "Ng'anga")) %>% # Ng'anga only contains one priamry sampling unit (PSU)
   group_by(village, cluster, processing_equipment) %>%
   summarise(proportion = survey_mean(vartype = "ci", na.rm = TRUE), total = survey_total(vartype = "ci", na.rm = TRUE), n = unweighted(n())) %>% ungroup()
 
