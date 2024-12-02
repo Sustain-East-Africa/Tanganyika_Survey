@@ -1088,7 +1088,7 @@ household_item_data <- household_item_design %>%
 proportion_table <- household_item_data %>%
   select(village, household_item, proportion) %>%
   pivot_wider(
-    names_from = household_item,    # Use `drinking_water_dry` values as column names
+    names_from = household_item,    
     values_from = proportion   # Fill with the proportion values
   )
 
@@ -1112,10 +1112,6 @@ proportion_table %>%
 ```
 
 ```{r, fig.cap='Types of cooking fuels used at village level (%)', fig.align='center', out.width = '90%'}
-fishing_gear_expanded <- tanganyika_clean %>% select(hh_code, village, fishing_gear, stype, fpc) %>%
-  separate_rows(fishing_gear, sep = "\\|") %>%
-  mutate(fishing_gear = trimws(fishing_gear)) %>% drop_na()  
-
 fuel_expanded <- tanganyika_clean %>%
   mutate(cluster = case_when(village %in% cluster_1_villages ~ "Cluster 1", village %in% cluster_2_villages ~ "Cluster 2", TRUE ~ "Other"))
 
@@ -1346,6 +1342,208 @@ ggplot(aggregate_lh_ranking, aes(reorder(x = livelihood_activity, -mean_importan
 
 ```
 
+</div>
+\newpage
+
+## Food Consumption
+
+```{r, fig.cap='Frequency of eating different fish species ', fig.align='center', out.width = '90%'}
+
+# Filter out "NEVER" and "I DON'T KNOW"
+filtered_data <- tanganyika_clean %>%
+  filter(
+    !dagaa %in% c("NEVER", "I DON'T KNOW"),
+    !migebuka %in% c("NEVER", "I DON'T KNOW"),
+    !other_fish %in% c("NEVER", "I DON'T KNOW"))
+
+# Reshape the data
+long_fish_data <- filtered_data %>%
+  pivot_longer(
+    cols = c(dagaa, migebuka, other_fish),
+    names_to = "fish_type",
+    values_to = "frequency")
+
+long_fish_design <- long_fish_data %>%
+  as_survey_design(strata = stype, fpc = fpc)
+
+fish_proportions <- long_fish_design %>%
+  group_by(fish_type, frequency) %>%
+  summarise(
+    proportion = survey_mean(vartype = "ci", na.rm = TRUE)) %>%
+  ungroup()
+
+# Create the grouped bar chart
+ggplot(fish_proportions, aes(x = fish_type, y = proportion, fill = frequency)) +
+  geom_bar(stat = "identity", position = "dodge", width = 0.95) +
+  geom_errorbar(aes(ymax = pmin(proportion_upp, 100), ymin = pmax(proportion_low, 0)),
+                position = position_dodge(preserve = "single", width = 0.95), width = 0.1) +
+  guides(fill = guide_legend(title = NULL)) +
+  labs(x = NULL, y = "Proportion (%)", fill = "Frequency of Consumption") +
+  sea::scale_fill_sea_discrete(labels = c("LESS THAN ONCE A WEEK" = "Less than Weekly",
+               "AT LEAST ONCE A WEEK" = "Weekly",
+               "ALMOST EVERY DAY" = "Daily")) +
+  sea::theme_sea() +
+  theme(legend.position = "bottom",  legend.direction = "horizontal",  legend.justification = "center", 
+        axis.text.x = element_text(size = 7), strip.text = element_blank(), legend.box = 
+        "horizontal") +
+  scale_y_continuous(labels = scales::percent_format())+
+  scale_x_discrete(labels = c("dagaa" = "Dagaa", "migebuka" = "Migebuka", "other_fish" = "Other Fish"))
+
+```
+
+```{r,  fig.cap='Primary source of fish eaten in the last week', fig.align='center', out.width = '90%'}
+village_data <- tanganyika_survey %>%
+    group_by(primary_source) %>%
+    summarise(proportion = survey_mean(vartype = "ci", na.rm = TRUE), total = survey_total(vartype = "ci", na.rm = TRUE), n = unweighted(n())) %>%  filter(primary_source != "OTHER" & primary_source != "I DON'T KNOW") %>% drop_na() 
+
+ggplot(village_data, aes(x = reorder(primary_source, -proportion), y = proportion * 100, fill = reorder(primary_source, -proportion))) +
+  geom_bar(stat = "identity", width = 0.8) +
+  geom_errorbar(aes(ymax = pmin(proportion_upp, 1) * 100, ymin = pmax(proportion_low, 0) * 100), width = 0.2) +
+  guides(fill = guide_legend(title = NULL)) + 
+  labs(x = NULL, y = NULL) +  
+  sea::scale_fill_sea_discrete() +
+  sea::theme_sea() + 
+  theme(legend.position = "none", axis.text.x = element_text(angle = 45, hjust = 1)) +
+  scale_y_continuous(labels = label_percent(scale = 1))+
+  scale_x_discrete(labels = c("Purchase", "Own Catch", "Receiced as Gift", "Bartered", "Borrowed"))
+
+```
+
+```{r,  fig.cap='Change in frequency of fish consumption over the last 5 years', fig.align='center', out.width = '90%'}
+village_data <- tanganyika_survey %>%
+    group_by(eat_changed) %>%
+    summarise(proportion = survey_mean(vartype = "ci", na.rm = TRUE), total = survey_total(vartype = "ci", na.rm = TRUE), n = unweighted(n())) %>%  filter(eat_changed != "NOT SURE" & eat_changed != "I DON'T KNOW") %>% drop_na() 
+
+ggplot(village_data, aes(x = reorder(eat_changed, -proportion), y = proportion * 100, fill = reorder(eat_changed, -proportion))) +
+  geom_bar(stat = "identity", width = 0.8) +
+  geom_errorbar(aes(ymax = pmin(proportion_upp, 1) * 100, ymin = pmax(proportion_low, 0) * 100), width = 0.2) +
+  guides(fill = guide_legend(title = NULL)) + 
+  labs(x = NULL, y = NULL) +  
+  sea::scale_fill_sea_discrete() +
+  sea::theme_sea() + 
+  theme(legend.position = "none", axis.text.x = element_text(angle = 45, hjust = 1)) +
+  scale_y_continuous(labels = label_percent(scale = 1))+
+  scale_x_discrete(labels = c("Eat Less Now", "Same as Before", "Eat More Now", "Bartered"))
+
+```
+
+
+```{r, fig.cap='Proportion of food shortages experienced during the last 12 months at village level (%)', fig.align='center', out.width = '90%'}
+
+village_data <- tanganyika_survey %>%
+  group_by(village, worry_shortage) %>%
+  summarise(proportion = survey_mean(vartype = "ci", na.rm = TRUE), 
+            total = survey_total(vartype = "ci", na.rm = TRUE), 
+            n = unweighted(n())) %>%
+  mutate(cluster = case_when(village %in% cluster_1_villages ~ "Cluster 1", village %in% cluster_2_villages ~ "Cluster 2"))
+
+
+# Filter for "YES" entries in borrow_status
+village_data_yes <- village_data %>%
+  filter(worry_shortage == "YES")
+
+# Create the plot
+ggplot(village_data_yes, aes(x = village, y = proportion * 100, group = worry_shortage, fill = worry_shortage)) +
+  geom_bar(stat = "identity", position = position_dodge(preserve = "single"), width = 0.95) +
+  geom_errorbar(
+    aes(ymax = pmin(proportion_upp, 1) * 100, ymin = pmax(proportion_low, 0) * 100),
+    position = position_dodge(preserve = "single", width = 0.95), 
+    width = 0.1) +
+  geom_text(aes(label = paste0(round(proportion * 100, 1), "%")), 
+            position = position_dodge(width = 0.95), 
+            vjust = -7, size = 3) +  # Adjust 'vjust' to move labels above error bars
+  guides(fill = guide_legend(title = NULL, nrow = 2)) +
+  scale_fill_manual(values = SEA_palette) +
+  sea::scale_fill_sea_discrete() +
+  sea::theme_sea() + 
+  theme(
+    legend.position = "none",  
+    axis.text.x = element_text(size=8), 
+    strip.text = element_blank(), 
+    axis.text.y = element_blank(),  
+    axis.title.x = element_blank(),  
+    axis.title.y = element_blank()) + 
+  facet_wrap(~cluster, ncol = 1, scales = "free_x") +
+  scale_x_discrete(labels = function(x) str_wrap(x, width = 10))+
+  scale_y_continuous(labels = NULL) +
+  scale_x_discrete(labels = function(x) str_wrap(x, width = 10))
+
+```
+
+
+```{r, fig.cap='Changes in household food availability over the past 12 months', fig.align='center', out.width = '90%'}
+village_data <- tanganyika_survey %>%
+    group_by(food_availability) %>%
+    summarise(proportion = survey_mean(vartype = "ci", na.rm = TRUE), total = survey_total(vartype = "ci", na.rm = TRUE), n = unweighted(n())) %>% 
+  filter(food_availability != "I DO NOT WANT TO ANSWER" & food_availability != "I DON'T KNOW" & food_availability != "NOT SURE") %>% drop_na() 
+
+ggplot(village_data, aes(x = fct_relevel(food_availability, "BETTER", "AVERAGE", "WORSE"), y = proportion * 100, fill = food_availability)) +
+  geom_bar(stat = "identity", width = 0.8) +
+  geom_errorbar(aes(ymax = pmin(proportion_upp, 1) * 100, ymin = pmax(proportion_low, 0) * 100), width = 0.2) +
+  guides(fill = guide_legend(title = NULL)) + 
+  labs(x = NULL, y = NULL) +  
+  sea::scale_fill_sea_discrete() +
+  sea::theme_sea() + 
+  theme(legend.position = "none", axis.text.x = element_text(angle = 45, hjust = 1)) +
+  scale_y_continuous(labels = label_percent(scale = 1))+
+  scale_x_discrete(labels = c("Better", "Average", "Worse"))
+
+```
+
+```{r}
+food_data <- tanganyika_survey %>%
+  group_by(village, food_availability) %>%
+  summarise(
+    proportion = survey_mean(vartype = "ci", na.rm = TRUE),
+    total = survey_total(vartype = "ci", na.rm = TRUE),
+    n = unweighted(n())) %>% ungroup()
+
+proportion_table <- food_data %>%
+  select(village, food_availability, proportion) %>%
+  pivot_wider(
+    names_from = food_availability,    
+    values_from = proportion)
+
+proportion_table <- proportion_table[, !colnames(proportion_table) %in% c("NOT SURE", "I DON'T KNOW", "I DO NOT WANT TO ANSWER")]
+
+# Rename columns for clarity
+colnames(proportion_table) <- c("Village", "Average", "Better", "Worse")
+
+proportion_table <- proportion_table %>%
+  mutate(across(c("Average", "Better", "Worse"),
+                ~ ifelse(is.na(.), "", paste0(round(. * 100, 1), "%"))))
+
+add_lot_link(caption = 'Changes in household food availability over the last 12 months at village level (%)')
+
+# Create the flextable
+proportion_table %>%
+  sea::sea_table(
+    dark_color = sea_colors("gunmetal"),
+    pale_color = sea_colors("grey"),
+    third_color = "white"
+  ) %>%
+  flextable::width(width = 0.5)  
+```
+
+
+```{r, fig.cap='Change in household food availability over the last 12 months', fig.align='center', out.width = '90%'}
+village_data <- tanganyika_survey %>%
+    group_by(availability_changed) %>%
+    summarise(proportion = survey_mean(vartype = "ci", na.rm = TRUE), total = survey_total(vartype = "ci", na.rm = TRUE), n = unweighted(n())) %>%  filter(availability_changed != "I DO NOT WANT TO ANSWER" & availability_changed != "I DON'T KNOW" & availability_changed != "NOT SURE") %>% drop_na() 
+
+ggplot(village_data, aes(x = fct_relevel(availability_changed, "BETTER NOW", "SAME", "WORSE NOW"), y = proportion * 100, fill = availability_changed)) +
+  geom_bar(stat = "identity", width = 0.8) +
+  geom_errorbar(aes(ymax = pmin(proportion_upp, 1) * 100, ymin = pmax(proportion_low, 0) * 100), width = 0.2) +
+  guides(fill = guide_legend(title = NULL)) + 
+  labs(x = NULL, y = NULL) +  
+  sea::scale_fill_sea_discrete() +
+  sea::theme_sea() + 
+  theme(legend.position = "none", axis.text.x = element_text(angle = 45, hjust = 1)) +
+  scale_y_continuous(labels = label_percent(scale = 1))+
+  scale_x_discrete(labels = c("Better Now", "Same", "Worse Now"))
+
+```
+
 
 
 </div>
@@ -1548,6 +1746,266 @@ ggplot(village_data_yes, aes(x = village, y = proportion * 100, group = mobile_m
   scale_x_discrete(labels = function(x) str_wrap(x, width = 10))
 ```
 
+## Governance and Participation
+
+```{r}
+summary_by_village <- tanganyika_survey %>%
+  filter(!is.na(hh_influence) & hh_influence != "I DO NOT WANT TO ANSWER" & hh_influence != "NOT SURE") %>% 
+  group_by(village, hh_influence) %>%
+  summarise(
+    proportion = survey_mean(vartype = "ci", na.rm = TRUE)  # Weighted proportion
+  ) %>%
+  ungroup()
+
+# Reshape the data to have "Yes" and "No" as columns
+hh_influence_table <- summary_by_village %>%
+  select(village, hh_influence, proportion) %>%
+  pivot_wider(names_from = hh_influence, values_from = proportion)
+
+# Rename columns for clarity
+colnames(hh_influence_table) <- c("Village", "No", "Yes", "I don't know")
+
+# Format the proportion table values as percentages with one decimal point and add % sign
+hh_influence_table <- hh_influence_table %>%
+  mutate(across(c("No", "Yes", "I don't know"),  ~ if_else(is.na(.), "", paste0(round(. * 100, 1), "%"))))
+
+add_lot_link(caption = 'Household influence on decisions made by the village government at village level (%)')
+
+hh_influence_table %>%
+  sea::sea_table(
+    dark_color = sea_colors("gunmetal"),
+    pale_color = sea_colors("grey"),
+    third_color = "white"
+  ) %>%
+  flextable::autofit() %>%
+  add_header_row(
+    values = c("", "Influence on village government decisions"),
+    colwidths = c(1, ncol(hh_influence_table) - 1)) %>%
+  align(i = 1, align = "center", part = "header")
+```
+
+
+```{r, fig.cap='Vilalge membership at village level (%)', fig.align='center', out.width = '90%'}
+
+village_data <- tanganyika_survey %>%
+  group_by(village, village_membership) %>%
+  summarise(proportion = survey_mean(vartype = "ci", na.rm = TRUE), 
+            total = survey_total(vartype = "ci", na.rm = TRUE), 
+            n = unweighted(n())) %>%
+  mutate(cluster = case_when(village %in% cluster_1_villages ~ "Cluster 1", village %in% cluster_2_villages ~ "Cluster 2"))
+
+# Filter for "YES" entries in borrow_status
+village_data_yes <- village_data %>%
+  filter(village_membership == "YES")
+
+# Create the plot
+ggplot(village_data_yes, aes(x = village, y = proportion * 100, group = village_membership, fill = village_membership)) +
+  geom_bar(stat = "identity", position = position_dodge(preserve = "single"), width = 0.95) +
+  geom_errorbar(
+    aes(ymax = pmin(proportion_upp, 1) * 100, ymin = pmax(proportion_low, 0) * 100),
+    position = position_dodge(preserve = "single", width = 0.95), 
+    width = 0.1) +
+  geom_text(aes(label = paste0(round(proportion * 100, 1), "%")), 
+            position = position_dodge(width = 0.95), 
+            vjust = -7, size = 3) +  # Adjust 'vjust' to move labels above error bars
+  guides(fill = guide_legend(title = NULL, nrow = 2)) +
+  scale_fill_manual(values = SEA_palette) +
+  sea::scale_fill_sea_discrete() +
+  sea::theme_sea() + 
+  theme(
+    legend.position = "none",  
+    axis.text.x = element_text(size=8), 
+    strip.text = element_blank(), 
+    axis.text.y = element_blank(),  
+    axis.title.x = element_blank(),  
+    axis.title.y = element_blank()) + 
+  facet_wrap(~cluster, ncol = 1, scales = "free_x") +
+  scale_x_discrete(labels = function(x) str_wrap(x, width = 10))+
+  scale_y_continuous(labels = NULL) +
+  scale_x_discrete(labels = function(x) str_wrap(x, width = 10))
+
+```
+
+
+```{r, fig.cap='An indication of trust in people from the same village, neigboring vilalges, and the local government', fig.align='center', out.width = '90%'}
+
+# Filter out "NEVER" and "I DON'T KNOW"
+filtered_data <- tanganyika_clean %>%
+  filter(
+    !people_trusted %in% c("NOT SURE", "I DO NOT WANT TO ANSWER"),
+    !nearby_trusted %in% c("NOT SURE", "I DO NOT WANT TO ANSWER"),
+    !government_trusted %in% c("NOT SURE", "I DO NOT WANT TO ANSWER"))
+
+# Reshape the data
+trust_data <- filtered_data %>%
+  pivot_longer(
+    cols = c(people_trusted, nearby_trusted, government_trusted),
+    names_to = "party",
+    values_to = "trust")
+
+trust_design <- trust_data %>%
+  as_survey_design(strata = stype, fpc = fpc)
+
+trust_proportions <- trust_design %>%
+  group_by(party, trust) %>%
+  summarise(proportion = survey_mean(vartype = "ci", na.rm = TRUE)) %>%
+  ungroup()
+
+# Create the grouped bar chart
+ggplot(trust_proportions, aes(x = party, y = proportion, fill = fct_relevel(trust, "CAN ALWAYS BE TRUSTED", "CAN MOSTLY BE TRUSTED", "NEUTRAL", "CAN RARELY BE TRUSTED", "CAN NEVER BE TRUSTED"))) +
+  geom_bar(stat = "identity", position = "dodge", width = 0.95) +
+  geom_errorbar(aes(ymax = pmin(proportion_upp, 100), ymin = pmax(proportion_low, 0)),
+                position = position_dodge(preserve = "single", width = 0.95), width = 0.1) +
+  guides(fill = guide_legend(title = NULL)) +
+  labs(x = NULL, y = "Proportion (%)", fill = "Frequency of Consumption") +
+  sea::scale_fill_sea_discrete(labels = c("CAN ALWAYS BE TRUSTED" = "Always trusted",
+                                          "CAN MOSTLY BE TRUSTED" = "Mostly Trusted",
+                                          "NEUTRAL" = "Neutral",
+                                          "CAN RARELY BE TRUSTED" = "Rarely Trusted",
+                                          "CAN NEVER BE TRUSTED" = "Never Trusted")) +
+  sea::theme_sea() +
+  theme(legend.position = "bottom",  legend.direction = "horizontal",  legend.justification = "center", 
+        axis.text.x = element_text(size = 10), strip.text = element_blank(), legend.box = 
+        "horizontal") +
+  scale_y_continuous(labels = scales::percent_format())+
+  scale_x_discrete(labels = c("government_trusted" = "Local Government", "nearby_trusted" = "People in nearby villages", "people_trusted" = "People in own village"))
+
+```
+
+
+```{r}
+summary_by_village <- tanganyika_survey %>%
+  filter(!is.na(meeting_attendance) & meeting_attendance != "I DO NOT WANT TO ANSWER" & meeting_attendance != "NOT SURE") %>% 
+  group_by(village, meeting_attendance) %>%
+  summarise(proportion = survey_mean(vartype = "ci", na.rm = TRUE)) %>%
+  ungroup()
+
+# Reshape the data to have "Yes" and "No" as columns
+meeting_attendance_table <- summary_by_village %>%
+  select(village, meeting_attendance, proportion) %>%
+  pivot_wider(names_from = meeting_attendance, values_from = proportion)
+
+# Rename columns for clarity
+colnames(meeting_attendance_table) <- c("Village", "No", "Yes", "I don't know")
+
+# Format the proportion table values as percentages with one decimal point and add % sign
+meeting_attendance_table <- meeting_attendance_table %>%
+  mutate(across(c("No", "Yes", "I don't know"),  ~ if_else(is.na(.), "", paste0(round(. * 100, 1), "%"))))
+
+add_lot_link(caption = 'Public meeting attendance in the last 12 months to discuss village land-use planning, lake management and/or fisheries management at village level (%)')
+
+hh_influence_table %>%
+  sea::sea_table(
+    dark_color = sea_colors("gunmetal"),
+    pale_color = sea_colors("grey"),
+    third_color = "white"
+  ) %>%
+  flextable::autofit() %>%
+  add_header_row(
+    values = c("", "Public Meeting Attendance"),
+    colwidths = c(1, ncol(hh_influence_table) - 1)) %>%
+  align(i = 1, align = "center", part = "header")
+```
+
+
+```{r, fig.cap='Frequency of conflicts about fishing at village level (%)', fig.align='center', out.width = '90%'}
+expanded <- tanganyika_clean %>%
+  mutate(cluster = case_when(village %in% cluster_1_villages ~ "Cluster 1", village %in% cluster_2_villages ~ "Cluster 2", TRUE ~ "Other")) 
+
+design <- expanded %>%
+  as_survey_design(strata = stype, fpc = fpc) 
+
+conflict_data <- design %>%
+  filter(!is.na(disputes_conflicts) & disputes_conflicts != "I DO NOT WANT TO ANSWER") %>% 
+  group_by(village, cluster, disputes_conflicts) %>%
+  summarise(proportion = survey_mean(vartype = "ci", na.rm = TRUE), total = survey_total(vartype = "ci", na.rm = TRUE), n = unweighted(n())) %>% ungroup() 
+
+ggplot(conflict_data, aes(x = village, y = proportion * 100, group = fct_relevel(disputes_conflicts, "OFTEN", "RARELY", "NEVER", "NOT SURE"), fill = fct_relevel(disputes_conflicts, "OFTEN", "RARELY", "NEVER", "NOT SURE"))) +
+  geom_bar(stat = "identity", position = position_dodge(preserve = "single"), width = 0.95) +
+  geom_errorbar(aes(ymax = pmin(proportion_upp * 100, 100), ymin = pmax(proportion_low * 100, 0)),
+                position = position_dodge(preserve = "single", width = 0.95), width = 0.1) +
+  guides(fill = guide_legend(title = NULL)) +
+  labs(x = "", y = "Percentage of Households") +
+  sea::scale_fill_sea_discrete(labels = c("OFTEN" = "Often",
+                                          "RARELY" = "Rarely",
+                                          "NEVER" = "Never",
+                                          "NOT SURE" = "Not Sure")) +
+  sea::theme_sea() + 
+  theme(legend.position = "bottom",  legend.direction = "horizontal",  legend.justification = "center", 
+        axis.text.x = element_text(size = 7), strip.text = element_blank(), legend.box = 
+        "horizontal") + facet_wrap(~cluster, ncol = 1, scales = "free_x") +
+  scale_y_continuous(labels = label_percent(scale = 1))+
+  scale_x_discrete(labels = function(x) str_wrap(x, width = 10))
+
+```
+
+
+```{r, fig.cap='Frequency of conflicts about fishing at village level (%)', fig.align='center', out.width = '90%'}
+expanded <- tanganyika_clean %>%
+  mutate(cluster = case_when(village %in% cluster_1_villages ~ "Cluster 1", village %in% cluster_2_villages ~ "Cluster 2", TRUE ~ "Other")) 
+
+design <- expanded %>%
+  as_survey_design(strata = stype, fpc = fpc) 
+
+conflict_data <- design %>%
+  filter(!is.na(more_less) & more_less != "I DO NOT WANT TO ANSWER") %>% 
+  group_by(village, cluster, more_less) %>%
+  summarise(proportion = survey_mean(vartype = "ci", na.rm = TRUE), total = survey_total(vartype = "ci", na.rm = TRUE), n = unweighted(n())) %>% ungroup() 
+
+ggplot(conflict_data, aes(x = village, y = proportion * 100, group = fct_relevel(more_less, "MORE", "SAME", "LESS", "NOT SURE"), fill = fct_relevel(more_less, "MORE", "SAME", "LESS", "NOT SURE"))) +
+  geom_bar(stat = "identity", position = position_dodge(preserve = "single"), width = 0.95) +
+  geom_errorbar(aes(ymax = pmin(proportion_upp * 100, 100), ymin = pmax(proportion_low * 100, 0)),
+                position = position_dodge(preserve = "single", width = 0.95), width = 0.1) +
+  guides(fill = guide_legend(title = NULL)) +
+  labs(x = "", y = "Percentage of Households") +
+  sea::scale_fill_sea_discrete(labels = c("MORE" = "More",
+                                          "SAME" = "Same",
+                                          "LESS" = "Less",
+                                          "NOT SURE" = "Not Sure")) +
+  sea::theme_sea() + 
+  theme(legend.position = "bottom",  legend.direction = "horizontal",  legend.justification = "center", 
+        axis.text.x = element_text(size = 7), strip.text = element_blank(), legend.box = 
+        "horizontal") + facet_wrap(~cluster, ncol = 1, scales = "free_x") +
+  scale_y_continuous(labels = label_percent(scale = 1))+
+  scale_x_discrete(labels = function(x) str_wrap(x, width = 10))
+
+```
+
+
+```{r,  fig.cap='Conflict parties at village level (%)', fig.align='center', out.width = '90%'}
+
+conflict_parties_expanded <- tanganyika_clean %>% select(hh_code, village, conflict_parties, stype, fpc) %>%
+  separate_rows(conflict_parties, sep = "\\|") %>%
+  mutate(conflict_parties = trimws(conflict_parties)) %>% drop_na()  
+
+conflict_parties_expanded <- conflict_parties_expanded %>%
+  mutate(cluster = case_when(village %in% cluster_1_villages ~ "Cluster 1", village %in% cluster_2_villages ~ "Cluster 2", TRUE ~ "Other"))
+
+conflict_parties_design <- conflict_parties_expanded %>%
+  as_survey_design(strata = stype, fpc = fpc)
+
+conflict_parties_data <- conflict_parties_design %>%
+  group_by(village, cluster, conflict_parties) %>%
+  summarise(proportion = survey_mean(vartype = "ci", na.rm = TRUE), total = survey_total(vartype = "ci", na.rm = TRUE), n = unweighted(n())) %>% ungroup()
+
+ggplot(conflict_parties_data, aes(x = village, y = proportion * 100, group = conflict_parties, fill = conflict_parties)) +
+  geom_bar(stat = "identity", position = position_dodge(preserve = "single"), width = 0.95) +
+  geom_errorbar(aes(ymax = pmin(proportion_upp * 100, 100), ymin = pmax(proportion_low * 100, 0)),
+                position = position_dodge(preserve = "single", width = 0.95), width = 0.1) +
+  guides(fill = guide_legend(title = NULL, nrow = 2)) +
+  scale_fill_manual(values = SEA_palette) +
+  labs(x = "Village", y = "Percentage of Households") +
+  sea::scale_fill_sea_discrete() +
+  sea::theme_sea() + 
+  theme(legend.position = "bottom",  legend.direction = "horizontal",  legend.justification = "center", 
+        axis.text.x = element_text(size = 7), strip.text = element_blank(), legend.box = 
+        "horizontal") + facet_wrap(~cluster, ncol = 1, scales = "free_x")+
+  scale_x_discrete(labels = function(x) str_wrap(x, width = 10))+
+  scale_y_continuous(labels = label_percent(scale = 1))
+
+```
+
+
 ## Beach Management Units (BMU)
 
 ```{r, fig.cap='Household participation in BMU activities over the past 12 months at village level (%)', fig.align='center', out.width = '90%'}
@@ -1669,7 +2127,7 @@ ggplot(village_data_yes, aes(x = village, y = proportion * 100, group = bmu_memb
 ```
 
 
-```{r, fig.cap='BMU membership at village level (%)', fig.align='center', out.width = '90%'}
+```{r, fig.cap='TNC Lake Tanganyika Project supported BMUs at village level (%)', fig.align='center', out.width = '90%'}
 
 village_data <- tanganyika_survey %>%
   group_by(village, tnc_support_bmu) %>%
@@ -1937,7 +2395,7 @@ ggplot(village_data, aes(x = fct_relevel(leaders_elected, "YES", "NO", "NOT SURE
 ```
 
 
-```{r, fig.cap='Were BMU leaders elected or chosen fairly?', fig.align='center', out.width = '90%'}
+```{r, fig.cap='Indication of trust and collaboration between BMU and the Government in the management of fishing resources', fig.align='center', out.width = '90%'}
 village_data <- tanganyika_survey %>%
    filter(!is.na(trust_collaboration) & trust_collaboration != "I DON'T KNOW" & 
             trust_collaboration != "I DO NOT WANT TO ANSWER" & trust_collaboration != "NOT SURE") %>% 
