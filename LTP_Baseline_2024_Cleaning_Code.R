@@ -310,11 +310,8 @@ ppi <- ppi %>% rename_with(~ c("beef", "milk", "rice", "flour"))
 
 ## Fuel, Floor, and Wall Materials Questions
 house <- tanganyika %>% select(76:85)
-house <- house %>% rename_with(~ c("cooking_fuel", "other_cooking_fuel", "efficient_stoce", "efficient_stove_use", "floor_material", "other_floor_material", 
+house <- house %>% rename_with(~ c("cooking_fuel", "other_cooking_fuel", "efficient_stove", "efficient_stove_use", "floor_material", "other_floor_material", 
                                    "wall_material", "other_wall_material", "roof_material", "other_roof_material"))
-
-# house <- house %>% rename_with(~ c("cooking_fuel", "other_fuel", "efficient_stove", "stove_usage", "floor_material", "other_floor", 
-#                                    "wall_material", "other_wall", "roof_material", "other_roof"))
 
 ################################################################################
 
@@ -339,7 +336,7 @@ lh <- lh %>% rename_with(~ c("hh_code","livelihood_activities", "other_livelihoo
                                 livelihood_activities = if_else(hh_code == "483", "FISHING AGRICULTURE EMPLOYEE", livelihood_activities)) %>% select(-1) # Append ranking for household ID 438 
 
 # 31. livelihood_activities
-livelihood_options <- list("FISHING","FISH TRADING","FISH PROCESSING","AGRICULTURE","LIVESTOCK KEEPING","BUSINESS",
+livelihood_options <- list("FISHING","FISH TRADING","FISH PROCESSING","AGRICULTURE","LIVESTOCK KEEPING","BUSINESS", "BOAT BUILDER",
                            "DAY LABOR","EMPLOYEE","PENSIONS","REMITTANCES","OTHER", "TAILOR", "I DO NOT WANT TO ANSWER","I DON'T KNOW")
 escaped_livelihood_options <- escape_special_chars(livelihood_options)
 
