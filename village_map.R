@@ -7,17 +7,19 @@ library(readr)
 library(leaflet)
 library(tidyr)
 library(sea)
+library(viridis)
 
 SEA_palette <- c("#d77e5e", "#a4b792", "#e6e7e2", "#3d5919", "#202C39", "#381D2A", "#000000",
                  "#f2a084", "#b9c9b1", "#f0f1ed", "#5b7a2e", "#404b58", "#522a3b", "#1a1a1a", 
                  "#b15e42", "#839c7a", "#d2d2c8", "#293c14", "#151d29", "#2a171e", "#3c3c3c")
+
 ###########################################################################################
 
 # prepare data -----------------------------------------------------------
-hhs <- readRDS("tanganyika_clean.rds")
+hhs <- readRDS("LTP_Baseline_2024_Clean.rds")
 
 #individual locations
-hhs_locations <- readRDS("tanganyika_clean.rds") %>% 
+hhs_locations <- readRDS("LTP_Baseline_2024_Clean.rds") %>% 
   select("locat", "locatn_lat", "locatn_long", "interviewer_name", "village", "livelihood_activities", "hh_members") %>% 
   rename("y" = "locatn_lat", "x" = "locatn_long") %>%
   filter(!is.na(x) & !is.na(y)) %>%
@@ -27,7 +29,7 @@ hhs_locations <- readRDS("tanganyika_clean.rds") %>%
 
 # sampling by village -----------------------------------------------------------
 
-hhs_locations_village <- readRDS("tanganyika_clean.rds") %>% 
+hhs_locations_village <- readRDS("LTP_Baseline_2024_Clean.rds") %>% 
   select("locat", "locatn_lat", "locatn_long", "interviewer_name", "village", "livelihood_activities", "hh_members") %>% 
   rename("y" = "locatn_lat", "x" = "locatn_long")
 

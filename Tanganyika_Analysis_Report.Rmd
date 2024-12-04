@@ -1,6 +1,6 @@
 ---
-title: "Baseline Study for the Tuungane Health and Conservation Project"
-subtitle: "Social Assessment of Lake Tanganyika Households"
+title: "Baseline Study for the Lake Tanganyika Programme"
+subtitle: "Household Socioeconomic Assessment of Lake Tanganyika"
 author: 
   - "Sustain East Africa"
 date: "November 2024"
@@ -109,7 +109,72 @@ Provide broad overview of key findings
 
 # Introduction
 
-Intro text...
+<!-- Provide information of survey design... -->
+
+<!-- 1. Background of the Survey -->
+<!-- Lake Tanganyika, the world's second-deepest lake and one of the oldest, is a biodiversity -->
+<!-- hotspot and a vital freshwater source for the region. Its shores teem with unique flora and -->
+<!-- fauna, sustaining both aquatic life and the communities living nearby. However, the lake -->
+<!-- and its environs confront various challenges endangering this delicate balance. Population -->
+<!-- growth, unsustainable fishing, deforestation, waste mismanagement, and limited access to -->
+<!-- services threaten the ecosystem and community well-being. -->
+<!-- Building from experience with fishing other communities along the Tanzanian lakeshore -->
+<!-- and acknowledging the pressing need to tackle these challenges while envisioning a -->
+<!-- harmonious coexistence between communities and nature, the Lake Tanganyika Program -->
+<!-- (LTP) was initiated. Through collaboration and innovative approaches, LTP aims to -->
+<!-- establish and support a regional network of community-based co-managed fisheries areas -->
+<!-- and empower communities to locally co-manage their fisheries, enhance fish value chains, -->
+<!-- improve livelihoods, and support conservation efforts. -->
+<!-- Measuring the program's impact over time is crucial for ensuring effectiveness and -->
+<!-- sustainability and thus the purpose of the survey. This requires understanding local -->
+<!-- contexts, identifying challenges, and devising strategies for lasting development. -->
+<!-- 2. Purpose of the Survey -->
+<!-- The main objective of the survey was to measure the impact brought about by the Lake -->
+<!-- Tanganyika program over time, and assess the existing conditions, identify challenges, and -->
+<!-- eventually formulate strategies for sustainable development. -->
+<!-- 3. Coverage -->
+<!-- The survey is intended to cover out in Kirando, Itete, Kipili, Mkinga Ward, Kala, -->
+<!-- Wampembe or Kizumbi? wards (kata), in the following 21 villages (vijiji): Kichangani, -->
+<!-- Mtakuja, Isasa, Kipili, Manda Kerenge, Mkinga, Ntanganyika, Kalungu, Manda Uhuru, -->
+<!-- Majengo Mapya,Mpasa, Kilambo cha Mkolechi, Tundu, Kala, Wampembe, Mwinza, Izinga, -->
+<!-- Lyapinda, Kizumbi, Katenge, Ng'anga. -->
+
+<!-- Enumerator Training -->
+<!-- Training is crucial for enumerators before they begin a household survey to ensure that -->
+<!-- data collection is accurate, consistent, and ethical. The training covers essential -->
+<!-- responsibilities, including understanding the code of conduct, managing interview -->
+<!-- confidentiality, handling incomplete or uncertain responses, and reviewing the -->
+<!-- questionnaire at the end of each interview. -->
+<!-- Enumerators also learn about their roles in relation to supervisors, debriefing sessions, and -->
+<!-- data entry. Through detailed discussions of the survey's sections—ranging from household -->
+<!-- information to livelihood practices—the enumerators gain a thorough understanding of -->
+<!-- the questionnaire. Additionally, hands-on training in using tablets and survey software, -->
+
+<!-- combined with testing the questions among themselves and a pilot study, prepares them -->
+<!-- for real-world challenges, ensuring they can manage their workload and accurately capture -->
+<!-- the data needed. -->
+
+
+<!-- ## Pilot Study -->
+<!-- Before the pilot study began, the training leads (OKK and ENVEX), supervisors, and the -->
+<!-- TNC representatives paid a courtesy call to the offices of the District Executive Director, -->
+<!-- and the District Commissioner for Nkasi, before heading to the field to begin the pilot -->
+<!-- study. -->
+<!-- The pilot study was conducted over two days, on October 10th and 11th, with a total of 43 -->
+<!-- questionnaires finalised and submitted to the server. This study provided a platform to -->
+<!-- refine all pending errors and issues, which were resolved before the main survey began on -->
+<!-- Saturday, October 12th, 2024. -->
+<!-- Some of the issues raised, particularly regarding the hardcopy questionnaire and the Open -->
+<!-- Data Kit (ODK) survey form, were addressed during the supervisor-enumerator training. -->
+<!-- Below are examples of some of the issues that were raised. -->
+
+<!-- ## Methodology and Sampling -->
+<!-- Table of sampling frame -->
+
+<!-- ```{r} -->
+
+<!-- ``` -->
+
 
 </div>
 
@@ -172,8 +237,14 @@ ggplot(demo_summary, aes(x = age_group, y = ifelse(sex == "MALE", -percentage, p
   coord_flip() +
   scale_y_continuous(labels = function(x) paste0(abs(x), "%"), limits = c(-10, 10)) +
   labs(x = "Age Group", y = "Percentage of Total Population") +
-  sea::scale_fill_sea_discrete() +
-  sea::theme_sea()
+  sea::scale_fill_sea_discrete(labels = c("FEMALE" = "Female", "MALE" = "Male")) +
+  sea::theme_sea()+
+  theme(legend.title = element_blank())+
+  geom_text(aes(label = paste0(round(abs(percentage), 1), "%")), 
+            position = position_nudge(x = 0, y = ifelse(demo_summary$sex == "MALE", -1, 1)), 
+            size = 3, 
+            color = "black")
+
 ```
 
 
@@ -214,12 +285,24 @@ years_lived_table <- tanganyika_clean %>%
 years_lived_table <- years_lived_table %>%
   mutate(avg_years_lived = round(avg_years_lived, 1))
 
-# Combine the two tables by the 'village' column
 combined_table <- proportion_table %>%
-  left_join(years_lived_table, by = "village")
+  left_join(years_lived_table, by = "village") %>%
+  select(Village = village, Yes, `Average years spent if not born` = avg_years_lived)
 
 # Rename columns for clarity
-colnames(combined_table) <- c("Village", "Yes", "No", "Average years spent if not born")
+colnames(combined_table) <- c("Village", "Yes", "Average years spent if not born")
+
+total_row <- combined_table %>%
+  summarise(
+    Village = "Total",
+    Yes = mean(as.numeric(sub("%", "", Yes)) / 100, na.rm = TRUE) * 100,
+    `Average years spent if not born` = mean(`Average years spent if not born`, na.rm = TRUE)) %>%
+  mutate(
+    Yes = paste0(round(Yes, 1), "%"),
+    `Average years spent if not born` = round(`Average years spent if not born`, 1))
+
+# Add the "Total" row to the combined table
+combined_table <- bind_rows(combined_table, total_row)
 
 add_lot_link(caption = 'Proportion of household heads born in the ward')
 
@@ -599,35 +682,35 @@ ggplot(treatment_data, aes(x = village, y = proportion * 100, group = treatment_
 
 ```
 
-```{r}
-# Reshape the data to have "Yes" and "No" as columns
-proportion_table <- treatment_data %>%
-  select(village, treatment_method_dry, proportion) %>%
-  pivot_wider(
-    names_from = treatment_method_dry,    # Use `drinking_water_dry` values as column names
-    values_from = proportion   # Fill with the proportion values
-  )
+<!-- ```{r} -->
+<!-- # Reshape the data to have "Yes" and "No" as columns -->
+<!-- proportion_table <- treatment_data %>% -->
+<!--   select(village, treatment_method_dry, proportion) %>% -->
+<!--   pivot_wider( -->
+<!--     names_from = treatment_method_dry,    # Use `drinking_water_dry` values as column names -->
+<!--     values_from = proportion   # Fill with the proportion values -->
+<!--   ) -->
 
-# Rename columns for clarity
-colnames(proportion_table) <- c("Village", "Add Bleach or Chlorine", "Boil", "Strain Through a Cloth", "Use Water Filter", "Let it Stand and Settle")
+<!-- # Rename columns for clarity -->
+<!-- colnames(proportion_table) <- c("Village", "Add Bleach or Chlorine", "Boil", "Strain Through a Cloth", "Use Water Filter", "Let it Stand and Settle") -->
 
-# Format the proportion table values as percentages with one decimal point and add % sign, leave NA as blank
-proportion_table <- proportion_table %>%
-  mutate(across(c("Add Bleach or Chlorine", "Boil", "Strain Through a Cloth", "Use Water Filter", "Let it Stand and Settle"),
-                ~ ifelse(is.na(.), "", paste0(round(. * 100, 1), "%"))))
+<!-- # Format the proportion table values as percentages with one decimal point and add % sign, leave NA as blank -->
+<!-- proportion_table <- proportion_table %>% -->
+<!--   mutate(across(c("Add Bleach or Chlorine", "Boil", "Strain Through a Cloth", "Use Water Filter", "Let it Stand and Settle"), -->
+<!--                 ~ ifelse(is.na(.), "", paste0(round(. * 100, 1), "%")))) -->
 
-add_lot_link(caption = 'Water treatment in the dry season at village level (%)')
+<!-- add_lot_link(caption = 'Water treatment in the dry season at village level (%)') -->
 
-# Create the flextable
-proportion_table %>%
-  sea::sea_table(
-    dark_color = sea_colors("gunmetal"),
-    pale_color = sea_colors("grey"),
-    third_color = "white"
-  ) %>%
-  flextable::autofit()  
+<!-- # Create the flextable -->
+<!-- proportion_table %>% -->
+<!--   sea::sea_table( -->
+<!--     dark_color = sea_colors("gunmetal"), -->
+<!--     pale_color = sea_colors("grey"), -->
+<!--     third_color = "white" -->
+<!--   ) %>% -->
+<!--   flextable::autofit()   -->
 
-```
+<!-- ``` -->
 
 
 ```{r,  fig.cap='Main source of water in the dry season', fig.align='center', out.width = '90%'}
@@ -1448,7 +1531,7 @@ ggplot(availability_reason_data, aes(x = reorder(availability_reason, -proportio
   theme(legend.position = "none",  # Remove the legend
         axis.text.x = element_text(angle = 45, hjust = 1)) +  # Rotate x-axis labels
   scale_y_continuous(labels = label_percent(scale = 1))+
-  scale_x_discrete(labels = c("Bad weather destroyed crops", "Low fish availability", "Other reasons", "Illness", "Crops damaged by wildlife", "Lack of fertilizer", "Crops destroyed by pests", "High fish availability", "Death of a family member", "Normal situation", "Remittances not sent", "Use of fertilizer", "Crops thrived", "Lack of employment"))
+  scale_x_discrete(labels = c("Crops destroyed\nby bad weather", "Low fish availability", "Other reasons", "Illness", "Crops damaged by wildlife", "Lack of fertilizer", "Crops destroyed by pests", "High fish availability", "Death of a family member", "Normal situation", "Remittances not sent", "Use of fertilizer", "Crops thrived", "Lack of employment"))
 
 ```
 
@@ -1942,7 +2025,7 @@ ggplot(conflict_parties_data, aes(x = village, y = proportion * 100, group = con
                 position = position_dodge(preserve = "single", width = 0.95), width = 0.1) +
   guides(fill = guide_legend(title = NULL, nrow = 2)) +
   labs(x = "Village", y = "Percentage of Households") +
-  sea::scale_fill_sea_discrete(labels = c("AMONG FISHERS" = "Among fishers", "AMONG LOCAL VILLAGERS" = "Among local villagers", "BMUS WITH FISHERS" = "BMUs with fishers", "I DON'T KNOW" = "I don't know", "LOCAL VILLAGERS WITH GOVERNMENT" = "local villagers with government", "LOCAL VILLAGERS WITH IMMIGRANTS" = "Local villagers with immigrants", "LOCAL VILLAGERS WITH PEOPLE FROM OTHER VILLAGES" = "Local villagers with people from other villages", "OTHER" = "Other")) +
+  sea::scale_fill_sea_discrete(labels = c("AMONG FISHERS" = "Among fishers", "AMONG LOCAL VILLAGERS" = "Among local villagers", "BMUS WITH FISHERS" = "BMUs with fishers", "I DON'T KNOW" = "I don't know", "LOCAL VILLAGERS WITH GOVERNMENT" = "With government", "LOCAL VILLAGERS WITH IMMIGRANTS" = "With immigrants", "LOCAL VILLAGERS WITH PEOPLE FROM OTHER VILLAGES" = "With people from other villages", "OTHER" = "Other")) +
   sea::theme_sea() + 
   theme(legend.position = "bottom",  legend.direction = "horizontal",  legend.justification = "center", 
         axis.text.x = element_text(size = 7), strip.text = element_blank(), legend.box = 
@@ -2040,7 +2123,7 @@ ggplot(village_data_yes, aes(x = village, y = proportion * 100, group = leader_p
   geom_text(
     aes(y = pmin(proportion_upp, 1) * 100 + 1, label = paste0(round(proportion * 100, 1), "%")), 
     position = position_dodge(width = 0.95), 
-    vjust = 0, # Align the label with the specified y-coordinate
+    vjust = -0.5, # Align the label with the specified y-coordinate
     size = 3) +
   guides(fill = guide_legend(title = NULL, nrow = 2)) +
   scale_fill_manual(values = SEA_palette) +
@@ -2088,7 +2171,7 @@ ggplot(village_data_yes, aes(x = village, y = proportion * 100, group = BMU_acti
   geom_text(
     aes(y = pmin(proportion_upp, 1) * 100 + 1, label = paste0(round(proportion * 100, 1), "%")), 
     position = position_dodge(width = 0.95), 
-    vjust = 0, # Align the label with the specified y-coordinate
+    vjust = -0.5, # Align the label with the specified y-coordinate
     size = 3) +
   guides(fill = guide_legend(title = NULL, nrow = 2)) +
   scale_fill_manual(values = SEA_palette) +
@@ -2128,7 +2211,7 @@ ggplot(village_data_yes, aes(x = village, y = proportion * 100, group = awarenes
     width = 0.1) +
   geom_text(
     aes(y = pmin(proportion_upp, 1) * 100 + 1, label = paste0(round(proportion * 100, 1), "%")), 
-    position = position_dodge(width = 0.95), vjust = 0, size = 3) +
+    position = position_dodge(width = 0.95), vjust = -0.5, size = 3) +
   guides(fill = guide_legend(title = NULL, nrow = 2)) +
   scale_fill_manual(values = SEA_palette) +
   sea::scale_fill_sea_discrete() +
@@ -2169,7 +2252,7 @@ ggplot(village_data_yes, aes(x = village, y = proportion * 100, group = bmu_memb
     width = 0.1) +
   geom_text(
     aes(y = pmin(proportion_upp, 1) * 100 + 1, label = paste0(round(proportion * 100, 1), "%")), 
-    position = position_dodge(width = 0.95), vjust = 0, size = 3) +
+    position = position_dodge(width = 0.95), vjust = -0.5, size = 3) +
   guides(fill = guide_legend(title = NULL, nrow = 2)) +
   scale_fill_manual(values = SEA_palette) +
   sea::scale_fill_sea_discrete() +
@@ -2706,7 +2789,7 @@ ggplot(aggregate_fish_importance, aes(x = village, y = mean_importance_percent, 
   guides(fill = guide_legend(title = NULL)) + # Remove legend title
   sea::scale_fill_sea_discrete() +
   sea::theme_sea() + 
-  theme(legend.position = "top", 
+  theme(legend.position = "bottom", 
         legend.direction = "horizontal", 
         legend.justification = "center", 
         axis.text.x = element_text(size = 7), 
@@ -3318,7 +3401,6 @@ aggregate_satisfaction <- strat_design_satisfaction %>%
 # Plotting Satisfaction Values
 ggplot(aggregate_satisfaction, aes(x = reorder(Satisfaction_Area, -mean_satisfaction_value), y = mean_satisfaction_value, fill = Satisfaction_Area)) +
   geom_bar(stat = "identity", width = 0.75) +
-  geom_errorbar(aes(ymin = mean_satisfaction_value_low, ymax = mean_satisfaction_value_upp), width = 0.2) +
   labs(x = NULL, y = NULL) +
   guides(fill = guide_legend(title = NULL)) + 
   sea::scale_fill_sea_discrete() +
@@ -3333,7 +3415,7 @@ ggplot(aggregate_satisfaction, aes(x = reorder(Satisfaction_Area, -mean_satisfac
 
 ```
 
-```{r}
+```{r, fig.cap='Do you think BMUs are helpful to improving your fishing practices?', fig.align='center', out.width = '90%'}
 village_data <- tanganyika_survey %>%
    filter(!is.na(sustainability_population) & sustainability_population != "I DON'T KNOW") %>% 
     group_by(sustainability_population) %>%
@@ -3987,7 +4069,7 @@ ggplot(aggregate_target_type, aes(x = Fish_Species, y = mean_season_percent, gro
   guides(fill = guide_legend(title = NULL)) + 
   scale_fill_sea_discrete(labels = function(labels) str_to_title(str_to_lower(labels))) +
   sea::theme_sea() + 
-  theme(legend.position = "top", 
+  theme(legend.position = "bottom", 
         legend.direction = "horizontal", 
         legend.justification = "center", 
         axis.text.x = element_text(size = 10), 
