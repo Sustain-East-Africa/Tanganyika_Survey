@@ -689,13 +689,17 @@ tanganyika_clean <- tanganyika_clean %>%
       village == "Izinga" ~ 527,
       village == "Mwinza" ~ 356))
 
+# Ensure duplicate entries are removed from the survey_demo data frame
+survey_demo <- survey_demo[!duplicated(survey_demo$code), ]
+setdiff(tanganyika_clean$hh_code, survey_demo$code)
+
 # Merge the specific columns from survey_demo into tanganyika_clean
 tanganyika_clean <- merge(
   tanganyika_clean,
   survey_demo[, c("code", "sex", "age", "education_level", "marital_status", "main_activity")],
   by.x = "hh_code",    # Column in tanganyika_clean
   by.y = "code",       # Column in survey_demo
-  all.x = FALSE,       # Only retain rows with matching IDs
+  all.x = TRUE,       # Only retain rows with matching IDs
   all.y = FALSE        # Optional: ensures only matching rows are included (default FALSE)
 )
 

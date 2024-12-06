@@ -74,7 +74,7 @@ cluster_1_villages <- c("Izinga", "Kala", "Katenge", "Kilambo cha Mkolechi",
                         "Tundu", "Wampembe")
 cluster_2_villages <- c("Isasa", "Kalungu", "Kichangani", "Kipili", 
                         "Majengo Mapya", "Manda Kerenge", "Manda Uhuru", 
-                        "Mkinga", "Mtakuja", "Ntanganyika")
+                        "Mkinga", "Mtakuja", "Ntanganyika", "Total")
 ```
 
 \newpage
@@ -100,13 +100,12 @@ Acknowledgements
 ::: {.section-gunmetal-inverse}
 # Summary
 
-Provide broad overview of key findings
-
+Provide broad overview of survey and key findings.
 :::
 
 <!-- inverse rust page -->
-<div class="section-rust-inverse">
 
+::: {.section-rust-inverse}
 # Introduction
 
 1. Background of the Survey
@@ -142,7 +141,6 @@ Training was crucial for enumerators before they began the household surveys to 
 Enumerators also learnt about their roles in relation to supervisors, debriefing sessions, and data entry. Through detailed discussions of the survey's sections—ranging from household information to livelihood practices—the enumerators gained a thorough understanding of the questionnaire. Additionally, hands-on training in using tablets and survey software, combined with testing the questions among themselves and a pilot study, prepares them for real-world challenges, ensuring they can manage their workload and accurately capture the data needed.
 
 
-
 ## Pilot Study
 The pilot study was conducted over two days, on October 10th and 11th, with a total of 43
 questionnaires finalized and submitted to the server. This study provided a platform to
@@ -151,10 +149,20 @@ Saturday, October 12th, 2024.
 Some of the issues raised, particularly regarding the hard copy questionnaire and the Open
 Data Kit (ODK) survey form, were addressed during the supervisor-enumerator training.
 Below are examples of some of the issues that were raised.
+:::
 
-<div class ="section-rust">
+<!-- rust page -->
 
-<!-- ## Methodology and Sampling -->
+::: {.section-rust}
+
+## Methodology and Sampling
+
+### Sampling Design
+
+The study population was defined as those households currently living within the two village clusters, which comprise the 21 villages along the Lake Tanganyika shoreline.
+A stratified random sampling design was employed across the study population. Stratified sampling involved dividing the study population strata (villages) and drawing separate probability samples from each stratum. Stratification ensures that a pre-specified number of observations from each stratum end up in the sample, which is therefore less variable, yet may provide more precise estimates to adequately represent the entire population.
+The strata in this study were defined based on household locations and represent the different villages. By dividing the population into strata, the sampling design aims to capture the variability within these groups and ensure that each important subgroup is well-represented in the final sample. The sampling frame for the stratified design represents the total list of households within the two clusters of villages. A finite population correction (FPC), is applied to reduce the variance of estimates, which accounts for the fact that sampling a substantial proportion of households in each stratum may lead to a decrease in variability. As such, the FPC is incorporated into the weighting of final survey estimates to correct for finite population size. The stratified sampling design ensures that each stratum is adequately represented and reduces variability within the sample, leading to more accurate conclusions and better-informed policy recommendations.
+
 
 <!-- ```{r} -->
 <!-- # Data -->
@@ -253,6 +261,7 @@ Below are examples of some of the issues that were raised.
 <!--   autofit()  -->
 
 <!-- ``` -->
+::: 
 
 <!-- rust page -->
 <div class ="section-rust">
@@ -267,7 +276,6 @@ Household Definition
 A household is defined as one person or a group of people who eat meals cooked from the same stove and who sleep under the same roof. 
 
 This is not the same as a family. A family includes only people who are related, but a household includes any people who live together, whether or not they are related. For example, three unrelated men who live and cook meals together would not be considered one family, but they would be considered to be members of the same household.
-
 
 
 
@@ -351,11 +359,11 @@ proportion_table <- summary_by_village %>%
   )
 
 # Rename columns for clarity
-colnames(proportion_table) <- c("village", "Yes", "No")
+colnames(proportion_table) <- c("village", "Yes (%)", "No")
 
 # Format the proportion table values as percentages with one decimal point and add % sign
 proportion_table <- proportion_table %>%
-  mutate(across(c("Yes", "No"), ~ paste0(round(. * 100, 1), "%")))
+  mutate(across(c("Yes (%)", "No"), ~ paste0(round(. * 100, 0))))
 
 # Create a separate table to calculate the average years lived in the village by respondents who answered "No"
 years_lived_table <- tanganyika_clean %>%
@@ -366,23 +374,23 @@ years_lived_table <- tanganyika_clean %>%
 
 # Format the years lived table to one decimal point
 years_lived_table <- years_lived_table %>%
-  mutate(avg_years_lived = round(avg_years_lived, 1))
+  mutate(avg_years_lived = round(avg_years_lived, 0))
 
 combined_table <- proportion_table %>%
   left_join(years_lived_table, by = "village") %>%
-  select(Village = village, Yes, `Average years spent if not born` = avg_years_lived)
+  select(Village = village, `Yes (%)`, `Average years spent if not born` = avg_years_lived)
 
 # Rename columns for clarity
-colnames(combined_table) <- c("Village", "Yes", "Average years spent if not born")
+colnames(combined_table) <- c("Village", "Yes (%)", "Average years spent if not born")
 
 total_row <- combined_table %>%
   summarise(
     Village = "Total",
-    Yes = mean(as.numeric(sub("%", "", Yes)) / 100, na.rm = TRUE) * 100,
+    `Yes (%)` = mean(as.numeric(sub("%", "", `Yes (%)`)) / 100, na.rm = TRUE) * 100,
     `Average years spent if not born` = mean(`Average years spent if not born`, na.rm = TRUE)) %>%
   mutate(
-    Yes = paste0(round(Yes, 1), "%"),
-    `Average years spent if not born` = round(`Average years spent if not born`, 1))
+    `Yes (%)` = paste0(round(`Yes (%)`, 0)),
+    `Average years spent if not born` = round(`Average years spent if not born`, 0))
 
 # Add the "Total" row to the combined table
 combined_table <- bind_rows(combined_table, total_row)
@@ -400,7 +408,7 @@ combined_table %>%
 
 ```
 
-</div>
+\newpage
 
 ## Poverty Probability Index
 
@@ -611,10 +619,10 @@ results_df <- data.frame(
   Lower = c(lower_overall_poverty_likelihood, lower_male_poverty_likelihood, lower_female_poverty_likelihood, lower_youth_poverty_likelihood),
   Extreme = c(extreme_overall_poverty_likelihood, extreme_male_poverty_likelihood, extreme_female_poverty_likelihood, extreme_youth_poverty_likelihood))
 
-results_df[ , c("Upper", "Lower", "Extreme")] <- round(results_df[ , c("Upper", "Lower", "Extreme")], 1)
+results_df[ , c("Upper", "Lower", "Extreme")] <- round(results_df[ , c("Upper", "Lower", "Extreme")], 0)
 
 # Rename columns
-colnames(results_df) <- c("Category", "Upper National Poverty Line", "Lower National Poverty Line", "Extreme Poverty Line")
+colnames(results_df) <- c("Category", "Upper National Poverty Line (%)", "Lower National Poverty Line (%)", "Extreme Poverty Line (%)")
 
 add_lot_link(caption = 'Percentage (%) estimates of the Poverty Probability Index (PPI) for households')
 
@@ -655,31 +663,39 @@ village_poverty_likelihood_long <- village_poverty_likelihood %>%
     names_to = "poverty_level",
     values_to = "poverty_likelihood")
 
-# Create the plot
+village_poverty_likelihood_long <- village_poverty_likelihood_long %>%
+  mutate(poverty_level = fct_relevel(poverty_level, "upper_poverty", "lower_poverty", "extreme_poverty"))
+
 ggplot(village_poverty_likelihood_long, aes(x = village, y = poverty_likelihood, 
                                             group = poverty_level, fill = poverty_level)) +
   geom_bar(stat = "identity", position = position_dodge(preserve = "single"), width = 0.95) +
+  geom_text(aes(label = paste0(round(poverty_likelihood, 0))), 
+            position = position_dodge(width = 0.95), 
+            vjust = -0.5, size = 3) +  # Add percentage labels above bars
   guides(fill = guide_legend(title = NULL)) +
   labs(x = "Village", y = "Percentage of Poverty Likelihood") +
-  scale_fill_manual(values = SEA_palette,  labels = c(
-    "extreme_poverty" = "Extreme Poverty Line", 
-    "lower_poverty" = "Lower National Poverty Line", 
-    "upper_poverty" = "Upper National Poverty Line")) +
-  labs(x = "", y = "Percentage of Households") +
+  scale_fill_manual(values = c("#3d5919", "#5b7a2e", "#a4b792"), labels = c(
+    "extreme_poverty" = "Extreme Poverty Line (%)", 
+    "lower_poverty" = "Lower National Poverty Line (%)", 
+    "upper_poverty" = "Upper National Poverty Line (%)")) +
+  labs(x = "", y = "") +  # Remove y-axis title
   sea::theme_sea() + 
-  theme(legend.position = "bottom", legend.direction = "horizontal", legend.justification = "center", 
-        axis.text.x = element_text(size = 7), strip.text = element_blank(), legend.box = "horizontal") +
+  theme(
+    legend.position = "bottom", 
+    legend.direction = "horizontal", 
+    legend.justification = "center", 
+    axis.text.x = element_text(size = 7), axis.text.y = element_blank(), axis.ticks.y = element_blank(), axis.title.y = element_blank(), strip.text = element_blank(), panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(), legend.box = "horizontal") +
   scale_x_discrete(labels = function(x) str_wrap(x, width = 10)) +
-  scale_y_continuous(labels = label_percent(scale = 1)) +
-  facet_wrap(~cluster, ncol = 1, scales = "free_x") + 
-  theme(axis.text.x = element_text(size = 7))  
+  scale_y_continuous(expand = expansion(mult = c(0, 0.1))) +  # Add space for labels above bars
+  facet_wrap(~cluster, ncol = 1, scales = "free_x") +
+  theme(axis.text.x = element_text(size = 7))
 
 ```
 
-</div>
-
 <!-- inverse gunmetal page -->
-<div class="section-gunmetal-inverse">
+
+<article class="section-gunmetal-inverse">
 
 # Quantitative Analysis
 
@@ -711,30 +727,35 @@ village_data <- village_data %>%
       "WE CAN MEET OUR DAILY NEEDS AND SAVE MONEY AFTERWARDS TOO", 
       "WE HAVE ENOUGH TO MEET OUR DAILY NEEDS AND HAVE SOME EXTRA THINGS")))
 
-# Plot with updated order
 ggplot(village_data, aes(x = village, y = proportion * 100, group = household_ability, fill = household_ability)) +
   geom_bar(stat = "identity", position = position_dodge(preserve = "single"), width = 0.95) +
   geom_errorbar(
     aes(ymax = pmin(proportion_upp, 1) * 100, ymin = pmax(proportion_low, 0) * 100),
     position = position_dodge(preserve = "single", width = 0.95), 
     width = 0.1) +
+  # geom_text(
+  #   aes(label = paste0(round(proportion * 100, 0)), 
+  #       y = pmin(proportion_upp, 1) * 100 + 2),  # Position just above the error bar
+  #   position = position_dodge(width = 0.95), 
+  #   vjust = 0, size = 3) +
   guides(fill = guide_legend(title = NULL, nrow = 1)) +
-  sea::scale_fill_sea_discrete(labels = c(
+  scale_fill_manual(values = c("#3d5919", "#5b7a2e", "#a4b792", "#d8e3cc"), labels = c(
       "WE CAN JUST MEET OUR DAILY NEEDS AND HAVE NO EXTRA THINGS" = "Just sufficient", 
       "WE HAVE DIFFICULTY IN MEETING OUR DAILY NEEDS" = "With difficulty", 
       "WE CAN MEET OUR DAILY NEEDS AND SAVE MONEY AFTERWARDS TOO" = "Can meet needs", 
       "WE HAVE ENOUGH TO MEET OUR DAILY NEEDS AND HAVE SOME EXTRA THINGS" = "Have extra")) +
-  labs(x = "", y = "Percentage of Households") +
+  labs(x = "", y = "") +  # Remove axis titles
   sea::theme_sea() + 
-  theme(legend.position = "bottom", 
-        legend.direction = "horizontal", 
-        legend.justification = "center", 
-        axis.text.x = element_text(size = 7), 
-        strip.text = element_blank(), 
-        legend.box = "horizontal") + 
-  facet_wrap(~cluster, ncol = 1, scales = "free_x") +
-  scale_y_continuous(labels = label_percent(scale = 1)) +
-  scale_x_discrete(labels = function(x) str_wrap(x, width = 10))
+  theme(legend.position = "bottom",  legend.direction = "horizontal",  legend.justification = "center", 
+    # axis.text.y = element_blank(),  # Remove y-axis labels
+    # axis.ticks.y = element_blank(),  # Remove y-axis ticks
+    panel.grid.major = element_blank(),  # Remove major gridlines
+    panel.grid.minor = element_blank(),  # Remove minor gridlines
+    strip.text = element_blank(), 
+    legend.box = "horizontal") + facet_wrap(~cluster, ncol = 1, scales = "free_x")+
+  scale_x_discrete(labels = function(x) str_wrap(x, width = 10)) +
+  scale_y_continuous(labels = label_percent(scale = 1)) 
+
 ```
 
 </div>
@@ -758,13 +779,44 @@ treatment_data <- treatment_dry_design %>%
   group_by(village, cluster, treatment_method_dry) %>%
   summarise(proportion = survey_mean(vartype = "ci", na.rm = TRUE), total = survey_total(vartype = "ci", na.rm = TRUE), n = unweighted(n())) %>% ungroup()
 
+# Add a "Total" group to the data
+total_data <- treatment_dry_design %>%
+  group_by(treatment_method_dry) %>%
+  summarise(proportion = survey_mean(vartype = "ci", na.rm = TRUE),
+            total = survey_total(vartype = "ci", na.rm = TRUE),
+            n = unweighted(n())) %>%
+  mutate(village = "Total", cluster = "Total")  # Mark as "Total"
+
+# Combine the total_data with the original treatment_data
+treatment_data <- bind_rows(treatment_data, total_data)
+
+treatment_data <- treatment_data %>%
+  mutate(cluster = case_when(
+    cluster == "Total" ~ "Cluster 2", TRUE ~ cluster))
+
+treatment_data <- treatment_data %>%
+  mutate(village = reorder(village, -proportion))  # Reorder villages based on proportion
+
+# Reorder treatment_method_dry based on average proportion for each method
+treatment_data$treatment_method_dry <- factor(
+  treatment_data$treatment_method_dry,
+  levels = treatment_data %>%
+    group_by(treatment_method_dry) %>%
+    summarise(avg_proportion = mean(proportion, na.rm = TRUE)) %>%
+    arrange(desc(avg_proportion)) %>%
+    pull(treatment_method_dry))
+
 ggplot(treatment_data, aes(x = village, y = proportion * 100, group = treatment_method_dry, fill = treatment_method_dry)) +
-  geom_bar(stat = "identity", position = position_dodge(preserve = "single"), width = 0.95) +
+  geom_bar(stat = "identity", position = position_dodge(width = 0.8), width = 0.7) +
   geom_errorbar(aes(ymax = pmin(proportion_upp * 100, 100), ymin = pmax(proportion_low * 100, 0)),
-                position = position_dodge(preserve = "single", width = 0.95), width = 0.1) +
-  guides(fill = guide_legend(title = NULL, nrow = 2)) +
-  labs(x = "Village", y = "Percentage of Households") +
-  sea::scale_fill_sea_discrete(labels = c(
+    position = position_dodge(width = 0.8), width = 0.25) +
+  # geom_text(aes(
+  #     label = paste0(round(proportion * 100, 0)),
+  #     y = pmin(proportion_upp * 100, 100) + 2),
+  #     position = position_dodge(width = 0.8), vjust = 0, size = 3) +
+  guides(fill = guide_legend(title = NULL, nrow = 1, reverse = FALSE)) +
+  labs(x = NULL, y = NULL) +
+  scale_fill_manual(values = c("#3d5919", "#5b7a2e", "#a4b792", "#d2d2c8", "#d8e3cc"), labels = c(
       "ADD BLEACH/CHLORINE" = "Add bleach or chlorine", 
       "BOIL" = "Boil",
       "LET IT STAND AND SETTLE" = "Let it stand and settle",
@@ -772,8 +824,12 @@ ggplot(treatment_data, aes(x = village, y = proportion * 100, group = treatment_
       "USE WATER FILTER (CERAMIC/SAND/COMPOSITE/ETC.)" = "Use water filter")) +
   sea::theme_sea() + 
   theme(legend.position = "bottom",  legend.direction = "horizontal",  legend.justification = "center", 
-        axis.text.x = element_text(size = 7), strip.text = element_blank(), legend.box = 
-        "horizontal") + facet_wrap(~cluster, ncol = 1, scales = "free_x")+
+    # axis.text.y = element_blank(),  # Remove y-axis labels
+    # axis.ticks.y = element_blank(),  # Remove y-axis ticks
+    panel.grid.major = element_blank(),  # Remove major gridlines
+    panel.grid.minor = element_blank(),  # Remove minor gridlines
+    strip.text = element_blank(), 
+    legend.box = "horizontal") + facet_wrap(~cluster, ncol = 1, scales = "free_x")+
   scale_x_discrete(labels = function(x) str_wrap(x, width = 10))+
   scale_y_continuous(labels = label_percent(scale = 1))
 
@@ -823,12 +879,17 @@ ggplot(village_data, aes(x = reorder(drinking_water_dry, -proportion),
   geom_bar(stat = "identity", width = 0.8) +
   geom_errorbar(aes(ymax = pmin(proportion_upp, 1)*100, ymin = pmax(proportion_low, 0)*100),
                 width = 0.2) +
+  geom_text(aes(
+      label = paste0(round(proportion * 100, 1), "%"),
+      y = pmin(proportion_upp * 100, 100) + 2), 
+      position = position_dodge(width = 0.8), vjust = 0, size = 3) +
   guides(fill = guide_legend(title = NULL, nrow = 3)) +
-  labs(x = "", y = "Percentage of Households") +
+  labs(x = "", y = NULL) +
   sea::scale_fill_sea_discrete() +
   sea::theme_sea() + 
   theme(legend.position = "none",  # Remove the legend
-        axis.text.x = element_text(angle = 45, hjust = 1)) +  # Rotate x-axis labels
+        axis.text.x = element_text(angle = 45, hjust = 1),  axis.text.y = element_blank(),axis.ticks.y = element_blank(), panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank()) +  # Rotate x-axis labels
   scale_y_continuous(labels = label_percent(scale = 1))+
   scale_x_discrete(labels = c("River or Stream", "Public Tap", "Pond or Lake", "Open Public Well", "Protected Public Well", "Spring", "Piped into Dwelling", "Water Vendor", "Neighbour's Open Well", "Neighbour's Borehole", "Protected Well in Plot", "Open Well in Plot", "Piped into Plot", "Neighbour's Tap", "Other"))
   
@@ -851,56 +912,90 @@ treatment_data <- treatment_wet_design %>%
   group_by(village, cluster, treatment_method_wet) %>%
   summarise(proportion = survey_mean(vartype = "ci", na.rm = TRUE), total = survey_total(vartype = "ci", na.rm = TRUE), n = unweighted(n())) %>% ungroup()
 
+# Add a "Total" group to the data
+total_data <- treatment_wet_design %>%
+  group_by(treatment_method_wet) %>%
+  summarise(proportion = survey_mean(vartype = "ci", na.rm = TRUE),
+            total = survey_total(vartype = "ci", na.rm = TRUE),
+            n = unweighted(n())) %>%
+  mutate(village = "Total", cluster = "Total")  # Mark as "Total"
+
+# Combine the total_data with the original treatment_data
+treatment_data <- bind_rows(treatment_data, total_data)
+
+treatment_data <- treatment_data %>%
+  mutate(cluster = case_when(
+    cluster == "Total" ~ "Cluster 2", TRUE ~ cluster))
+
+treatment_data <- treatment_data %>%
+  mutate(village = reorder(village, -proportion))  # Reorder villages based on proportion
+
+# Reorder treatment_method_dry based on average proportion for each method
+treatment_data$treatment_method_wet <- factor(
+  treatment_data$treatment_method_wet,
+  levels = treatment_data %>%
+    group_by(treatment_method_wet) %>%
+    summarise(avg_proportion = mean(proportion, na.rm = TRUE)) %>%
+    arrange(desc(avg_proportion)) %>%
+    pull(treatment_method_wet))
+
 ggplot(treatment_data, aes(x = village, y = proportion * 100, group = treatment_method_wet, fill = treatment_method_wet)) +
-  geom_bar(stat = "identity", position = position_dodge(preserve = "single"), width = 0.95) +
+  geom_bar(stat = "identity", position = position_dodge(width = 0.8), width = 0.7) +
   geom_errorbar(aes(ymax = pmin(proportion_upp * 100, 100), ymin = pmax(proportion_low * 100, 0)),
-                position = position_dodge(preserve = "single", width = 0.95), width = 0.1) +
-  guides(fill = guide_legend(title = NULL, nrow = 2)) +
-  scale_fill_manual(values = SEA_palette) +
-  labs(x = "Village", y = "Percentage of Households") +
-  sea::scale_fill_sea_discrete(labels = c(
+    position = position_dodge(width = 0.8), width = 0.25) +
+  # geom_text(aes(
+  #     label = paste0(round(proportion * 100, 0)),
+  #     y = pmin(proportion_upp * 100, 100) + 2), 
+  #     position = position_dodge(width = 0.8), vjust = 0, size = 3) +
+  guides(fill = guide_legend(title = NULL, nrow = 1, reverse = FALSE)) +
+  labs(x = NULL, y = NULL) +
+  scale_fill_manual(values = c("#3d5919", "#5b7a2e", "#a4b792", "#d2d2c8", "#d8e3cc"), labels = c(
       "ADD BLEACH/CHLORINE" = "Add bleach or chlorine", 
       "BOIL" = "Boil",
       "STRAIN THROUGH A CLOTH" = "Strain through a cloth",
       "USE WATER FILTER (CERAMIC/SAND/COMPOSITE/ETC.)" = "Use water filter")) +
   sea::theme_sea() + 
   theme(legend.position = "bottom",  legend.direction = "horizontal",  legend.justification = "center", 
-        axis.text.x = element_text(size = 7), strip.text = element_blank(), legend.box = 
+    # axis.text.y = element_blank(),  # Remove y-axis labels
+    # axis.ticks.y = element_blank(),  # Remove y-axis ticks
+    panel.grid.major = element_blank(),  # Remove major gridlines
+    panel.grid.minor = element_blank(),  # Remove minor gridlines
+    strip.text = element_blank(), legend.box = 
         "horizontal") + facet_wrap(~cluster, ncol = 1, scales = "free_x")+
   scale_x_discrete(labels = function(x) str_wrap(x, width = 10))+
   scale_y_continuous(labels = label_percent(scale = 1))
 
 ```
 
-```{r}
-# Reshape the data to have "Yes" and "No" as columns
-proportion_table <- treatment_data %>%
-  select(village, treatment_method_wet, proportion) %>%
-  pivot_wider(
-    names_from = treatment_method_wet,    # Use `drinking_water_dry` values as column names
-    values_from = proportion   # Fill with the proportion values
-  )
+<!-- ```{r} -->
+<!-- # Reshape the data to have "Yes" and "No" as columns -->
+<!-- proportion_table <- treatment_data %>% -->
+<!--   select(village, treatment_method_wet, proportion) %>% -->
+<!--   pivot_wider( -->
+<!--     names_from = treatment_method_wet,    # Use `drinking_water_dry` values as column names -->
+<!--     values_from = proportion   # Fill with the proportion values -->
+<!--   ) -->
 
-# Rename columns for clarity
-colnames(proportion_table) <- c("Village", "Add Bleach or Chlorine", "Boil", "Strain Through a Cloth", "Use Water Filter")
+<!-- # Rename columns for clarity -->
+<!-- colnames(proportion_table) <- c("Village", "Add Bleach or Chlorine", "Boil", "Strain Through a Cloth", "Use Water Filter") -->
 
-# Format the proportion table values as percentages with one decimal point and add % sign, leave NA as blank
-proportion_table <- proportion_table %>%
-  mutate(across(c("Add Bleach or Chlorine", "Boil", "Strain Through a Cloth", "Use Water Filter"),
-                ~ ifelse(is.na(.), "", paste0(round(. * 100, 1), "%"))))
+<!-- # Format the proportion table values as percentages with one decimal point and add % sign, leave NA as blank -->
+<!-- proportion_table <- proportion_table %>% -->
+<!--   mutate(across(c("Add Bleach or Chlorine", "Boil", "Strain Through a Cloth", "Use Water Filter"), -->
+<!--                 ~ ifelse(is.na(.), "", paste0(round(. * 100, 1), "%")))) -->
 
-add_lot_link(caption = 'Water treatment in the wet season at village level (%)')
+<!-- add_lot_link(caption = 'Water treatment in the wet season at village level (%)') -->
 
-# Create the flextable
-proportion_table %>%
-  sea::sea_table(
-    dark_color = sea_colors("gunmetal"),
-    pale_color = sea_colors("grey"),
-    third_color = "white"
-  ) %>%
-  flextable::autofit()  
+<!-- # Create the flextable -->
+<!-- proportion_table %>% -->
+<!--   sea::sea_table( -->
+<!--     dark_color = sea_colors("gunmetal"), -->
+<!--     pale_color = sea_colors("grey"), -->
+<!--     third_color = "white" -->
+<!--   ) %>% -->
+<!--   flextable::autofit() -->
 
-```
+<!-- ``` -->
 
 
 ```{r,  fig.cap='Main source of water in the wet season', fig.align='center', out.width = '90%'}
@@ -916,12 +1011,17 @@ ggplot(village_data, aes(x = reorder(drinking_water_wet, -proportion),
   geom_bar(stat = "identity", width = 0.8) +
   geom_errorbar(aes(ymax = pmin(proportion_upp, 1)*100, ymin = pmax(proportion_low, 0)*100),
                 width = 0.2) +
+  geom_text(aes(
+      label = paste0(round(proportion * 100, 1), "%"),
+      y = pmin(proportion_upp * 100, 100) + 2), 
+      position = position_dodge(width = 0.8), vjust = 0, size = 3) +
   guides(fill = guide_legend(title = NULL, nrow = 3)) +
-  labs(x = "", y = "Percentage of Households") +
+  labs(x = "", y = NULL) +
   sea::scale_fill_sea_discrete() +
   sea::theme_sea() + 
   theme(legend.position = "none",  # Remove the legend
-        axis.text.x = element_text(angle = 45, hjust = 1)) +  # Rotate x-axis labels
+        axis.text.x = element_text(angle = 45, hjust = 1),  axis.text.y = element_blank(),axis.ticks.y = element_blank(), panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank()) +  # Rotate x-axis labels
   scale_y_continuous(labels = label_percent(scale = 1))+
   scale_x_discrete(labels = c("Rainwater", "River or Stream", "Public Tap", "Pond or Lake", "Open Public Well", "Protected Public Well", "Spring", "Piped into Dwelling", "Water Vendor", "Open Well in Plot", "Neighbour's Borehole", "Neighbour's Open Well","Piped into Plot"))
 
@@ -951,7 +1051,7 @@ colnames(handwashing_place_table) <- c("village", "No", "Yes")
 
 # Format the proportion table values as percentages with one decimal point and add % sign
 handwashing_place_table <- handwashing_place_table %>%
-  mutate(across(c("Yes", "No"), ~ paste0(round(. * 100, 1), "%")))
+  mutate(across(c("Yes", "No"), ~ paste0(round(. * 100, 0))))
 
 handwashing_show_expanded <- tanganyika_clean %>% select(hh_code, village, handwashing_show, stype, fpc) %>%
   separate_rows(handwashing_show, sep = "\\|") %>%
@@ -966,7 +1066,7 @@ summary_by_village <- handwashing_show_design %>%
 
 handwashing_table <- summary_by_village %>%
   select(village, handwashing_show, proportion) %>%
-  pivot_wider(names_from = handwashing_show, values_from = proportion   )
+  pivot_wider(names_from = handwashing_show, values_from = proportion)
 
 # Rename columns for clarity
 colnames(handwashing_table) <- c("Village", "Soap", "Tippy Tap", "Water")
@@ -974,16 +1074,38 @@ colnames(handwashing_table) <- c("Village", "Soap", "Tippy Tap", "Water")
 # Format the proportion table values as percentages with one decimal point and add % sign, leave NA as blank
 handwashing_table <- handwashing_table %>%
   mutate(across(c("Soap", "Tippy Tap", "Water"),
-                ~ ifelse(is.na(.), "", paste0(round(. * 100, 1), "%"))))
+                ~ ifelse(is.na(.), "", paste0(round(. * 100, 0)))))
 
 # Combine the 'Yes' column from share_facility_table with toilet_table
 combined_table <- handwashing_table %>%
   left_join(
     handwashing_place_table %>% select(village, `Handwashing Place Available` = Yes),
-    by = c("Village" = "village")
-  )
+    by = c("Village" = "village"))
 
 # Reorder columns to place 'Shared Facility - Yes' on the left
+combined_table <- combined_table %>%
+  select(`Village`, `Handwashing Place Available`, everything())
+
+# Calculate the overall average for all villages combined
+total_row <- combined_table %>%
+  summarise(
+    Village = "Total",
+    `Handwashing Place Available` = mean(as.numeric(sub("%", "", `Handwashing Place Available`)) / 100, na.rm = TRUE) * 100,
+    Soap = mean(as.numeric(sub("%", "", Soap)) / 100, na.rm = TRUE) * 100,
+    `Tippy Tap` = mean(as.numeric(sub("%", "", `Tippy Tap`)) / 100, na.rm = TRUE) * 100,
+    Water = mean(as.numeric(sub("%", "", Water)) / 100, na.rm = TRUE) * 100
+  ) %>%
+  mutate(
+    `Handwashing Place Available` = paste0(round(`Handwashing Place Available`, 0)),
+    Soap = paste0(round(Soap, 0)),
+    `Tippy Tap` = paste0(round(`Tippy Tap`, 0)),
+    Water = paste0(round(Water, 0))
+  )
+
+# Add the "Total" row to the combined table
+combined_table <- bind_rows(combined_table, total_row)
+
+# Reorder columns to place 'Handwashing Place Available' on the left
 combined_table <- combined_table %>%
   select(`Village`, `Handwashing Place Available`, everything())
 
@@ -991,15 +1113,16 @@ combined_table <- combined_table %>%
 combined_table <- combined_table %>%
   mutate(across(everything(), ~ ifelse(is.na(.), "", .)))
 
+# Display the flextable with a caption
 add_lot_link(caption = 'Handwashing at village level (%)')
 
-# Add the flextable with a caption
 combined_table %>%
   sea::sea_table(
     dark_color = sea_colors("gunmetal"),
     pale_color = sea_colors("grey"),
     third_color = "white"
   ) %>% flextable::autofit()
+
 
 ```
 
@@ -1024,7 +1147,7 @@ colnames(share_facility_table) <- c("village", "No", "Yes")
 
 # Format the proportion table values as percentages with one decimal point and add % sign
 share_facility_table <- share_facility_table %>%
-  mutate(across(c("Yes", "No"), ~ paste0(round(. * 100, 1), "%")))
+  mutate(across(c("Yes", "No"), ~ paste0(round(. * 100, 0))))
 
 summary_by_village <- tanganyika_survey %>%
   filter(!is.na(toilet_facilities) & toilet_facilities != "I DON'T KNOW") %>% 
@@ -1042,16 +1165,44 @@ colnames(toilet_table) <- c("Village", "Flush elsewhere", "Flush to pit latrine"
 # Format the proportion table values as percentages with one decimal point and add % sign, leave NA as blank
 toilet_table <- toilet_table %>%
   mutate(across(c("Flush elsewhere", "Flush to pit latrine", "No facility", "Pit latrine with slab", "Open pit", "Composting toilet", "VIP latrine", "Other"),
-                ~ ifelse(is.na(.), "", paste0(round(. * 100, 1), "%"))))
+                ~ ifelse(is.na(.), "", paste0(round(. * 100, 0)))))
 
 # Combine the 'Yes' column from share_facility_table with toilet_table
 combined_table <- toilet_table %>%
   left_join(
     share_facility_table %>% select(village, `Shared Sanitation Facility` = Yes),
-    by = c("Village" = "village")
+    by = c("Village" = "village"))
+
+# Calculate the overall average for all villages combined
+total_row <- combined_table %>%
+  summarise(
+    Village = "Total",
+    `Shared Sanitation Facility` = mean(as.numeric(sub("%", "", `Shared Sanitation Facility`)) / 100, na.rm = TRUE) * 100,
+    `Flush elsewhere` = mean(as.numeric(sub("%", "", `Flush elsewhere`)) / 100, na.rm = TRUE) * 100,
+    `Flush to pit latrine` = mean(as.numeric(sub("%", "", `Flush to pit latrine`)) / 100, na.rm = TRUE) * 100,
+    `No facility` = mean(as.numeric(sub("%", "", `No facility`)) / 100, na.rm = TRUE) * 100,
+    `Pit latrine with slab` = mean(as.numeric(sub("%", "", `Pit latrine with slab`)) / 100, na.rm = TRUE) * 100,
+    `Open pit` = mean(as.numeric(sub("%", "", `Open pit`)) / 100, na.rm = TRUE) * 100,
+    `Composting toilet` = mean(as.numeric(sub("%", "", `Composting toilet`)) / 100, na.rm = TRUE) * 100,
+    `VIP latrine` = mean(as.numeric(sub("%", "", `VIP latrine`)) / 100, na.rm = TRUE) * 100,
+    `Other` = mean(as.numeric(sub("%", "", `Other`)) / 100, na.rm = TRUE) * 100
+  ) %>%
+  mutate(
+    `Shared Sanitation Facility` = paste0(round(`Shared Sanitation Facility`, 0)),
+    `Flush elsewhere` = paste0(round(`Flush elsewhere`, 0)),
+    `Flush to pit latrine` = paste0(round(`Flush to pit latrine`, 0)),
+    `No facility` = paste0(round(`No facility`, 0)),
+    `Pit latrine with slab` = paste0(round(`Pit latrine with slab`, 0)),
+    `Open pit` = paste0(round(`Open pit`, 0)),
+    `Composting toilet` = paste0(round(`Composting toilet`, 0)),
+    `VIP latrine` = paste0(round(`VIP latrine`, 0)),
+    `Other` = paste0(round(`Other`, 0))
   )
 
-# Reorder columns to place 'Shared Facility - Yes' on the left
+# Add the "Total" row to the combined table
+combined_table <- bind_rows(combined_table, total_row)
+
+# Reorder columns to place 'Shared Sanitation Facility' on the left
 combined_table <- combined_table %>%
   select(`Village`, `Shared Sanitation Facility`, everything())
 
@@ -1059,9 +1210,9 @@ combined_table <- combined_table %>%
 combined_table <- combined_table %>%
   mutate(across(everything(), ~ ifelse(is.na(.), "", .)))
 
+# Display the flextable with a caption
 add_lot_link(caption = 'Sanitation facilities at village level (%)')
 
-# Add the flextable with a caption
 combined_table %>%
   sea::sea_table(
     dark_color = sea_colors("gunmetal"),
@@ -1069,7 +1220,8 @@ combined_table %>%
     third_color = "white"
   ) %>%
   flextable::autofit() %>%
- flextable::fontsize(size = 10, part = "header")
+  flextable::fontsize(size = 10, part = "header")
+
 ```
 
 
@@ -1099,14 +1251,21 @@ ggplot(household_item_data, aes(x = reorder(household_item, -proportion), y = pr
   geom_bar(stat = "identity", width = 0.8) +
   geom_errorbar(aes(ymax = pmin(proportion_upp, 1)*100, ymin = pmax(proportion_low, 0)*100),
                 width = 0.2) +
-  guides(fill = guide_legend(title = NULL)) +
-  labs(x = "Household Items", y = "Percentage of Household Ownership") +
+  geom_text(aes(
+      label = paste0(round(proportion * 100, 1), "%"),
+      y = pmin(proportion_upp * 100, 100) + 2), 
+      position = position_dodge(width = 0.8), vjust = 0, size = 3) +
+  guides(fill = guide_legend(title = NULL, nrow = 3)) +
+  labs(x = "", y = NULL) +
   sea::scale_fill_sea_discrete() +
   sea::theme_sea() + 
   theme(legend.position = "none",  # Remove the legend
-        axis.text.x = element_text(angle = 45, hjust = 1)) +  # Rotate x-axis labels
+        axis.text.x = element_text(angle = 45, hjust = 1),  axis.text.y = element_blank(),axis.ticks.y = element_blank(), panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank()) +  # Rotate x-axis labels
   scale_y_continuous(labels = label_percent(scale = 1))+
   scale_x_discrete(labels = c("Bed or Mattress", "Mobile Phone", "Solar Panel", "Table", "Radio", "TV", "Smartphone", "TANESCO Power", "Iron", "Sofa", "Refrigerator", "Clock", "Generator"))
+
+
 
 ```
 
@@ -1121,13 +1280,40 @@ fuel_data <- fuel_design %>%
   group_by(village, cluster, cooking_fuel) %>%
   summarise(proportion = survey_mean(vartype = "ci", na.rm = TRUE), total = survey_total(vartype = "ci", na.rm = TRUE), n = unweighted(n())) %>% ungroup()
 
+# Add a "Total" group to the data
+total_data <- fuel_design %>%
+  group_by(cooking_fuel) %>%
+  summarise(proportion = survey_mean(vartype = "ci", na.rm = TRUE),
+            total = survey_total(vartype = "ci", na.rm = TRUE),
+            n = unweighted(n())) %>%
+  mutate(village = "Total", cluster = "Total")  # Mark as "Total"
+
+# Combine the total_data with the original treatment_data
+fuel_data <- bind_rows(fuel_data, total_data)
+
+fuel_data <- fuel_data %>%
+  mutate(cluster = case_when(
+    cluster == "Total" ~ "Cluster 2", TRUE ~ cluster))
+
+fuel_data <- fuel_data %>%
+  mutate(village = reorder(village, -proportion))  # Reorder villages based on proportion
+
+# Reorder treatment_method_dry based on average proportion for each method
+fuel_data$cooking_fuel <- factor(
+  fuel_data$cooking_fuel,
+  levels = fuel_data %>%
+    group_by(cooking_fuel) %>%
+    summarise(avg_proportion = mean(proportion, na.rm = TRUE)) %>%
+    arrange(desc(avg_proportion)) %>%
+    pull(cooking_fuel))
+
 ggplot(fuel_data, aes(x = village, y = proportion * 100, group = cooking_fuel, fill = cooking_fuel)) +
   geom_bar(stat = "identity", position = position_dodge(preserve = "single"), width = 0.95) +
   geom_errorbar(aes(ymax = pmin(proportion_upp * 100, 100), ymin = pmax(proportion_low * 100, 0)),
                 position = position_dodge(preserve = "single", width = 0.95), width = 0.1) +
   guides(fill = guide_legend(title = NULL)) +
-  labs(x = "", y = "Percentage of Households") +
-  sea::scale_fill_sea_discrete(labels = c(
+  labs(x = NULL, y = NULL) +
+  scale_fill_manual(values = c("#3d5919", "#5b7a2e", "#a4b792", "#d2d2c8", "#d8e3cc"), labels = c(
       "CHARCOAL" = "Charcoal", 
       "CROP RESIDUALS" = "Crop Residuals",
       "FIREWOOD" = "Firewood",
@@ -1135,7 +1321,8 @@ ggplot(fuel_data, aes(x = village, y = proportion * 100, group = cooking_fuel, f
       "OTHER" = "Other")) +
   sea::theme_sea() + 
   theme(legend.position = "bottom",  legend.direction = "horizontal",  legend.justification = "center", 
-        axis.text.x = element_text(size = 7), strip.text = element_blank(), legend.box = 
+        axis.text.x = element_text(size = 7), panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(), strip.text = element_blank(), legend.box = 
         "horizontal") + facet_wrap(~cluster, ncol = 1, scales = "free_x") +
   scale_y_continuous(labels = label_percent(scale = 1))+
   scale_x_discrete(labels = function(x) str_wrap(x, width = 10))
@@ -1159,7 +1346,7 @@ colnames(efficient_stove_table) <- c("Village", "No", "Yes")
 
 # Format the proportion table values as percentages with one decimal point and add % sign
 efficient_stove_table <- efficient_stove_table %>%
-  mutate(across(c("No", "Yes"),  ~ if_else(is.na(.), "", paste0(round(. * 100, 1), "%"))))
+  mutate(across(c("No", "Yes"),  ~ if_else(is.na(.), "", paste0(round(. * 100, 0)))))
 
 expanded <- tanganyika_clean %>% select(hh_code, village, efficient_stove_use, stype, fpc) %>%
   separate_rows(efficient_stove_use, sep = "\\|") %>%
@@ -1180,8 +1367,7 @@ proportion_table <- efficient_stove_use_data %>%
   select(village, efficient_stove_use, proportion) %>%
   pivot_wider(
     names_from = efficient_stove_use,    # Use `drinking_water_dry` values as column names
-    values_from = proportion   # Fill with the proportion values
-  )
+    values_from = proportion)
 
 # Rename columns for clarity
 colnames(proportion_table) <- c("Village", "Almost everyday", "At least once a week", "Less than once a week")
@@ -1189,11 +1375,29 @@ colnames(proportion_table) <- c("Village", "Almost everyday", "At least once a w
 # Format the proportion table values as percentages with one decimal point and add % sign, leave NA as blank
 proportion_table <- proportion_table %>%
   mutate(across(c("Almost everyday", "At least once a week", "Less than once a week"),
-                ~ ifelse(is.na(.), "", paste0(round(. * 100, 1), "%"))))
+                ~ ifelse(is.na(.), "", paste0(round(. * 100, 0)))))
 
 combined_table <- efficient_stove_table %>%
   select(Village, `Efficient Stove Ownership` = Yes) %>%
   left_join(proportion_table %>% select(Village, `Almost everyday`, `At least once a week`, `Less than once a week`), by = "Village") 
+
+# Calculate the overall average for all villages combined
+total_row <- combined_table %>%
+  summarise(
+    Village = "Total",
+    `Efficient Stove Ownership` = mean(as.numeric(sub("%", "", `Efficient Stove Ownership`)) / 100, na.rm = TRUE) * 100,
+    `Almost everyday` = mean(as.numeric(sub("%", "", `Almost everyday`)) / 100, na.rm = TRUE) * 100,
+    `At least once a week` = mean(as.numeric(sub("%", "", `At least once a week`)) / 100, na.rm = TRUE) * 100,
+    `Less than once a week` = mean(as.numeric(sub("%", "", `Less than once a week`)) / 100, na.rm = TRUE) * 100) %>%
+  mutate(
+    `Efficient Stove Ownership` = paste0(round(`Efficient Stove Ownership`, 0)),
+    `Almost everyday` = paste0(round(`Almost everyday`, 0)),
+    `At least once a week` = paste0(round(`At least once a week`, 0)),
+    `Less than once a week` = paste0(round(`Less than once a week`, 0)))
+
+# Add the "Total" row to the combined table
+combined_table <- bind_rows(combined_table, total_row)
+colnames(combined_table) <- c("Village", "Efficient Stove Ownership (%)", "Almost everyday (%)", "At least once a week (%)", "Less than once a week (%)")
 
 add_lot_link(caption = 'Efficient stove ownership and use at village level (%)')
 
@@ -1283,26 +1487,19 @@ ggplot(livelihood_data, aes(x = reorder(livelihood_activities, -proportion),
   geom_bar(stat = "identity", width = 0.8) +
   geom_errorbar(aes(ymax = pmin(proportion_upp, 1)*100, ymin = pmax(proportion_low, 0)*100),
                 width = 0.2) +
+  geom_text(aes(
+      label = paste0(round(proportion * 100, 1), "%"),
+      y = pmin(proportion_upp * 100, 100) + 2), 
+      position = position_dodge(width = 0.8), vjust = 0, size = 3) +
   guides(fill = guide_legend(title = NULL, nrow = 3)) +
-  labs(x = "", y = "Percentage of Households") +
-   sea::scale_fill_sea_discrete(labels = c(
-      "AGRICULTURE" = "Agriculture", 
-      "FISHING" = "Fishing",
-      "BUSINESS" = "Business",
-      "FISH TRADING" = "Fish Trading",
-      "FISH PROCESSING" = "Fish Processing",
-      "OTHER" = "Other",
-      "LIVESTOCK KEEPING" = "Livestock Keeping",
-      "DAY LABOR" = "Day Labor",
-      "TAILOR" = "Tailor",
-      "EMPLOYEE" = "Employee",
-      "BOAT BUILDER" = "Boat Builder",
-      "REMITTANCES" = "Remittances",
-      "PENSIONS" = "Pensions")) +
+  labs(x = NULL, y = NULL) +
+   sea::scale_fill_sea_discrete() +
   sea::theme_sea() + 
-  theme(legend.position = "bottom", legend.direction = "horizontal", legend.justification = "center", axis.text.x = element_blank())+
+  theme(legend.position = "none",  # Remove the legend
+        axis.text.x = element_text(angle = 45, hjust = 1),  axis.text.y = element_blank(),axis.ticks.y = element_blank(), panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank()) +
   scale_y_continuous(labels = label_percent(scale = 1))+
-  scale_x_discrete(labels = function(x) str_wrap(x, width = 10))
+  scale_x_discrete(labels = c("Agriculture", "Fishing", "Business", "Fish Trading", "Fish Processing", "Other", "Livestock Keeping", "Day Labor", "Taylor", "Employee", "Boat Builder", "Remittances", "Pensions"))
 
 ```
 
@@ -1338,23 +1535,14 @@ aggregate_lh_ranking <- strat_design %>%
 # Plot using relative percentages
 ggplot(aggregate_lh_ranking, aes(reorder(x = livelihood_activity, -mean_importance_percent), y = mean_importance_percent, fill = reorder(livelihood_activity, -mean_importance_percent))) + geom_bar(stat = "identity", width = 0.8) +
   guides(fill = guide_legend(title = NULL, nrow = 3)) +
-  labs(x = "", y = "Relative Importance (%)") +
-  sea::scale_fill_sea_discrete(labels = c(
-      "agriculture" = "Agriculture", 
-      "fishing" = "Fishing",
-      "business" = "Business",
-      "trading" = "Fish Trading",
-      "processing" = "Fish Processing",
-      "other_lh" = "Other",
-      "livestock" = "Livestock Keeping",
-      "labour" = "Day Labor",
-      "employee" = "Employee",
-      "remittance" = "Remittances",
-      "pension" = "Pensions")) +
+  labs(x = NULL, y = NULL) +
+  sea::scale_fill_sea_discrete() +
   sea::theme_sea() + 
-  theme(legend.position = "bottom", legend.direction = "horizontal", legend.justification = "center", axis.text.x = element_blank())+
+  theme(legend.position = "none",  # Remove the legend
+        axis.text.x = element_text(angle = 45, hjust = 1), panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank()) +
   scale_y_continuous(labels = label_percent(scale = 1))+
-  scale_x_discrete(labels = function(x) str_wrap(x, width = 10))
+  scale_x_discrete(labels = c("Agriculture", "Fishing", "Business", "Fish Trading", "Fish Processing", "Other", "Livestock Keeping", "Day Labor", "Employee", "Remittances", "Pensions"))
 
 ```
 
@@ -1372,6 +1560,19 @@ village_data <- tanganyika_survey %>%
 village_data_yes <- village_data %>%
   filter(borrow_status == "YES")
 
+total_summary <- tanganyika_survey %>%
+  group_by(borrow_status) %>%
+  summarise(
+    proportion = survey_mean(vartype = "ci", na.rm = TRUE),
+    total = survey_total(vartype = "ci", na.rm = TRUE),
+    n = unweighted(n())
+  ) %>%
+  mutate(village = "Total", cluster = "Cluster 2") %>%
+  filter(borrow_status == "YES") 
+
+# Append the "Total" row to village_data_yes
+village_data_yes <- bind_rows(village_data_yes, total_summary)
+
 # Create the plot
 ggplot(village_data_yes, aes(x = village, y = proportion * 100, group = borrow_status, fill = borrow_status)) +
   geom_bar(stat = "identity", position = position_dodge(preserve = "single"), width = 0.95) +
@@ -1379,9 +1580,10 @@ ggplot(village_data_yes, aes(x = village, y = proportion * 100, group = borrow_s
     aes(ymax = pmin(proportion_upp, 1) * 100, ymin = pmax(proportion_low, 0) * 100),
     position = position_dodge(preserve = "single", width = 0.95), 
     width = 0.1) +
-  geom_text(aes(label = paste0(round(proportion * 100, 1), "%")), 
-            position = position_dodge(width = 0.95), 
-            vjust = -7, size = 3) +  # Adjust 'vjust' to move labels above error bars
+  geom_text(aes(
+      label = paste0(round(proportion * 100, 0), "%"),
+      y = pmin(proportion_upp * 100, 100) + 2), 
+      position = position_dodge(width = 0.8), vjust = 0, size = 3) +
   guides(fill = guide_legend(title = NULL, nrow = 2)) +
   scale_fill_manual(values = SEA_palette) +
   sea::scale_fill_sea_discrete() +
@@ -1392,12 +1594,12 @@ ggplot(village_data_yes, aes(x = village, y = proportion * 100, group = borrow_s
     strip.text = element_blank(), 
     axis.text.y = element_blank(),  
     axis.title.x = element_blank(),  
-    axis.title.y = element_blank()) + 
+    axis.title.y = element_blank(),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank()) + 
   facet_wrap(~cluster, ncol = 1, scales = "free_x") +
   scale_x_discrete(labels = function(x) str_wrap(x, width = 10))+
-  scale_y_continuous(labels = NULL) +
-  scale_x_discrete(labels = function(x) str_wrap(x, width = 10))
-
+  scale_y_continuous(labels = NULL) 
 ```
 
 
@@ -1423,14 +1625,21 @@ ggplot(loan_usage_data, aes(x = reorder(loan_usage, -proportion), y = proportion
   geom_bar(stat = "identity", width = 0.8) +
   geom_errorbar(aes(ymax = pmin(proportion_upp, 1)*100, ymin = pmax(proportion_low, 0)*100),
                 width = 0.2) +
-  guides(fill = guide_legend(title = NULL)) +
+  geom_text(aes(
+      label = paste0(round(proportion * 100, 1), "%"),
+      y = pmin(proportion_upp * 100, 100) + 2), 
+      position = position_dodge(width = 0.8), vjust = 0, size = 3) +
+  guides(fill = guide_legend(title = NULL, nrow = 3)) +
   labs(x = "", y = "") +
   sea::scale_fill_sea_discrete() +
   sea::theme_sea() + 
-  theme(legend.position = "none",  # Remove the legend
-        axis.text.x = element_text(angle = 45, hjust = 1)) +  # Rotate x-axis labels
+ theme(legend.position = "none",  # Remove the legend
+        axis.text.x = element_text(angle = 45, hjust = 1),  axis.text.y = element_blank(),axis.ticks.y = element_blank(), panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank()) +
   scale_y_continuous(labels = label_percent(scale = 1))+
   scale_x_discrete(labels = c("Business", "Farming", "Household Expenses", "Food", "Medical Expenses", "School Fees", "Other"))
+
+ 
 ```
 
 ```{r, fig.cap='Source of loans', fig.align='center', out.width = '90%'}
@@ -1455,12 +1664,17 @@ ggplot(borrowing_source_data, aes(x = reorder(borrowing_source, -proportion), y 
   geom_bar(stat = "identity", width = 0.8) +
   geom_errorbar(aes(ymax = pmin(proportion_upp, 1)*100, ymin = pmax(proportion_low, 0)*100),
                 width = 0.2) +
-  guides(fill = guide_legend(title = NULL)) +
+  geom_text(aes(
+      label = paste0(round(proportion * 100, 1), "%"),
+      y = pmin(proportion_upp * 100, 100) + 2), 
+      position = position_dodge(width = 0.8), vjust = 0, size = 3) +
+  guides(fill = guide_legend(title = NULL, nrow = 3)) +
   labs(x = "", y = "") +
   sea::scale_fill_sea_discrete() +
   sea::theme_sea() + 
-  theme(legend.position = "none",  # Remove the legend
-        axis.text.x = element_text(angle = 45, hjust = 1)) +  # Rotate x-axis labels
+ theme(legend.position = "none",  # Remove the legend
+        axis.text.x = element_text(angle = 45, hjust = 1),  axis.text.y = element_blank(),axis.ticks.y = element_blank(), panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank()) +
   scale_y_continuous(labels = label_percent(scale = 1))+
   scale_x_discrete(labels = c("Friends or Neighbours", "Family", "Traders", "Bank", "COCOBA/SACCO/FICO/VIKOBA", "Microcredit Institution", "Mpesa"))
 ```
@@ -1475,11 +1689,17 @@ village_data <- tanganyika_survey %>%
 ggplot(village_data, aes(x = reorder(not_borrowed, -proportion), y = proportion * 100, fill = reorder(not_borrowed, -proportion))) +
   geom_bar(stat = "identity", width = 0.8) +
   geom_errorbar(aes(ymax = pmin(proportion_upp, 1) * 100, ymin = pmax(proportion_low, 0) * 100), width = 0.2) +
-  guides(fill = guide_legend(title = NULL)) + 
-  labs(x = NULL, y = NULL) +  
+  geom_text(aes(
+      label = paste0(round(proportion * 100, 1), "%"),
+      y = pmin(proportion_upp * 100, 100) + 2), 
+      position = position_dodge(width = 0.8), vjust = 0, size = 3) +
+  guides(fill = guide_legend(title = NULL, nrow = 3)) +
+  labs(x = "", y = "") +
   sea::scale_fill_sea_discrete() +
   sea::theme_sea() + 
-  theme(legend.position = "none", axis.text.x = element_text(angle = 45, hjust = 1)) +
+ theme(legend.position = "none",  # Remove the legend
+        axis.text.x = element_text(angle = 45, hjust = 1),  axis.text.y = element_blank(),axis.ticks.y = element_blank(), panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank()) +
   scale_y_continuous(labels = label_percent(scale = 1))+
   scale_x_discrete(labels = c("Afraid to be in debt", "Process too\ndifficult", "No need", "Lack of sufficient\neducation on loans", "Repayment time\ntoo short", "Other", "No collateral\nfor loan"))
 
@@ -1490,31 +1710,90 @@ village_data <- tanganyika_survey %>%
   group_by(village, cocoba_saccos) %>%
   summarise(proportion = survey_mean(vartype = "ci", na.rm = TRUE), 
             total = survey_total(vartype = "ci", na.rm = TRUE), 
-            n = unweighted(n()))
+            n = unweighted(n())) %>%
+  # Create a full dataset to keep village names, with NA for missing "YES" entries
+  complete(tanganyika_survey$village, fill = list(proportion = NA, cocoba_saccos = "NO"))
 
+village_data <- village_data %>%
+  mutate(cluster = case_when(
+    village %in% cluster_1_villages ~ "Cluster 1", 
+    village %in% cluster_2_villages ~ "Cluster 2", 
+    TRUE ~ "Other"
+  ))
+
+# Filter for "YES" entries in bmu_bylaws for plotting
 village_data_yes <- village_data %>%
   filter(cocoba_saccos == "YES")
 
+total_summary <- tanganyika_survey %>%
+  group_by(cocoba_saccos) %>%
+  summarise(
+    proportion = survey_mean(vartype = "ci", na.rm = TRUE),
+    total = survey_total(vartype = "ci", na.rm = TRUE),
+    n = unweighted(n())
+  ) %>%
+  mutate(village = "Total", cluster = "Cluster 2") %>%
+  filter(cocoba_saccos == "YES") 
+
+# Append the "Total" row to village_data_yes
+village_data_yes <- bind_rows(village_data_yes, total_summary)
+
 # Create the plot
-ggplot(village_data_yes, aes(x = village, y = proportion * 100, group = cocoba_saccos, fill = cocoba_saccos)) +
-  geom_bar(stat = "identity", position = position_dodge(preserve = "single"), width = 0.95) +
+ggplot(village_data, aes(x = village, y = proportion * 100, group = cocoba_saccos, fill = cocoba_saccos)) +
+  geom_bar(data = village_data_yes, stat = "identity", position = position_dodge(preserve = "single"), width = 0.95) +
   geom_errorbar(
+    data = village_data_yes,
     aes(ymax = pmin(proportion_upp, 1) * 100, ymin = pmax(proportion_low, 0) * 100),
     position = position_dodge(preserve = "single", width = 0.95), 
     width = 0.1) +
+  # geom_text(
+  #   data = village_data_yes, 
+  #   aes(y = pmin(proportion_upp, 1) * 100 + 1, label = paste0(round(proportion * 100, 1), "%")), 
+  #   position = position_dodge(width = 0.95), vjust = 0, size = 3) + 
   guides(fill = guide_legend(title = NULL, nrow = 2)) +
   scale_fill_manual(values = SEA_palette) +
   sea::scale_fill_sea_discrete() +
   sea::theme_sea() + 
   theme(
     legend.position = "none",  
-    axis.text.x = element_text(size = 7), 
+    axis.text.x = element_text(size = 8), 
     strip.text = element_blank(), 
-    axis.text.y = element_text(size = 10),  
+    # axis.text.y = element_blank(),
+    # axis.ticks.y = element_blank(),
     axis.title.x = element_blank(),  
-    axis.title.y = element_blank()) + 
+    axis.title.y = element_blank(),
+    panel.grid.major = element_blank(), 
+    panel.grid.minor = element_blank()) + 
   scale_x_discrete(labels = function(x) str_wrap(x, width = 10)) +
-  scale_y_continuous(labels = label_percent(scale = 1))  
+  scale_y_continuous(labels = label_percent(scale = 1), limits = c(0, 50)) +
+  geom_bar(data = filter(village_data, cocoba_saccos == "NO"), 
+           stat = "identity", 
+           position = position_dodge(preserve = "single"), 
+           width = 0.95, 
+           fill = "white", 
+           alpha = 0) + 
+  facet_wrap(~cluster, ncol = 1, scales = "free_x")
+```
+
+
+```{r, fig.cap='Statement: BMU bylaws are being followed', fig.align='center', out.width = '90%'}
+
+village_data <- tanganyika_survey %>%
+  filter(!is.na(bylaws_followed) & bylaws_followed != "97 I DON'T KNOW") %>% 
+    group_by(bylaws_followed) %>%
+    summarise(proportion = survey_mean(vartype = "ci", na.rm = TRUE), total = survey_total(vartype = "ci", na.rm = TRUE), n = unweighted(n())) %>% drop_na()
+
+ggplot(village_data, aes(x = fct_relevel(bylaws_followed, "1 STRONGLY DISAGREE", "2 DISAGREE", "3 NEUTRAL", "4 AGREE", "5 STRONGLY AGREE"), y = proportion * 100, fill = bylaws_followed)) +
+  geom_bar(stat = "identity", width = 0.8) +
+  geom_errorbar(aes(ymax = pmin(proportion_upp, 1) * 100, ymin = pmax(proportion_low, 0) * 100), width = 0.2) +
+  guides(fill = guide_legend(title = NULL)) + 
+  labs(x = NULL, y = NULL) +  
+  sea::scale_fill_sea_discrete(4) +
+  sea::theme_sea() + 
+  theme(legend.position = "none", axis.text.x = element_text(size = 10), panel.grid.major = element_blank(), panel.grid.minor = element_blank()) +
+  scale_y_continuous(labels = label_percent(scale = 1))+
+  scale_x_discrete(labels = c("Strongly Disagree", "Disagree", "Neutral", "Agree", "Strongly Agree"))
+
 
 ```
 
@@ -1529,6 +1808,19 @@ village_data <- tanganyika_survey %>%
 # Filter for "YES" entries in borrow_status
 village_data_yes <- village_data %>%
   filter(mobile_money == "YES")
+
+total_summary <- tanganyika_survey %>%
+  group_by(mobile_money) %>%
+  summarise(
+    proportion = survey_mean(vartype = "ci", na.rm = TRUE),
+    total = survey_total(vartype = "ci", na.rm = TRUE),
+    n = unweighted(n())
+  ) %>%
+  mutate(village = "Total", cluster = "Cluster 2") %>%
+  filter(mobile_money == "YES") 
+
+# Append the "Total" row to village_data_yes
+village_data_yes <- bind_rows(village_data_yes, total_summary)
 
 # Create the plot
 ggplot(village_data_yes, aes(x = village, y = proportion * 100, group = mobile_money, fill = mobile_money)) +
@@ -1547,9 +1839,10 @@ ggplot(village_data_yes, aes(x = village, y = proportion * 100, group = mobile_m
     strip.text = element_blank(), 
     axis.text.y = element_text(size = 10),  
     axis.title.x = element_blank(),  
-    axis.title.y = element_blank()) + 
+    axis.title.y = element_blank(),
+    panel.grid.major = element_blank(), 
+    panel.grid.minor = element_blank()) + 
   facet_wrap(~cluster, ncol = 1, scales = "free_x") +
-  scale_x_discrete(labels = function(x) str_wrap(x, width = 10))+
   scale_y_continuous(labels = label_percent(scale = 1)) +
   scale_x_discrete(labels = function(x) str_wrap(x, width = 10))
 ```
@@ -1681,6 +1974,51 @@ ggplot(village_data_yes, aes(x = village, y = proportion * 100, group = worry_sh
 
 ```
 
+Primary reasons for food shortages experienced in the last 12 months include inadequate storage of food reserves (n = 14), increases in food prices (n = 12), financial strains related to a limited income and/or the rising costs of basic needs (n = 11), and challenges experienced due to a limited harvest season (n = 10). Inadequate food reserves have led to ongoing food insecurity among households; families sold their crops without setting aside sufficient reserves, whilst low crop yields depleted available stores. Other reasons for food shortages pertain to ineffective farming practices, the high costs and limited access of manure, a significant drop in crop sale prices, which adversely affected household income and the ability to cover living expenses. Seven households referred to the adverse impacts of climate change, expressing that severe flooding due to excessive rainfall caused major crop losses and asset damage. Cross-border trading of food resources was stated by one household as a concern, exacerbating limited food supplies as traders opt to export crops to neighboring countries (Democratic Republic of Congo). 
+
+```{r, fig.cap='Monthly proportions of food shortages experienced over the past 12 months', fig.align='center', out.width = '90%'}
+# Step 1: Clean and prepare the data
+cleaned_data <- tanganyika_clean %>%
+  mutate(food_shortage = str_split(food_shortage, " (?=\\w+\\.)")) %>%
+  unnest(food_shortage) %>%
+  mutate(
+    month = str_extract(food_shortage, "\\b\\w+"),
+    year = str_extract(food_shortage, "\\d{4}") %>% as.numeric()) %>%
+  filter(!is.na(month), !is.na(year)) %>%
+  mutate(month = factor(month, levels = month.name, ordered = TRUE),
+         month_year = paste(month, year, sep = " ") %>% as.factor())
+
+shortage_design <- cleaned_data %>%
+  as_survey_design(strata = stype, fpc = fpc)
+
+shortage_data <- shortage_design %>%
+  group_by(month_year) %>%
+  summarise(proportion = survey_mean(vartype = "ci", na.rm = TRUE), total = survey_total(vartype = "ci", na.rm = TRUE), n = unweighted(n())) %>% ungroup()
+
+complete_months <- c("November 2023", "December 2023",
+                     "January 2024", "February 2024", "March 2024", 
+                     "April 2024", "May 2024", "June 2024", 
+                     "July 2024", "August 2024", "September 2024", "October 2024")
+
+# Step 4: Ensure the month_year column includes all months from Oct 2023 to Oct 2024
+shortage_data <- shortage_data %>%
+  complete(month_year = complete_months, fill = list(count = 0, proportion = 0)) %>%
+  mutate(month_year = factor(month_year, levels = complete_months, ordered = TRUE))
+
+ggplot(shortage_data, aes(x = month_year, y = proportion * 100, fill = month_year)) +
+  geom_bar(stat = "identity", width = 0.8) +
+  geom_errorbar(aes(ymax = pmin(proportion_upp * 100, 100), ymin = pmax(proportion_low * 100, 0)),
+                position = position_dodge(preserve = "single", width = 0.95), width = 0.1) +
+  guides(fill = guide_legend(title = NULL)) + 
+  labs(x = NULL, y = NULL) +  
+  sea::scale_fill_sea_discrete(4) +
+  sea::theme_sea() + 
+  theme(axis.text.x = element_text(angle = 45, hjust = 1),legend.position = "none") +
+  scale_y_continuous(labels = label_percent(scale = 1))+
+  scale_x_discrete(labels = function(x) str_wrap(x, width = 10))
+
+```
+
 
 ```{r, fig.cap='Changes in household food availability over the past 12 months', fig.align='center', out.width = '90%'}
 village_data <- tanganyika_survey %>%
@@ -1737,7 +2075,7 @@ proportion_table %>%
 ```
 
 
-```{r, fig.cap='Change in household food availability over the last 12 months', fig.align='center', out.width = '90%'}
+```{r, fig.cap='Change in household food availability over the last 5 years', fig.align='center', out.width = '90%'}
 village_data <- tanganyika_survey %>%
     group_by(availability_changed) %>%
     summarise(proportion = survey_mean(vartype = "ci", na.rm = TRUE), total = survey_total(vartype = "ci", na.rm = TRUE), n = unweighted(n())) %>%  filter(availability_changed != "I DO NOT WANT TO ANSWER" & availability_changed != "I DON'T KNOW" & availability_changed != "NOT SURE") %>% drop_na() 
@@ -1795,6 +2133,8 @@ ggplot(availability_reason_data, aes(x = reorder(availability_reason, -proportio
 ```
 
 
+Diversification of income sources was stated as another reason as to why food availability had improved over the past year (n = 4). Households expressed that previously, their income was solely dependent on fishing, but now they have diversified their sources of income, such as (poultry) farming, improving their financial situation. Improved farming practices (n = 3), increases in agricultural productivity due to expanding land under cultivation (n = 2), improvements in business activities (n = 2), stabilized food prices  (n = 1), and improvements in personal life (n = 1) and financial support obtained (n = 1) include other reasons for which food availability has improved.
+
 ```{r,  fig.cap='Reasons for decrease in household food availability', fig.align='center', out.width = '90%'}
 
 availability_reason_expanded <- tanganyika_clean %>% select(hh_code, village, availability_reason, availability_changed, stype, fpc) %>%
@@ -1830,6 +2170,8 @@ ggplot(availability_reason_data, aes(x = reorder(availability_reason, -proportio
   scale_x_discrete(labels = c("Crops destroyed\nby bad weather", "Low fish availability", "Other reasons", "Illness", "Crops damaged by wildlife", "Lack of fertilizer", "Crops destroyed by pests", "High fish availability", "Death of a family member", "Normal situation", "Remittances not sent", "Use of fertilizer", "Crops thrived", "Lack of employment"))
 
 ```
+
+Other reasons expressed for a decrease in food availability pertain to financial strains attributed to the lack of a stable income source, with household income falling short of daily expenses (n = 12). Furthermore, limited crop yields and a drop in crop sale prices, as well as a lack of available land for farming, the use of low-quality farming inputs and reliance on basic farming equipment contributed to the reasons related to agricultural productivity, which caused lower food availability. Two households provided responses related to fishing, stating that underinvestment in fishing practices has reduced its potential for high yield. The rising cost of fishing operations and a lack of adequate fishing equipment limit access to abundant fishing ground, as reaching distant waters now requires more advanced vessels.
 
 </div>
 \newpage
@@ -2756,15 +3098,13 @@ ggplot(village_data, aes(x = village, y = proportion * 100, group = bmu_bylaws, 
     data = village_data_yes,
     aes(ymax = pmin(proportion_upp, 1) * 100, ymin = pmax(proportion_low, 0) * 100),
     position = position_dodge(preserve = "single", width = 0.95), 
-    width = 0.1
-  ) +
+    width = 0.1) +
   
   # Percentage labels only for "YES" entries
   geom_text(
     data = village_data_yes, 
     aes(y = pmin(proportion_upp, 1) * 100 + 1, label = paste0(round(proportion * 100, 1), "%")), 
-    position = position_dodge(width = 0.95), vjust = 0, size = 3
-  ) + 
+    position = position_dodge(width = 0.95), vjust = 0, size = 3) + 
   
   # Fill the bars for "YES" with the appropriate colors
   guides(fill = guide_legend(title = NULL, nrow = 2)) +
@@ -2775,10 +3115,10 @@ ggplot(village_data, aes(x = village, y = proportion * 100, group = bmu_bylaws, 
     legend.position = "none",  
     axis.text.x = element_text(size = 8), 
     strip.text = element_blank(), 
-    axis.text.y = element_blank(),  
+    axis.text.y = element_blank(),
+    axis.ticks.y = element_blank(),
     axis.title.x = element_blank(),  
-    axis.title.y = element_blank()
-  ) + 
+    axis.title.y = element_blank()) + 
   scale_x_discrete(labels = function(x) str_wrap(x, width = 10)) +
   scale_y_continuous(labels = NULL) +
   
