@@ -74,7 +74,7 @@ cluster_1_villages <- c("Izinga", "Kala", "Katenge", "Kilambo cha Mkolechi",
                         "Tundu", "Wampembe")
 cluster_2_villages <- c("Isasa", "Kalungu", "Kichangani", "Kipili", 
                         "Majengo Mapya", "Manda Kerenge", "Manda Uhuru", 
-                        "Mkinga", "Mtakuja", "Ntanganyika", "Total")
+                        "Mkinga", "Mtakuja", "Ntanganyika", "Overall")
 ```
 
 \newpage
@@ -385,7 +385,7 @@ colnames(combined_table) <- c("Village", "Yes (%)", "Average years spent if not 
 
 total_row <- combined_table %>%
   summarise(
-    Village = "Total",
+    Village = "Overall",
     `Yes (%)` = mean(as.numeric(sub("%", "", `Yes (%)`)) / 100, na.rm = TRUE) * 100,
     `Average years spent if not born` = mean(`Average years spent if not born`, na.rm = TRUE)) %>%
   mutate(
@@ -785,14 +785,14 @@ total_data <- treatment_dry_design %>%
   summarise(proportion = survey_mean(vartype = "ci", na.rm = TRUE),
             total = survey_total(vartype = "ci", na.rm = TRUE),
             n = unweighted(n())) %>%
-  mutate(village = "Total", cluster = "Total")  # Mark as "Total"
+  mutate(village = "Overall", cluster = "Overall")  # Mark as "Total"
 
 # Combine the total_data with the original treatment_data
 treatment_data <- bind_rows(treatment_data, total_data)
 
 treatment_data <- treatment_data %>%
   mutate(cluster = case_when(
-    cluster == "Total" ~ "Cluster 2", TRUE ~ cluster))
+    cluster == "Overall" ~ "Cluster 2", TRUE ~ cluster))
 
 treatment_data <- treatment_data %>%
   mutate(village = reorder(village, -proportion))  # Reorder villages based on proportion
@@ -918,14 +918,14 @@ total_data <- treatment_wet_design %>%
   summarise(proportion = survey_mean(vartype = "ci", na.rm = TRUE),
             total = survey_total(vartype = "ci", na.rm = TRUE),
             n = unweighted(n())) %>%
-  mutate(village = "Total", cluster = "Total")  # Mark as "Total"
+  mutate(village = "Overall", cluster = "Overall")  # Mark as "Total"
 
 # Combine the total_data with the original treatment_data
 treatment_data <- bind_rows(treatment_data, total_data)
 
 treatment_data <- treatment_data %>%
   mutate(cluster = case_when(
-    cluster == "Total" ~ "Cluster 2", TRUE ~ cluster))
+    cluster == "Overall" ~ "Cluster 2", TRUE ~ cluster))
 
 treatment_data <- treatment_data %>%
   mutate(village = reorder(village, -proportion))  # Reorder villages based on proportion
@@ -1089,7 +1089,7 @@ combined_table <- combined_table %>%
 # Calculate the overall average for all villages combined
 total_row <- combined_table %>%
   summarise(
-    Village = "Total",
+    Village = "Overall",
     `Handwashing Place Available` = mean(as.numeric(sub("%", "", `Handwashing Place Available`)) / 100, na.rm = TRUE) * 100,
     Soap = mean(as.numeric(sub("%", "", Soap)) / 100, na.rm = TRUE) * 100,
     `Tippy Tap` = mean(as.numeric(sub("%", "", `Tippy Tap`)) / 100, na.rm = TRUE) * 100,
@@ -1176,7 +1176,7 @@ combined_table <- toilet_table %>%
 # Calculate the overall average for all villages combined
 total_row <- combined_table %>%
   summarise(
-    Village = "Total",
+    Village = "Overall",
     `Shared Sanitation Facility` = mean(as.numeric(sub("%", "", `Shared Sanitation Facility`)) / 100, na.rm = TRUE) * 100,
     `Flush elsewhere` = mean(as.numeric(sub("%", "", `Flush elsewhere`)) / 100, na.rm = TRUE) * 100,
     `Flush to pit latrine` = mean(as.numeric(sub("%", "", `Flush to pit latrine`)) / 100, na.rm = TRUE) * 100,
@@ -1286,14 +1286,14 @@ total_data <- fuel_design %>%
   summarise(proportion = survey_mean(vartype = "ci", na.rm = TRUE),
             total = survey_total(vartype = "ci", na.rm = TRUE),
             n = unweighted(n())) %>%
-  mutate(village = "Total", cluster = "Total")  # Mark as "Total"
+  mutate(village = "Overall", cluster = "Overall")  # Mark as "Total"
 
 # Combine the total_data with the original treatment_data
 fuel_data <- bind_rows(fuel_data, total_data)
 
 fuel_data <- fuel_data %>%
   mutate(cluster = case_when(
-    cluster == "Total" ~ "Cluster 2", TRUE ~ cluster))
+    cluster == "Overall" ~ "Cluster 2", TRUE ~ cluster))
 
 fuel_data <- fuel_data %>%
   mutate(village = reorder(village, -proportion))  # Reorder villages based on proportion
@@ -1384,7 +1384,7 @@ combined_table <- efficient_stove_table %>%
 # Calculate the overall average for all villages combined
 total_row <- combined_table %>%
   summarise(
-    Village = "Total",
+    Village = "Overall",
     `Efficient Stove Ownership` = mean(as.numeric(sub("%", "", `Efficient Stove Ownership`)) / 100, na.rm = TRUE) * 100,
     `Almost everyday` = mean(as.numeric(sub("%", "", `Almost everyday`)) / 100, na.rm = TRUE) * 100,
     `At least once a week` = mean(as.numeric(sub("%", "", `At least once a week`)) / 100, na.rm = TRUE) * 100,
@@ -1567,7 +1567,7 @@ total_summary <- tanganyika_survey %>%
     total = survey_total(vartype = "ci", na.rm = TRUE),
     n = unweighted(n())
   ) %>%
-  mutate(village = "Total", cluster = "Cluster 2") %>%
+  mutate(village = "Overall", cluster = "Cluster 2") %>%
   filter(borrow_status == "YES") 
 
 # Append the "Total" row to village_data_yes
@@ -1592,8 +1592,8 @@ ggplot(village_data_yes, aes(x = village, y = proportion * 100, group = borrow_s
     legend.position = "none",  
     axis.text.x = element_text(size=8), 
     strip.text = element_blank(), 
-    axis.text.y = element_blank(),  
-    axis.title.x = element_blank(),  
+    axis.title.x = element_blank(),
+    axis.text.y = element_blank(),
     axis.title.y = element_blank(),
     panel.grid.major = element_blank(),
     panel.grid.minor = element_blank()) + 
@@ -1732,7 +1732,7 @@ total_summary <- tanganyika_survey %>%
     total = survey_total(vartype = "ci", na.rm = TRUE),
     n = unweighted(n())
   ) %>%
-  mutate(village = "Total", cluster = "Cluster 2") %>%
+  mutate(village = "Overall", cluster = "Cluster 2") %>%
   filter(cocoba_saccos == "YES") 
 
 # Append the "Total" row to village_data_yes
@@ -1816,7 +1816,7 @@ total_summary <- tanganyika_survey %>%
     total = survey_total(vartype = "ci", na.rm = TRUE),
     n = unweighted(n())
   ) %>%
-  mutate(village = "Total", cluster = "Cluster 2") %>%
+  mutate(village = "Overall", cluster = "Cluster 2") %>%
   filter(mobile_money == "YES") 
 
 # Append the "Total" row to village_data_yes
@@ -1882,14 +1882,19 @@ ggplot(fish_proportions, aes(x = fish_type, y = proportion, fill = frequency)) +
   geom_bar(stat = "identity", position = "dodge", width = 0.95) +
   geom_errorbar(aes(ymax = pmin(proportion_upp, 100), ymin = pmax(proportion_low, 0)),
                 position = position_dodge(preserve = "single", width = 0.95), width = 0.1) +
+  geom_text(aes(y = pmin(proportion_upp, 100) + 0.04, 
+                label = scales::percent(proportion, accuracy = 1)),
+            position = position_dodge(width = 0.95), size = 3) +
   guides(fill = guide_legend(title = NULL)) +
-  labs(x = NULL, y = "Proportion (%)", fill = "Frequency of Consumption") +
+  labs(x = NULL, y = NULL, fill = "Frequency of Consumption") +
   sea::scale_fill_sea_discrete(labels = c("LESS THAN ONCE A WEEK" = "Less than Weekly",
                "AT LEAST ONCE A WEEK" = "Weekly",
                "ALMOST EVERY DAY" = "Daily")) +
   sea::theme_sea() +
   theme(legend.position = "bottom",  legend.direction = "horizontal",  legend.justification = "center", 
-        axis.text.x = element_text(size = 7), strip.text = element_blank(), legend.box = 
+        axis.text.x = element_text(size = 7), panel.grid.major = element_blank(), 
+    panel.grid.minor = element_blank(), strip.text = element_blank(), axis.text.y = element_blank(),
+    axis.title.y = element_blank(), legend.box = 
         "horizontal") +
   scale_y_continuous(labels = scales::percent_format())+
   scale_x_discrete(labels = c("dagaa" = "Dagaa", "migebuka" = "Migebuka", "other_fish" = "Other Fish"))
@@ -1904,11 +1909,16 @@ village_data <- tanganyika_survey %>%
 ggplot(village_data, aes(x = reorder(primary_source, -proportion), y = proportion * 100, fill = reorder(primary_source, -proportion))) +
   geom_bar(stat = "identity", width = 0.8) +
   geom_errorbar(aes(ymax = pmin(proportion_upp, 1) * 100, ymin = pmax(proportion_low, 0) * 100), width = 0.2) +
+   geom_text(aes(
+      label = paste0(round(proportion * 100, 1), "%"),
+      y = pmin(proportion_upp * 100, 100) + 2), 
+      position = position_dodge(width = 0.8), vjust = 0, size = 3) +
   guides(fill = guide_legend(title = NULL)) + 
   labs(x = NULL, y = NULL) +  
   sea::scale_fill_sea_discrete() +
   sea::theme_sea() + 
-  theme(legend.position = "none", axis.text.x = element_text(angle = 45, hjust = 1)) +
+  theme(legend.position = "none", axis.text.x = element_text(angle = 45, hjust = 1), panel.grid.major = element_blank(), panel.grid.minor = element_blank(), axis.text.y = element_blank(),
+    axis.title.y = element_blank()) +
   scale_y_continuous(labels = label_percent(scale = 1))+
   scale_x_discrete(labels = c("Purchase", "Own Catch", "Receiced as Gift", "Bartered", "Borrowed"))
 
@@ -1922,11 +1932,16 @@ village_data <- tanganyika_survey %>%
 ggplot(village_data, aes(x = reorder(eat_changed, -proportion), y = proportion * 100, fill = reorder(eat_changed, -proportion))) +
   geom_bar(stat = "identity", width = 0.8) +
   geom_errorbar(aes(ymax = pmin(proportion_upp, 1) * 100, ymin = pmax(proportion_low, 0) * 100), width = 0.2) +
+  geom_text(aes(
+      label = paste0(round(proportion * 100, 0), "%"),
+      y = pmin(proportion_upp * 100, 100) + 2), 
+      position = position_dodge(width = 0.8), vjust = 0, size = 3) +
   guides(fill = guide_legend(title = NULL)) + 
   labs(x = NULL, y = NULL) +  
   sea::scale_fill_sea_discrete() +
   sea::theme_sea() + 
-  theme(legend.position = "none", axis.text.x = element_text(angle = 45, hjust = 1)) +
+  theme(legend.position = "none", axis.text.x = element_text(angle = 45, hjust = 1), panel.grid.major = element_blank(), panel.grid.minor = element_blank(), axis.text.y = element_blank(),
+    axis.title.y = element_blank()) +
   scale_y_continuous(labels = label_percent(scale = 1))+
   scale_x_discrete(labels = c("Eat Less Now", "Same as Before", "Eat More Now", "Bartered"))
 
@@ -1942,10 +1957,22 @@ village_data <- tanganyika_survey %>%
             n = unweighted(n())) %>%
   mutate(cluster = case_when(village %in% cluster_1_villages ~ "Cluster 1", village %in% cluster_2_villages ~ "Cluster 2"))
 
-
 # Filter for "YES" entries in borrow_status
 village_data_yes <- village_data %>%
   filter(worry_shortage == "YES")
+
+total_summary <- tanganyika_survey %>%
+  group_by(worry_shortage) %>%
+  summarise(
+    proportion = survey_mean(vartype = "ci", na.rm = TRUE),
+    total = survey_total(vartype = "ci", na.rm = TRUE),
+    n = unweighted(n())
+  ) %>%
+  mutate(village = "Overall", cluster = "Cluster 2") %>%
+  filter(worry_shortage == "YES") 
+
+# Append the "Total" row to village_data_yes
+village_data_yes <- bind_rows(village_data_yes, total_summary)
 
 # Create the plot
 ggplot(village_data_yes, aes(x = village, y = proportion * 100, group = worry_shortage, fill = worry_shortage)) +
@@ -1964,9 +1991,10 @@ ggplot(village_data_yes, aes(x = village, y = proportion * 100, group = worry_sh
     legend.position = "none",  
     axis.text.x = element_text(size=8), 
     strip.text = element_blank(), 
-    axis.text.y = element_blank(),  
     axis.title.x = element_blank(),  
-    axis.title.y = element_blank()) + 
+    axis.text.y = element_blank(), 
+    axis.title.y = element_blank(),
+    panel.grid.major = element_blank(), panel.grid.minor = element_blank()) + 
   facet_wrap(~cluster, ncol = 1, scales = "free_x") +
   scale_x_discrete(labels = function(x) str_wrap(x, width = 10))+
   scale_y_continuous(labels = NULL) +
@@ -2009,11 +2037,14 @@ ggplot(shortage_data, aes(x = month_year, y = proportion * 100, fill = month_yea
   geom_bar(stat = "identity", width = 0.8) +
   geom_errorbar(aes(ymax = pmin(proportion_upp * 100, 100), ymin = pmax(proportion_low * 100, 0)),
                 position = position_dodge(preserve = "single", width = 0.95), width = 0.1) +
+  geom_text(
+    aes(y = pmin(proportion_upp, 1) * 100 + 1, label = paste0(round(proportion * 100, 0), "%")), 
+    position = position_dodge(width = 0.95), vjust = -0.5, size = 3) +
   guides(fill = guide_legend(title = NULL)) + 
   labs(x = NULL, y = NULL) +  
   sea::scale_fill_sea_discrete(4) +
   sea::theme_sea() + 
-  theme(axis.text.x = element_text(angle = 45, hjust = 1),legend.position = "none") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1), panel.grid.major = element_blank(), panel.grid.minor = element_blank(), axis.text.y = element_blank(), axis.title.y = element_blank(), legend.position = "none") +
   scale_y_continuous(labels = label_percent(scale = 1))+
   scale_x_discrete(labels = function(x) str_wrap(x, width = 10))
 
@@ -2029,11 +2060,14 @@ village_data <- tanganyika_survey %>%
 ggplot(village_data, aes(x = fct_relevel(food_availability, "BETTER", "AVERAGE", "WORSE"), y = proportion * 100, fill = food_availability)) +
   geom_bar(stat = "identity", width = 0.8) +
   geom_errorbar(aes(ymax = pmin(proportion_upp, 1) * 100, ymin = pmax(proportion_low, 0) * 100), width = 0.2) +
+  geom_text(
+    aes(y = pmin(proportion_upp, 1) * 100 + 1, label = paste0(round(proportion * 100, 0), "%")), 
+    position = position_dodge(width = 0.95), vjust = -0.5, size = 3) +
   guides(fill = guide_legend(title = NULL)) + 
   labs(x = NULL, y = NULL) +  
   sea::scale_fill_sea_discrete() +
   sea::theme_sea() + 
-  theme(legend.position = "none", axis.text.x = element_text(angle = 45, hjust = 1)) +
+  theme(legend.position = "none", axis.text.x = element_text(angle = 45, hjust = 1), panel.grid.major = element_blank(), panel.grid.minor = element_blank(), axis.text.y = element_blank(), axis.title.y = element_blank()) +
   scale_y_continuous(labels = label_percent(scale = 1))+
   scale_x_discrete(labels = c("Better", "Average", "Worse"))
 
@@ -2060,7 +2094,23 @@ colnames(proportion_table) <- c("Village", "Average", "Better", "Worse")
 
 proportion_table <- proportion_table %>%
   mutate(across(c("Average", "Better", "Worse"),
-                ~ ifelse(is.na(.), "", paste0(round(. * 100, 1), "%"))))
+                ~ ifelse(is.na(.), "", paste0(round(. * 100, 0)))))
+
+# Calculate the overall average for all villages combined
+total_row <- proportion_table %>%
+  summarise(
+    Village = "Overall",
+    `Average` = mean(as.numeric(sub("%", "", `Average`)) / 100, na.rm = TRUE) * 100,
+    `Better` = mean(as.numeric(sub("%", "", `Better`)) / 100, na.rm = TRUE) * 100,
+    `Worse` = mean(as.numeric(sub("%", "", `Worse`)) / 100, na.rm = TRUE) * 100) %>%
+  mutate(
+    `Better` = paste0(round(`Better`, 0)),
+    `Average` = paste0(round(`Average`, 0)),
+    `Worse` = paste0(round(`Worse`, 0)))
+
+# Add the "Total" row to the combined table
+proportion_table <- bind_rows(proportion_table, total_row)
+colnames(proportion_table) <- c("Village", "Average (%)", "Better (%)", "Worse (%)")
 
 add_lot_link(caption = 'Changes in household food availability over the last 12 months at village level (%)')
 
@@ -2083,11 +2133,14 @@ village_data <- tanganyika_survey %>%
 ggplot(village_data, aes(x = fct_relevel(availability_changed, "BETTER NOW", "SAME", "WORSE NOW"), y = proportion * 100, fill = availability_changed)) +
   geom_bar(stat = "identity", width = 0.8) +
   geom_errorbar(aes(ymax = pmin(proportion_upp, 1) * 100, ymin = pmax(proportion_low, 0) * 100), width = 0.2) +
+  geom_text(
+    aes(y = pmin(proportion_upp, 1) * 100 + 1, label = paste0(round(proportion * 100, 0), "%")), 
+    position = position_dodge(width = 0.95), vjust = -0.5, size = 3) +
   guides(fill = guide_legend(title = NULL)) + 
   labs(x = NULL, y = NULL) +  
   sea::scale_fill_sea_discrete() +
   sea::theme_sea() + 
-  theme(legend.position = "none", axis.text.x = element_text(angle = 45, hjust = 1)) +
+  theme(legend.position = "none", axis.text.x = element_text(angle = 45, hjust = 1), panel.grid.major = element_blank(), panel.grid.minor = element_blank(), axis.text.y = element_blank(), axis.title.y = element_blank()) +
   scale_y_continuous(labels = label_percent(scale = 1))+
   scale_x_discrete(labels = c("Better Now", "Same", "Worse Now"))
 
@@ -2121,12 +2174,15 @@ ggplot(availability_reason_data, aes(x = reorder(availability_reason, -proportio
   geom_bar(stat = "identity", width = 0.8) +
   geom_errorbar(aes(ymax = pmin(proportion_upp, 1)*100, ymin = pmax(proportion_low, 0)*100),
                 width = 0.2) +
+  geom_text(
+    aes(y = pmin(proportion_upp, 1) * 100 + 1, label = paste0(round(proportion * 100, 1), "%")), 
+    position = position_dodge(width = 0.95), vjust = -0.5, size = 3) +
   guides(fill = guide_legend(title = NULL)) +
   labs(x = "", y = "") +
   sea::scale_fill_sea_discrete() +
   sea::theme_sea() + 
   theme(legend.position = "none",  # Remove the legend
-        axis.text.x = element_text(angle = 45, hjust = 1)) +  # Rotate x-axis labels
+        axis.text.x = element_text(angle = 45, hjust = 1), panel.grid.major = element_blank(), panel.grid.minor = element_blank(), axis.text.y = element_blank(), axis.title.y = element_blank()) +  
   scale_y_continuous(labels = label_percent(scale = 1))+
   scale_x_discrete(labels = c("High fish availability", "Crops thrived", "Use of fertilizer", "Other reasons", "Low fish availability", "Crops destroyed by bad weather", "Employment availabilities", "Normal situation", "Lack of fertilizer", "Remittances sent"))
 
@@ -2160,12 +2216,15 @@ ggplot(availability_reason_data, aes(x = reorder(availability_reason, -proportio
   geom_bar(stat = "identity", width = 0.8) +
   geom_errorbar(aes(ymax = pmin(proportion_upp, 1)*100, ymin = pmax(proportion_low, 0)*100),
                 width = 0.2) +
+  geom_text(
+    aes(y = pmin(proportion_upp, 1) * 100 + 1, label = paste0(round(proportion * 100, 1), "%")), 
+    position = position_dodge(width = 0.95), vjust = -0.5, size = 3) +
   guides(fill = guide_legend(title = NULL)) +
   labs(x = "", y = "") +
   sea::scale_fill_sea_discrete() +
   sea::theme_sea() + 
   theme(legend.position = "none",  # Remove the legend
-        axis.text.x = element_text(angle = 45, hjust = 1)) +  # Rotate x-axis labels
+        axis.text.x = element_text(angle = 45, hjust = 1), panel.grid.major = element_blank(), panel.grid.minor = element_blank(), axis.text.y = element_blank(), axis.title.y = element_blank()) + 
   scale_y_continuous(labels = label_percent(scale = 1))+
   scale_x_discrete(labels = c("Crops destroyed\nby bad weather", "Low fish availability", "Other reasons", "Illness", "Crops damaged by wildlife", "Lack of fertilizer", "Crops destroyed by pests", "High fish availability", "Death of a family member", "Normal situation", "Remittances not sent", "Use of fertilizer", "Crops thrived", "Lack of employment"))
 
@@ -2200,7 +2259,23 @@ colnames(hh_influence_table) <- c("Village", "No", "Yes", "I don't know")
 
 # Format the proportion table values as percentages with one decimal point and add % sign
 hh_influence_table <- hh_influence_table %>%
-  mutate(across(c("No", "Yes", "I don't know"),  ~ if_else(is.na(.), "", paste0(round(. * 100, 1), "%"))))
+  mutate(across(c("No", "Yes", "I don't know"),  ~ if_else(is.na(.), "", paste0(round(. * 100, 0)))))
+
+# Calculate the overall average for all villages combined
+total_row <- hh_influence_table %>%
+  summarise(
+    Village = "Overall",
+    `No` = mean(as.numeric(sub("%", "", `No`)) / 100, na.rm = TRUE) * 100,
+    `Yes` = mean(as.numeric(sub("%", "", `Yes`)) / 100, na.rm = TRUE) * 100,
+    `I don't know` = mean(as.numeric(sub("%", "", `I don't know`)) / 100, na.rm = TRUE) * 100) %>%
+  mutate(
+    `No` = paste0(round(`No`, 0)),
+    `Yes` = paste0(round(`Yes`, 0)),
+    `I don't know` = paste0(round(`I don't know`, 0)))
+
+# Add the "Total" row to the combined table
+hh_influence_table <- bind_rows(hh_influence_table, total_row)
+colnames(hh_influence_table) <- c("Village", "No (%)", "Yes (%)", "I don't know (%)")
 
 add_lot_link(caption = 'Household influence on decisions made by the village government at village level (%)')
 
@@ -2231,6 +2306,19 @@ village_data <- tanganyika_survey %>%
 village_data_yes <- village_data %>%
   filter(village_membership == "YES")
 
+total_summary <- tanganyika_survey %>%
+  group_by(village_membership) %>%
+  summarise(
+    proportion = survey_mean(vartype = "ci", na.rm = TRUE),
+    total = survey_total(vartype = "ci", na.rm = TRUE),
+    n = unweighted(n())
+  ) %>%
+  mutate(village = "Overall", cluster = "Cluster 2") %>%
+  filter(village_membership == "YES") 
+
+# Append the "Total" row to village_data_yes
+village_data_yes <- bind_rows(village_data_yes, total_summary)
+
 # Create the plot
 ggplot(village_data_yes, aes(x = village, y = proportion * 100, group = village_membership, fill = village_membership)) +
   geom_bar(stat = "identity", position = position_dodge(preserve = "single"), width = 0.95) +
@@ -2238,9 +2326,9 @@ ggplot(village_data_yes, aes(x = village, y = proportion * 100, group = village_
     aes(ymax = pmin(proportion_upp, 1) * 100, ymin = pmax(proportion_low, 0) * 100),
     position = position_dodge(preserve = "single", width = 0.95), 
     width = 0.1) +
-  geom_text(aes(label = paste0(round(proportion * 100, 1), "%")), 
-            position = position_dodge(width = 0.95), 
-            vjust = -7, size = 3) +  # Adjust 'vjust' to move labels above error bars
+ geom_text(
+    aes(y = pmin(proportion_upp, 1) * 100 + 1, label = paste0(round(proportion * 100, 0), "%")), 
+    position = position_dodge(width = 0.95), vjust = -0.5, size = 3) +
   guides(fill = guide_legend(title = NULL, nrow = 2)) +
   scale_fill_manual(values = SEA_palette) +
   sea::scale_fill_sea_discrete() +
@@ -2249,9 +2337,10 @@ ggplot(village_data_yes, aes(x = village, y = proportion * 100, group = village_
     legend.position = "none",  
     axis.text.x = element_text(size=8), 
     strip.text = element_blank(), 
-    axis.text.y = element_blank(),  
     axis.title.x = element_blank(),  
-    axis.title.y = element_blank()) + 
+    axis.text.y = element_blank(),  
+    axis.title.y = element_blank(),
+    panel.grid.major = element_blank(), panel.grid.minor = element_blank()) + 
   facet_wrap(~cluster, ncol = 1, scales = "free_x") +
   scale_x_discrete(labels = function(x) str_wrap(x, width = 10))+
   scale_y_continuous(labels = NULL) +
@@ -2289,8 +2378,11 @@ ggplot(trust_proportions, aes(x = party, y = proportion, fill = fct_relevel(trus
   geom_bar(stat = "identity", position = "dodge", width = 0.95) +
   geom_errorbar(aes(ymax = pmin(proportion_upp, 100), ymin = pmax(proportion_low, 0)),
                 position = position_dodge(preserve = "single", width = 0.95), width = 0.1) +
+  geom_text(aes(y = pmin(proportion_upp, 100) + 0.04, 
+                label = scales::percent(proportion, accuracy = 1)),
+            position = position_dodge(width = 0.95), size = 3) +
   guides(fill = guide_legend(title = NULL)) +
-  labs(x = NULL, y = "Proportion (%)", fill = "Frequency of Consumption") +
+  labs(x = NULL, y = NULL, fill = "Frequency of Consumption") +
   sea::scale_fill_sea_discrete(labels = c("CAN ALWAYS BE TRUSTED" = "Always Trusted",
                                           "CAN MOSTLY BE TRUSTED" = "Mostly Trusted",
                                           "NEUTRAL" = "Neutral",
@@ -2298,8 +2390,7 @@ ggplot(trust_proportions, aes(x = party, y = proportion, fill = fct_relevel(trus
                                           "CAN NEVER BE TRUSTED" = "Never Trusted")) +
   sea::theme_sea() +
   theme(legend.position = "bottom",  legend.direction = "horizontal",  legend.justification = "center", 
-        axis.text.x = element_text(size = 10), strip.text = element_blank(), legend.box = 
-        "horizontal") +
+        axis.text.x = element_text(size = 10), strip.text = element_blank(), axis.text.y = element_blank(),  axis.title.y = element_blank(), panel.grid.major = element_blank(), panel.grid.minor = element_blank(), legend.box = "horizontal") +
   scale_y_continuous(labels = scales::percent_format())+
   scale_x_discrete(labels = c("government_trusted" = "Local government", "nearby_trusted" = "People in nearby villages", "people_trusted" = "People in own village"))
 
@@ -2353,19 +2444,47 @@ conflict_data <- design %>%
   group_by(village, cluster, disputes_conflicts) %>%
   summarise(proportion = survey_mean(vartype = "ci", na.rm = TRUE), total = survey_total(vartype = "ci", na.rm = TRUE), n = unweighted(n())) %>% ungroup() 
 
+# Add a "Total" group to the data
+total_data <- design %>%
+  group_by(disputes_conflicts) %>%
+  filter(disputes_conflicts != "I DO NOT WANT TO ANSWER") %>% 
+  summarise(proportion = survey_mean(vartype = "ci", na.rm = TRUE),
+            total = survey_total(vartype = "ci", na.rm = TRUE),
+            n = unweighted(n())) %>%
+  mutate(village = "Overall", cluster = "Overall")  # Mark as "Total"
+
+# Combine the total_data with the original treatment_data
+conflict_data <- bind_rows(conflict_data, total_data)
+
+conflict_data <- conflict_data %>%
+  mutate(cluster = case_when(
+    cluster == "Overall" ~ "Cluster 2", TRUE ~ cluster))
+
+conflict_data <- conflict_data %>%
+  mutate(village = reorder(village, -proportion))  # Reorder villages based on proportion
+
+# Reorder treatment_method_dry based on average proportion for each method
+conflict_data$disputes_conflicts <- factor(
+  conflict_data$disputes_conflicts,
+  levels = conflict_data %>%
+    group_by(disputes_conflicts) %>%
+    summarise(avg_proportion = mean(proportion, na.rm = TRUE)) %>%
+    arrange(desc(avg_proportion)) %>%
+    pull(disputes_conflicts))
+
 ggplot(conflict_data, aes(x = village, y = proportion * 100, group = fct_relevel(disputes_conflicts, "OFTEN", "RARELY", "NEVER", "NOT SURE"), fill = fct_relevel(disputes_conflicts, "OFTEN", "RARELY", "NEVER", "NOT SURE"))) +
   geom_bar(stat = "identity", position = position_dodge(preserve = "single"), width = 0.95) +
   geom_errorbar(aes(ymax = pmin(proportion_upp * 100, 100), ymin = pmax(proportion_low * 100, 0)),
                 position = position_dodge(preserve = "single", width = 0.95), width = 0.1) +
   guides(fill = guide_legend(title = NULL)) +
-  labs(x = "", y = "Percentage of Households") +
-  sea::scale_fill_sea_discrete(labels = c("OFTEN" = "Often",
+  labs(x = NULL, y = NULL) +
+  scale_fill_manual(values = c("#3d5919", "#5b7a2e", "#a4b792", "#d2d2c8", "#d8e3cc"), labels = c("OFTEN" = "Often",
                                           "RARELY" = "Rarely",
                                           "NEVER" = "Never",
                                           "NOT SURE" = "Not Sure")) +
   sea::theme_sea() + 
   theme(legend.position = "bottom",  legend.direction = "horizontal",  legend.justification = "center", 
-        axis.text.x = element_text(size = 7), strip.text = element_blank(), legend.box = 
+        axis.text.x = element_text(size = 7), strip.text = element_blank(), panel.grid.major = element_blank(), panel.grid.minor = element_blank(), legend.box = 
         "horizontal") + facet_wrap(~cluster, ncol = 1, scales = "free_x") +
   scale_y_continuous(labels = label_percent(scale = 1))+
   scale_x_discrete(labels = function(x) str_wrap(x, width = 10))
@@ -2383,21 +2502,50 @@ design <- expanded %>%
 conflict_data <- design %>%
   filter(!is.na(more_less) & more_less != "I DO NOT WANT TO ANSWER") %>% 
   group_by(village, cluster, more_less) %>%
-  summarise(proportion = survey_mean(vartype = "ci", na.rm = TRUE), total = survey_total(vartype = "ci", na.rm = TRUE), n = unweighted(n())) %>% ungroup() 
+  summarise(proportion = survey_mean(vartype = "ci", na.rm = TRUE), total = survey_total(vartype = "ci", na.rm = TRUE), n = unweighted(n())) %>% ungroup()
+
+# Add a "Total" group to the data
+total_data <- design %>%
+  group_by(more_less) %>%
+  filter(more_less != "I DO NOT WANT TO ANSWER") %>% 
+  summarise(proportion = survey_mean(vartype = "ci", na.rm = TRUE),
+            total = survey_total(vartype = "ci", na.rm = TRUE),
+            n = unweighted(n())) %>%
+  mutate(village = "Overall", cluster = "Overall")  # Mark as "Total"
+
+# Combine the total_data with the original treatment_data
+conflict_data <- bind_rows(conflict_data, total_data)
+
+conflict_data <- conflict_data %>%
+  mutate(cluster = case_when(
+    cluster == "Overall" ~ "Cluster 2", TRUE ~ cluster))
+
+conflict_data <- conflict_data %>%
+  mutate(village = reorder(village, -proportion))  # Reorder villages based on proportion
+
+# Reorder treatment_method_dry based on average proportion for each method
+conflict_data$more_less <- factor(
+  conflict_data$more_less,
+  levels = conflict_data %>%
+    group_by(more_less) %>%
+    summarise(avg_proportion = mean(proportion, na.rm = TRUE)) %>%
+    arrange(desc(avg_proportion)) %>%
+    pull(more_less))
+
 
 ggplot(conflict_data, aes(x = village, y = proportion * 100, group = fct_relevel(more_less, "MORE", "SAME", "LESS", "NOT SURE"), fill = fct_relevel(more_less, "MORE", "SAME", "LESS", "NOT SURE"))) +
   geom_bar(stat = "identity", position = position_dodge(preserve = "single"), width = 0.95) +
   geom_errorbar(aes(ymax = pmin(proportion_upp * 100, 100), ymin = pmax(proportion_low * 100, 0)),
                 position = position_dodge(preserve = "single", width = 0.95), width = 0.1) +
   guides(fill = guide_legend(title = NULL)) +
-  labs(x = "", y = "Percentage of Households") +
-  sea::scale_fill_sea_discrete(labels = c("MORE" = "More",
+  labs(x = NULL, y = NULL) +
+  scale_fill_manual(values = c("#3d5919", "#5b7a2e", "#a4b792", "#d2d2c8", "#d8e3cc"), labels = c("MORE" = "More",
                                           "SAME" = "Same",
                                           "LESS" = "Less",
                                           "NOT SURE" = "Not Sure")) +
   sea::theme_sea() + 
   theme(legend.position = "bottom",  legend.direction = "horizontal",  legend.justification = "center", 
-        axis.text.x = element_text(size = 7), strip.text = element_blank(), legend.box = 
+        axis.text.x = element_text(size = 7), strip.text = element_blank(), panel.grid.major = element_blank(), panel.grid.minor = element_blank(), legend.box = 
         "horizontal") + facet_wrap(~cluster, ncol = 1, scales = "free_x") +
   scale_y_continuous(labels = label_percent(scale = 1))+
   scale_x_discrete(labels = function(x) str_wrap(x, width = 10))
@@ -2429,12 +2577,16 @@ ggplot(conflict_reason_data, aes(x = reorder(conflict_reason, -proportion), y = 
   geom_bar(stat = "identity", width = 0.8) +
   geom_errorbar(aes(ymax = pmin(proportion_upp, 1)*100, ymin = pmax(proportion_low, 0)*100),
                 width = 0.2) +
+  geom_text(
+    aes(y = pmin(proportion_upp, 1) * 100 + 1, label = paste0(round(proportion * 100, 1), "%")), 
+    position = position_dodge(width = 0.95), vjust = -0.5, size = 3) +
   guides(fill = guide_legend(title = NULL)) +
   labs(x = "", y = "") +
   sea::scale_fill_sea_discrete() +
   sea::theme_sea() + 
   theme(legend.position = "none",  # Remove the legend
-        axis.text.x = element_text(angle = 45, hjust = 1)) +  # Rotate x-axis labels
+        axis.text.x = element_text(angle = 45, hjust = 1), axis.text.y = element_blank(),  
+    axis.title.y = element_blank(), panel.grid.major = element_blank(), panel.grid.minor = element_blank()) +  
   scale_y_continuous(labels = label_percent(scale = 1))+
   scale_x_discrete(labels = c("Closure of the lake", "Use of illegal fishing gear", "Fishing in protected breeding area", "Catching undersized fish", "Other reasons", "Private land boundaries", "Fishing in the National Park"))
 
@@ -2457,17 +2609,44 @@ conflict_parties_data <- conflict_parties_design %>%
   group_by(village, cluster, conflict_parties) %>%
   summarise(proportion = survey_mean(vartype = "ci", na.rm = TRUE), total = survey_total(vartype = "ci", na.rm = TRUE), n = unweighted(n())) %>% ungroup()
 
+# Add a "Total" group to the data
+total_data <- conflict_parties_design %>%
+  group_by(conflict_parties) %>%
+#  filter(conflict_parties != "I DO NOT WANT TO ANSWER") %>% 
+  summarise(proportion = survey_mean(vartype = "ci", na.rm = TRUE),
+            total = survey_total(vartype = "ci", na.rm = TRUE),
+            n = unweighted(n())) %>%
+  mutate(village = "Overall", cluster = "Overall")  # Mark as "Total"
+
+# Combine the total_data with the original treatment_data
+conflict_parties_data <- bind_rows(conflict_parties_data, total_data)
+
+conflict_parties_data <- conflict_parties_data %>%
+  mutate(cluster = case_when(
+    cluster == "Overall" ~ "Cluster 2", TRUE ~ cluster))
+
+conflict_parties_data <- conflict_parties_data %>%
+  mutate(village = reorder(village, -proportion))  # Reorder villages based on proportion
+
+# Reorder treatment_method_dry based on average proportion for each method
+conflict_parties_data$conflict_parties <- factor(
+  conflict_parties_data$conflict_parties,
+  levels = conflict_parties_data %>%
+    group_by(conflict_parties) %>%
+    summarise(avg_proportion = mean(proportion, na.rm = TRUE)) %>%
+    arrange(desc(avg_proportion)) %>%
+    pull(conflict_parties))
+
 ggplot(conflict_parties_data, aes(x = village, y = proportion * 100, group = conflict_parties, fill = conflict_parties)) +
   geom_bar(stat = "identity", position = position_dodge(preserve = "single"), width = 0.95) +
   geom_errorbar(aes(ymax = pmin(proportion_upp * 100, 100), ymin = pmax(proportion_low * 100, 0)),
                 position = position_dodge(preserve = "single", width = 0.95), width = 0.1) +
   guides(fill = guide_legend(title = NULL, nrow = 2)) +
-  labs(x = "Village", y = "Percentage of Households") +
+  labs(x = NULL, y = NULL) +
   sea::scale_fill_sea_discrete(labels = c("AMONG FISHERS" = "Among fishers", "AMONG LOCAL VILLAGERS" = "Among local villagers", "BMUS WITH FISHERS" = "BMUs with fishers", "I DON'T KNOW" = "I don't know", "LOCAL VILLAGERS WITH GOVERNMENT" = "With government", "LOCAL VILLAGERS WITH IMMIGRANTS" = "With immigrants", "LOCAL VILLAGERS WITH PEOPLE FROM OTHER VILLAGES" = "With people from other villages", "OTHER" = "Other")) +
   sea::theme_sea() + 
   theme(legend.position = "bottom",  legend.direction = "horizontal",  legend.justification = "center", 
-        axis.text.x = element_text(size = 7), strip.text = element_blank(), legend.box = 
-        "horizontal") + facet_wrap(~cluster, ncol = 1, scales = "free_x")+
+        axis.text.x = element_text(size = 7), strip.text = element_blank(), panel.grid.major = element_blank(), panel.grid.minor = element_blank(), legend.box = "horizontal") + facet_wrap(~cluster, ncol = 1, scales = "free_x")+
   scale_x_discrete(labels = function(x) str_wrap(x, width = 10))+
   scale_y_continuous(labels = label_percent(scale = 1))
 
@@ -2485,18 +2664,46 @@ conflict_data <- design %>%
   group_by(village, cluster, fair_resolution) %>%
   summarise(proportion = survey_mean(vartype = "ci", na.rm = TRUE), total = survey_total(vartype = "ci", na.rm = TRUE), n = unweighted(n())) %>% ungroup() 
 
+# Add a "Total" group to the data
+total_data <- design %>%
+  group_by(fair_resolution) %>%
+  filter(fair_resolution != "I DON'T KNOW") %>% 
+  summarise(proportion = survey_mean(vartype = "ci", na.rm = TRUE),
+            total = survey_total(vartype = "ci", na.rm = TRUE),
+            n = unweighted(n())) %>%
+  mutate(village = "Overall", cluster = "Overall")  # Mark as "Total"
+
+# Combine the total_data with the original treatment_data
+conflict_data <- bind_rows(conflict_data, total_data)
+
+conflict_data <- conflict_data %>%
+  mutate(cluster = case_when(
+    cluster == "Overall" ~ "Cluster 2", TRUE ~ cluster))
+
+conflict_data <- conflict_data %>%
+  mutate(village = reorder(village, -proportion))  # Reorder villages based on proportion
+
+# Reorder treatment_method_dry based on average proportion for each method
+conflict_data$fair_resolution <- factor(
+  conflict_data$fair_resolution,
+  levels = conflict_data %>%
+    group_by(fair_resolution) %>%
+    summarise(avg_proportion = mean(proportion, na.rm = TRUE)) %>%
+    arrange(desc(avg_proportion)) %>%
+    pull(fair_resolution))
+
 ggplot(conflict_data, aes(x = village, y = proportion * 100, group = fct_relevel(fair_resolution, "YES", "NO", "NOT SURE"), fill = fct_relevel(fair_resolution, "YES", "NO", "NOT SURE"))) +
   geom_bar(stat = "identity", position = position_dodge(preserve = "single"), width = 0.95) +
   geom_errorbar(aes(ymax = pmin(proportion_upp * 100, 100), ymin = pmax(proportion_low * 100, 0)),
                 position = position_dodge(preserve = "single", width = 0.95), width = 0.1) +
   guides(fill = guide_legend(title = NULL)) +
-  labs(x = "", y = "Percentage of Households") +
-  sea::scale_fill_sea_discrete(labels = c("YES" = "Yes",
+  labs(x = NULL, y = NULL) +
+  scale_fill_manual(values = c("#3d5919", "#5b7a2e", "#a4b792", "#d2d2c8", "#d8e3cc"), labels = c("YES" = "Yes",
                                           "NO" = "No",
                                           "NOT SURE" = "Not Sure")) +
   sea::theme_sea() + 
   theme(legend.position = "bottom",  legend.direction = "horizontal",  legend.justification = "center", 
-        axis.text.x = element_text(size = 7), strip.text = element_blank(), legend.box = 
+        axis.text.x = element_text(size = 7), strip.text = element_blank(), panel.grid.major = element_blank(), panel.grid.minor = element_blank(), legend.box = 
         "horizontal") + facet_wrap(~cluster, ncol = 1, scales = "free_x") +
   scale_y_continuous(labels = label_percent(scale = 1))+
   scale_x_discrete(labels = function(x) str_wrap(x, width = 10))
@@ -2527,12 +2734,16 @@ ggplot(influential_leaders_data, aes(x = reorder(influential_leaders, -proportio
   geom_bar(stat = "identity", width = 0.8) +
   geom_errorbar(aes(ymax = pmin(proportion_upp, 1)*100, ymin = pmax(proportion_low, 0)*100),
                 width = 0.2) +
+  geom_text(
+    aes(y = pmin(proportion_upp, 1) * 100 + 1, label = paste0(round(proportion * 100, 1), "%")), 
+    position = position_dodge(width = 0.95), vjust = -0.5, size = 3) +
   guides(fill = guide_legend(title = NULL)) +
   labs(x = "", y = "") +
   sea::scale_fill_sea_discrete() +
   sea::theme_sea() + 
   theme(legend.position = "none",  # Remove the legend
-        axis.text.x = element_text(angle = 45, hjust = 1)) +  # Rotate x-axis labels
+        axis.text.x = element_text(angle = 45, hjust = 1), axis.text.y = element_blank(),  
+    axis.title.y = element_blank(), panel.grid.major = element_blank(), panel.grid.minor = element_blank()) +  # Rotate x-axis labels
   scale_y_continuous(labels = label_percent(scale = 1))+
   scale_x_discrete(labels = c("Political Leaders", "Religious Leaders", "Political Party Leaders", "Civil Servants", "Respected Elders", "Fishing Equipment Owners", "Fishing Equipment Leaders", "Sports Leaders", "Fishing Equipment Repairers", "Witch Doctors", "Farmers", "Others"))
 
@@ -2550,6 +2761,19 @@ village_data <- tanganyika_survey %>%
 # Filter for "YES" entries in borrow_status
 village_data_yes <- village_data %>%
   filter(leader_position == "YES")
+
+total_summary <- tanganyika_survey %>%
+  group_by(leader_position) %>%
+  summarise(
+    proportion = survey_mean(vartype = "ci", na.rm = TRUE),
+    total = survey_total(vartype = "ci", na.rm = TRUE),
+    n = unweighted(n())
+  ) %>%
+  mutate(village = "Overall", cluster = "Cluster 2") %>%
+  filter(leader_position == "YES") 
+
+# Append the "Total" row to village_data_yes
+village_data_yes <- bind_rows(village_data_yes, total_summary)
 
 # Create the plot
 ggplot(village_data_yes, aes(x = village, y = proportion * 100, group = leader_position, fill = leader_position)) +
@@ -2572,7 +2796,9 @@ ggplot(village_data_yes, aes(x = village, y = proportion * 100, group = leader_p
     axis.text.x = element_text(size=8), 
     strip.text = element_blank(), 
     axis.text.y = element_blank(),  
-    axis.title.x = element_blank(),  
+    axis.title.x = element_blank(),
+    panel.grid.major = element_blank(), 
+    panel.grid.minor = element_blank(),
     axis.title.y = element_blank()) + 
   facet_wrap(~cluster, ncol = 1, scales = "free_x") +
   scale_x_discrete(labels = function(x) str_wrap(x, width = 10))+
@@ -2768,7 +2994,7 @@ colnames(BMU_activity_table) <- c("Village", "No", "Yes")
 
 # Format the proportion table values as percentages with one decimal point and add % sign
 BMU_activity_table <- BMU_activity_table %>%
-  mutate(across(c("No", "Yes"),  ~ if_else(is.na(.), "", paste0(round(. * 100, 1), "%"))))
+  mutate(across(c("No", "Yes"),  ~ if_else(is.na(.), "", paste0(round(. * 100, 0)))))
 
 summary_by_village <- tanganyika_survey %>%
   filter(!is.na(awareness_bmu) & awareness_bmu != "I DON'T KNOW") %>% 
@@ -2786,7 +3012,7 @@ colnames(awareness_bmu_table) <- c("Village", "No", "Yes", "Not Sure")
 
 # Format the proportion table values as percentages with one decimal point and add % sign
 awareness_bmu_table <- awareness_bmu_table %>%
-  mutate(across(c("No", "Yes"),  ~ if_else(is.na(.), "", paste0(round(. * 100, 1), "%"))))
+  mutate(across(c("No", "Yes"),  ~ if_else(is.na(.), "", paste0(round(. * 100, 0)))))
 
 
 summary_by_village <- tanganyika_survey %>%
@@ -2805,7 +3031,7 @@ colnames(bmu_member_table) <- c("Village", "No", "Not Sure", "Yes")
 
 # Format the proportion table values as percentages with one decimal point and add % sign
 bmu_member_table <- bmu_member_table %>%
-  mutate(across(c("No", "Yes"), ~ if_else(is.na(.), "", paste0(round(. * 100, 1), "%"))))
+  mutate(across(c("No", "Yes"), ~ if_else(is.na(.), "", paste0(round(. * 100, 0)))))
 
 summary_by_village <- tanganyika_survey %>%
   filter(!is.na(tnc_support_bmu) & tnc_support_bmu != "I DON'T KNOW") %>% 
@@ -2823,7 +3049,7 @@ colnames(tnc_support_table) <- c("Village", "Yes", "Not Sure", "No")
 
 # Format the proportion table values as percentages with one decimal point and add % sign
 tnc_support_table <- tnc_support_table %>%
-  mutate(across(c("Yes", "No", "Not Sure"), ~ if_else(is.na(.), "", paste0(round(. * 100, 1), "%"))))
+  mutate(across(c("Yes", "No", "Not Sure"), ~ if_else(is.na(.), "", paste0(round(. * 100, 0)))))
 
 summary_by_village <- tanganyika_survey %>%
   filter(!is.na(bmu_women) & bmu_women != "I DON'T KNOW") %>% 
@@ -2841,7 +3067,7 @@ colnames(bmu_women_table) <- c("Village", "Not Sure", "Yes", "No")
 
 # Format the proportion table values as percentages with one decimal point and add % sign
 bmu_women_table <- bmu_women_table %>%
-  mutate(across(c("Yes", "No", "Not Sure"), ~ if_else(is.na(.), "", paste0(round(. * 100, 1), "%"))))
+  mutate(across(c("Yes", "No", "Not Sure"), ~ if_else(is.na(.), "", paste0(round(. * 100, 0)))))
 
 summary_by_village <- tanganyika_survey %>%
   filter(!is.na(bmu_youth) & bmu_youth != "I DON'T KNOW") %>% 
@@ -2859,7 +3085,7 @@ colnames(bmu_youth_table) <- c("Village", "Not Sure", "Yes", "No")
 
 # Format the proportion table values as percentages with one decimal point and add % sign
 bmu_youth_table <- bmu_youth_table %>%
-  mutate(across(c("Yes", "No", "Not Sure"), ~ if_else(is.na(.), "", paste0(round(. * 100, 1), "%"))))
+  mutate(across(c("Yes", "No", "Not Sure"), ~ if_else(is.na(.), "", paste0(round(. * 100, 0)))))
 
 combined_table <- awareness_bmu_table %>%
   select(Village, `Aware of BMUs` = Yes) %>%  
@@ -2868,6 +3094,28 @@ combined_table <- awareness_bmu_table %>%
   left_join(tnc_support_table %>% select(Village, `BMU is TNC supported` = Yes), by = "Village") %>%
   left_join(bmu_women_table %>% select(Village, `Women in BMU leadership` = Yes), by = "Village") %>%
   left_join(bmu_youth_table %>% select(Village, `Youth in BMU` = Yes), by = "Village") 
+
+# Calculate the overall average for all villages combined
+total_row <- combined_table %>%
+  summarise(
+    Village = "Overall",
+    `Aware of BMUs` = mean(as.numeric(sub("%", "", `Aware of BMUs`)) / 100, na.rm = TRUE) * 100,
+    `Has participated in BMU activity` = mean(as.numeric(sub("%", "", `Has participated in BMU activity`)) / 100, na.rm = TRUE) * 100,
+    `Member of BMU` = mean(as.numeric(sub("%", "", `Member of BMU`)) / 100, na.rm = TRUE) * 100,
+    `BMU is TNC supported` = mean(as.numeric(sub("%", "", `BMU is TNC supported`)) / 100, na.rm = TRUE) * 100,
+    `Women in BMU leadership` = mean(as.numeric(sub("%", "", `Women in BMU leadership`)) / 100, na.rm = TRUE) * 100,
+    `Youth in BMU` = mean(as.numeric(sub("%", "", `Youth in BMU`)) / 100, na.rm = TRUE) * 100) %>%
+  mutate(
+    `Aware of BMUs` = paste0(round(`Aware of BMUs`, 0)),
+    `Has participated in BMU activity` = paste0(round(`Has participated in BMU activity`, 0)),
+    `Member of BMU` = paste0(round(`Member of BMU`, 0)),
+    `BMU is TNC supported` = paste0(round(`BMU is TNC supported`, 0)),
+    `Women in BMU leadership` = paste0(round(`Women in BMU leadership`, 0)),
+    `Youth in BMU` = paste0(round(`Youth in BMU`, 0)))
+
+# Add the "Total" row to the combined table
+combined_table <- bind_rows(combined_table, total_row)
+colnames(combined_table) <- c("Village", "Aware of BMUs (%)", "Participated in BMU activity (%)", "BMU member (%)", "TNC supported BMU (%)", "Women in BMU leadership (%)", "Youth in BMU (%)")
 
 add_lot_link(caption = 'BMU awareness and participation at village level (%)')
 
@@ -3013,7 +3261,7 @@ colnames(conflict_table) <- c("Village", "No", "Not Sure", "Yes")
 
 # Format the proportion table values as percentages with one decimal point and add % sign
 conflict_table <- conflict_table %>%
-  mutate(across(c("No", "Not Sure", "Yes"),  ~ if_else(is.na(.), "", paste0(round(. * 100, 1), "%"))))
+  mutate(across(c("No", "Not Sure", "Yes"),  ~ if_else(is.na(.), "", paste0(round(. * 100, 0)))))
 
 expanded <- tanganyika_clean %>% select(hh_code, village, conflict_resolution, stype, fpc) %>%
   separate_rows(conflict_resolution, sep = "\\|") %>%
@@ -3044,11 +3292,31 @@ colnames(proportion_table) <- c("Village", "Go to ward or district government", 
 # Format the proportion table values as percentages with one decimal point and add % sign, leave NA as blank
 proportion_table <- proportion_table %>%
   mutate(across(c("Go to ward or district government", "Negotiate with each other", "Do nothing", "Go to village government", "I don't know", "There are no conflicts between BMUs and fishers", "Other"),
-                ~ ifelse(is.na(.), "", paste0(round(. * 100, 1), "%"))))
+                ~ ifelse(is.na(.), "", paste0(round(. * 100, 0)))))
 
 combined_table <- conflict_table %>%
   select(Village, `Conflicts of interest indicated` = Yes) %>%
   left_join(proportion_table %>% select(Village, `Go to ward or district government`, `Negotiate with each other`, `Go to village government`, `Do nothing`), by = "Village") 
+
+# Calculate the overall average for all villages combined
+total_row <- combined_table %>%
+  summarise(
+    Village = "Overall",
+    `Conflicts of interest indicated` = mean(as.numeric(sub("%", "", `Conflicts of interest indicated`)) / 100, na.rm = TRUE) * 100,
+    `Go to ward or district government` = mean(as.numeric(sub("%", "", `Go to ward or district government`)) / 100, na.rm = TRUE) * 100,
+    `Negotiate with each other` = mean(as.numeric(sub("%", "", `Negotiate with each other`)) / 100, na.rm = TRUE) * 100,
+    `Go to village government` = mean(as.numeric(sub("%", "", `Go to village government`)) / 100, na.rm = TRUE) * 100,
+    `Do nothing` = mean(as.numeric(sub("%", "", `Do nothing`)) / 100, na.rm = TRUE) * 100) %>%
+  mutate(
+    `Conflicts of interest indicated` = paste0(round(`Conflicts of interest indicated`, 0)),
+    `Go to ward or district government` = paste0(round(`Go to ward or district government`, 0)),
+    `Negotiate with each other` = paste0(round(`Negotiate with each other`, 0)),
+    `Go to village government` = paste0(round(`Go to village government`, 0)),
+    `Do nothing` = paste0(round(`Do nothing`, 0)))
+
+# Add the "Total" row to the combined table
+combined_table <- bind_rows(combined_table, total_row)
+colnames(combined_table) <- c("Village", "Conflicts of interest (%)", "Go to ward or district government (%)", "Negotiate with each other (%)", "Go to village government (%)", "Do nothing (%)")
 
 add_lot_link(caption = 'Conflict of interest and/or power struggle between village leaders and BMU (%)')
 
@@ -3308,7 +3576,7 @@ colnames(rights_access_table) <- c("Village", "No", "Not Sure", "Yes")
 
 # Format the proportion table values as percentages with one decimal point and add % sign
 rights_access_table <- rights_access_table %>%
-  mutate(across(c("No", "Not Sure", "Yes"),  ~ if_else(is.na(.), "", paste0(round(. * 100, 1), "%"))))
+  mutate(across(c("No", "Not Sure", "Yes"),  ~ if_else(is.na(.), "", paste0(round(. * 100, 0)))))
 
 
 summary_by_village <- tanganyika_survey %>%
@@ -3329,7 +3597,7 @@ colnames(security_rights_table) <- c("Village", "No", "Not Sure", "Yes")
 
 # Format the proportion table values as percentages with one decimal point and add % sign
 security_rights_table <- security_rights_table %>%
-  mutate(across(c("No", "Not Sure", "Yes"),  ~ if_else(is.na(.), "", paste0(round(. * 100, 1), "%"))))
+  mutate(across(c("No", "Not Sure", "Yes"),  ~ if_else(is.na(.), "", paste0(round(. * 100, 0)))))
 
 
 summary_by_village <- tanganyika_survey %>%
@@ -3350,12 +3618,28 @@ colnames(decision_making_table) <- c("Village", "No", "Yes", "Not Sure")
 
 # Format the proportion table values as percentages with one decimal point and add % sign
 decision_making_table <- decision_making_table %>%
-  mutate(across(c("No", "Not Sure", "Yes"), ~ if_else(is.na(.), "", paste0(round(. * 100, 1), "%"))))
+  mutate(across(c("No", "Not Sure", "Yes"), ~ if_else(is.na(.), "", paste0(round(. * 100, 0)))))
 
 combined_table <- rights_access_table %>%
   select(Village, `Rights to access and use fishery resources are being upheld by regulatory and/or communal systems` = Yes) %>%  
   left_join(security_rights_table %>% select(Village, `Happy with the current security of your rights over fisheries resources` = Yes), by = "Village") %>%
   left_join(decision_making_table %>% select(Village, `Involved in decision-making processes regarding fisheries resources` = Yes), by = "Village")
+
+# Calculate the overall average for all villages combined
+total_row <- combined_table %>%
+  summarise(
+    Village = "Overall",
+    `Rights to access and use fishery resources are being upheld by regulatory and/or communal systems` = mean(as.numeric(sub("%", "", `Rights to access and use fishery resources are being upheld by regulatory and/or communal systems`)) / 100, na.rm = TRUE) * 100,
+    `Happy with the current security of your rights over fisheries resources` = mean(as.numeric(sub("%", "", `Happy with the current security of your rights over fisheries resources`)) / 100, na.rm = TRUE) * 100,
+    `Involved in decision-making processes regarding fisheries resources` = mean(as.numeric(sub("%", "", `Involved in decision-making processes regarding fisheries resources`)) / 100, na.rm = TRUE) * 100) %>%
+  mutate(
+    `Rights to access and use fishery resources are being upheld by regulatory and/or communal systems` = paste0(round(`Rights to access and use fishery resources are being upheld by regulatory and/or communal systems`, 0)),
+    `Happy with the current security of your rights over fisheries resources` = paste0(round(`Happy with the current security of your rights over fisheries resources`, 0)),
+    `Involved in decision-making processes regarding fisheries resources` = paste0(round(`Involved in decision-making processes regarding fisheries resources`, 0)))
+
+# Add the "Total" row to the combined table
+combined_table <- bind_rows(combined_table, total_row)
+colnames(combined_table) <- c("Village", "Rights to access and use fishery resources are being upheld by regulatory and/or communal systems (%)", "Happy with the current security of your rights over fisheries resources (%)", "Involved in decision-making processes regarding fisheries resources (%)")
 
 add_lot_link(caption = 'Access rights, security, and decision making around fisheries resources at village level (%)')
 
@@ -3426,7 +3710,7 @@ colnames(awareness_reserves_table) <- c("Village", "Yes", "No", "Not Sure")
 
 # Format the proportion table values as percentages with one decimal point and add % sign
 awareness_reserves_table <- awareness_reserves_table %>%
-  mutate(across(c("No", "Not Sure", "Yes"),  ~ if_else(is.na(.), "", paste0(round(. * 100, 1), "%"))))
+  mutate(across(c("No", "Not Sure", "Yes"),  ~ if_else(is.na(.), "", paste0(round(. * 100, 0)))))
 
 
 summary_by_village <- tanganyika_survey %>%
@@ -3447,7 +3731,7 @@ colnames(purpose_reserves_table) <- c("Village", "Yes", "No", "Not Sure")
 
 # Format the proportion table values as percentages with one decimal point and add % sign
 purpose_reserves_table <- purpose_reserves_table %>%
-  mutate(across(c("No", "Not Sure", "Yes"),  ~ if_else(is.na(.), "", paste0(round(. * 100, 1), "%"))))
+  mutate(across(c("No", "Not Sure", "Yes"),  ~ if_else(is.na(.), "", paste0(round(. * 100, 0)))))
 
 
 summary_by_village <- tanganyika_survey %>%
@@ -3468,12 +3752,28 @@ colnames(opinion_reserves_table) <- c("Village", "No", "Not Sure", "Yes")
 
 # Format the proportion table values as percentages with one decimal point and add % sign
 opinion_reserves_table <- opinion_reserves_table %>%
-  mutate(across(c("No", "Not Sure", "Yes"), ~ if_else(is.na(.), "", paste0(round(. * 100, 1), "%"))))
+  mutate(across(c("No", "Not Sure", "Yes"), ~ if_else(is.na(.), "", paste0(round(. * 100, 0)))))
 
 combined_table <- awareness_reserves_table %>%
   select(Village, `Aware of fish reserves` = Yes) %>%  
   left_join(purpose_reserves_table %>% select(Village, `Aware of fish reserve purpose` = Yes), by = "Village") %>%
   left_join(opinion_reserves_table %>% select(Village, `Think fish reserves are a good idea` = Yes), by = "Village")
+
+# Calculate the overall average for all villages combined
+total_row <- combined_table %>%
+  summarise(
+    Village = "Overall",
+    `Aware of fish reserves` = mean(as.numeric(sub("%", "", `Aware of fish reserves`)) / 100, na.rm = TRUE) * 100,
+    `Aware of fish reserve purpose` = mean(as.numeric(sub("%", "", `Aware of fish reserve purpose`)) / 100, na.rm = TRUE) * 100,
+    `Think fish reserves are a good idea` = mean(as.numeric(sub("%", "", `Think fish reserves are a good idea`)) / 100, na.rm = TRUE) * 100) %>%
+  mutate(
+    `Aware of fish reserves` = paste0(round(`Aware of fish reserves`, 0)),
+    `Aware of fish reserve purpose` = paste0(round(`Aware of fish reserve purpose`, 0)),
+    `Think fish reserves are a good idea` = paste0(round(`Think fish reserves are a good idea`, 0)))
+
+# Add the "Total" row to the combined table
+combined_table <- bind_rows(combined_table, total_row)
+colnames(combined_table) <- c("Village", "Aware of fish reserves (%)", "Aware of fish reserve purpose (%)", "Think fish reserves are a good idea (%)")
 
 add_lot_link(caption = 'Awareness and acceptance of fish reserves at village level (%)')
 
@@ -3938,7 +4238,7 @@ colnames(cooperative_table) <- c("Village", "No", "Yes")
 
 # Format the proportion table values as percentages with one decimal point and add % sign
 cooperative_table <- cooperative_table %>%
-  mutate(across(c("No", "Yes"),  ~ if_else(is.na(.), "", paste0(round(. * 100, 1), "%"))))
+  mutate(across(c("No", "Yes"),  ~ if_else(is.na(.), "", paste0(round(. * 100, 0)))))
 
 summary_by_village <- tanganyika_survey %>%
   filter(!is.na(cocoba_group) & cocoba_group != "I DON'T KNOW") %>% 
@@ -3956,7 +4256,7 @@ colnames(cocoba_group_table) <- c("Village", "No", "Yes")
 
 # Format the proportion table values as percentages with one decimal point and add % sign
 cocoba_group_table <- cocoba_group_table %>%
-  mutate(across(c("No", "Yes"),  ~ if_else(is.na(.), "", paste0(round(. * 100, 1), "%"))))
+  mutate(across(c("No", "Yes"),  ~ if_else(is.na(.), "", paste0(round(. * 100, 0)))))
 
 
 summary_by_village <- tanganyika_survey %>%
@@ -3975,7 +4275,7 @@ colnames(other_group_table) <- c("Village", "No", "Yes")
 
 # Format the proportion table values as percentages with one decimal point and add % sign
 other_group_table <- other_group_table %>%
-  mutate(across(c("No", "Yes"), ~ if_else(is.na(.), "", paste0(round(. * 100, 1), "%"))))
+  mutate(across(c("No", "Yes"), ~ if_else(is.na(.), "", paste0(round(. * 100, 0)))))
 
 summary_by_village <- tanganyika_survey %>%
   filter(!is.na(tnc_support) & tnc_support != "I DON'T KNOW") %>% 
@@ -3993,7 +4293,7 @@ colnames(tnc_support_table) <- c("Village", "Yes", "No", "Not Sure")
 
 # Format the proportion table values as percentages with one decimal point and add % sign
 tnc_support_table <- tnc_support_table %>%
-  mutate(across(c("Yes", "No", "Not Sure"), ~ if_else(is.na(.), "", paste0(round(. * 100, 1), "%"))))
+  mutate(across(c("Yes", "No", "Not Sure"), ~ if_else(is.na(.), "", paste0(round(. * 100, 0)))))
 
 summary_by_village <- tanganyika_survey %>%
   filter(!is.na(group_helpfulness) & group_helpfulness != "I DON'T KNOW") %>% 
@@ -4011,7 +4311,7 @@ colnames(group_helpfulness_table) <- c("Village", "Yes", "No", "Not Sure")
 
 # Format the proportion table values as percentages with one decimal point and add % sign
 group_helpfulness_table <- group_helpfulness_table %>%
-  mutate(across(c("Yes", "No", "Not Sure"), ~ if_else(is.na(.), "", paste0(round(. * 100, 1), "%"))))
+  mutate(across(c("Yes", "No", "Not Sure"), ~ if_else(is.na(.), "", paste0(round(. * 100, 0)))))
 
 combined_table <- cooperative_table %>%
   select(Village, `Cooperative/FICO` = Yes) %>%  
@@ -4019,6 +4319,26 @@ combined_table <- cooperative_table %>%
   left_join(other_group_table %>% select(Village, `Other group` = Yes), by = "Village") %>%
   left_join(tnc_support_table %>% select(Village, `Group is TNC supported` = Yes), by = "Village") %>%
   left_join(group_helpfulness_table %>% select(Village, `Group is helpful` = Yes), by = "Village") 
+
+# Calculate the overall average for all villages combined
+total_row <- combined_table %>%
+  summarise(
+    Village = "Overall",
+    `Cooperative/FICO` = mean(as.numeric(sub("%", "", `Cooperative/FICO`)) / 100, na.rm = TRUE) * 100,
+    `COCOBA or savings group` = mean(as.numeric(sub("%", "", `COCOBA or savings group`)) / 100, na.rm = TRUE) * 100,
+    `Other group` = mean(as.numeric(sub("%", "", `Other group`)) / 100, na.rm = TRUE) * 100,
+    `Group is TNC supported` = mean(as.numeric(sub("%", "", `Group is TNC supported`)) / 100, na.rm = TRUE) * 100,
+    `Group is helpful` = mean(as.numeric(sub("%", "", `Group is helpful`)) / 100, na.rm = TRUE) * 100) %>%
+  mutate(
+    `Cooperative/FICO` = paste0(round(`Cooperative/FICO`, 0)),
+    `COCOBA or savings group` = paste0(round(`COCOBA or savings group`, 0)),
+    `Other group` = paste0(round(`Other group`, 0)),
+    `Group is TNC supported` = paste0(round(`Group is TNC supported`, 0)),
+    `Group is helpful` = paste0(round(`Group is helpful`, 0)))
+
+# Add the "Total" row to the combined table
+combined_table <- bind_rows(combined_table, total_row)
+colnames(combined_table) <- c("Village", "Cooperative/FICO (%)", "COCOBA or savings group (%)", "Other group (%)", "TNC supported groups (%)", "Group is helpful (%)")
 
 add_lot_link(caption = 'Group membership of fishers at village level (%)')
 
@@ -4308,7 +4628,7 @@ colnames(cooperative_table) <- c("Village", "No", "Yes")
 
 # Format the proportion table values as percentages with one decimal point and add % sign
 cooperative_table <- cooperative_table %>%
-  mutate(across(c("No", "Yes"),  ~ if_else(is.na(.), "", paste0(round(. * 100, 1), "%"))))
+  mutate(across(c("No", "Yes"),  ~ if_else(is.na(.), "", paste0(round(. * 100, 0)))))
 
 summary_by_village <- tanganyika_survey %>%
   filter(!is.na(cocoba_savings) & cocoba_savings != "I DON'T KNOW") %>% 
@@ -4326,7 +4646,7 @@ colnames(cocoba_group_table) <- c("Village", "No", "Yes")
 
 # Format the proportion table values as percentages with one decimal point and add % sign
 cocoba_group_table <- cocoba_group_table %>%
-  mutate(across(c("No", "Yes"),  ~ if_else(is.na(.), "", paste0(round(. * 100, 1), "%"))))
+  mutate(across(c("No", "Yes"),  ~ if_else(is.na(.), "", paste0(round(. * 100, 0)))))
 
 summary_by_village <- tanganyika_survey %>%
   filter(!is.na(other_trading_group) & other_trading_group != "I DON'T KNOW") %>% 
@@ -4344,7 +4664,7 @@ colnames(other_group_table) <- c("Village", "No", "Yes")
 
 # Format the proportion table values as percentages with one decimal point and add % sign
 other_group_table <- other_group_table %>%
-  mutate(across(c("No", "Yes"), ~ if_else(is.na(.), "", paste0(round(. * 100, 1), "%"))))
+  mutate(across(c("No", "Yes"), ~ if_else(is.na(.), "", paste0(round(. * 100, 0)))))
 
 summary_by_village <- tanganyika_survey %>%
   filter(!is.na(trading_tnc_supported) & trading_tnc_supported != "I DON'T KNOW") %>% 
@@ -4362,7 +4682,7 @@ colnames(tnc_support_table) <- c("Village", "No", "Yes")
 
 # Format the proportion table values as percentages with one decimal point and add % sign
 tnc_support_table <- tnc_support_table %>%
-  mutate(across(c("Yes", "No"), ~ if_else(is.na(.), "", paste0(round(. * 100, 1), "%"))))
+  mutate(across(c("Yes", "No"), ~ if_else(is.na(.), "", paste0(round(. * 100, 0)))))
 
 summary_by_village <- tanganyika_survey %>%
   filter(!is.na(trading_group_helpfulness) & trading_group_helpfulness != "I DON'T KNOW") %>% 
@@ -4380,7 +4700,7 @@ colnames(group_helpfulness_table) <- c("Village", "Yes", "No", "Not Sure")
 
 # Format the proportion table values as percentages with one decimal point and add % sign
 group_helpfulness_table <- group_helpfulness_table %>%
-  mutate(across(c("Yes", "No", "Not Sure"), ~ if_else(is.na(.), "", paste0(round(. * 100, 1), "%"))))
+  mutate(across(c("Yes", "No", "Not Sure"), ~ if_else(is.na(.), "", paste0(round(. * 100, 0)))))
 
 combined_table <- cooperative_table %>%
   select(Village, `Cooperative/FICO` = Yes) %>%  
@@ -4389,7 +4709,28 @@ combined_table <- cooperative_table %>%
   left_join(tnc_support_table %>% select(Village, `Group is TNC supported` = Yes), by = "Village") %>%
   left_join(group_helpfulness_table %>% select(Village, `Group is helpful` = Yes), by = "Village") 
 
-add_lot_link(caption = 'Group membership of fishers at village level (%)')
+# Calculate the overall average for all villages combined
+total_row <- combined_table %>%
+  summarise(
+    Village = "Overall",
+    `Cooperative/FICO` = mean(as.numeric(sub("%", "", `Cooperative/FICO`)) / 100, na.rm = TRUE) * 100,
+    `COCOBA or savings group` = mean(as.numeric(sub("%", "", `COCOBA or savings group`)) / 100, na.rm = TRUE) * 100,
+    `Other group` = mean(as.numeric(sub("%", "", `Other group`)) / 100, na.rm = TRUE) * 100,
+    `Group is TNC supported` = mean(as.numeric(sub("%", "", `Group is TNC supported`)) / 100, na.rm = TRUE) * 100,
+    `Group is helpful` = mean(as.numeric(sub("%", "", `Group is helpful`)) / 100, na.rm = TRUE) * 100) %>%
+  mutate(
+    `Cooperative/FICO` = paste0(round(`Cooperative/FICO`, 0)),
+    `COCOBA or savings group` = paste0(round(`COCOBA or savings group`, 0)),
+    `Other group` = paste0(round(`Other group`, 0)),
+    `Group is TNC supported` = paste0(round(`Group is TNC supported`, 0)),
+    `Group is helpful` = paste0(round(`Group is helpful`, 0)))
+
+# Add the "Total" row to the combined table
+combined_table <- bind_rows(combined_table, total_row)
+colnames(combined_table) <- c("Village", "Cooperative/FICO (%)", "COCOBA or savings group (%)", "Other group (%)", "TNC supported groups (%)", "Group is helpful (%)")
+
+
+add_lot_link(caption = 'Group membership of fish traders at village level (%)')
 
 # Add the flextable with a caption
 combined_table %>%
@@ -4717,7 +5058,7 @@ colnames(cooperative_table) <- c("Village", "No", "Yes")
 
 # Format the proportion table values as percentages with one decimal point and add % sign
 cooperative_table <- cooperative_table %>%
-  mutate(across(c("No", "Yes"),  ~ if_else(is.na(.), "", paste0(round(. * 100, 1), "%"))))
+  mutate(across(c("No", "Yes"),  ~ if_else(is.na(.), "", paste0(round(. * 100, 0)))))
 
 summary_by_village <- tanganyika_survey %>%
   filter(!is.na(cocoba_savings_process) & cocoba_savings_process != "I DON'T KNOW") %>% 
@@ -4735,7 +5076,7 @@ colnames(cocoba_group_table) <- c("Village", "No", "Yes")
 
 # Format the proportion table values as percentages with one decimal point and add % sign
 cocoba_group_table <- cocoba_group_table %>%
-  mutate(across(c("No", "Yes"),  ~ if_else(is.na(.), "", paste0(round(. * 100, 1), "%"))))
+  mutate(across(c("No", "Yes"),  ~ if_else(is.na(.), "", paste0(round(. * 100, 0)))))
 
 summary_by_village <- tanganyika_survey %>%
   filter(!is.na(other_process_group) & other_process_group != "I DON'T KNOW") %>% 
@@ -4753,7 +5094,7 @@ colnames(other_group_table) <- c("Village", "No", "Yes")
 
 # Format the proportion table values as percentages with one decimal point and add % sign
 other_group_table <- other_group_table %>%
-  mutate(across(c("No", "Yes"), ~ if_else(is.na(.), "", paste0(round(. * 100, 1), "%"))))
+  mutate(across(c("No", "Yes"), ~ if_else(is.na(.), "", paste0(round(. * 100, 0)))))
 
 summary_by_village <- tanganyika_survey %>%
   filter(!is.na(process_tnc_supported) & process_tnc_supported != "I DON'T KNOW") %>% 
@@ -4771,7 +5112,7 @@ colnames(tnc_support_table) <- c("Village", "Yes", "No")
 
 # Format the proportion table values as percentages with one decimal point and add % sign
 tnc_support_table <- tnc_support_table %>%
-  mutate(across(c("Yes", "No"), ~ if_else(is.na(.), "", paste0(round(. * 100, 1), "%"))))
+  mutate(across(c("Yes", "No"), ~ if_else(is.na(.), "", paste0(round(. * 100, 0)))))
 
 summary_by_village <- tanganyika_survey %>%
   filter(!is.na(process_group_helpfulness) & process_group_helpfulness != "I DON'T KNOW") %>% 
@@ -4789,7 +5130,7 @@ colnames(group_helpfulness_table) <- c("Village", "No", "Yes")
 
 # Format the proportion table values as percentages with one decimal point and add % sign
 group_helpfulness_table <- group_helpfulness_table %>%
-  mutate(across(c("Yes", "No"), ~ if_else(is.na(.), "", paste0(round(. * 100, 1), "%"))))
+  mutate(across(c("Yes", "No"), ~ if_else(is.na(.), "", paste0(round(. * 100, 0)))))
 
 combined_table <- cooperative_table %>%
   select(Village, `Cooperative/FICO` = Yes) %>%  
@@ -4797,6 +5138,26 @@ combined_table <- cooperative_table %>%
   left_join(other_group_table %>% select(Village, `Other group` = Yes), by = "Village") %>%
   left_join(tnc_support_table %>% select(Village, `Group is TNC supported` = Yes), by = "Village") %>%
   left_join(group_helpfulness_table %>% select(Village, `Group is helpful` = Yes), by = "Village") 
+
+# Calculate the overall average for all villages combined
+total_row <- combined_table %>%
+  summarise(
+    Village = "Overall",
+    `Cooperative/FICO` = mean(as.numeric(sub("%", "", `Cooperative/FICO`)) / 100, na.rm = TRUE) * 100,
+    `COCOBA or savings group` = mean(as.numeric(sub("%", "", `COCOBA or savings group`)) / 100, na.rm = TRUE) * 100,
+    `Other group` = mean(as.numeric(sub("%", "", `Other group`)) / 100, na.rm = TRUE) * 100,
+    `Group is TNC supported` = mean(as.numeric(sub("%", "", `Group is TNC supported`)) / 100, na.rm = TRUE) * 100,
+    `Group is helpful` = mean(as.numeric(sub("%", "", `Group is helpful`)) / 100, na.rm = TRUE) * 100) %>%
+  mutate(
+    `Cooperative/FICO` = paste0(round(`Cooperative/FICO`, 0)),
+    `COCOBA or savings group` = paste0(round(`COCOBA or savings group`, 0)),
+    `Other group` = paste0(round(`Other group`, 0)),
+    `Group is TNC supported` = paste0(round(`Group is TNC supported`, 0)),
+    `Group is helpful` = paste0(round(`Group is helpful`, 0)))
+
+# Add the "Total" row to the combined table
+combined_table <- bind_rows(combined_table, total_row)
+colnames(combined_table) <- c("Village", "Cooperative/FICO (%)", "COCOBA or savings group (%)", "Other group (%)", "TNC supported groups (%)", "Group is helpful (%)")
 
 add_lot_link(caption = 'Group membership of fish processors at village level (%)')
 
