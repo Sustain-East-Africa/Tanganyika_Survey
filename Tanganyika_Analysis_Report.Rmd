@@ -164,103 +164,103 @@ A stratified random sampling design was employed across the study population. St
 The strata in this study were defined based on household locations and represent the different villages. By dividing the population into strata, the sampling design aims to capture the variability within these groups and ensure that each important subgroup is well-represented in the final sample. The sampling frame for the stratified design represents the total list of households within the two clusters of villages. A finite population correction (FPC), is applied to reduce the variance of estimates, which accounts for the fact that sampling a substantial proportion of households in each stratum may lead to a decrease in variability. As such, the FPC is incorporated into the weighting of final survey estimates to correct for finite population size. The stratified sampling design ensures that each stratum is adequately represented and reduces variability within the sample, leading to more accurate conclusions and better-informed policy recommendations.
 
 
-```{r}
-# Data
-data <- data.frame(
-  Variables = c("Population", "Proportion of population", "Sample", "Proportion of sample", "Final sample number"),
-  `Kichangani` = c(325, 0.09323006311, 46.61503155, 0.09323006311, 47),
-  `Mtakuja` = c(364, 0.1044176707, 52.20883534, 0.1044176707, 52),
-  `Mkinga` = c(325, 0.09323006311, 46.61503155, 0.09323006311, 47),
-  `Majengo Mapya` = c(210, 0.06024096386, 30.12048193, 0.06024096386, 30),
-  `Manda Uhuru` = c(147, 0.0421686747, 21.08433735, 0.0421686747, 21),
-  `Kalungu` = c(566, 0.1623637407, 81.18187034, 0.1623637407, 81),
-  `Ntanganyika` = c(229, 0.06569133678, 32.84566839, 0.06569133678, 33),
-  `Isasa` = c(281, 0.08060814687, 40.30407344, 0.08060814687, 40),
-  `Kipili` = c(383, 0.1098680436, 54.9340218, 0.1098680436, 55),
-  `Manda Kerenge` = c(656, 0.1881812966, 94.09064831, 0.1881812966, 94),
-  Total = c(3486, 1, 500, 0.1434308663, 500)
-)
+<!-- ```{r} -->
+<!-- # Data -->
+<!-- data <- data.frame( -->
+<!--   Variables = c("Population", "Proportion of population", "Sample", "Proportion of sample", "Final sample number"), -->
+<!--   `Kichangani` = c(325, 0.09323006311, 46.61503155, 0.09323006311, 47), -->
+<!--   `Mtakuja` = c(364, 0.1044176707, 52.20883534, 0.1044176707, 52), -->
+<!--   `Mkinga` = c(325, 0.09323006311, 46.61503155, 0.09323006311, 47), -->
+<!--   `Majengo Mapya` = c(210, 0.06024096386, 30.12048193, 0.06024096386, 30), -->
+<!--   `Manda Uhuru` = c(147, 0.0421686747, 21.08433735, 0.0421686747, 21), -->
+<!--   `Kalungu` = c(566, 0.1623637407, 81.18187034, 0.1623637407, 81), -->
+<!--   `Ntanganyika` = c(229, 0.06569133678, 32.84566839, 0.06569133678, 33), -->
+<!--   `Isasa` = c(281, 0.08060814687, 40.30407344, 0.08060814687, 40), -->
+<!--   `Kipili` = c(383, 0.1098680436, 54.9340218, 0.1098680436, 55), -->
+<!--   `Manda Kerenge` = c(656, 0.1881812966, 94.09064831, 0.1881812966, 94), -->
+<!--   Total = c(3486, 1, 500, 0.1434308663, 500) -->
+<!-- ) -->
 
-# Rename columns to preserve spacing
-colnames(data) <- gsub("\\.", " ", colnames(data))
+<!-- # Rename columns to preserve spacing -->
+<!-- colnames(data) <- gsub("\\.", " ", colnames(data)) -->
 
-# Round values based on conditions
-data_formatted <- data %>%
-  mutate(across(
-    where(is.numeric),
-    ~ ifelse(Variables %in% c("Population", "Sample", "Final sample number"), round(.), round(., 3))
-  ))
+<!-- # Round values based on conditions -->
+<!-- data_formatted <- data %>% -->
+<!--   mutate(across( -->
+<!--     where(is.numeric), -->
+<!--     ~ ifelse(Variables %in% c("Population", "Sample", "Final sample number"), round(.), round(., 3)) -->
+<!--   )) -->
 
-# Create and style flextable
-add_lot_link(caption = 'Cluster 1 sampling design for households along Lake Tanganyika')
+<!-- # Create and style flextable -->
+<!-- add_lot_link(caption = 'Cluster 1 sampling design for households along Lake Tanganyika') -->
 
-data_formatted %>%
-  sea::sea_table(
-    dark_color = sea_colors("gunmetal"),
-    pale_color = sea_colors("grey"),
-    third_color = "white") %>%
-  colformat_double(
-    j = 2:ncol(data_formatted),
-    digits = 3
-  ) %>%
-  colformat_double(
-    j = 2:ncol(data_formatted),
-    i = which(data_formatted$Variables %in% c("Population", "Sample", "Final sample number")),
-    digits = 0
-  ) %>%
-  autofit()
+<!-- data_formatted %>% -->
+<!--   sea::sea_table( -->
+<!--     dark_color = sea_colors("gunmetal"), -->
+<!--     pale_color = sea_colors("grey"), -->
+<!--     third_color = "white") %>% -->
+<!--   colformat_double( -->
+<!--     j = 2:ncol(data_formatted), -->
+<!--     digits = 3 -->
+<!--   ) %>% -->
+<!--   colformat_double( -->
+<!--     j = 2:ncol(data_formatted), -->
+<!--     i = which(data_formatted$Variables %in% c("Population", "Sample", "Final sample number")), -->
+<!--     digits = 0 -->
+<!--   ) %>% -->
+<!--   autofit() -->
 
-```
+<!-- ``` -->
 
 
-```{r}
-# Data
-data <- data.frame(
-  Variables = c("Population", "Proportion of population", "Sample", "Proportion of sample", "Final sample number"),
-  `Kala` = c(358, 0.07631635046, 38.15817523, 0.07631635046, 38),
-  `Mpasa` = c(795, 0.1694734598, 84.73672991, 0.1694734598, 85),
-  `Kilambo cha Mkolechi` = c(344, 0.07333191217, 36.66595609, 0.07333191217, 37),
-  `Tundu` = c(301, 0.06416542315, 32.08271158, 0.06416542315, 32),
-  `Wampembe` = c(802, 0.170965679, 85.48283948, 0.170965679, 86),
-  `Mwinza` = c(356, 0.07589000213, 37.94500107, 0.07589000213, 38),
-  `Izinga` = c(527, 0.1123427841, 56.17139203, 0.1123427841, 56),
-  `Kizumbi` = c(293, 0.06246002984, 31.23001492, 0.06246002984, 31),
-  `Lyapinda` = c(600, 0.127904498, 63.95224899, 0.127904498, 64),
-  `Ng'anga` = c(172, 0.03666595609, 18.33297804, 0.03666595609, 18),
-  `Katenge` = c(143, 0.03048390535, 15.24195268, 0.03048390535, 15),
-  Total = c(4691, 1, 500, 0.1065870816, 500)
-)
+<!-- ```{r} -->
+<!-- # Data -->
+<!-- data <- data.frame( -->
+<!--   Variables = c("Population", "Proportion of population", "Sample", "Proportion of sample", "Final sample number"), -->
+<!--   `Kala` = c(358, 0.07631635046, 38.15817523, 0.07631635046, 38), -->
+<!--   `Mpasa` = c(795, 0.1694734598, 84.73672991, 0.1694734598, 85), -->
+<!--   `Kilambo cha Mkolechi` = c(344, 0.07333191217, 36.66595609, 0.07333191217, 37), -->
+<!--   `Tundu` = c(301, 0.06416542315, 32.08271158, 0.06416542315, 32), -->
+<!--   `Wampembe` = c(802, 0.170965679, 85.48283948, 0.170965679, 86), -->
+<!--   `Mwinza` = c(356, 0.07589000213, 37.94500107, 0.07589000213, 38), -->
+<!--   `Izinga` = c(527, 0.1123427841, 56.17139203, 0.1123427841, 56), -->
+<!--   `Kizumbi` = c(293, 0.06246002984, 31.23001492, 0.06246002984, 31), -->
+<!--   `Lyapinda` = c(600, 0.127904498, 63.95224899, 0.127904498, 64), -->
+<!--   `Ng'anga` = c(172, 0.03666595609, 18.33297804, 0.03666595609, 18), -->
+<!--   `Katenge` = c(143, 0.03048390535, 15.24195268, 0.03048390535, 15), -->
+<!--   Total = c(4691, 1, 500, 0.1065870816, 500) -->
+<!-- ) -->
 
-# Rename columns to preserve spacing
-colnames(data) <- gsub("\\.", " ", colnames(data))
+<!-- # Rename columns to preserve spacing -->
+<!-- colnames(data) <- gsub("\\.", " ", colnames(data)) -->
 
-# Round values based on conditions
-data_formatted <- data %>%
-  mutate(across(
-    where(is.numeric),
-    ~ ifelse(Variables %in% c("Population", "Sample", "Final sample number"), round(.), round(., 3))
-  ))
+<!-- # Round values based on conditions -->
+<!-- data_formatted <- data %>% -->
+<!--   mutate(across( -->
+<!--     where(is.numeric), -->
+<!--     ~ ifelse(Variables %in% c("Population", "Sample", "Final sample number"), round(.), round(., 3)) -->
+<!--   )) -->
 
-# Create and style flextable
-add_lot_link(caption = 'Cluster 2 sampling design for households along Lake Tanganyika')
+<!-- # Create and style flextable -->
+<!-- add_lot_link(caption = 'Cluster 2 sampling design for households along Lake Tanganyika') -->
 
-data_formatted %>%
-  sea::sea_table(
-    dark_color = sea_colors("gunmetal"),
-    pale_color = sea_colors("grey"),
-    third_color = "white") %>%
-  colformat_double(
-    j = 2:ncol(data_formatted),
-    digits = 3
-  ) %>%
-  colformat_double(
-    j = 2:ncol(data_formatted),
-    i = which(data_formatted$Variables %in% c("Population", "Sample", "Final sample number")),
-    digits = 0
-  ) %>%
-  autofit()
+<!-- data_formatted %>% -->
+<!--   sea::sea_table( -->
+<!--     dark_color = sea_colors("gunmetal"), -->
+<!--     pale_color = sea_colors("grey"), -->
+<!--     third_color = "white") %>% -->
+<!--   colformat_double( -->
+<!--     j = 2:ncol(data_formatted), -->
+<!--     digits = 3 -->
+<!--   ) %>% -->
+<!--   colformat_double( -->
+<!--     j = 2:ncol(data_formatted), -->
+<!--     i = which(data_formatted$Variables %in% c("Population", "Sample", "Final sample number")), -->
+<!--     digits = 0 -->
+<!--   ) %>% -->
+<!--   autofit() -->
 
-```
+<!-- ``` -->
 
 
 
@@ -2480,6 +2480,7 @@ hh_influence_table %>%
   align(i = 1, align = "center", part = "header")
 ```
 
+5% of all household respondents (n = 51) actively participate in the decision-making process about fisheries resources and livelihoods through attending various meetings and workshops. These activities include planning meetings, government meetings, BMU and village meetings, as well as public meetings. A further 3% of households (n = 27) indicated they contribute significantly to decision-making about fisheries resources and livelihoods by providing input and suggestions. Their involvement includes voicing opinions, offering ideas, and participating in discussions to ensure effective management and sustainable practices. 15 respondents suggested that following guidelines and regulations is a way of contributing to decision-making. By adhering to these rules, they ensure sustainable fishing practices and compliance with legal requirements. Other contributions to the decision-making around fisheries resources and livelihoods include involvement as representatives or community leaders (n = 6), encouraging sustainable fishing practices and safeguarding fish breeding zones in their communities through active engagement with BMU activities (n = 4), education and awareness (n = 6), policy enforcement (n = 4), and participation in patrols and conservation efforts (n = 3).
 
 ```{r, fig.cap='Village membership at village level (%)', fig.align='center', out.width = '90%'}
 
@@ -2840,6 +2841,8 @@ ggplot(conflict_parties_data, aes(x = village, y = proportion * 100, group = con
 
 ```
 
+Other parties listed among which disputes or conflicts occur include fishers and fisheries officers (n = 17) and include reasons such as conflict over illegal fishing, disagreements over payments and equipment provision, and conflicts regarding the lake closure. Fishers also experience disputes with government (n = 10), including national government, Nkasi district government, and the government of Izinga village. Furthermore, bandits (n = 3) were also listed as a conflict party.
+
 ```{r, fig.cap='Fair conflict resolution at village level (%)', fig.align='center', out.width = '90%'}
 expanded <- tanganyika_clean %>%
   mutate(cluster = case_when(village %in% cluster_1_villages ~ "Cluster 1", village %in% cluster_2_villages ~ "Cluster 2", TRUE ~ "Other")) 
@@ -2898,6 +2901,9 @@ ggplot(conflict_data, aes(x = village, y = proportion * 100, group = fct_relevel
 
 ```
 
+Conflict Resolution
+
+Two respondents indicated that disputes between BMUs and fishers are formally resolved by involving law enforcement authorities. This usually involves reporting the issue to the local police station for investigation and resolution. One respondent highlighted the role of community gatherings in resolving conflicts. These gatherings provide a platform for fishers and BMUs to engage in open discussions and come to a consensus on how to address the issue. Another respondent mentioned that some conflicts do not escalate to a level requiring intervention. These are perceived as minor issues that do not cause significant harm and, as such, are often left unresolved.
 
 ```{r,  fig.cap='Influential community leaders', fig.align='center', out.width = '90%'}
 influential_leaders_expanded <- tanganyika_clean %>% select(hh_code, village, influential_leaders, stype, fpc) %>%
@@ -3709,6 +3715,17 @@ ggplot(village_data, aes(x = fct_relevel(bmu_practice, "1 STRONGLY DISAGREE", "2
 
 ```
 
+BMU Challenges
+A major challenge faced by BMUs pertains to illegal fishing practices, including the use of unauthorized nets and fishing in protected areas, which was listed by 11% (n = 106) of all households surveyed. According to respondents, BMUs often face resistance from fishers when enforcing regulations, which undermines conservation efforts. A significant proportion of respondents, 9% of all households surveyed (n = 91), also indicated that BMUs face challenges related to a lack of resources and equipment. These include a lack of patrol boats, safety gear, and insufficient funds for operations such as fuel and maintenance. 6% (n = 64)  of all households regarded insecurity, violence, and threats as a significant challenge faced by BMU members. These include physical attacks from illegal fishers, threats to their lives, and verbal abuse from community members. Furthermore, conflict issues were highlighted as a significant challenge faced by BMU (n = 34). These conflicts arise between BMU members and fishers, as well as between BMU and the community and include a lack of understanding, opposition from locals, and disputes during enforcement activities. Several respondents (n = 29) identified inadequate training and knowledge as a significant challenge, including a lack of education about the purpose and regulations of BMUs, insufficient knowledge on conservation, and the absence of regularly held training sessions.
+
+Other challenges faced by BMUs include corruption and bribery of BMU leaders and law enforcement officers (n = 14), a lack of collaboration between the BMU, local authorities, and other stakeholders (n = 13), compliance and law enforcement issues (n = 24), administrative challenges (n = 7), financial constraints (n = 13),  environmental challenges (n = 6), interference from local administrations and government officials on BMU activities (n = 5), poor working conditions (n = 3), as well as a lack of support from relevant stakeholders (n = 3). Together, these challenges hamper the effectiveness and compromise the integrity of BMU activities and enforcement of fishing regulations. 
+
+In response to the question “How could the BMU be improved?”, many household respondents (n = 77) emphasized the need to enhance the capacity of BMUs through better tools, infrastructure, and financial resources. Suggestions included improvements to working equipment, funding mechanisms, and infrastructure development to ensure BMUs can perform their duties effectively and sustainably. Respondents (n = 84) also emphasized the need for increased training, education, and capacity building for BMUs, their members, and the fishermen they interact with. The focus should be on providing continuous education on sustainable fishing practices, environmental conservation, and the roles of BMUs. Additionally, many respondents stressed the importance of regular workshops, seminars, and training programs to empower both leaders and members to better manage the fisheries resources and enforce the laws effectively. In order to improve operational efficiency and accountability within BMUs, 35 respondents highlighted the provision of sufficient security, tools, and resources to enhance patrol efforts. Key issues include the provision of safety measures, modern equipment for patrols (i.e. boats, weapons, and protective gear), and formal recognition of BMUs to ensure better enforcement of fisheries laws.
+
+Other improvements to BMUs related to improved governance, stronger leadership, and fairness in BMU operations (n = 34). Suggestions emphasized eliminating corruption and favoritism, enforcing equity among fishers, and strengthening BMUs with better resources and support from the government. Respondents also highlighted the need for clear legal frameworks, fair enforcement of fishing regulations, and collaborative strategies to combat illegal fishing practices. Furthermore, responses provided by 24 households emphasized the importance of fostering strong relationships between BMUs, government officials, and local communities. Participants suggested that BMUs should work collaboratively with fishers, local government authorities, and environmental organizations to address challenges and improve resource management. Many highlighted the need for government support and greater cooperation between BMUs and stakeholders to enhance the effectiveness of fishing regulations and conservation efforts.
+
+
+
 </div>
 
 ## Fishing
@@ -4038,6 +4055,13 @@ ggplot(village_data, aes(x = fct_relevel(relationship_officer, "GOOD", "AVERAGE"
   scale_x_discrete(labels = c("Good", "Average", "Bad"))
 ```
 
+Amongst 14% (n = 144) of all household respondents, no challenges concerning fisheries extension officers were mentioned. In contrast, 7% (n = 65) of all household listed abuse of power by fisheries extension officers as a key issue. Respondents mentioned that officers often apply unfair tactics, such as confiscating fishing gear or boats over minor infractions or expired licenses and imposing fines without clear justification. Fisheries extension officers also use intimidation, force, and harassment, making it difficult for fishers to comply peacefully. Unfair enforcement of fishing regulations was listed by a further 36 households. For instance, license payments are demanded from individuals who aren't even fishers, while allowing illegal fishers to operate freely. Those fishers with valid licenses may also be harassed and fined unnecessarily.
+
+Issues pertaining to delays in fishing license processing affected 25 respondents. These mentioned that despite paying fees, they often receive receipts instead of licenses, with delays in issuance. The process for obtaining a license is thought to be confusing and fishers are sometimes forced to pay multiple times without receiving proper documentation. High license fees also pose an issue (n = 20), as officers charge large amounts for licenses and impose heavy fines, which are often unrelated to the severity of offenses. The fees vary periodically, sometimes increasing significantly, and many fishers struggle to afford them. Five respondents revealed that fishers continue to pay for licenses during closure of the fishing season, leading to under utilization of the license. The mismatch between the license duration and the actual fishing time results in an unfair distribution of costs and benefits.
+
+Limited transparency and community engagement result in weak relationships, insufficient involvement in decision-making processes, and inadequate information sharing (n = 21). However, a lack of compliance with regulations by fishermen also contributes to challenges (n = 25), leading to the issuance of fines, confiscation of equipment, and restricted access to fishing areas, creating further difficulties for enforcement. A further 13 respondents stated that fisheries officers fail to meet their core responsibilities, including the effective regulation of fishing gear, with some accused of misusing funds meant for fishing equipment.
+
+
 ```{r}
 summary_by_village <- tanganyika_survey %>%
   filter(!is.na(awareness_reserves) & awareness_reserves != "I DON'T KNOW") %>% 
@@ -4135,6 +4159,11 @@ combined_table %>%
 
 ```
 
+The implementation of fish reserves received both positive and negative feedback. Positively, 24% of all household respondents (n = 237) stated that fish reserves are useful because they ensure that fish have adequate time and space to breed without disturbance, helping to preserve and boost fish stocks, support sustainable fishing, and secure long-term availability of fish resources for communities. 5% (n = 53) mentioned that fish reserves are beneficial as they ensure sustainability and abundance of fish for future generations. They also mentioned that fish reserves allow conserving fish stocks for both current and future use, reducing overfishing, and providing long-term benefits for the environment and society. The size of fishes was a consideration too, as 32 respondents highlighted that reserves help prevent the capture of immature fish, thus providing a safe space for fish to grow, and ultimately supporting better fishing practices by increasing the yield of fully grown fish. Another 2% (n = 17) of household respondents said they supported sustainable fishing practices, stating that fish reserves prevent overfishing, safeguard aquatic ecosystems, and ensure that fish populations remain available to the community. Arguments voicing the positive benefits of fish reserves also pertained to financial benefits, as 20 household respondents believed fish reserves generate reliable revenue for the local government, contribute to community development through projects funded by fishing fees, and help ensure fish populations increase and are preserved for better economic returns.
+
+Negative opinions on the implementation of fish reserves were varied but limited and pertained to a perceived lack of impact from fish reserves (n = 9), concerns about location and boundaries (n = 8), a loss of income and fish (n = 4), and the idea that the sheer size of Lake Tanganyika aids in self-regulating fish population (n = 3). People that reported a perceived lack of impact from fish reserves argued that fish were reproducing even before the reserves were established, and natural systems were intact. Some shared that fish migrate to reserves, causing scarcity in non-reserve areas, and despite the reserves, fish remain scarce. Those with concerns about the location and boundaries of fish reserves highlighted that within the large areas designated as reserves, the fishing zones are small, and the number of fishers is high. They also criticized the location of the reserves, saying that fish do not remain in those areas, but simply pass through. Financial concerns pertained to the idea that fish reserves lead to a lack of fish, which tend to escape to the reserves, making fishing more difficult in the remaining areas. The fees imposed on fishers in conjunction with short fishing periods, disrupt livelihoods as communities depend on the lake for income. In Manda Kerenge, one respondent shared that households in the village feel heavily restricted because of the intervention.
+
+
 ```{r, fig.cap='At the moment, do you think the current number of fish in the lake is sufficient to meet the fishing, food, and livelihood needs of the community?', fig.align='center', out.width = '90%'}
 
 village_data <- tanganyika_survey %>%
@@ -4177,6 +4206,13 @@ ggplot(village_data, aes(x = fct_relevel(sufficiency_fish, "YES", "NO", "NOT SUR
   scale_y_continuous(labels = label_percent(scale = 1))+
   scale_x_discrete(labels = c("Yes", "No", "Not Sure"))
 ```
+
+A significant number of participants (n = 91) highlighted that the protection of fish breeding areas and the establishment of dedicated fish conservation zones are crucial for ensuring sufficient fish populations in the future. Furthermore, the importance of government regulations in managing fishing practices, including enforcing seasonal closures and preventing illegal fishing, was emphasized by 66 household respondents. Participants suggested that measures such as restricting fishing during breeding seasons and maintaining control over illegal fishing practices are crucial for sustaining fish populations. Furthermore, 29 households indicated that fish are able to reproduce naturally, especially during the rainy season, leading to an increase in their numbers. Respondents mentioned that because fish currently breed in large numbers, they will continue to do so in future. Furthermore, a number of respondents (n = 8) indicated that they believe continued effective management to contribute to the future conservation of fish stocks in Lake Tanganyika, with three respondents stating that BMUs play a crucial role.
+
+“BMU wanajitahidi kutunza maeneo ya hifadhi ya samaki”
+
+Concerns about the future availability of fish in Lake Tanganyika were widely expressed. A significant number of respondents (n = 55) highlighted the prevalence of illegal fishing as a critical challenge to fish populations and sustainability. They expressed concerns about the destructive impact of illegal practices, which disrupt fish breeding grounds and lead to overfishing. Some respondents (n = 11) expressed concern about the growing amount of fishing gear being used. They believe that the abundance of fishing tools, especially modern equipment, is contributing to overfishing and a significant decline in fish populations. Furthermore, 34 respondents addressed an increased use of illegal fishing gear as a concern. According to them, this equipment catches too many fish, including undersized ones, which threatens fish growth and reproduction. Fishing pressure was further addressed by respondents (n = 13) highlighting concerns about the growing number of fishers, which they believe is contributing to a decline in fish populations.
+
 
 ```{r, fig.cap='Type of fishing gear used at village level (%)', fig.align='center', out.width = '90%'}
 fishing_gear_expanded <- tanganyika_clean %>% select(hh_code, village, fishing_gear, stype, fpc) %>%
@@ -4239,6 +4275,8 @@ ggplot(fishing_gear_data, aes(x = village, y = proportion * 100, group = fishing
   scale_y_continuous(labels = label_percent(scale = 1))
 
 ```
+
+Other types of fishing gear listed by fishers include long lines, hooks, nets, as well as torches/lights, presumably for use at night. In one instance, diving equipment was mentioned.
 
 ```{r, fig.cap='Seasonal targeting of fish species over the past five years', fig.align='center', out.width = '90%'}
 # Define target type variables
@@ -4427,6 +4465,13 @@ combined_table %>%
   flextable::autofit()
 
 ```
+
+Respondents who stated they require less time to get to their fishing grounds revealed that they now have access to boats with engines (n = 35). They also highlighted the use of newer fishing tools and engines, which allow for quicker transportation to fishing areas. Interestingly, 50 household respondents mentioned that fish are now found closer to shore due to higher water levels, seasonal changes, and increased fish populations. Additionally, specific fish, such as dagaa, are more readily accessible near shallow waters, leading to shorter travel times for fishermen. Others (n = 10) mentioned that the reduction in time is simply because of the increased demands of other work, time constraints, and the need to balance fishing with business activities. However, they also highlighted that delayed departures make it harder to catch fish early, as fish are found farther away and are caught earlier in the day. 
+
+Many fishers (n = 164) stated that it takes them roughly the same amount of time to reach their fishing ground. These fishers reported that the fishing activities still take place in the same areas, and the time taken to reach the grounds has not changed. Many highlighted that they continue to fish in the same spots, and the environmental conditions have not altered. However, a subset also expressed frustration as a lack of improvement in transportation and equipment, has resulted in no significant change in travel time to fishing areas as compared to five years ago. The challenges they face include using outdated boats and equipment, which are not suitable for long-distance travel, especially when weather conditions, such as wind, are unfavorable. 
+
+Those fishers spending more time getting to their fishing grounds emphasized that, compared to 5 years ago, they need more time to reach the fishing grounds because fish have become scarce and are now found farther away (n = 82). The increasing number of fishers and illegal fishing practices have contributed to the depletion of nearby fish populations. As a result, fishers are traveling greater distances to find fish, which has led to longer travel times. Also, environmental changes, such as rising water levels, have pushed fish to deeper areas, further increasing the distance needed to access them. Five household respondents specifically mentioned that due to the establishment of fishing boundaries, including protected breeding areas and buoy barriers, they are now required to fish farther from the shore compared to five years ago.
+
 
 ```{r, fig.cap='Sale prices (TSh) of fish species over the past five years', fig.align='center', out.width = '90%'}
 # Define target type variables for best values
