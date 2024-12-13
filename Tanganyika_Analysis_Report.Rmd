@@ -863,6 +863,21 @@ village_poverty_likelihood_long <- village_poverty_likelihood %>%
 village_poverty_likelihood_long <- village_poverty_likelihood_long %>%
   mutate(poverty_level = fct_relevel(poverty_level, "upper_poverty", "lower_poverty", "extreme_poverty"))
 
+# Calculate overall means for Cluster 2
+overall_poverty_likelihood <- village_poverty_likelihood_long %>%
+  filter(cluster == "Cluster 2") %>%
+  group_by(poverty_level, cluster) %>%
+  summarise(poverty_likelihood = mean(poverty_likelihood, na.rm = TRUE), .groups = "drop") %>%
+  mutate(village = "Overall")  # Add "Overall" as the village
+
+# Append the overall data to the original dataframe
+village_poverty_likelihood_long <- bind_rows(village_poverty_likelihood_long, overall_poverty_likelihood)
+
+# Reorder x-axis to place "Overall" at the end of Cluster 2
+village_poverty_likelihood_long <- village_poverty_likelihood_long %>%
+  mutate(village = fct_reorder(village, as.numeric(factor(cluster)) + as.numeric(village == "Overall")))
+
+# Plot with updated data
 ggplot(village_poverty_likelihood_long, aes(x = village, y = poverty_likelihood, 
                                             group = poverty_level, fill = poverty_level)) +
   geom_bar(stat = "identity", position = position_dodge(preserve = "single"), width = 0.95) +
@@ -916,7 +931,6 @@ village_data <- tanganyika_survey %>%
     total = survey_total(vartype = "ci", na.rm = TRUE), 
     n = unweighted(n())) %>%
   mutate(cluster = case_when(village %in% cluster_1_villages ~ "Cluster 1", village %in% cluster_2_villages ~ "Cluster 2"))
-
 
 # Add a "Total" group to the data
 total_data <- tanganyika_survey %>%
@@ -992,6 +1006,128 @@ ggplot(village_data, aes(x = village, y = proportion * 100, group = household_ab
 ## Living Conditions, Housing, and Energy Use
 
 ### Water Use
+
+Access to safe drinking water may depend on several variables including the source of the water and the ability to purify it. In this survey, responses were split between dry and rainy seasons, as water sources can change depending on the season.
+
+Water sources were categorized as improved or unimproved sources following WHO and UNICEF standards (NBS & ICF Macro, 2011). Improved sources include public taps, protected private or public wells, and rainwater. Unimproved sources include open wells and surface water.
+
+In the dry season, 62% percent of the households use an unimproved source, mainly surface water (i.e. rivers, streams, ponds, lakes), while in the wet season the use of rainwater reduces this to 25%. 
+
+Use of the lake water is more common in the dry season when there are fewer alternatives. The most common improved source is a protected public tap followed by protected public wells.
+
+
+```{r,  fig.cap='Main source of water', fig.align='center', out.width = '90%'}
+# Combine data for wet and dry seasons
+village_data_dry <- tanganyika_survey %>%
+  group_by(drinking_water_dry) %>%
+  summarise(
+    proportion = survey_mean(vartype = "ci", na.rm = TRUE),
+    proportion_low = survey_mean(vartype = "ci", na.rm = TRUE)[2],
+    proportion_upp = survey_mean(vartype = "ci", na.rm = TRUE)[3],
+    total = survey_total(vartype = "ci", na.rm = TRUE),
+    n = unweighted(n())
+  ) %>%
+  mutate(Season = "Dry", WaterSource = drinking_water_dry)
+
+village_data_wet <- tanganyika_survey %>%
+  group_by(drinking_water_wet) %>%
+  summarise(
+    proportion = survey_mean(vartype = "ci", na.rm = TRUE),
+    proportion_low = survey_mean(vartype = "ci", na.rm = TRUE)[2],
+    proportion_upp = survey_mean(vartype = "ci", na.rm = TRUE)[3],
+    total = survey_total(vartype = "ci", na.rm = TRUE),
+    n = unweighted(n())
+  ) %>%
+  mutate(Season = "Wet", WaterSource = drinking_water_wet)
+
+# Combine dataframes
+village_data_combined <- bind_rows(village_data_dry, village_data_wet)
+
+# Create grouped bar chart
+ggplot(village_data_combined, aes(x = reorder(WaterSource, -proportion), y = proportion * 100, fill = Season)) +
+  geom_bar(stat = "identity", position = position_dodge(width = 0.8), width = 0.7) +
+  geom_errorbar(aes(ymax = pmin(proportion_upp, 1) * 100, ymin = pmax(proportion_low, 0) * 100),
+                position = position_dodge(width = 0.8), width = 0.2) +
+  geom_text(aes(
+    label = ifelse(proportion * 100 < 1, 
+                   paste0(round(proportion * 100, 1), "%"), 
+                   paste0(round(proportion * 100), "%")),
+    y = pmin(proportion_upp * 100, 100) + 1.5),  # Position label above the error bar
+    position = position_dodge(width = 0.8), vjust = 0, size = 3) +
+  scale_fill_manual(values = c("Dry" =  "#d2d2c8", "Wet" =  "#5b7a2e")) +
+  labs(x = "", y = "", fill = "") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1),
+        axis.text.y = element_blank(),
+        axis.ticks.y = element_blank(),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        legend.position = "bottom", 
+        legend.title = element_blank()) +
+  scale_x_discrete(labels = c("Rainwater", "River or Stream", "Public Tap", "Pond or Lake", "Open Public Well",
+                              "Protected Public Well", "Spring", "Piped into Dwelling", "Water Vendor",
+                              "Neighbour's Open Well", "Neighbour's Borehole", "Protected Well in Plot",
+                              "Open Well in Plot", "Piped into Plot", "Neighbour's Tap", "Other"))
+
+```
+
+```{r}
+improved_sources <- c("PUBLIC TAP", "PROTECTED PUBLIC WELL", "PROTECTED WELL IN PLOT", "RAINWATER")
+unimproved_sources <- c("OPEN PUBLIC WELL", "OPEN WELL IN PLOT", "RIVER OR STREAM", "POND OR LAKE")
+
+village_data_combined <- village_data_combined %>%
+  mutate(SourceType = case_when(
+    WaterSource %in% improved_sources ~ "Improved",
+    WaterSource %in% unimproved_sources ~ "Unimproved",
+    TRUE ~ "Other"
+  ))
+
+# Calculate proportions for wet and dry seasons
+relative_proportions <- village_data_combined %>%
+  group_by(Season, SourceType) %>%  # Include Season in grouping
+  summarise(
+    total_proportion = sum(proportion, na.rm = TRUE),
+    total_n = sum(n, na.rm = TRUE)
+  ) %>%
+  mutate(percentage = total_proportion * 100) %>%
+  arrange(factor(SourceType, levels = c("Improved", "Unimproved", "Other")))  # Ensure "Other" is at the bottom
+
+village_data_combined <- village_data_combined %>%
+  mutate(SourceType = case_when(
+    WaterSource %in% improved_sources ~ "Improved",
+    WaterSource %in% unimproved_sources | SourceType == "Other" ~ "Unimproved",
+    TRUE ~ "Unimproved"  # Default to Unimproved if not classified
+  ))
+
+# Calculate proportions for wet and dry seasons in a wide format
+season_proportions <- village_data_combined %>%
+  group_by(Season, SourceType) %>%
+  summarise(total_proportion = sum(proportion, na.rm = TRUE)) %>%
+  mutate(percentage = round(total_proportion * 100)) %>%  # Round to nearest whole number
+  select(Season, SourceType, percentage) %>%
+  pivot_wider(names_from = SourceType, values_from = percentage, values_fill = 0)  # Ensure all columns exist even if proportions are zero
+
+season_proportions <- season_proportions %>%
+  rename(
+    `Improved Season (%)` = "Improved",
+    `Unimproved Season (%)` = "Unimproved")
+
+# Display the flextable with Seasons as rows and source types as columns
+season_proportions %>%
+  sea::sea_table(
+    dark_color = sea_colors("gunmetal"),
+    pale_color = sea_colors("grey"),
+    third_color = "white"
+  ) %>%
+  flextable::autofit()
+
+```
+
+In the dry season, the majority of households use an appropriate water treatment method by boiling water prior to use (55%). A further 12% add bleach or chlorine. Ineffective methods include straining water through a cloth prior to drinking, which is practiced by 32% of households. In wet season, the proportion of households boiling water or adding bleach or chlorine prior to use drops to 43% and 8% respectively. This may likely be attributed to rainwater being the predominant water source during the wet season. Overall, very few households use a water filter.
+
+A large amount of variation exists between the villages, ranging from fewer than a quarter to more than 80% of respondents using appropriate treatment methods. The addition of bleach or chlorine to water prior to use was highest in Isasa.
+
+
 ```{r,  fig.cap='Main type of water treatment in the dry season', fig.align='center', out.width = '90%'}
 
 treatment_dry_expanded <- tanganyika_clean %>% select(hh_code, village, treatment_method_dry, stype, fpc) %>%
@@ -1064,66 +1200,6 @@ ggplot(treatment_data, aes(x = village, y = proportion * 100, group = treatment_
 
 ```
 
-<!-- ```{r} -->
-<!-- # Reshape the data to have "Yes" and "No" as columns -->
-<!-- proportion_table <- treatment_data %>% -->
-<!--   select(village, treatment_method_dry, proportion) %>% -->
-<!--   pivot_wider( -->
-<!--     names_from = treatment_method_dry,    # Use `drinking_water_dry` values as column names -->
-<!--     values_from = proportion   # Fill with the proportion values -->
-<!--   ) -->
-
-<!-- # Rename columns for clarity -->
-<!-- colnames(proportion_table) <- c("Village", "Add Bleach or Chlorine", "Boil", "Strain Through a Cloth", "Use Water Filter", "Let it Stand and Settle") -->
-
-<!-- # Format the proportion table values as percentages with one decimal point and add % sign, leave NA as blank -->
-<!-- proportion_table <- proportion_table %>% -->
-<!--   mutate(across(c("Add Bleach or Chlorine", "Boil", "Strain Through a Cloth", "Use Water Filter", "Let it Stand and Settle"), -->
-<!--                 ~ ifelse(is.na(.), "", paste0(round(. * 100, 1), "%")))) -->
-
-<!-- add_lot_link(caption = 'Water treatment in the dry season at village level (%)') -->
-
-<!-- # Create the flextable -->
-<!-- proportion_table %>% -->
-<!--   sea::sea_table( -->
-<!--     dark_color = sea_colors("gunmetal"), -->
-<!--     pale_color = sea_colors("grey"), -->
-<!--     third_color = "white" -->
-<!--   ) %>% -->
-<!--   flextable::autofit()   -->
-
-<!-- ``` -->
-
-
-```{r,  fig.cap='Main source of water in the dry season', fig.align='center', out.width = '90%'}
-village_data <- tanganyika_survey %>%
-  group_by(drinking_water_dry) %>%
-  summarise(
-    proportion = survey_mean(vartype = "ci", na.rm = TRUE), 
-    total = survey_total(vartype = "ci", na.rm = TRUE), 
-    n = unweighted(n()))
-
-ggplot(village_data, aes(x = reorder(drinking_water_dry, -proportion),  
-           y = proportion * 100, fill = reorder(drinking_water_dry, -proportion))) +
-  geom_bar(stat = "identity", width = 0.8) +
-  geom_errorbar(aes(ymax = pmin(proportion_upp, 1)*100, ymin = pmax(proportion_low, 0)*100),
-                width = 0.2) +
-  geom_text(aes(
-      label = paste0(round(proportion * 100, 1), "%"),
-      y = pmin(proportion_upp * 100, 100) + 2), 
-      position = position_dodge(width = 0.8), vjust = 0, size = 3) +
-  guides(fill = guide_legend(title = NULL, nrow = 3)) +
-  labs(x = "", y = NULL) +
-  sea::scale_fill_sea_discrete() +
-  sea::theme_sea() + 
-  theme(legend.position = "none",  # Remove the legend
-        axis.text.x = element_text(angle = 45, hjust = 1),  axis.text.y = element_blank(),axis.ticks.y = element_blank(), panel.grid.major = element_blank(),
-    panel.grid.minor = element_blank()) +  # Rotate x-axis labels
-  scale_y_continuous(labels = label_percent(scale = 1))+
-  scale_x_discrete(labels = c("River or Stream", "Public Tap", "Pond or Lake", "Open Public Well", "Protected Public Well", "Spring", "Piped into Dwelling", "Water Vendor", "Neighbour's Open Well", "Neighbour's Borehole", "Protected Well in Plot", "Open Well in Plot", "Piped into Plot", "Neighbour's Tap", "Other"))
-  
-
-```
 
 ```{r,  fig.cap='Main type of water treatment in the wet season', fig.align='center', out.width = '90%'}
 
@@ -1196,70 +1272,112 @@ ggplot(treatment_data, aes(x = village, y = proportion * 100, group = treatment_
 
 ```
 
-<!-- ```{r} -->
-<!-- # Reshape the data to have "Yes" and "No" as columns -->
-<!-- proportion_table <- treatment_data %>% -->
-<!--   select(village, treatment_method_wet, proportion) %>% -->
-<!--   pivot_wider( -->
-<!--     names_from = treatment_method_wet,    # Use `drinking_water_dry` values as column names -->
-<!--     values_from = proportion   # Fill with the proportion values -->
-<!--   ) -->
-
-<!-- # Rename columns for clarity -->
-<!-- colnames(proportion_table) <- c("Village", "Add Bleach or Chlorine", "Boil", "Strain Through a Cloth", "Use Water Filter") -->
-
-<!-- # Format the proportion table values as percentages with one decimal point and add % sign, leave NA as blank -->
-<!-- proportion_table <- proportion_table %>% -->
-<!--   mutate(across(c("Add Bleach or Chlorine", "Boil", "Strain Through a Cloth", "Use Water Filter"), -->
-<!--                 ~ ifelse(is.na(.), "", paste0(round(. * 100, 1), "%")))) -->
-
-<!-- add_lot_link(caption = 'Water treatment in the wet season at village level (%)') -->
-
-<!-- # Create the flextable -->
-<!-- proportion_table %>% -->
-<!--   sea::sea_table( -->
-<!--     dark_color = sea_colors("gunmetal"), -->
-<!--     pale_color = sea_colors("grey"), -->
-<!--     third_color = "white" -->
-<!--   ) %>% -->
-<!--   flextable::autofit() -->
-
-<!-- ``` -->
-
-
-```{r,  fig.cap='Main source of water in the wet season', fig.align='center', out.width = '90%'}
-village_data <- tanganyika_survey %>%
-  group_by(drinking_water_wet) %>%
-  summarise(
-    proportion = survey_mean(vartype = "ci", na.rm = TRUE), 
-    total = survey_total(vartype = "ci", na.rm = TRUE), 
-    n = unweighted(n()))
-
-ggplot(village_data, aes(x = reorder(drinking_water_wet, -proportion),  
-           y = proportion * 100, fill = reorder(drinking_water_wet, -proportion))) +
-  geom_bar(stat = "identity", width = 0.8) +
-  geom_errorbar(aes(ymax = pmin(proportion_upp, 1)*100, ymin = pmax(proportion_low, 0)*100),
-                width = 0.2) +
-  geom_text(aes(
-      label = paste0(round(proportion * 100, 1), "%"),
-      y = pmin(proportion_upp * 100, 100) + 2), 
-      position = position_dodge(width = 0.8), vjust = 0, size = 3) +
-  guides(fill = guide_legend(title = NULL, nrow = 3)) +
-  labs(x = "", y = NULL) +
-  sea::scale_fill_sea_discrete() +
-  sea::theme_sea() + 
-  theme(legend.position = "none",  # Remove the legend
-        axis.text.x = element_text(angle = 45, hjust = 1),  axis.text.y = element_blank(),axis.ticks.y = element_blank(), panel.grid.major = element_blank(),
-    panel.grid.minor = element_blank()) +  # Rotate x-axis labels
-  scale_y_continuous(labels = label_percent(scale = 1))+
-  scale_x_discrete(labels = c("Rainwater", "River or Stream", "Public Tap", "Pond or Lake", "Open Public Well", "Protected Public Well", "Spring", "Piped into Dwelling", "Water Vendor", "Open Well in Plot", "Neighbour's Borehole", "Neighbour's Open Well","Piped into Plot"))
-
-```
-
 </div>
 \newpage
 
 ### Sanitation
+
+A household’s toilet facility and whether it must be shared with other households is an important welfare and health indicator. Across the study area, 22% of respondents indicated that they share their toilet facility with other households (Table 6). More than half of all households use an open pit latrine without a slab (57%). Pit latrines with a slab were used by 13%, whereas a further 17% of household indicated that they pour or flush into a pit latrine. 
+
+```{r}
+# Summarize the data by village shared_facilities
+summary_by_village <- tanganyika_survey %>%
+  filter(!is.na(shared_facilities) & shared_facilities != "I DO NOT WANT TO ANSWER" & shared_facilities != "I DON'T KNOW") %>% 
+  group_by(village, shared_facilities) %>%
+  summarise(
+    proportion = survey_mean(vartype = "ci", na.rm = TRUE)  # Weighted proportion
+  ) %>%
+  ungroup()
+
+# Reshape the data to have "Yes" and "No" as columns
+share_facility_table <- summary_by_village %>%
+  select(village, shared_facilities, proportion) %>%
+  pivot_wider(names_from = shared_facilities, values_from = proportion)
+
+# Rename columns for clarity
+colnames(share_facility_table) <- c("village", "No", "Yes")
+
+# Format the proportion table values as percentages with one decimal point and add % sign
+share_facility_table <- share_facility_table %>%
+  mutate(across(c("Yes", "No"), ~ paste0(round(. * 100, 0))))
+
+summary_by_village <- tanganyika_survey %>%
+  filter(!is.na(toilet_facilities) & toilet_facilities != "I DON'T KNOW" & toilet_facilities != "OTHER") %>% 
+  group_by(village, toilet_facilities) %>%
+  summarise(
+    proportion = survey_mean(vartype = "ci", na.rm = TRUE)) %>% ungroup()
+
+toilet_table <- summary_by_village %>%
+  select(village, toilet_facilities, proportion) %>%
+  pivot_wider(names_from = toilet_facilities, values_from = proportion   )
+
+# Rename columns for clarity
+colnames(toilet_table) <- c("Village", "Flush to Elsewhere", "Flush to Pit Latrine", "No Facility", "Pit Latrine with Slab", "Pit Latrine without Slab", "Composting Toilet", "Ventilated Improved Pit (VIP) Latrine")
+
+# Format the proportion table values as percentages with one decimal point and add % sign, leave NA as blank
+toilet_table <- toilet_table %>%
+  mutate(across(c("Flush to Elsewhere", "Flush to Pit Latrine", "No Facility", "Pit Latrine with Slab", "Pit Latrine without Slab", "Composting Toilet", "Ventilated Improved Pit (VIP) Latrine"),
+                ~ ifelse(is.na(.), "", paste0(round(. * 100, 0)))))
+
+# Combine the 'Yes' column from share_facility_table with toilet_table
+combined_table <- toilet_table %>%
+  left_join(
+    share_facility_table %>% select(village, `Shared Sanitation Facility` = Yes),
+    by = c("Village" = "village"))
+
+# Calculate the overall average for all villages combined
+total_row <- tanganyika_survey %>%
+  summarise(
+    Village = "Overall",
+    `Shared Sanitation Facility` = survey_mean(shared_facilities == "YES", na.rm = TRUE) * 100,
+    `Flush to Elsewhere` = survey_mean(toilet_facilities == "FLUSH/ POUR FLUSH TO ELSEWHERE", na.rm = TRUE) * 100,
+    `Flush to Pit Latrine` = survey_mean(toilet_facilities == "FLUSH/ POUR FLUSH TO PIT LATRINE", na.rm = TRUE) * 100,
+    `No Facility` = survey_mean(toilet_facilities == "NO FACILITY/BUSH/FIELD", na.rm = TRUE) * 100,
+    `Pit Latrine with Slab` = survey_mean(toilet_facilities == "PIT LATRINE WITH SLAB", na.rm = TRUE) * 100,
+    `Pit Latrine without Slab` = survey_mean(toilet_facilities == "PIT LATRINE WITHOUT SLAB/OPEN PIT", na.rm = TRUE) * 100,
+    `Composting Toilet` = survey_mean(toilet_facilities == "COMPOSTING TOILET/ECOSAN", na.rm = TRUE) * 100,
+    `Ventilated Improved Pit (VIP) Latrine` = survey_mean(toilet_facilities == "VENTILATED IMPROVED PIT (VIP) LATRINE", na.rm = TRUE) * 100) %>%
+  mutate(
+    `Shared Sanitation Facility` = paste0(round(`Shared Sanitation Facility`, 0)),
+    `Flush to Elsewhere` = paste0(round(`Flush to Elsewhere`, 0)),
+    `Flush to Pit Latrine` = paste0(round(`Flush to Pit Latrine`, 0)),
+    `No Facility` = paste0(round(`No Facility`, 0)),
+    `Pit Latrine with Slab` = paste0(round(`Pit Latrine with Slab`, 0)),
+    `Pit Latrine without Slab` = paste0(round(`Pit Latrine without Slab`, 0)),
+    `Composting Toilet` = paste0(round(`Composting Toilet`, 0)),
+    `Ventilated Improved Pit (VIP) Latrine` = paste0(round(`Ventilated Improved Pit (VIP) Latrine`, 0))) %>%
+  # Remove columns with "_se" in their names
+  select(-contains("_se"))
+
+combined_table <- combined_table %>%
+  mutate(across(everything(), as.character))
+
+# Add the "Total" row to the combined table
+combined_table <- bind_rows(combined_table, total_row)
+
+# Reorder columns to place 'Shared Sanitation Facility' on the left
+combined_table <- combined_table %>%
+  select(`Village`, `Shared Sanitation Facility`, everything())
+
+# Ensure NA values are replaced with blanks
+combined_table <- combined_table %>%
+  mutate(across(everything(), ~ ifelse(is.na(.), "", .)))
+
+# Display the flextable with a caption
+add_lot_link(caption = 'Sanitation facilities at village level (%)')
+
+combined_table %>%
+  sea::sea_table(
+    dark_color = sea_colors("gunmetal"),
+    pale_color = sea_colors("grey"),
+    third_color = "white"
+  ) %>%
+  flextable::autofit() %>%
+  flextable::fontsize(size = 10, part = "header")
+
+```
+
+Overall, only 25% of households had handwashing facilities available. Households in Kalungu, Mtakuja, and Isasa contained the highest proportion of handwashing facilities. Where handwashing facilities were available, 53% of households indicated there was water and 39% had soap available. Tippy taps were encountered across 8% of all households.
 
 ```{r}
 summary_by_village <- tanganyika_survey %>%
@@ -1316,20 +1434,32 @@ combined_table <- combined_table %>%
   select(`Village`, `Handwashing Place Available`, everything())
 
 # Calculate the overall average for all villages combined
-total_row <- combined_table %>%
+total_row_place <- tanganyika_survey %>%
   summarise(
     Village = "Overall",
-    `Handwashing Place Available` = mean(as.numeric(sub("%", "", `Handwashing Place Available`)) / 100, na.rm = TRUE) * 100,
-    Soap = mean(as.numeric(sub("%", "", Soap)) / 100, na.rm = TRUE) * 100,
-    `Tippy Tap` = mean(as.numeric(sub("%", "", `Tippy Tap`)) / 100, na.rm = TRUE) * 100,
-    Water = mean(as.numeric(sub("%", "", Water)) / 100, na.rm = TRUE) * 100
-  ) %>%
+    `Handwashing Place Available` = survey_mean(handwashing_place == "YES", na.rm = TRUE) * 100) %>%
   mutate(
-    `Handwashing Place Available` = paste0(round(`Handwashing Place Available`, 0)),
-    Soap = paste0(round(Soap, 0)),
+    `Handwashing Place Available` = paste0(round(`Handwashing Place Available`, 0))) %>% select(-contains("_se"))
+
+# Calculate the overall average for all villages combined
+total_row_show <- handwashing_show_design %>%
+  summarise(
+    Village = "Overall",
+    `Soap` = survey_mean(handwashing_show == "HAS SOAP", na.rm = TRUE) * 100,
+    `Tippy Tap` = survey_mean(handwashing_show == "HAS TIPPY TAP", na.rm = TRUE) * 100,
+    `Water` = survey_mean(handwashing_show == "HAS WATER", na.rm = TRUE) * 100) %>%
+  mutate(
+    `Soap` = paste0(round(`Soap`, 0)),
     `Tippy Tap` = paste0(round(`Tippy Tap`, 0)),
-    Water = paste0(round(Water, 0))
-  )
+    `Water` = paste0(round(`Water`, 0))) %>%
+  # Remove columns with "_se" in their names
+  select(-contains("_se"))
+
+total_row <- left_join(total_row_place, total_row_show, by = "Village") %>%
+  select(Village, `Handwashing Place Available`, Soap, `Tippy Tap`, Water)
+
+combined_table <- combined_table %>%
+  mutate(across(everything(), as.character))
 
 # Add the "Total" row to the combined table
 combined_table <- bind_rows(combined_table, total_row)
@@ -1355,103 +1485,6 @@ combined_table %>%
 
 ```
 
-\newpage
-```{r}
-# Summarize the data by village shared_facilities
-summary_by_village <- tanganyika_survey %>%
-  filter(!is.na(shared_facilities) & shared_facilities != "I DO NOT WANT TO ANSWER" & shared_facilities != "I DON'T KNOW") %>% 
-  group_by(village, shared_facilities) %>%
-  summarise(
-    proportion = survey_mean(vartype = "ci", na.rm = TRUE)  # Weighted proportion
-  ) %>%
-  ungroup()
-
-# Reshape the data to have "Yes" and "No" as columns
-share_facility_table <- summary_by_village %>%
-  select(village, shared_facilities, proportion) %>%
-  pivot_wider(names_from = shared_facilities, values_from = proportion)
-
-# Rename columns for clarity
-colnames(share_facility_table) <- c("village", "No", "Yes")
-
-# Format the proportion table values as percentages with one decimal point and add % sign
-share_facility_table <- share_facility_table %>%
-  mutate(across(c("Yes", "No"), ~ paste0(round(. * 100, 0))))
-
-summary_by_village <- tanganyika_survey %>%
-  filter(!is.na(toilet_facilities) & toilet_facilities != "I DON'T KNOW") %>% 
-  group_by(village, toilet_facilities) %>%
-  summarise(
-    proportion = survey_mean(vartype = "ci", na.rm = TRUE)) %>% ungroup()
-
-toilet_table <- summary_by_village %>%
-  select(village, toilet_facilities, proportion) %>%
-  pivot_wider(names_from = toilet_facilities, values_from = proportion   )
-
-# Rename columns for clarity
-colnames(toilet_table) <- c("Village", "Flush elsewhere", "Flush to pit latrine", "No facility", "Pit latrine with slab", "Open pit", "Composting toilet", "VIP latrine", "Other")
-
-# Format the proportion table values as percentages with one decimal point and add % sign, leave NA as blank
-toilet_table <- toilet_table %>%
-  mutate(across(c("Flush elsewhere", "Flush to pit latrine", "No facility", "Pit latrine with slab", "Open pit", "Composting toilet", "VIP latrine", "Other"),
-                ~ ifelse(is.na(.), "", paste0(round(. * 100, 0)))))
-
-# Combine the 'Yes' column from share_facility_table with toilet_table
-combined_table <- toilet_table %>%
-  left_join(
-    share_facility_table %>% select(village, `Shared Sanitation Facility` = Yes),
-    by = c("Village" = "village"))
-
-# Calculate the overall average for all villages combined
-total_row <- combined_table %>%
-  summarise(
-    Village = "Overall",
-    `Shared Sanitation Facility` = mean(as.numeric(sub("%", "", `Shared Sanitation Facility`)) / 100, na.rm = TRUE) * 100,
-    `Flush elsewhere` = mean(as.numeric(sub("%", "", `Flush elsewhere`)) / 100, na.rm = TRUE) * 100,
-    `Flush to pit latrine` = mean(as.numeric(sub("%", "", `Flush to pit latrine`)) / 100, na.rm = TRUE) * 100,
-    `No facility` = mean(as.numeric(sub("%", "", `No facility`)) / 100, na.rm = TRUE) * 100,
-    `Pit latrine with slab` = mean(as.numeric(sub("%", "", `Pit latrine with slab`)) / 100, na.rm = TRUE) * 100,
-    `Open pit` = mean(as.numeric(sub("%", "", `Open pit`)) / 100, na.rm = TRUE) * 100,
-    `Composting toilet` = mean(as.numeric(sub("%", "", `Composting toilet`)) / 100, na.rm = TRUE) * 100,
-    `VIP latrine` = mean(as.numeric(sub("%", "", `VIP latrine`)) / 100, na.rm = TRUE) * 100,
-    `Other` = mean(as.numeric(sub("%", "", `Other`)) / 100, na.rm = TRUE) * 100
-  ) %>%
-  mutate(
-    `Shared Sanitation Facility` = paste0(round(`Shared Sanitation Facility`, 0)),
-    `Flush elsewhere` = paste0(round(`Flush elsewhere`, 0)),
-    `Flush to pit latrine` = paste0(round(`Flush to pit latrine`, 0)),
-    `No facility` = paste0(round(`No facility`, 0)),
-    `Pit latrine with slab` = paste0(round(`Pit latrine with slab`, 0)),
-    `Open pit` = paste0(round(`Open pit`, 0)),
-    `Composting toilet` = paste0(round(`Composting toilet`, 0)),
-    `VIP latrine` = paste0(round(`VIP latrine`, 0)),
-    `Other` = paste0(round(`Other`, 0))
-  )
-
-# Add the "Total" row to the combined table
-combined_table <- bind_rows(combined_table, total_row)
-
-# Reorder columns to place 'Shared Sanitation Facility' on the left
-combined_table <- combined_table %>%
-  select(`Village`, `Shared Sanitation Facility`, everything())
-
-# Ensure NA values are replaced with blanks
-combined_table <- combined_table %>%
-  mutate(across(everything(), ~ ifelse(is.na(.), "", .)))
-
-# Display the flextable with a caption
-add_lot_link(caption = 'Sanitation facilities at village level (%)')
-
-combined_table %>%
-  sea::sea_table(
-    dark_color = sea_colors("gunmetal"),
-    pale_color = sea_colors("grey"),
-    third_color = "white"
-  ) %>%
-  flextable::autofit() %>%
-  flextable::fontsize(size = 10, part = "header")
-
-```
 
 
 </div>
@@ -1610,19 +1643,29 @@ combined_table <- efficient_stove_table %>%
   select(Village, `Efficient Stove Ownership` = Yes) %>%
   left_join(proportion_table %>% select(Village, `Almost everyday`, `At least once a week`, `Less than once a week`), by = "Village") 
 
-# Calculate the overall average for all villages combined
-total_row <- combined_table %>%
+total_row_stove <- tanganyika_survey %>%
   summarise(
     Village = "Overall",
-    `Efficient Stove Ownership` = mean(as.numeric(sub("%", "", `Efficient Stove Ownership`)) / 100, na.rm = TRUE) * 100,
-    `Almost everyday` = mean(as.numeric(sub("%", "", `Almost everyday`)) / 100, na.rm = TRUE) * 100,
-    `At least once a week` = mean(as.numeric(sub("%", "", `At least once a week`)) / 100, na.rm = TRUE) * 100,
-    `Less than once a week` = mean(as.numeric(sub("%", "", `Less than once a week`)) / 100, na.rm = TRUE) * 100) %>%
+    `Efficient Stove Ownership` = survey_mean(efficient_stove == "YES", na.rm = TRUE) * 100) %>%
   mutate(
-    `Efficient Stove Ownership` = paste0(round(`Efficient Stove Ownership`, 0)),
+    `Efficient Stove Ownership` = paste0(round(`Efficient Stove Ownership`, 0))) %>% select(-contains("_se"))
+
+# Calculate the overall average for all villages combined
+total_row_use <- design %>%
+  summarise(
+    Village = "Overall",
+    `Almost everyday` = survey_mean(efficient_stove_use == "ALMOST EVERY DAY", na.rm = TRUE) * 100,
+    `At least once a week` = survey_mean(efficient_stove_use == "AT LEAST ONCE A WEEK", na.rm = TRUE) * 100,
+    `Less than once a week` = survey_mean(efficient_stove_use == "LESS THAN ONCE A WEEK", na.rm = TRUE) * 100) %>%
+  mutate(
     `Almost everyday` = paste0(round(`Almost everyday`, 0)),
     `At least once a week` = paste0(round(`At least once a week`, 0)),
-    `Less than once a week` = paste0(round(`Less than once a week`, 0)))
+    `Less than once a week` = paste0(round(`Less than once a week`, 0))) %>%
+  # Remove columns with "_se" in their names
+  select(-contains("_se"))
+
+total_row <- left_join(total_row_stove, total_row_use, by = "Village") %>%
+  select(Village, `Efficient Stove Ownership`, `Almost everyday`, `At least once a week`, `Less than once a week`)
 
 # Add the "Total" row to the combined table
 combined_table <- bind_rows(combined_table, total_row)
@@ -2316,30 +2359,37 @@ proportion_table <- food_data %>%
     names_from = food_availability,    
     values_from = proportion)
 
-proportion_table <- proportion_table[, !colnames(proportion_table) %in% c("NOT SURE", "I DON'T KNOW", "I DO NOT WANT TO ANSWER")]
-
-# Rename columns for clarity
-colnames(proportion_table) <- c("Village", "Average", "Better", "Worse")
+proportion_table <- proportion_table[, !colnames(proportion_table) %in% c("I DON'T KNOW", "I DO NOT WANT TO ANSWER")]
 
 proportion_table <- proportion_table %>%
-  mutate(across(c("Average", "Better", "Worse"),
+  select(-`NOT SURE`, everything(), `NOT SURE`)
+
+# Rename columns for clarity
+colnames(proportion_table) <- c("Village", "Average", "Better", "Worse", "Not Sure")
+
+proportion_table <- proportion_table %>%
+  mutate(across(c("Average", "Better", "Worse", "Not Sure"),
                 ~ ifelse(is.na(.), "", paste0(round(. * 100, 0)))))
 
 # Calculate the overall average for all villages combined
-total_row <- proportion_table %>%
+total_row <- tanganyika_survey %>%
   summarise(
     Village = "Overall",
-    `Average` = mean(as.numeric(sub("%", "", `Average`)) / 100, na.rm = TRUE) * 100,
-    `Better` = mean(as.numeric(sub("%", "", `Better`)) / 100, na.rm = TRUE) * 100,
-    `Worse` = mean(as.numeric(sub("%", "", `Worse`)) / 100, na.rm = TRUE) * 100) %>%
+    `Average` = survey_mean(food_availability == "AVERAGE", na.rm = TRUE) * 100,
+    `Better` = survey_mean(food_availability == "BETTER", na.rm = TRUE) * 100,
+    `Worse` = survey_mean(food_availability == "WORSE", na.rm = TRUE) * 100,
+    `Not Sure` = survey_mean(food_availability == "NOT SURE", na.rm = TRUE) * 100) %>%
   mutate(
-    `Better` = paste0(round(`Better`, 0)),
     `Average` = paste0(round(`Average`, 0)),
-    `Worse` = paste0(round(`Worse`, 0)))
+    `Better` = paste0(round(`Better`, 0)),
+    `Worse` = paste0(round(`Worse`, 0)),
+    `Not Sure` = paste0(round(`Not Sure`, 0))) %>%
+  # Remove columns with "_se" in their names
+  select(-contains("_se"))
 
 # Add the "Total" row to the combined table
 proportion_table <- bind_rows(proportion_table, total_row)
-colnames(proportion_table) <- c("Village", "Average (%)", "Better (%)", "Worse (%)")
+colnames(proportion_table) <- c("Village", "Average (%)", "Better (%)", "Worse (%)", "Not Sure (%)")
 
 add_lot_link(caption = 'Changes in household food availability over the last 12 months at village level (%)')
 
@@ -2501,6 +2551,21 @@ total_row <- hh_influence_table %>%
     `No` = paste0(round(`No`, 0)),
     `Yes` = paste0(round(`Yes`, 0)),
     `I don't know` = paste0(round(`I don't know`, 0)))
+
+# Calculate the overall average for all villages combined
+total_row <- tanganyika_survey %>%
+  filter(!is.na(hh_influence) & hh_influence != "I DO NOT WANT TO ANSWER" & hh_influence != "NOT SURE") %>%
+  summarise(
+    Village = "Overall",
+    `No` = survey_mean(hh_influence == "NO", na.rm = TRUE) * 100,
+    `Yes` = survey_mean(hh_influence == "YES", na.rm = TRUE) * 100,
+    `I don't know` = survey_mean(hh_influence == "I DON'T KNOW", na.rm = TRUE) * 100) %>%
+  mutate(
+    `No` = paste0(round(`No`, 0)),
+    `Yes` = paste0(round(`Yes`, 0)),
+    `I don't know` = paste0(round(`I don't know`, 0))) %>%
+  # Remove columns with "_se" in their names
+  select(-contains("_se"))
 
 # Add the "Total" row to the combined table
 hh_influence_table <- bind_rows(hh_influence_table, total_row)
@@ -3397,23 +3462,23 @@ combined_table <- awareness_bmu_table %>%
   left_join(bmu_women_table %>% select(Village, `Women in BMU leadership` = Yes), by = "Village") %>%
   left_join(bmu_youth_table %>% select(Village, `Youth in BMU` = Yes), by = "Village") 
 
-# Calculate the overall average for all villages combined
-total_row <- combined_table %>%
+total_row <- tanganyika_survey %>%
   summarise(
     Village = "Overall",
-    `Aware of BMUs` = mean(as.numeric(sub("%", "", `Aware of BMUs`)) / 100, na.rm = TRUE) * 100,
-    `Has participated in BMU activity` = mean(as.numeric(sub("%", "", `Has participated in BMU activity`)) / 100, na.rm = TRUE) * 100,
-    `Member of BMU` = mean(as.numeric(sub("%", "", `Member of BMU`)) / 100, na.rm = TRUE) * 100,
-    `BMU is TNC supported` = mean(as.numeric(sub("%", "", `BMU is TNC supported`)) / 100, na.rm = TRUE) * 100,
-    `Women in BMU leadership` = mean(as.numeric(sub("%", "", `Women in BMU leadership`)) / 100, na.rm = TRUE) * 100,
-    `Youth in BMU` = mean(as.numeric(sub("%", "", `Youth in BMU`)) / 100, na.rm = TRUE) * 100) %>%
+    `Aware of BMUs` = survey_mean(awareness_bmu == "YES", na.rm = TRUE) * 100,
+    `Has participated in BMU activity` = survey_mean(BMU_activity == "YES", na.rm = TRUE) * 100,
+    `Member of BMU` = survey_mean(bmu_member == "YES", na.rm = TRUE) * 100,
+    `BMU is TNC supported` = survey_mean(tnc_support_bmu == "YES", na.rm = TRUE) * 100,
+    `Women in BMU leadership` = survey_mean(bmu_women == "YES", na.rm = TRUE) * 100,
+    `Youth in BMU` = survey_mean(bmu_youth == "YES", na.rm = TRUE) * 100,) %>%
   mutate(
     `Aware of BMUs` = paste0(round(`Aware of BMUs`, 0)),
     `Has participated in BMU activity` = paste0(round(`Has participated in BMU activity`, 0)),
     `Member of BMU` = paste0(round(`Member of BMU`, 0)),
     `BMU is TNC supported` = paste0(round(`BMU is TNC supported`, 0)),
     `Women in BMU leadership` = paste0(round(`Women in BMU leadership`, 0)),
-    `Youth in BMU` = paste0(round(`Youth in BMU`, 0)))
+    `Youth in BMU` = paste0(round(`Youth in BMU`, 0))) %>% select(-contains("_se"))
+
 
 # Add the "Total" row to the combined table
 combined_table <- bind_rows(combined_table, total_row)
@@ -3583,6 +3648,13 @@ expanded <- tanganyika_clean %>% select(hh_code, village, conflict_resolution, s
 expanded <- expanded %>%
   mutate(cluster = case_when(village %in% cluster_1_villages ~ "Cluster 1", village %in% cluster_2_villages ~ "Cluster 2", TRUE ~ "Other"))
 
+expanded <- expanded %>%
+  mutate(conflict_resolution = ifelse(
+    conflict_resolution %in% c("THERE ARE NO CONFLICTS BETWEEN BMUs and FISHERS", "I DON'T KNOW"),
+    "OTHER",
+    conflict_resolution
+  ))
+
 design <- expanded %>%
   as_survey_design(strata = stype, fpc = fpc)
 
@@ -3595,41 +3667,57 @@ conflict_resolution_data <- design %>%
 proportion_table <- conflict_resolution_data %>%
   select(village, conflict_resolution, proportion) %>%
   pivot_wider(
-    names_from = conflict_resolution,    # Use `drinking_water_dry` values as column names
+    names_from = conflict_resolution,   
     values_from = proportion   # Fill with the proportion values
   )
 
 # Rename columns for clarity
-colnames(proportion_table) <- c("Village", "Go to ward or district government", "Negotiate with each other", "Do nothing", "Go to village government", "I don't know", "There are no conflicts between BMUs and fishers", "Other")
+colnames(proportion_table) <- c("Village", "Go to ward or district government", "Negotiate with each other", "Do nothing", "Go to village government", "Other")
 
 # Format the proportion table values as percentages with one decimal point and add % sign, leave NA as blank
 proportion_table <- proportion_table %>%
-  mutate(across(c("Go to ward or district government", "Negotiate with each other", "Do nothing", "Go to village government", "I don't know", "There are no conflicts between BMUs and fishers", "Other"),
+  mutate(across(c("Go to ward or district government", "Negotiate with each other", "Do nothing", "Go to village government", "Other"),
                 ~ ifelse(is.na(.), "", paste0(round(. * 100, 0)))))
 
 combined_table <- conflict_table %>%
   select(Village, `Conflicts of interest indicated` = Yes) %>%
-  left_join(proportion_table %>% select(Village, `Go to ward or district government`, `Negotiate with each other`, `Go to village government`, `Do nothing`), by = "Village") 
+  left_join(proportion_table %>% select(Village, `Go to ward or district government`, `Negotiate with each other`, `Go to village government`, `Do nothing`, Other), by = "Village") 
 
 # Calculate the overall average for all villages combined
-total_row <- combined_table %>%
+total_row_coi <- tanganyika_survey %>%
   summarise(
     Village = "Overall",
-    `Conflicts of interest indicated` = mean(as.numeric(sub("%", "", `Conflicts of interest indicated`)) / 100, na.rm = TRUE) * 100,
-    `Go to ward or district government` = mean(as.numeric(sub("%", "", `Go to ward or district government`)) / 100, na.rm = TRUE) * 100,
-    `Negotiate with each other` = mean(as.numeric(sub("%", "", `Negotiate with each other`)) / 100, na.rm = TRUE) * 100,
-    `Go to village government` = mean(as.numeric(sub("%", "", `Go to village government`)) / 100, na.rm = TRUE) * 100,
-    `Do nothing` = mean(as.numeric(sub("%", "", `Do nothing`)) / 100, na.rm = TRUE) * 100) %>%
+    `Conflicts of interest indicated` = survey_mean(conflcit_interest == "YES", na.rm = TRUE) * 100) %>%
   mutate(
-    `Conflicts of interest indicated` = paste0(round(`Conflicts of interest indicated`, 0)),
+    `Conflicts of interest indicated` = paste0(round(`Conflicts of interest indicated`, 0))) %>% select(-contains("_se"))
+
+# Calculate the overall average for all villages combined
+total_row_resolution <- design %>%
+  filter(!(village == "Mwinza")) %>%
+  filter(!is.na(conflict_resolution) & conflict_resolution != "I DO NOT WANT TO ANSWER" & conflict_resolution != "I DON'T KNOW") %>%
+  summarise(
+    Village = "Overall",
+    `Go to ward or district government` = survey_mean(conflict_resolution == "GO TO WARD OR DISTRICT GOVERNMENT", na.rm = TRUE) * 100,
+    `Negotiate with each other` = survey_mean(conflict_resolution == "NEGOTIATE WITH EACH OTHER", na.rm = TRUE) * 100,
+    `Go to village government` = survey_mean(conflict_resolution == "GO TO VILLAGE GOVERNMENT", na.rm = TRUE) * 100,
+    `Do nothing` = survey_mean(conflict_resolution == "DO NOTHING", na.rm = TRUE) * 100,
+    `Other` = survey_mean(conflict_resolution == "OTHER", na.rm = TRUE) * 100) %>%
+  mutate(
     `Go to ward or district government` = paste0(round(`Go to ward or district government`, 0)),
     `Negotiate with each other` = paste0(round(`Negotiate with each other`, 0)),
     `Go to village government` = paste0(round(`Go to village government`, 0)),
-    `Do nothing` = paste0(round(`Do nothing`, 0)))
+    `Do nothing` = paste0(round(`Do nothing`, 0)),
+    `Other` = paste0(round(`Other`, 0))) %>%
+  # Remove columns with "_se" in their names
+  select(-contains("_se"))
+
+total_row <- left_join(total_row_coi, total_row_resolution, by = "Village") %>%
+  select(Village, `Conflicts of interest indicated`, `Go to ward or district government`, `Negotiate with each other`, `Go to village government`, `Do nothing`, Other)
+
 
 # Add the "Total" row to the combined table
 combined_table <- bind_rows(combined_table, total_row)
-colnames(combined_table) <- c("Village", "Conflicts of interest (%)", "Go to ward or district government (%)", "Negotiate with each other (%)", "Go to village government (%)", "Do nothing (%)")
+colnames(combined_table) <- c("Village", "Conflicts of interest (%)", "Go to ward or district government (%)", "Negotiate with each other (%)", "Go to village government (%)", "Do nothing (%)", "Other (%)")
 
 add_lot_link(caption = 'Conflict of interest and/or power struggle between village leaders and BMU (%)')
 
@@ -4024,17 +4112,17 @@ combined_table <- rights_access_table %>%
   left_join(security_rights_table %>% select(Village, `Happy with the current security of your rights over fisheries resources` = Yes), by = "Village") %>%
   left_join(decision_making_table %>% select(Village, `Involved in decision-making processes regarding fisheries resources` = Yes), by = "Village")
 
-# Calculate the overall average for all villages combined
-total_row <- combined_table %>%
+total_row <- tanganyika_survey %>%
   summarise(
     Village = "Overall",
-    `Rights to access and use fishery resources are being upheld by regulatory and/or communal systems` = mean(as.numeric(sub("%", "", `Rights to access and use fishery resources are being upheld by regulatory and/or communal systems`)) / 100, na.rm = TRUE) * 100,
-    `Happy with the current security of your rights over fisheries resources` = mean(as.numeric(sub("%", "", `Happy with the current security of your rights over fisheries resources`)) / 100, na.rm = TRUE) * 100,
-    `Involved in decision-making processes regarding fisheries resources` = mean(as.numeric(sub("%", "", `Involved in decision-making processes regarding fisheries resources`)) / 100, na.rm = TRUE) * 100) %>%
+    `Rights to access and use fishery resources are being upheld by regulatory and/or communal systems` = survey_mean(rights_access == "YES", na.rm = TRUE) * 100,
+    `Happy with the current security of your rights over fisheries resources` = survey_mean(security_rights == "YES", na.rm = TRUE) * 100,
+    `Involved in decision-making processes regarding fisheries resources` = survey_mean(decision_making == "YES", na.rm = TRUE) * 100) %>%
   mutate(
     `Rights to access and use fishery resources are being upheld by regulatory and/or communal systems` = paste0(round(`Rights to access and use fishery resources are being upheld by regulatory and/or communal systems`, 0)),
     `Happy with the current security of your rights over fisheries resources` = paste0(round(`Happy with the current security of your rights over fisheries resources`, 0)),
-    `Involved in decision-making processes regarding fisheries resources` = paste0(round(`Involved in decision-making processes regarding fisheries resources`, 0)))
+    `Involved in decision-making processes regarding fisheries resources` = paste0(round(`Involved in decision-making processes regarding fisheries resources`, 0))) %>% select(-contains("_se"))
+
 
 # Add the "Total" row to the combined table
 combined_table <- bind_rows(combined_table, total_row)
@@ -4837,6 +4925,21 @@ total_row <- combined_table %>%
     `Group is TNC supported` = paste0(round(`Group is TNC supported`, 0)),
     `Group is helpful` = paste0(round(`Group is helpful`, 0)))
 
+total_row <- tanganyika_survey %>%
+  summarise(
+    Village = "Overall",
+    `Cooperative/FICO` = survey_mean(cooperative == "YES", na.rm = TRUE) * 100,
+    `COCOBA or savings group` = survey_mean(cocoba_group == "YES", na.rm = TRUE) * 100,
+    `Other group` = survey_mean(other_group == "YES", na.rm = TRUE) * 100,
+    `Group is TNC supported` = survey_mean(tnc_support == "YES", na.rm = TRUE) * 100,
+    `Group is helpful` = survey_mean(group_helpfulness == "YES", na.rm = TRUE) * 100) %>%
+  mutate(
+    `Cooperative/FICO` = paste0(round(`Cooperative/FICO`, 0)),
+    `COCOBA or savings group` = paste0(round(`COCOBA or savings group`, 0)),
+    `Other group` = paste0(round(`Other group`, 0)),
+    `Group is TNC supported` = paste0(round(`Group is TNC supported`, 0)),
+    `Group is helpful` = paste0(round(`Group is helpful`, 0))) %>% select(-contains("_se"))
+
 # Add the "Total" row to the combined table
 combined_table <- bind_rows(combined_table, total_row)
 colnames(combined_table) <- c("Village", "Cooperative/FICO (%)", "COCOBA or savings group (%)", "Other group (%)", "TNC supported groups (%)", "Group is helpful (%)")
@@ -5266,6 +5369,22 @@ total_row <- combined_table %>%
     `Other group` = paste0(round(`Other group`, 0)),
     `Group is TNC supported` = paste0(round(`Group is TNC supported`, 0)),
     `Group is helpful` = paste0(round(`Group is helpful`, 0)))
+
+total_row <- tanganyika_survey %>%
+  summarise(
+    Village = "Overall",
+    `Cooperative/FICO` = survey_mean(cooperative_fico == "YES", na.rm = TRUE) * 100,
+    `COCOBA or savings group` = survey_mean(cocoba_savings == "YES", na.rm = TRUE) * 100,
+    `Other group` = survey_mean(other_trading_group == "YES", na.rm = TRUE) * 100,
+    `Group is TNC supported` = survey_mean(trading_tnc_supported == "YES", na.rm = TRUE) * 100,
+    `Group is helpful` = survey_mean(trading_group_helpfulness == "YES", na.rm = TRUE) * 100) %>%
+  mutate(
+    `Cooperative/FICO` = paste0(round(`Cooperative/FICO`, 0)),
+    `COCOBA or savings group` = paste0(round(`COCOBA or savings group`, 0)),
+    `Other group` = paste0(round(`Other group`, 0)),
+    `Group is TNC supported` = paste0(round(`Group is TNC supported`, 0)),
+    `Group is helpful` = paste0(round(`Group is helpful`, 0))) %>% select(-contains("_se"))
+
 
 # Add the "Total" row to the combined table
 combined_table <- bind_rows(combined_table, total_row)
@@ -5792,6 +5911,21 @@ total_row <- combined_table %>%
     `Other group` = paste0(round(`Other group`, 0)),
     `Group is TNC supported` = paste0(round(`Group is TNC supported`, 0)),
     `Group is helpful` = paste0(round(`Group is helpful`, 0)))
+
+total_row <- tanganyika_survey %>%
+  summarise(
+    Village = "Overall",
+    `Cooperative/FICO` = survey_mean(cooperative_fico_process == "YES", na.rm = TRUE) * 100,
+    `COCOBA or savings group` = survey_mean(cocoba_savings_process == "YES", na.rm = TRUE) * 100,
+    `Other group` = survey_mean(other_process_group == "YES", na.rm = TRUE) * 100,
+    `Group is TNC supported` = survey_mean(process_tnc_supported == "YES", na.rm = TRUE) * 100,
+    `Group is helpful` = survey_mean(process_group_helpfulness == "YES", na.rm = TRUE) * 100) %>%
+  mutate(
+    `Cooperative/FICO` = paste0(round(`Cooperative/FICO`, 0)),
+    `COCOBA or savings group` = paste0(round(`COCOBA or savings group`, 0)),
+    `Other group` = paste0(round(`Other group`, 0)),
+    `Group is TNC supported` = paste0(round(`Group is TNC supported`, 0)),
+    `Group is helpful` = paste0(round(`Group is helpful`, 0))) %>% select(-contains("_se"))
 
 # Add the "Total" row to the combined table
 combined_table <- bind_rows(combined_table, total_row)
