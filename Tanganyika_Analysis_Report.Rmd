@@ -1,6 +1,6 @@
 ---
 title: "Baseline Study for the Lake Tanganyika Programme"
-subtitle: "Household Socioeconomic Assessment of Lake Tanganyika"
+subtitle: "Household Socioeconomic Assessment"
 author: 
   - "Sustain East Africa"
 date: "November 2024"
@@ -71,10 +71,10 @@ tanganyika_survey <- tanganyika_clean %>%
 # Create village clusters for plotting
 cluster_1_villages <- c("Izinga", "Kala", "Katenge", "Kilambo cha Mkolechi", 
                         "Kizumbi", "Lyapinda", "Mpasa", "Mwinza", "Ng'anga", 
-                        "Tundu", "Wampembe")
+                        "Tundu", "Wampembe", "Overall North")
 cluster_2_villages <- c("Isasa", "Kalungu", "Kichangani", "Kipili", 
                         "Majengo Mapya", "Manda Kerenge", "Manda Uhuru", 
-                        "Mkinga", "Mtakuja", "Ntanganyika", "Overall")
+                        "Mkinga", "Mtakuja", "Ntanganyika", "Overall South", "Overall")
 ```
 
 \newpage
@@ -354,7 +354,7 @@ knitr::include_graphics('img/village_sample_size_map.png')
 
 Population Pyramid
 
-Nearly half (45.5%) the population of the households surveyed was under the age of 15 (Figure 2). Most of the other half of the Mahale population is between 15 and 64 (52.2%); people aged 65 and older only make up 2.3% of the population.
+Nearly half (45.5%) the population of the households surveyed was under the age of 15 (Figure 2). This is comparable to the national average of 46% (2022 TDHSMIS). Most of the other half of the Lake Tanganyika population is between 15 and 64 (52.2%); people aged 65 and older only make up 2.3% of the population. 
 
 ```{r, fig.cap='Population pyramid', fig.align='center', out.width = '70%'}
 age_levels <- c("<5", "5-9", "10-14", "15-19", "20-24", "25-29", "30-34",
@@ -408,7 +408,7 @@ ggplot(demo_summary, aes(x = age_group, y = ifelse(sex == "MALE", -percentage, p
 
 ```
 
-The average household size in this survey was 5.2 (Table 2). This is smaller than the 6.7 members found in the 2011 Tuungane survey but the same as the 2010 DHS survey for rural Tanzania (NBS & ICF Macro, 2011). Female household heads make up 22% of the sample, which is higher than the findings from the 2011 Tuungane survey.
+The average household size in this survey was 5.2 (Table 2). This is smaller than the 6.7 members found in the 2011 Tuungane survey but higher than the 2022 national average of 4.5 household members (2022 TDHSMIS). Female household heads make up 22% of the sample, which is higher than the findings from the 2011 Tuungane survey but still lower than the national average of 29% (2022 TDHSMIS).
 
 ```{r}
 current_survey <- tanganyika_survey %>%
@@ -1492,6 +1492,8 @@ combined_table %>%
 
 ### Household Amenities
 
+Beds and mattresses are most commonly owned of the listed household goods (21%; Figure 8). Thereafter, mobile phones are owned by 17.8% of households, a further 4.2% of respondents indicated owning a smartphone. This is significantly lower than the national average of 83% of households that own a mobile phone (2022 TDHSMIS). Radio ownership across the survey population (11%) was also significantly lower than both the 2011 Tuungane survey (75%) and the 2022 national average (44%; 2022 TDHSMIS). 
+
 ```{r,  fig.cap='Household item ownership', fig.align='center', out.width = '90%'}
 household_item_expanded <- tanganyika_clean %>% select(hh_code, village, household_item, stype, fpc) %>%
   separate_rows(household_item, sep = "\\|") %>%
@@ -1530,6 +1532,8 @@ ggplot(household_item_data, aes(x = reorder(household_item, -proportion), y = pr
 
 
 ```
+
+Only 1% of households indicated having access to clean cooking fuel, namely gas. The vast majority of the survey population use solid fuels such as charcoal (53%) and firewood (46%) (Figure 9). This is comparable to the national average, in which 93% of Tanzanian households make use of solid fuels including charcoal and firewood (2022 TDHSMIS). Interestingly, among the northern cluster of villages, with the exception of Wampembe, households appear to use firewood as the primary cooking fuel. In contrast, the majority of villages in the southern cluster make use of charcoal. Gas was only used as a cooking fuel amongst eight villages, of which Kipili indicated the highest use (9%). 
 
 ```{r, fig.cap='Types of cooking fuels used at village level (%)', fig.align='center', out.width = '90%'}
 fuel_expanded <- tanganyika_clean %>%
@@ -1591,6 +1595,10 @@ ggplot(fuel_data, aes(x = village, y = proportion * 100, group = cooking_fuel, f
 
 ```
 
+
+Half of the households surveyed owned a fuel-efficient stove (51%), which is higher than the 27% indicated by the 2011 Tuungane survey (Table 8). Of the households that owned a fuel-efficient stove, the majority of respondents use it every day for cooking (89%). Fuel-efficient stove ownership was highest in Mkinga (72%) and Mpasa (71%). Katenge had the lowest fuel-efficient stove ownership (13%), however among households that owned a fuel-efficient stove, daily use was ubiquitous (Table 8).
+
+
 ```{r}
 summary_by_village <- tanganyika_survey %>%
   filter(!is.na(efficient_stove) & efficient_stove != "I DON'T KNOW" & efficient_stove != "I DO NOT WANT TO ANSWER") %>% 
@@ -1628,7 +1636,7 @@ efficient_stove_use_data <- design %>%
 proportion_table <- efficient_stove_use_data %>%
   select(village, efficient_stove_use, proportion) %>%
   pivot_wider(
-    names_from = efficient_stove_use,    # Use `drinking_water_dry` values as column names
+    names_from = efficient_stove_use,    
     values_from = proportion)
 
 # Rename columns for clarity
@@ -1691,49 +1699,9 @@ combined_table %>%
 
 ### Livelihood Activities
 
-<!-- ```{r, fig.cap='Proportion of livelihood activities at village level (%)', fig.align='center', out.width = '90%'} -->
-<!-- livelihood_activities_expanded <- tanganyika_clean %>% select(hh_code, village, livelihood_activities, stype, fpc) %>% -->
-<!--   separate_rows(livelihood_activities, sep = "\\|") %>% -->
-<!--   mutate(livelihood_activities = trimws(livelihood_activities)) %>% drop_na()   -->
+45% of households are engaged in agriculture and/or livestock keeping (Figure 10), which is markedly less than the 97% indicated by the 2011 Tuungane survey. Agriculture was the main livelihood activity in all villages except for Manda Kerenge, in which fishing was the most frequent activity. Overall, 40% of households are engaged in fish-based livelihood activities, including fishing (27%), fish trading (8%), and fish processing (5%). A further 9% of household respondents were engaged in business activities. 
 
-<!-- livelihood_activities_expanded <- livelihood_activities_expanded %>% -->
-<!--   mutate(cluster = case_when(village %in% cluster_1_villages ~ "Cluster 1", village %in% cluster_2_villages ~ "Cluster 2", TRUE ~ "Other")) -->
-
-<!-- livelihood_activities_design <- livelihood_activities_expanded %>% -->
-<!--   as_survey_design(strata = stype, fpc = fpc) -->
-
-<!-- livelihood_activities_data <- livelihood_activities_design %>% -->
-<!--   group_by(village, cluster, livelihood_activities) %>% -->
-<!--   summarise(proportion = survey_mean(vartype = "ci", na.rm = TRUE), total = survey_total(vartype = "ci", na.rm = TRUE), n = unweighted(n())) %>% ungroup() -->
-
-<!-- ggplot(livelihood_activities_data, aes(x = village, y = proportion * 100, group = livelihood_activities, fill = livelihood_activities)) + -->
-<!--   geom_bar(stat = "identity", position = position_dodge(preserve = "single"), width = 0.95) + -->
-<!--   geom_errorbar(aes(ymax = pmin(proportion_upp * 100, 100), ymin = pmax(proportion_low * 100, 0)), -->
-<!--                 position = position_dodge(preserve = "single", width = 0.95), width = 0.1) + -->
-<!--   guides(fill = guide_legend(title = NULL)) + -->
-<!--   labs(x = "", y = "Percentage of Households") + -->
-<!--   sea::scale_fill_sea_discrete(labels = c( -->
-<!--       "AGRICULTURE" = "Agriculture",  -->
-<!--       "BOAT BUILDER" = "Boat Builder", -->
-<!--       "BUSINESS" = "Business", -->
-<!--       "DAY LABOR" = "Day Labor", -->
-<!--       "EMPLOYEE" = "Employee", -->
-<!--       "FISH PROCESSING" = "Fish Processing", -->
-<!--       "FISH TRADING" = "Fish Trading", -->
-<!--       "FISHING" = "Fishing", -->
-<!--       "LIVESTOCK KEEPING" = "Livestock Keeping", -->
-<!--       "OTHER" = "Other", -->
-<!--       "PENSIONS" = "Pensions", -->
-<!--       "REMITTANCES" = "Remittances", -->
-<!--       "TAILOR" = "Tailor")) + -->
-<!--   sea::theme_sea() +  -->
-<!--   theme(legend.position = "bottom",  legend.direction = "horizontal",  legend.justification = "center",  -->
-<!--         axis.text.x = element_text(size = 7), strip.text = element_blank(), legend.box =  -->
-<!--         "horizontal") + facet_wrap(~cluster, ncol = 1, scales = "free_x") + -->
-<!--   scale_y_continuous(labels = label_percent(scale = 1))+ -->
-<!--   scale_x_discrete(labels = function(x) str_wrap(x, width = 10)) -->
-
-<!-- ``` -->
+Respondents were also asked to rank livelihood activities based on their importance. Relatively, agriculture was listed as the most important livelihood activity (44%), followed by fishing (27%), and business activities (9%). 
 
 
 ```{r,  fig.cap='Livelihood activities across Lake Tanganyika. Note: the allocated proportions represent the relative frequency of all livelihood activities engaged in by household members', fig.align='center', out.width = '90%'}
@@ -1776,49 +1744,97 @@ ggplot(livelihood_data, aes(x = reorder(livelihood_activities, -proportion),
 ```
 
 
-```{r, fig.cap='Relative importance of livelihood activities. Note: relative importance is derived from a likert scale ranking of the importance of fish-based livelihood activities compared to the other livelihoods', fig.align='center', out.width = '90%'}
-lh_ranking_vars <- c("fishing", "trading", "processing", "agriculture", "livestock", "business", "labour", "employee", "pension", "remittance", "other_lh")
+<!-- ```{r, fig.cap='Proportion of livelihood activities at village level (%)', fig.align='center', out.width = '90%'} -->
+<!-- livelihood_activities_expanded <- tanganyika_clean %>% select(hh_code, village, livelihood_activities, stype, fpc) %>% -->
+<!--   separate_rows(livelihood_activities, sep = "\\|") %>% -->
+<!--   mutate(livelihood_activities = trimws(livelihood_activities)) %>% drop_na() -->
 
-lh_ranking_long <- tanganyika_clean %>%
-  pivot_longer(cols = all_of(lh_ranking_vars), names_to = "livelihood_activity", values_to = "Importance") %>% mutate(Importance = case_when(is.na(Importance) ~ 0, TRUE ~ 11 - Importance)) %>%
-  mutate(cluster = case_when(village %in% cluster_1_villages ~ "Cluster 1", village %in% cluster_2_villages ~ "Cluster 2", TRUE ~ "Other"))
+<!-- livelihood_activities_expanded <- livelihood_activities_expanded %>% -->
+<!--   mutate(cluster = case_when(village %in% cluster_1_villages ~ "Cluster 1", village %in% cluster_2_villages ~ "Cluster 2", TRUE ~ "Other")) -->
+
+<!-- livelihood_activities_design <- livelihood_activities_expanded %>% -->
+<!--   as_survey_design(strata = stype, fpc = fpc) -->
+
+<!-- livelihood_activities_data <- livelihood_activities_design %>% -->
+<!--   group_by(village, cluster, livelihood_activities) %>% -->
+<!--   summarise(proportion = survey_mean(vartype = "ci", na.rm = TRUE), total = survey_total(vartype = "ci", na.rm = TRUE), n = unweighted(n())) %>% ungroup() -->
+
+<!-- ggplot(livelihood_activities_data, aes(x = village, y = proportion * 100, group = livelihood_activities, fill = livelihood_activities)) + -->
+<!--   geom_bar(stat = "identity", position = position_dodge(preserve = "single"), width = 0.95) + -->
+<!--   geom_errorbar(aes(ymax = pmin(proportion_upp * 100, 100), ymin = pmax(proportion_low * 100, 0)), -->
+<!--                 position = position_dodge(preserve = "single", width = 0.95), width = 0.1) + -->
+<!--   guides(fill = guide_legend(title = NULL)) + -->
+<!--   labs(x = "", y = "Percentage of Households") + -->
+<!--   sea::scale_fill_sea_discrete(labels = c( -->
+<!--       "AGRICULTURE" = "Agriculture", -->
+<!--       "BOAT BUILDER" = "Boat Builder", -->
+<!--       "BUSINESS" = "Business", -->
+<!--       "DAY LABOR" = "Day Labor", -->
+<!--       "EMPLOYEE" = "Employee", -->
+<!--       "FISH PROCESSING" = "Fish Processing", -->
+<!--       "FISH TRADING" = "Fish Trading", -->
+<!--       "FISHING" = "Fishing", -->
+<!--       "LIVESTOCK KEEPING" = "Livestock Keeping", -->
+<!--       "OTHER" = "Other", -->
+<!--       "PENSIONS" = "Pensions", -->
+<!--       "REMITTANCES" = "Remittances", -->
+<!--       "TAILOR" = "Tailor")) + -->
+<!--   sea::theme_sea() + -->
+<!--   theme(legend.position = "bottom",  legend.direction = "horizontal",  legend.justification = "center", -->
+<!--         axis.text.x = element_text(size = 7), strip.text = element_blank(), legend.box = -->
+<!--         "horizontal") + facet_wrap(~cluster, ncol = 1, scales = "free_x") + -->
+<!--   scale_y_continuous(labels = label_percent(scale = 1))+ -->
+<!--   scale_x_discrete(labels = function(x) str_wrap(x, width = 10)) -->
+
+<!-- ``` -->
 
 
-lh_ranking_long <- lh_ranking_long %>%
-  group_by(stype) %>%
-  mutate(fpc = max(fpc, n()))
+<!-- ```{r, fig.cap='Relative importance of livelihood activities. Note: relative importance is derived from a likert scale ranking of the importance of fish-based livelihood activities compared to the other livelihoods', fig.align='center', out.width = '90%'} -->
+<!-- lh_ranking_vars <- c("fishing", "trading", "processing", "agriculture", "livestock", "business", "labour", "employee", "pension", "remittance", "other_lh") -->
 
-strat_design <- lh_ranking_long %>%
-  as_survey_design(strata = stype, fpc = fpc)
+<!-- lh_ranking_long <- tanganyika_clean %>% -->
+<!--   pivot_longer(cols = all_of(lh_ranking_vars), names_to = "livelihood_activity", values_to = "Importance") %>% mutate(Importance = case_when(is.na(Importance) ~ 0, TRUE ~ 11 - Importance)) %>% -->
+<!--   mutate(cluster = case_when(village %in% cluster_1_villages ~ "Cluster 1", village %in% cluster_2_villages ~ "Cluster 2", TRUE ~ "Other")) -->
 
-aggregate_lh_ranking <- strat_design %>%
-  group_by(livelihood_activity) %>%
-  summarise(
-    mean_importance = survey_mean(Importance, vartype = "ci", na.rm = TRUE),
-    mean_importance_low = survey_mean(Importance, vartype = "ci", na.rm = TRUE, level = 0.95)[["ci_low"]],
-    mean_importance_upp = survey_mean(Importance, vartype = "ci", na.rm = TRUE, level = 0.95)[["ci_upp"]],
-    n = unweighted(n())
-  ) %>%
-  ungroup() %>%
-  mutate(
-    total_importance = sum(mean_importance, na.rm = TRUE), # Total importance per village
-    mean_importance_percent = (mean_importance / total_importance) * 100) 
 
-# Plot using relative percentages
-ggplot(aggregate_lh_ranking, aes(reorder(x = livelihood_activity, -mean_importance_percent), y = mean_importance_percent, fill = reorder(livelihood_activity, -mean_importance_percent))) + geom_bar(stat = "identity", width = 0.8) +
-  guides(fill = guide_legend(title = NULL, nrow = 3)) +
-  labs(x = NULL, y = NULL) +
-  sea::scale_fill_sea_discrete() +
-  sea::theme_sea() + 
-  theme(legend.position = "none",  # Remove the legend
-        axis.text.x = element_text(angle = 45, hjust = 1), panel.grid.major = element_blank(),
-    panel.grid.minor = element_blank()) +
-  scale_y_continuous(labels = label_percent(scale = 1))+
-  scale_x_discrete(labels = c("Agriculture", "Fishing", "Business", "Fish Trading", "Fish Processing", "Other", "Livestock Keeping", "Day Labor", "Employee", "Remittances", "Pensions"))
+<!-- lh_ranking_long <- lh_ranking_long %>% -->
+<!--   group_by(stype) %>% -->
+<!--   mutate(fpc = max(fpc, n())) -->
 
-```
+<!-- strat_design <- lh_ranking_long %>% -->
+<!--   as_survey_design(strata = stype, fpc = fpc) -->
+
+<!-- aggregate_lh_ranking <- strat_design %>% -->
+<!--   group_by(livelihood_activity) %>% -->
+<!--   summarise( -->
+<!--     mean_importance = survey_mean(Importance, vartype = "ci", na.rm = TRUE), -->
+<!--     mean_importance_low = survey_mean(Importance, vartype = "ci", na.rm = TRUE, level = 0.95)[["ci_low"]], -->
+<!--     mean_importance_upp = survey_mean(Importance, vartype = "ci", na.rm = TRUE, level = 0.95)[["ci_upp"]], -->
+<!--     n = unweighted(n()) -->
+<!--   ) %>% -->
+<!--   ungroup() %>% -->
+<!--   mutate( -->
+<!--     total_importance = sum(mean_importance, na.rm = TRUE), # Total importance per village -->
+<!--     mean_importance_percent = (mean_importance / total_importance) * 100)  -->
+
+<!-- # Plot using relative percentages -->
+<!-- ggplot(aggregate_lh_ranking, aes(reorder(x = livelihood_activity, -mean_importance_percent), y = mean_importance_percent, fill = reorder(livelihood_activity, -mean_importance_percent))) + geom_bar(stat = "identity", width = 0.8) + -->
+<!--   guides(fill = guide_legend(title = NULL, nrow = 3)) + -->
+<!--   labs(x = NULL, y = NULL) + -->
+<!--   sea::scale_fill_sea_discrete() + -->
+<!--   sea::theme_sea() +  -->
+<!--   theme(legend.position = "none",  # Remove the legend -->
+<!--         axis.text.x = element_text(angle = 45, hjust = 1), panel.grid.major = element_blank(), -->
+<!--     panel.grid.minor = element_blank()) + -->
+<!--   scale_y_continuous(labels = label_percent(scale = 1))+ -->
+<!--   scale_x_discrete(labels = c("Agriculture", "Fishing", "Business", "Fish Trading", "Fish Processing", "Other", "Livestock Keeping", "Day Labor", "Employee", "Remittances", "Pensions")) -->
+
+<!-- ``` -->
+
 
 ## Access to Credit
+
+Overall, 18% of the households had borrowed money at least once in the previous year (Figure 11). The proportion of households that took out credit is highest in Kichangani and Wampembe and lowest in Ng’anga and Tundu.
 
 ```{r, fig.cap='Proportion of households that borrowed money in the last year at village level', fig.align='center', out.width = '90%'}
 village_data <- tanganyika_survey %>%
@@ -1874,6 +1890,7 @@ ggplot(village_data_yes, aes(x = village, y = proportion * 100, group = borrow_s
   scale_y_continuous(labels = NULL) 
 ```
 
+Business expenses (23%) and farming expenses (21%) were the most common reasons for taking out a loan (Figure 12). Other common reasons for taking out a loan included covering household expenses (17%), food (16%), and medical expenses (16%). 
 
 ```{r, fig.cap='Purpose of the loan', fig.align='center', out.width = '90%'}
 loan_usage_expanded <- tanganyika_clean %>% select(hh_code, village, loan_usage, stype, fpc) %>%
@@ -1914,6 +1931,8 @@ ggplot(loan_usage_data, aes(x = reorder(loan_usage, -proportion), y = proportion
  
 ```
 
+Almost half the borrowing households receive their loans from friends or neighbours and roughly a quarter of loans were given by family (Figure 13). Community Conservation Banks (COCOBA), Savings and Credit Societies (SACCO), Fisher Committee (FICO), and Village Community Banks (VICOBA) accounted for 6% of loans given. COCOBA, SACCOS, and VICOBA all provide savings and loan schemes to groups of villagers.
+
 ```{r, fig.cap='Source of loans', fig.align='center', out.width = '90%'}
 borrowing_source_expanded <- tanganyika_clean %>% select(hh_code, village, borrowing_source, stype, fpc) %>%
   separate_rows(borrowing_source, sep = "\\|") %>%
@@ -1951,7 +1970,7 @@ ggplot(borrowing_source_data, aes(x = reorder(borrowing_source, -proportion), y 
   scale_x_discrete(labels = c("Friends or Neighbours", "Family", "Traders", "Bank", "COCOBA/SACCO/FICO/VIKOBA", "Microcredit Institution", "Mpesa"))
 ```
 
-
+The most common reason for not taking out a loan was the fear of being in debt, which was listed by 37% of respondents that didn’t borrow money in the past year (Figure 14). A further 18% of respondents stated that they found the process of taking out a loan too difficult or had no need for doing so (16%). 
 
 ```{r,  fig.cap='Reason for not having borrowed any money in the previous year', fig.align='center', out.width = '90%'}
 village_data <- tanganyika_survey %>%
@@ -1976,6 +1995,8 @@ ggplot(village_data, aes(x = reorder(not_borrowed, -proportion), y = proportion 
   scale_x_discrete(labels = c("Afraid to be in debt", "Process too\ndifficult", "No need", "Lack of sufficient\neducation on loans", "Repayment time\ntoo short", "Other", "No collateral\nfor loan"))
 
 ```
+
+Overall, 6% of household respondents across all villages stated that they were a member of a COCOBA, SACCO, or FICO (Figure 15). Membership was highest in Manda Uhuru (30%). Only two villages of the northern cluster contained households with COCOBA/SACCO/FICO members, namely Katenge and Wampembe. 
 
 ```{r, fig.cap='Household membership of a COCOBA, SACCO, or FICO at village level (%)', fig.align='center', out.width = '90%'}
 village_data <- tanganyika_survey %>%
@@ -2018,10 +2039,10 @@ ggplot(village_data, aes(x = village, y = proportion * 100, group = cocoba_sacco
     aes(ymax = pmin(proportion_upp, 1) * 100, ymin = pmax(proportion_low, 0) * 100),
     position = position_dodge(preserve = "single", width = 0.95), 
     width = 0.1) +
-  # geom_text(
-  #   data = village_data_yes, 
-  #   aes(y = pmin(proportion_upp, 1) * 100 + 1, label = paste0(round(proportion * 100, 1), "%")), 
-  #   position = position_dodge(width = 0.95), vjust = 0, size = 3) + 
+  geom_text(
+    data = village_data_yes,
+    aes(y = pmin(proportion_upp, 1) * 100 + 1, label = paste0(round(proportion * 100, 0), "%")),
+    position = position_dodge(width = 0.95), vjust = 0, size = 3) +
   guides(fill = guide_legend(title = NULL, nrow = 2)) +
   scale_fill_manual(values = SEA_palette) +
   sea::scale_fill_sea_discrete() +
@@ -2030,8 +2051,8 @@ ggplot(village_data, aes(x = village, y = proportion * 100, group = cocoba_sacco
     legend.position = "none",  
     axis.text.x = element_text(size = 8), 
     strip.text = element_blank(), 
-    # axis.text.y = element_blank(),
-    # axis.ticks.y = element_blank(),
+    axis.text.y = element_blank(),
+    axis.ticks.y = element_blank(),
     axis.title.x = element_blank(),  
     axis.title.y = element_blank(),
     panel.grid.major = element_blank(), 
@@ -2047,27 +2068,7 @@ ggplot(village_data, aes(x = village, y = proportion * 100, group = cocoba_sacco
   facet_wrap(~cluster, ncol = 1, scales = "free_x")
 ```
 
-
-```{r, fig.cap='Statement: BMU bylaws are being followed', fig.align='center', out.width = '90%'}
-
-village_data <- tanganyika_survey %>%
-  filter(!is.na(bylaws_followed) & bylaws_followed != "97 I DON'T KNOW") %>% 
-    group_by(bylaws_followed) %>%
-    summarise(proportion = survey_mean(vartype = "ci", na.rm = TRUE), total = survey_total(vartype = "ci", na.rm = TRUE), n = unweighted(n())) %>% drop_na()
-
-ggplot(village_data, aes(x = fct_relevel(bylaws_followed, "1 STRONGLY DISAGREE", "2 DISAGREE", "3 NEUTRAL", "4 AGREE", "5 STRONGLY AGREE"), y = proportion * 100, fill = bylaws_followed)) +
-  geom_bar(stat = "identity", width = 0.8) +
-  geom_errorbar(aes(ymax = pmin(proportion_upp, 1) * 100, ymin = pmax(proportion_low, 0) * 100), width = 0.2) +
-  guides(fill = guide_legend(title = NULL)) + 
-  labs(x = NULL, y = NULL) +  
-  sea::scale_fill_sea_discrete(4) +
-  sea::theme_sea() + 
-  theme(legend.position = "none", axis.text.x = element_text(size = 10), panel.grid.major = element_blank(), panel.grid.minor = element_blank()) +
-  scale_y_continuous(labels = label_percent(scale = 1))+
-  scale_x_discrete(labels = c("Strongly Disagree", "Disagree", "Neutral", "Agree", "Strongly Agree"))
-
-
-```
+A majority of households use mobile phones to make financial transactions (65%; Figure 16). The frequency of mobile transactions is relatively high, notably so in Isasa (90%) and Mtakjua (82%), only in Ng’anga did less than half of the household make use a mobile phone to make transactions. 
 
 ```{r, fig.cap='Mobile phone usage for financial transactions at village level (%)', fig.align='center', out.width = '90%'}
 village_data <- tanganyika_survey %>%
@@ -2101,17 +2102,21 @@ ggplot(village_data_yes, aes(x = village, y = proportion * 100, group = mobile_m
     aes(ymax = pmin(proportion_upp, 1) * 100, ymin = pmax(proportion_low, 0) * 100),
     position = position_dodge(preserve = "single", width = 0.95), 
     width = 0.1) +
+  geom_text(
+    data = village_data_yes,
+    aes(y = pmin(proportion_upp, 1) * 100 + 1, label = paste0(round(proportion * 100, 0), "%")),
+    position = position_dodge(width = 0.95), vjust = 0, size = 3) +
   guides(fill = guide_legend(title = NULL, nrow = 2)) +
   scale_fill_manual(values = SEA_palette) +
   sea::scale_fill_sea_discrete() +
   sea::theme_sea() + 
   theme(
     legend.position = "none",  
-    axis.text.x = element_text(size = 7), 
     strip.text = element_blank(), 
-    axis.text.y = element_text(size = 10),  
     axis.title.x = element_blank(),  
     axis.title.y = element_blank(),
+    axis.text.y = element_blank(),
+    axis.ticks.y = element_blank(),
     panel.grid.major = element_blank(), 
     panel.grid.minor = element_blank()) + 
   facet_wrap(~cluster, ncol = 1, scales = "free_x") +
@@ -2123,6 +2128,8 @@ ggplot(village_data_yes, aes(x = village, y = proportion * 100, group = mobile_m
 </div>
 
 ## Food Security and Consumption
+
+All households (not just fishers) were asked how often they eat fish (Figure 17). Migebuka is consumed most frequently on a daily basis, this differs from the 2011 Tuungane survey findings, in which dagaa was consumed most frequently and most often. Consumption of dagaa is most common on a weekly basis.  Other fish are consumed frequently less than once a week. Almost two thirds of the fish eaten in the past week stemmed from purchases (62%), whereas approximately a third was eaten from own catch (31%; Figure 18). 
 
 ```{r, fig.cap='Frequency of eating different fish species ', fig.align='center', out.width = '90%'}
 
@@ -2173,6 +2180,7 @@ ggplot(fish_proportions, aes(x = fish_type, y = proportion, fill = frequency)) +
 
 ```
 
+
 ```{r,  fig.cap='Primary source of fish eaten in the last week', fig.align='center', out.width = '90%'}
 village_data <- tanganyika_survey %>%
     group_by(primary_source) %>%
@@ -2195,6 +2203,8 @@ ggplot(village_data, aes(x = reorder(primary_source, -proportion), y = proportio
   scale_x_discrete(labels = c("Purchase", "Own Catch", "Receiced as Gift", "Bartered", "Borrowed"))
 
 ```
+
+Fish consumption has changed in the past five years (Figure 19). Over two thirds of all households indicated that they eat less fish now. Approximately a fifth of households eat the same amount of fish as five years ago, and 12% of households stated that they eat more fish now. 
 
 ```{r,  fig.cap='Change in frequency of fish consumption over the last 5 years', fig.align='center', out.width = '90%'}
 village_data <- tanganyika_survey %>%
@@ -2219,6 +2229,7 @@ ggplot(village_data, aes(x = reorder(eat_changed, -proportion), y = proportion *
 
 ```
 
+Food shortages occurred amongst 62% of all households during the last 12 months (Figure 20). In all villages, half or more than half of the household experienced at least one food shortage over the past 12 months. Shortages were most frequent in Manda Uhuru, where 95% of households were affected. 
 
 ```{r, fig.cap='Proportion of food shortages experienced during the last 12 months at village level (%)', fig.align='center', out.width = '90%'}
 
@@ -2276,6 +2287,8 @@ ggplot(village_data_yes, aes(x = village, y = proportion * 100, group = worry_sh
 
 Primary reasons for food shortages experienced in the last 12 months include inadequate storage of food reserves (n = 14), increases in food prices (n = 12), financial strains related to a limited income and/or the rising costs of basic needs (n = 11), and challenges experienced due to a limited harvest season (n = 10). Inadequate food reserves have led to ongoing food insecurity among households; families sold their crops without setting aside sufficient reserves, whilst low crop yields depleted available stores. Other reasons for food shortages pertain to ineffective farming practices, the high costs and limited access of manure, a significant drop in crop sale prices, which adversely affected household income and the ability to cover living expenses. Seven households referred to the adverse impacts of climate change, expressing that severe flooding due to excessive rainfall caused major crop losses and asset damage. Cross-border trading of food resources was stated by one household as a concern, exacerbating limited food supplies as traders opt to export crops to neighboring countries (Democratic Republic of Congo). 
 
+In terms of food shortages, the period between December 2023 and February 2024 appears to have been the worst for households among the survey population (Figure 21). Likewise, a higher frequency of food shortages during the months of May, June, and July 2024 also appeared to affect many households. Despite the frequency of food shortages, many households (70%) indicated that food availability was average or better than usual over the past year (Figure 22). However, food availability was worse than usual for 28% of all households. At village level, half the households in Mwinza expressed having worse food availability in the past year (Table 9). 
+
 ```{r, fig.cap='Monthly proportions of food shortages experienced over the past 12 months', fig.align='center', out.width = '90%'}
 # Step 1: Clean and prepare the data
 cleaned_data <- tanganyika_clean %>%
@@ -2327,9 +2340,9 @@ ggplot(shortage_data, aes(x = month_year, y = proportion * 100, fill = month_yea
 village_data <- tanganyika_survey %>%
     group_by(food_availability) %>%
     summarise(proportion = survey_mean(vartype = "ci", na.rm = TRUE), total = survey_total(vartype = "ci", na.rm = TRUE), n = unweighted(n())) %>% 
-  filter(food_availability != "I DO NOT WANT TO ANSWER" & food_availability != "I DON'T KNOW" & food_availability != "NOT SURE") %>% drop_na() 
+  filter(food_availability != "I DO NOT WANT TO ANSWER" & food_availability != "I DON'T KNOW") %>% drop_na() 
 
-ggplot(village_data, aes(x = fct_relevel(food_availability, "BETTER", "AVERAGE", "WORSE"), y = proportion * 100, fill = food_availability)) +
+ggplot(village_data, aes(x = fct_relevel(food_availability, "BETTER", "AVERAGE", "WORSE", "NOT SURE"), y = proportion * 100, fill = food_availability)) +
   geom_bar(stat = "identity", width = 0.8) +
   geom_errorbar(aes(ymax = pmin(proportion_upp, 1) * 100, ymin = pmax(proportion_low, 0) * 100), width = 0.2) +
   geom_text(
@@ -2341,7 +2354,7 @@ ggplot(village_data, aes(x = fct_relevel(food_availability, "BETTER", "AVERAGE",
   sea::theme_sea() + 
   theme(legend.position = "none", axis.text.x = element_text(angle = 45, hjust = 1), panel.grid.major = element_blank(), panel.grid.minor = element_blank(), axis.text.y = element_blank(), axis.title.y = element_blank()) +
   scale_y_continuous(labels = label_percent(scale = 1))+
-  scale_x_discrete(labels = c("Better", "Average", "Worse"))
+  scale_x_discrete(labels = c("Better", "Average", "Worse", "Not Sure"))
 
 ```
 
@@ -2403,13 +2416,14 @@ proportion_table %>%
   flextable::width(width = 0.5)  
 ```
 
+When viewed over the period of the last five years, the trend in food availability appears the same (Figure 23). Overall, 16% of households experience better food availability, 54% experience the same availability of food, and 28% of households express being worse off now. 
 
 ```{r, fig.cap='Change in household food availability over the last 5 years', fig.align='center', out.width = '90%'}
 village_data <- tanganyika_survey %>%
     group_by(availability_changed) %>%
-    summarise(proportion = survey_mean(vartype = "ci", na.rm = TRUE), total = survey_total(vartype = "ci", na.rm = TRUE), n = unweighted(n())) %>%  filter(availability_changed != "I DO NOT WANT TO ANSWER" & availability_changed != "I DON'T KNOW" & availability_changed != "NOT SURE") %>% drop_na() 
+    summarise(proportion = survey_mean(vartype = "ci", na.rm = TRUE), total = survey_total(vartype = "ci", na.rm = TRUE), n = unweighted(n())) %>%  filter(availability_changed != "I DO NOT WANT TO ANSWER" & availability_changed != "I DON'T KNOW") %>% drop_na() 
 
-ggplot(village_data, aes(x = fct_relevel(availability_changed, "BETTER NOW", "SAME", "WORSE NOW"), y = proportion * 100, fill = availability_changed)) +
+ggplot(village_data, aes(x = fct_relevel(availability_changed, "BETTER NOW", "SAME", "WORSE NOW", "NOT  SURE"), y = proportion * 100, fill = availability_changed)) +
   geom_bar(stat = "identity", width = 0.8) +
   geom_errorbar(aes(ymax = pmin(proportion_upp, 1) * 100, ymin = pmax(proportion_low, 0) * 100), width = 0.2) +
   geom_text(
@@ -2421,7 +2435,7 @@ ggplot(village_data, aes(x = fct_relevel(availability_changed, "BETTER NOW", "SA
   sea::theme_sea() + 
   theme(legend.position = "none", axis.text.x = element_text(angle = 45, hjust = 1), panel.grid.major = element_blank(), panel.grid.minor = element_blank(), axis.text.y = element_blank(), axis.title.y = element_blank()) +
   scale_y_continuous(labels = label_percent(scale = 1))+
-  scale_x_discrete(labels = c("Better Now", "Same", "Worse Now"))
+  scale_x_discrete(labels = c("Better Now", "Same", "Worse Now", "Not Sure"))
 
 ```
 
@@ -2467,6 +2481,7 @@ ggplot(availability_reason_data, aes(x = reorder(availability_reason, -proportio
 
 ```
 
+The reasons for an increase in food availability vary (Figure 24). 33% of respondents attributed their increase in food availability to improvements in fish stocks. Reasons also pertained to agriculture, as 29% of respondents attributed the improvements to food availability to thriving crop harvests, whereas 19% of respondents linked it to the use of fertilizer applied to their fields. Interestingly, a small subset of respondents linked their improvement in food availability to decreases in fish availability or destroyed crops, this may perhaps be related to a diversification in income or simply a misunderstanding.
 
 Diversification of income sources was stated as another reason as to why food availability had improved over the past year (n = 4). Households expressed that previously, their income was solely dependent on fishing, but now they have diversified their sources of income, such as (poultry) farming, improving their financial situation. Improved farming practices (n = 3), increases in agricultural productivity due to expanding land under cultivation (n = 2), improvements in business activities (n = 2), stabilized food prices  (n = 1), and improvements in personal life (n = 1) and financial support obtained (n = 1) include other reasons for which food availability has improved.
 
@@ -2509,6 +2524,8 @@ ggplot(availability_reason_data, aes(x = reorder(availability_reason, -proportio
 
 ```
 
+The destruction of crops by bad weather and low fish availability were the two primary reasons for a decrease in household food availability (Figure 25). Crop damage could also be attributed to wildlife (8%) and pests (7%). Respondents also expressed other reasons and illness to have affected food availability negatively. 
+
 Other reasons expressed for a decrease in food availability pertain to financial strains attributed to the lack of a stable income source, with household income falling short of daily expenses (n = 12). Furthermore, limited crop yields and a drop in crop sale prices, as well as a lack of available land for farming, the use of low-quality farming inputs and reliance on basic farming equipment contributed to the reasons related to agricultural productivity, which caused lower food availability. Two households provided responses related to fishing, stating that underinvestment in fishing practices has reduced its potential for high yield. The rising cost of fishing operations and a lack of adequate fishing equipment limit access to abundant fishing ground, as reaching distant waters now requires more advanced vessels.
 
 </div>
@@ -2518,6 +2535,8 @@ Other reasons expressed for a decrease in food availability pertain to financial
 <div class ="section-rust">
 
 ## Governance and Participation
+
+Overall, almost half of the households (41%) think that they can influence village government decisions (Table 10). This is significantly more than the 24% estimated by the 2011 Tuungane survey and signifies an improvement in local governance and participation. Looking at the village level, three quarters of respondents in Majengo Mapya felt they could not influence government decisions. 
 
 ```{r}
 summary_by_village <- tanganyika_survey %>%
@@ -2588,7 +2607,9 @@ hh_influence_table %>%
 
 5% of all household respondents (n = 51) actively participate in the decision-making process about fisheries resources and livelihoods through attending various meetings and workshops. These activities include planning meetings, government meetings, BMU and village meetings, as well as public meetings. A further 3% of households (n = 27) indicated they contribute significantly to decision-making about fisheries resources and livelihoods by providing input and suggestions. Their involvement includes voicing opinions, offering ideas, and participating in discussions to ensure effective management and sustainable practices. 15 respondents suggested that following guidelines and regulations is a way of contributing to decision-making. By adhering to these rules, they ensure sustainable fishing practices and compliance with legal requirements. Other contributions to the decision-making around fisheries resources and livelihoods include involvement as representatives or community leaders (n = 6), encouraging sustainable fishing practices and safeguarding fish breeding zones in their communities through active engagement with BMU activities (n = 4), education and awareness (n = 6), policy enforcement (n = 4), and participation in patrols and conservation efforts (n = 3).
 
-```{r, fig.cap='Village membership at village level (%)', fig.align='center', out.width = '90%'}
+Respondents were asked whether anyone in their household is a member of a village organisation, such as a cooperative, a self-help group, a women’s group, or some other group (Figure 26). Although the affirmative responses were low overall (13%), group membership in villages such as Mtakuja (45%), Kichangani (26%), and Katenge (20%) was markedly higher.
+
+```{r, fig.cap='Village organisation membership at village level (%)', fig.align='center', out.width = '90%'}
 
 village_data <- tanganyika_survey %>%
   group_by(village, village_membership) %>%
@@ -2601,18 +2622,31 @@ village_data <- tanganyika_survey %>%
 village_data_yes <- village_data %>%
   filter(village_membership == "YES")
 
-total_summary <- tanganyika_survey %>%
-  group_by(village_membership) %>%
+cluster_summary <- tanganyika_survey %>%
+  group_by(cluster = case_when(
+    village %in% cluster_1_villages ~ "Cluster 1",
+    village %in% cluster_2_villages ~ "Cluster 2"), village_membership) %>%
   summarise(
     proportion = survey_mean(vartype = "ci", na.rm = TRUE),
     total = survey_total(vartype = "ci", na.rm = TRUE),
-    n = unweighted(n())
-  ) %>%
-  mutate(village = "Overall", cluster = "Cluster 2") %>%
-  filter(village_membership == "YES") 
+    n = unweighted(n())) %>%
+  mutate(
+    village = case_when(
+      cluster == "Cluster 1" ~ "Overall North",
+      cluster == "Cluster 2" ~ "Overall South")) %>%
+  filter(village_membership == "YES")
 
-# Append the "Total" row to village_data_yes
-village_data_yes <- bind_rows(village_data_yes, total_summary)
+# Add cluster-level and total summaries to the data
+village_data_yes <- bind_rows(village_data_yes, cluster_summary)
+
+village_data_yes <- village_data_yes %>%
+  mutate(
+    village = factor(
+      village,
+      levels = c(
+        unique(village_data_yes$village[village_data_yes$cluster == "Cluster 1"]),
+        unique(village_data_yes$village[village_data_yes$cluster == "Cluster 2"]))))
+
 
 # Create the plot
 ggplot(village_data_yes, aes(x = village, y = proportion * 100, group = village_membership, fill = village_membership)) +
@@ -2643,8 +2677,9 @@ ggplot(village_data_yes, aes(x = village, y = proportion * 100, group = village_
 
 ```
 
+Trust is vital in establishing relationships between different stakeholders and can be an apt indicator of good relations in local governance. Trust between local villagers and local government authorities was high, as 69% of respondents indicated that local authorities could be trusted always or most of the time. However, people expressed having less trust in people from neighbouring villages or even people from their own village. 40% of respondents indicated that people from neighbouring villages could rarely be trusted or never be trusted, this corresponded to 30% with regards to people in their own village.
 
-```{r, fig.cap='An indication of trust in people from the same village, neigboring vilalges, and the local government', fig.align='center', out.width = '90%'}
+```{r, fig.cap='An indication of trust in people from the same village, neigbouring villages, and the local government', fig.align='center', out.width = '90%'}
 
 # Filter out "NEVER" and "I DON'T KNOW"
 filtered_data <- tanganyika_clean %>%
@@ -2691,6 +2726,7 @@ ggplot(trust_proportions, aes(x = party, y = proportion, fill = fct_relevel(trus
 
 ```
 
+Overall, attendance of public meetings to discuss topics such as village land-use planning, lake management and/or fisheries management was estimated at 41% (Table 11). This reflects the trend observed in Table 10 about household influence on village government decisions. Similarly, three quarters of respondents from Majengo Mapya did not attend any public meetings in the past year. 
 
 ```{r}
 summary_by_village <- tanganyika_survey %>%
@@ -2726,6 +2762,7 @@ hh_influence_table %>%
   align(i = 1, align = "center", part = "header")
 ```
 
+Conflicts and/or disputes about fishing occur rarely, with two thirds of all household respondents stating that conflicts occur rarely or never (Figure 28). In total, 18% of respondents indicated that conflicts occur often. Conflicts occur most often in Manda Kerenge (32%), Manda Uhuru (30%), and Mtakuja (29%). Positively, in the past year, the frequency of conflicts has decreased in most villages (Figure 29). Only in Katenge are there more conflicts than there were 12 months ago, as was indicated by 60% of respondents from the village. 
 
 ```{r, fig.cap='Frequency of conflicts about fishing at village level (%)', fig.align='center', out.width = '90%'}
 expanded <- tanganyika_clean %>%
@@ -2739,24 +2776,28 @@ conflict_data <- design %>%
   group_by(village, cluster, disputes_conflicts) %>%
   summarise(proportion = survey_mean(vartype = "ci", na.rm = TRUE), total = survey_total(vartype = "ci", na.rm = TRUE), n = unweighted(n())) %>% ungroup() 
 
-# Add a "Total" group to the data
-total_data <- design %>%
-  group_by(disputes_conflicts) %>%
-  filter(disputes_conflicts != "I DO NOT WANT TO ANSWER") %>% 
-  summarise(proportion = survey_mean(vartype = "ci", na.rm = TRUE),
-            total = survey_total(vartype = "ci", na.rm = TRUE),
-            n = unweighted(n())) %>%
-  mutate(village = "Overall", cluster = "Overall")  # Mark as "Total"
+overall_cluster_data <- design %>%
+  filter(disputes_conflicts != "I DO NOT WANT TO ANSWER") %>%
+  group_by(cluster, disputes_conflicts) %>%
+  summarise(
+    proportion = survey_mean(vartype = "ci", na.rm = TRUE),
+    total = survey_total(vartype = "ci", na.rm = TRUE),
+    n = unweighted(n())
+  ) %>%
+  mutate(village = if_else(cluster == "Cluster 1", "Overall North", "Overall South"))
 
-# Combine the total_data with the original treatment_data
-conflict_data <- bind_rows(conflict_data, total_data)
-
-conflict_data <- conflict_data %>%
-  mutate(cluster = case_when(
-    cluster == "Overall" ~ "Cluster 2", TRUE ~ cluster))
+# Combine the overall cluster data with the original conflict_data
+conflict_data <- bind_rows(conflict_data, overall_cluster_data)
 
 conflict_data <- conflict_data %>%
-  mutate(village = reorder(village, -proportion))  # Reorder villages based on proportion
+  mutate(
+    village = factor(
+      village,
+      levels = c(
+        unique(conflict_data$village[conflict_data$cluster == "Cluster 1" & village != "Overall North"]),
+        "Overall North",
+        unique(conflict_data$village[conflict_data$cluster == "Cluster 2" & village != "Overall South"]),
+        "Overall South")))
 
 # Reorder treatment_method_dry based on average proportion for each method
 conflict_data$disputes_conflicts <- factor(
@@ -2799,24 +2840,28 @@ conflict_data <- design %>%
   group_by(village, cluster, more_less) %>%
   summarise(proportion = survey_mean(vartype = "ci", na.rm = TRUE), total = survey_total(vartype = "ci", na.rm = TRUE), n = unweighted(n())) %>% ungroup()
 
-# Add a "Total" group to the data
-total_data <- design %>%
-  group_by(more_less) %>%
-  filter(more_less != "I DO NOT WANT TO ANSWER") %>% 
-  summarise(proportion = survey_mean(vartype = "ci", na.rm = TRUE),
-            total = survey_total(vartype = "ci", na.rm = TRUE),
-            n = unweighted(n())) %>%
-  mutate(village = "Overall", cluster = "Overall")  # Mark as "Total"
+overall_cluster_data <- design %>%
+  filter(more_less != "I DO NOT WANT TO ANSWER") %>%
+  group_by(cluster, more_less) %>%
+  summarise(
+    proportion = survey_mean(vartype = "ci", na.rm = TRUE),
+    total = survey_total(vartype = "ci", na.rm = TRUE),
+    n = unweighted(n())
+  ) %>%
+  mutate(village = if_else(cluster == "Cluster 1", "Overall North", "Overall South"))
 
-# Combine the total_data with the original treatment_data
-conflict_data <- bind_rows(conflict_data, total_data)
-
-conflict_data <- conflict_data %>%
-  mutate(cluster = case_when(
-    cluster == "Overall" ~ "Cluster 2", TRUE ~ cluster))
+# Combine the overall cluster data with the original conflict_data
+conflict_data <- bind_rows(conflict_data, overall_cluster_data)
 
 conflict_data <- conflict_data %>%
-  mutate(village = reorder(village, -proportion))  # Reorder villages based on proportion
+  mutate(
+    village = factor(
+      village,
+      levels = c(
+        unique(conflict_data$village[conflict_data$cluster == "Cluster 1" & village != "Overall North"]),
+        "Overall North",
+        unique(conflict_data$village[conflict_data$cluster == "Cluster 2" & village != "Overall South"]),
+        "Overall South")))
 
 # Reorder treatment_method_dry based on average proportion for each method
 conflict_data$more_less <- factor(
@@ -2847,6 +2892,7 @@ ggplot(conflict_data, aes(x = village, y = proportion * 100, group = fct_relevel
 
 ```
 
+Approximately two thirds of all reasons for conflicts concern the closure of the lake to fishers or the conflicts surrounding the use of illegal fishing gear (Figure 30). Fishing in protected breeding areas and the catching of undersized fish also contributed to conflicts. 
 
 ```{r,  fig.cap='Reasons for conflict', fig.align='center', out.width = '90%'}
 
@@ -2887,6 +2933,7 @@ ggplot(conflict_reason_data, aes(x = reorder(conflict_reason, -proportion), y = 
 
 ```
 
+Conflicts most commonly occurred with government authorities, among fishers, and between BMUs and fishers (Figure 31). Noticeably, in villages of the northern cluster, BMUs may be considered negligible as a conflict party, and conflicts occurred predominantly with government authorities and among fishers. In the southern cluster, however, half or more of all listed conflicts are said to occur between BMUs and fishers.
 
 ```{r,  fig.cap='Conflict parties at village level (%)', fig.align='center', out.width = '90%'}
 
@@ -2904,24 +2951,28 @@ conflict_parties_data <- conflict_parties_design %>%
   group_by(village, cluster, conflict_parties) %>%
   summarise(proportion = survey_mean(vartype = "ci", na.rm = TRUE), total = survey_total(vartype = "ci", na.rm = TRUE), n = unweighted(n())) %>% ungroup()
 
-# Add a "Total" group to the data
-total_data <- conflict_parties_design %>%
-  group_by(conflict_parties) %>%
-#  filter(conflict_parties != "I DO NOT WANT TO ANSWER") %>% 
-  summarise(proportion = survey_mean(vartype = "ci", na.rm = TRUE),
-            total = survey_total(vartype = "ci", na.rm = TRUE),
-            n = unweighted(n())) %>%
-  mutate(village = "Overall", cluster = "Overall")  # Mark as "Total"
+overall_cluster_data <- conflict_parties_design %>%
+  filter(conflict_parties != "I DO NOT WANT TO ANSWER") %>%
+  group_by(cluster, conflict_parties) %>%
+  summarise(
+    proportion = survey_mean(vartype = "ci", na.rm = TRUE),
+    total = survey_total(vartype = "ci", na.rm = TRUE),
+    n = unweighted(n())
+  ) %>%
+  mutate(village = if_else(cluster == "Cluster 1", "Overall North", "Overall South"))
 
-# Combine the total_data with the original treatment_data
-conflict_parties_data <- bind_rows(conflict_parties_data, total_data)
-
-conflict_parties_data <- conflict_parties_data %>%
-  mutate(cluster = case_when(
-    cluster == "Overall" ~ "Cluster 2", TRUE ~ cluster))
+# Combine the overall cluster data with the original conflict_data
+conflict_parties_data <- bind_rows(conflict_parties_data, overall_cluster_data)
 
 conflict_parties_data <- conflict_parties_data %>%
-  mutate(village = reorder(village, -proportion))  # Reorder villages based on proportion
+  mutate(
+    village = factor(
+      village,
+      levels = c(
+        unique(conflict_parties_data$village[conflict_parties_data$cluster == "Cluster 1" & village != "Overall North"]),
+        "Overall North",
+        unique(conflict_parties_data$village[conflict_parties_data$cluster == "Cluster 2" & village != "Overall South"]),
+        "Overall South")))
 
 # Reorder treatment_method_dry based on average proportion for each method
 conflict_parties_data$conflict_parties <- factor(
@@ -2947,6 +2998,8 @@ ggplot(conflict_parties_data, aes(x = village, y = proportion * 100, group = con
 
 ```
 
+The majority of conflicts are resolved in a fair manner (Figure 32). Once again, Katenge stands out as a vast majority of respondents do not believe that conflicts are resolved fairly (80%). Unfair conflict resolution also appears high in Izinga and Wampembe. In general, it appears that in the southern cluster of villages fair conflict resolution is higher than in the northern cluster. 
+
 Other parties listed among which disputes or conflicts occur include fishers and fisheries officers (n = 17) and include reasons such as conflict over illegal fishing, disagreements over payments and equipment provision, and conflicts regarding the lake closure. Fishers also experience disputes with government (n = 10), including national government, Nkasi district government, and the government of Izinga village. Furthermore, bandits (n = 3) were also listed as a conflict party.
 
 ```{r, fig.cap='Fair conflict resolution at village level (%)', fig.align='center', out.width = '90%'}
@@ -2961,24 +3014,28 @@ conflict_data <- design %>%
   group_by(village, cluster, fair_resolution) %>%
   summarise(proportion = survey_mean(vartype = "ci", na.rm = TRUE), total = survey_total(vartype = "ci", na.rm = TRUE), n = unweighted(n())) %>% ungroup() 
 
-# Add a "Total" group to the data
-total_data <- design %>%
-  group_by(fair_resolution) %>%
-  filter(fair_resolution != "I DON'T KNOW") %>% 
-  summarise(proportion = survey_mean(vartype = "ci", na.rm = TRUE),
-            total = survey_total(vartype = "ci", na.rm = TRUE),
-            n = unweighted(n())) %>%
-  mutate(village = "Overall", cluster = "Overall")  # Mark as "Total"
+overall_cluster_data <- design %>%
+  filter(fair_resolution!= "I DO NOT WANT TO ANSWER" & fair_resolution!= "I DON'T KNOW") %>%
+  group_by(cluster, fair_resolution) %>%
+  summarise(
+    proportion = survey_mean(vartype = "ci", na.rm = TRUE),
+    total = survey_total(vartype = "ci", na.rm = TRUE),
+    n = unweighted(n())
+  ) %>%
+  mutate(village = if_else(cluster == "Cluster 1", "Overall North", "Overall South"))
 
-# Combine the total_data with the original treatment_data
-conflict_data <- bind_rows(conflict_data, total_data)
-
-conflict_data <- conflict_data %>%
-  mutate(cluster = case_when(
-    cluster == "Overall" ~ "Cluster 2", TRUE ~ cluster))
+# Combine the overall cluster data with the original conflict_data
+conflict_data <- bind_rows(conflict_data, overall_cluster_data)
 
 conflict_data <- conflict_data %>%
-  mutate(village = reorder(village, -proportion))  # Reorder villages based on proportion
+  mutate(
+    village = factor(
+      village,
+      levels = c(
+        unique(conflict_data$village[conflict_data$cluster == "Cluster 1" & village != "Overall North"]),
+        "Overall North",
+        unique(conflict_data$village[conflict_data$cluster == "Cluster 2" & village != "Overall South"]),
+        "Overall South")))
 
 # Reorder treatment_method_dry based on average proportion for each method
 conflict_data$fair_resolution <- factor(
@@ -3007,9 +3064,9 @@ ggplot(conflict_data, aes(x = village, y = proportion * 100, group = fct_relevel
 
 ```
 
-Conflict Resolution
-
 Two respondents indicated that disputes between BMUs and fishers are formally resolved by involving law enforcement authorities. This usually involves reporting the issue to the local police station for investigation and resolution. One respondent highlighted the role of community gatherings in resolving conflicts. These gatherings provide a platform for fishers and BMUs to engage in open discussions and come to a consensus on how to address the issue. Another respondent mentioned that some conflicts do not escalate to a level requiring intervention. These are perceived as minor issues that do not cause significant harm and, as such, are often left unresolved.
+
+Respondents were asked about who they thought to be an influential leader among their community, for instance a local leader whom they respect and who they think is good at raising awareness in their village about important communal issues (Figure 33). In response, political leaders (38%) and religious leaders (24%) were mentioned most commonly. Political party leaders, civil servants, and respected elders were also mentioned frequently. Of these influential leaders, 72% already occupied a village, ward, or regional government position (Figure 34). 
 
 ```{r,  fig.cap='Influential community leaders', fig.align='center', out.width = '90%'}
 influential_leaders_expanded <- tanganyika_clean %>% select(hh_code, village, influential_leaders, stype, fpc) %>%
@@ -3062,18 +3119,30 @@ village_data <- tanganyika_survey %>%
 village_data_yes <- village_data %>%
   filter(leader_position == "YES")
 
-total_summary <- tanganyika_survey %>%
-  group_by(leader_position) %>%
+cluster_summary <- tanganyika_survey %>%
+  group_by(cluster = case_when(
+    village %in% cluster_1_villages ~ "Cluster 1",
+    village %in% cluster_2_villages ~ "Cluster 2"), leader_position) %>%
   summarise(
     proportion = survey_mean(vartype = "ci", na.rm = TRUE),
     total = survey_total(vartype = "ci", na.rm = TRUE),
-    n = unweighted(n())
-  ) %>%
-  mutate(village = "Overall", cluster = "Cluster 2") %>%
-  filter(leader_position == "YES") 
+    n = unweighted(n())) %>%
+  mutate(
+    village = case_when(
+      cluster == "Cluster 1" ~ "Overall North",
+      cluster == "Cluster 2" ~ "Overall South")) %>%
+  filter(leader_position == "YES")
 
-# Append the "Total" row to village_data_yes
-village_data_yes <- bind_rows(village_data_yes, total_summary)
+# Add cluster-level and total summaries to the data
+village_data_yes <- bind_rows(village_data_yes, cluster_summary)
+
+village_data_yes <- village_data_yes %>%
+  mutate(
+    village = factor(
+      village,
+      levels = c(
+        unique(village_data_yes$village[village_data_yes$cluster == "Cluster 1"]),
+        unique(village_data_yes$village[village_data_yes$cluster == "Cluster 2"]))))
 
 # Create the plot
 ggplot(village_data_yes, aes(x = village, y = proportion * 100, group = leader_position, fill = leader_position)) +
@@ -3106,7 +3175,6 @@ ggplot(village_data_yes, aes(x = village, y = proportion * 100, group = leader_p
   scale_x_discrete(labels = function(x) str_wrap(x, width = 10))
 ```
 
-</div>
 \newpage
 
 <!-- rust page -->
@@ -3132,6 +3200,38 @@ village_data <- village_data %>%
 # Filter for "YES" entries in borrow_status
 village_data_yes <- village_data %>%
   filter(BMU_activity == "YES")
+
+cluster_summary <- tanganyika_survey %>%
+  group_by(cluster = case_when(
+    village %in% cluster_1_villages ~ "Cluster 1",
+    village %in% cluster_2_villages ~ "Cluster 2"), BMU_activity) %>%
+  summarise(
+    proportion = survey_mean(vartype = "ci", na.rm = TRUE),
+    total = survey_total(vartype = "ci", na.rm = TRUE),
+    n = unweighted(n())) %>%
+  mutate(
+    village = case_when(
+      cluster == "Cluster 1" ~ "Overall North",
+      cluster == "Cluster 2" ~ "Overall South")) %>%
+  filter(BMU_activity == "YES")
+
+# Add cluster-level and total summaries to the data
+village_data_yes <- bind_rows(village_data_yes, cluster_summary)
+
+cluster_1_order <- c(
+  "Izinga", "Kala", "Katenge", "Kilambo cha Mkolechi", 
+  "Kizumbi", "Lyapinda", "Mpasa", "Mwinza", "Ng'anga", 
+  "Tundu", "Wampembe", "Overall North")
+
+# Adjust factor levels for villages in Cluster 1 and Cluster 2
+village_data <- village_data %>%
+  mutate(
+    village = factor(
+      village,
+      levels = c(
+        cluster_1_order,  # Use the specified order for Cluster 1
+        setdiff(unique(village_data_yes$village[village_data_yes$cluster == "Cluster 2"]), "Overall South"),
+        "Overall South")))
 
 ggplot(village_data, aes(x = village, y = proportion * 100, group = BMU_activity, fill = BMU_activity)) +
 geom_bar(data = village_data_yes, stat = "identity", position = position_dodge(preserve = "single"), width = 0.95) +
@@ -3190,6 +3290,38 @@ village_data <- village_data %>%
 village_data_yes <- village_data %>%
   filter(awareness_bmu == "YES")
 
+cluster_summary <- tanganyika_survey %>%
+  group_by(cluster = case_when(
+    village %in% cluster_1_villages ~ "Cluster 1",
+    village %in% cluster_2_villages ~ "Cluster 2"), awareness_bmu) %>%
+  summarise(
+    proportion = survey_mean(vartype = "ci", na.rm = TRUE),
+    total = survey_total(vartype = "ci", na.rm = TRUE),
+    n = unweighted(n())) %>%
+  mutate(
+    village = case_when(
+      cluster == "Cluster 1" ~ "Overall North",
+      cluster == "Cluster 2" ~ "Overall South")) %>%
+  filter(awareness_bmu == "YES")
+
+# Add cluster-level and total summaries to the data
+village_data_yes <- bind_rows(village_data_yes, cluster_summary)
+
+cluster_1_order <- c(
+  "Izinga", "Kala", "Katenge", "Kilambo cha Mkolechi", 
+  "Kizumbi", "Lyapinda", "Mpasa", "Mwinza", "Ng'anga", 
+  "Tundu", "Wampembe", "Overall North")
+
+# Adjust factor levels for villages in Cluster 1 and Cluster 2
+village_data <- village_data %>%
+  mutate(
+    village = factor(
+      village,
+      levels = c(
+        cluster_1_order,  # Use the specified order for Cluster 1
+        setdiff(unique(village_data_yes$village[village_data_yes$cluster == "Cluster 2"]), "Overall South"),
+        "Overall South")))
+
 ggplot(village_data, aes(x = village, y = proportion * 100, group = awareness_bmu, fill = awareness_bmu)) +
 geom_bar(data = village_data_yes, stat = "identity", position = position_dodge(preserve = "single"), width = 0.95) +
   geom_errorbar(
@@ -3227,6 +3359,27 @@ geom_bar(data = village_data_yes, stat = "identity", position = position_dodge(p
 ```
 
 
+```{r, fig.cap='Statement: BMU bylaws are being followed', fig.align='center', out.width = '90%'}
+
+village_data <- tanganyika_survey %>%
+  filter(!is.na(bylaws_followed) & bylaws_followed != "97 I DON'T KNOW") %>% 
+    group_by(bylaws_followed) %>%
+    summarise(proportion = survey_mean(vartype = "ci", na.rm = TRUE), total = survey_total(vartype = "ci", na.rm = TRUE), n = unweighted(n())) %>% drop_na()
+
+ggplot(village_data, aes(x = fct_relevel(bylaws_followed, "1 STRONGLY DISAGREE", "2 DISAGREE", "3 NEUTRAL", "4 AGREE", "5 STRONGLY AGREE"), y = proportion * 100, fill = bylaws_followed)) +
+  geom_bar(stat = "identity", width = 0.8) +
+  geom_errorbar(aes(ymax = pmin(proportion_upp, 1) * 100, ymin = pmax(proportion_low, 0) * 100), width = 0.2) +
+  guides(fill = guide_legend(title = NULL)) + 
+  labs(x = NULL, y = NULL) +  
+  sea::scale_fill_sea_discrete(4) +
+  sea::theme_sea() + 
+  theme(legend.position = "none", axis.text.x = element_text(size = 10), panel.grid.major = element_blank(), panel.grid.minor = element_blank()) +
+  scale_y_continuous(labels = label_percent(scale = 1))+
+  scale_x_discrete(labels = c("Strongly Disagree", "Disagree", "Neutral", "Agree", "Strongly Agree"))
+
+
+```
+
 
 ```{r, fig.cap='BMU membership at village level (%)', fig.align='center', out.width = '90%'}
 
@@ -3247,6 +3400,38 @@ village_data <- village_data %>%
 # Filter for "YES" entries in borrow_status
 village_data_yes <- village_data %>%
   filter(bmu_member == "YES")
+
+cluster_summary <- tanganyika_survey %>%
+  group_by(cluster = case_when(
+    village %in% cluster_1_villages ~ "Cluster 1",
+    village %in% cluster_2_villages ~ "Cluster 2"), bmu_member) %>%
+  summarise(
+    proportion = survey_mean(vartype = "ci", na.rm = TRUE),
+    total = survey_total(vartype = "ci", na.rm = TRUE),
+    n = unweighted(n())) %>%
+  mutate(
+    village = case_when(
+      cluster == "Cluster 1" ~ "Overall North",
+      cluster == "Cluster 2" ~ "Overall South")) %>%
+  filter(bmu_member == "YES")
+
+# Add cluster-level and total summaries to the data
+village_data_yes <- bind_rows(village_data_yes, cluster_summary)
+
+cluster_1_order <- c(
+  "Izinga", "Kala", "Katenge", "Kilambo cha Mkolechi", 
+  "Kizumbi", "Lyapinda", "Mpasa", "Mwinza", "Ng'anga", 
+  "Tundu", "Wampembe", "Overall North")
+
+# Adjust factor levels for villages in Cluster 1 and Cluster 2
+village_data <- village_data %>%
+  mutate(
+    village = factor(
+      village,
+      levels = c(
+        cluster_1_order,  # Use the specified order for Cluster 1
+        setdiff(unique(village_data_yes$village[village_data_yes$cluster == "Cluster 2"]), "Overall South"),
+        "Overall South")))
 
 ggplot(village_data, aes(x = village, y = proportion * 100, group = bmu_member, fill = bmu_member)) +
 geom_bar(data = village_data_yes, stat = "identity", position = position_dodge(preserve = "single"), width = 0.95) +
@@ -3304,6 +3489,38 @@ village_data <- village_data %>%
 # Filter for "YES" entries in borrow_status
 village_data_yes <- village_data %>%
   filter(tnc_support_bmu == "YES")
+
+cluster_summary <- tanganyika_survey %>%
+  group_by(cluster = case_when(
+    village %in% cluster_1_villages ~ "Cluster 1",
+    village %in% cluster_2_villages ~ "Cluster 2"), tnc_support_bmu) %>%
+  summarise(
+    proportion = survey_mean(vartype = "ci", na.rm = TRUE),
+    total = survey_total(vartype = "ci", na.rm = TRUE),
+    n = unweighted(n())) %>%
+  mutate(
+    village = case_when(
+      cluster == "Cluster 1" ~ "Overall North",
+      cluster == "Cluster 2" ~ "Overall South")) %>%
+  filter(tnc_support_bmu == "YES")
+
+# Add cluster-level and total summaries to the data
+village_data_yes <- bind_rows(village_data_yes, cluster_summary)
+
+cluster_1_order <- c(
+  "Izinga", "Kala", "Katenge", "Kilambo cha Mkolechi", 
+  "Kizumbi", "Lyapinda", "Mpasa", "Mwinza", "Ng'anga", 
+  "Tundu", "Wampembe", "Overall North")
+
+# Adjust factor levels for villages in Cluster 1 and Cluster 2
+village_data <- village_data %>%
+  mutate(
+    village = factor(
+      village,
+      levels = c(
+        cluster_1_order,  # Use the specified order for Cluster 1
+        setdiff(unique(village_data_yes$village[village_data_yes$cluster == "Cluster 2"]), "Overall South"),
+        "Overall South")))
 
 ggplot(village_data, aes(x = village, y = proportion * 100, group = tnc_support_bmu, fill = tnc_support_bmu)) +
 geom_bar(data = village_data_yes, stat = "identity", position = position_dodge(preserve = "single"), width = 0.95) +
@@ -3756,6 +3973,38 @@ village_data <- village_data %>%
 village_data_yes <- village_data %>%
   filter(bmu_bylaws == "YES")
 
+cluster_summary <- tanganyika_survey %>%
+  group_by(cluster = case_when(
+    village %in% cluster_1_villages ~ "Cluster 1",
+    village %in% cluster_2_villages ~ "Cluster 2"), bmu_bylaws) %>%
+  summarise(
+    proportion = survey_mean(vartype = "ci", na.rm = TRUE),
+    total = survey_total(vartype = "ci", na.rm = TRUE),
+    n = unweighted(n())) %>%
+  mutate(
+    village = case_when(
+      cluster == "Cluster 1" ~ "Overall North",
+      cluster == "Cluster 2" ~ "Overall South")) %>%
+  filter(bmu_bylaws == "YES")
+
+# Add cluster-level and total summaries to the data
+village_data_yes <- bind_rows(village_data_yes, cluster_summary)
+
+cluster_1_order <- c(
+  "Izinga", "Kala", "Katenge", "Kilambo cha Mkolechi", 
+  "Kizumbi", "Lyapinda", "Mpasa", "Mwinza", "Ng'anga", 
+  "Tundu", "Wampembe", "Overall North")
+
+# Adjust factor levels for villages in Cluster 1 and Cluster 2
+village_data <- village_data %>%
+  mutate(
+    village = factor(
+      village,
+      levels = c(
+        cluster_1_order,  # Use the specified order for Cluster 1
+        setdiff(unique(village_data_yes$village[village_data_yes$cluster == "Cluster 2"]), "Overall South"),
+        "Overall South")))
+
 # Create the plot
 ggplot(village_data, aes(x = village, y = proportion * 100, group = bmu_bylaws, fill = bmu_bylaws)) +
   
@@ -3845,6 +4094,7 @@ ggplot(village_data, aes(x = fct_relevel(bmu_practice, "1 STRONGLY DISAGREE", "2
 ```
 
 BMU Challenges
+
 A major challenge faced by BMUs pertains to illegal fishing practices, including the use of unauthorized nets and fishing in protected areas, which was listed by 11% (n = 106) of all households surveyed. According to respondents, BMUs often face resistance from fishers when enforcing regulations, which undermines conservation efforts. A significant proportion of respondents, 9% of all households surveyed (n = 91), also indicated that BMUs face challenges related to a lack of resources and equipment. These include a lack of patrol boats, safety gear, and insufficient funds for operations such as fuel and maintenance. 6% (n = 64)  of all households regarded insecurity, violence, and threats as a significant challenge faced by BMU members. These include physical attacks from illegal fishers, threats to their lives, and verbal abuse from community members. Furthermore, conflict issues were highlighted as a significant challenge faced by BMU (n = 34). These conflicts arise between BMU members and fishers, as well as between BMU and the community and include a lack of understanding, opposition from locals, and disputes during enforcement activities. Several respondents (n = 29) identified inadequate training and knowledge as a significant challenge, including a lack of education about the purpose and regulations of BMUs, insufficient knowledge on conservation, and the absence of regularly held training sessions.
 
 Other challenges faced by BMUs include corruption and bribery of BMU leaders and law enforcement officers (n = 14), a lack of collaboration between the BMU, local authorities, and other stakeholders (n = 13), compliance and law enforcement issues (n = 24), administrative challenges (n = 7), financial constraints (n = 13),  environmental challenges (n = 6), interference from local administrations and government officials on BMU activities (n = 5), poor working conditions (n = 3), as well as a lack of support from relevant stakeholders (n = 3). Together, these challenges hamper the effectiveness and compromise the integrity of BMU activities and enforcement of fishing regulations. 
@@ -3874,23 +4124,28 @@ boat_type_data <- boat_type_design %>%
   group_by(village, cluster, boat_type) %>%
   summarise(proportion = survey_mean(vartype = "ci", na.rm = TRUE), total = survey_total(vartype = "ci", na.rm = TRUE), n = unweighted(n())) %>% ungroup()
 
-# Add a "Total" group to the data
-total_data <- boat_type_design %>%
-  group_by(boat_type) %>%
-  summarise(proportion = survey_mean(vartype = "ci", na.rm = TRUE),
-            total = survey_total(vartype = "ci", na.rm = TRUE),
-            n = unweighted(n())) %>%
-  mutate(village = "Overall", cluster = "Overall")  # Mark as "Total"
+overall_cluster_data <- boat_type_design %>%
+  filter(boat_type != "I DO NOT WANT TO ANSWER") %>%
+  group_by(cluster, boat_type) %>%
+  summarise(
+    proportion = survey_mean(vartype = "ci", na.rm = TRUE),
+    total = survey_total(vartype = "ci", na.rm = TRUE),
+    n = unweighted(n())
+  ) %>%
+  mutate(village = if_else(cluster == "Cluster 1", "Overall North", "Overall South"))
 
-# Combine the total_data with the original treatment_data
-boat_type_data <- bind_rows(boat_type_data, total_data)
-
-boat_type_data <- boat_type_data %>%
-  mutate(cluster = case_when(
-    cluster == "Overall" ~ "Cluster 2", TRUE ~ cluster))
+# Combine the overall cluster data with the original conflict_data
+boat_type_data <- bind_rows(boat_type_data, overall_cluster_data)
 
 boat_type_data <- boat_type_data %>%
-  mutate(village = reorder(village, -proportion))  # Reorder villages based on proportion
+  mutate(
+    village = factor(
+      village,
+      levels = c(
+        unique(boat_type_data$village[boat_type_data$cluster == "Cluster 1" & village != "Overall North"]),
+        "Overall North",
+        unique(boat_type_data$village[boat_type_data$cluster == "Cluster 2" & village != "Overall South"]),
+        "Overall South")))
 
 # Reorder treatment_method_dry based on average proportion for each method
 boat_type_data$boat_type <- factor(
@@ -4315,7 +4570,7 @@ ggplot(village_data, aes(x = fct_relevel(sustainability_population, "YES", "NO",
   scale_x_discrete(labels = c("Yes", "No", "Not Sure"))
 ```
 
-```{r, fig.cap='In the future, do you think there will be sufficient fish for the communities', fig.align='center', out.width = '90%'}
+```{r, fig.cap='In the future, do you think there will be sufficient fish for the communities?', fig.align='center', out.width = '90%'}
 village_data <- tanganyika_survey %>%
    filter(!is.na(sufficiency_fish) & sufficiency_fish != "I DON'T KNOW") %>% 
     group_by(sufficiency_fish) %>%
@@ -4336,7 +4591,7 @@ ggplot(village_data, aes(x = fct_relevel(sufficiency_fish, "YES", "NO", "NOT SUR
   scale_x_discrete(labels = c("Yes", "No", "Not Sure"))
 ```
 
-A significant number of participants (n = 91) highlighted that the protection of fish breeding areas and the establishment of dedicated fish conservation zones are crucial for ensuring sufficient fish populations in the future. Furthermore, the importance of government regulations in managing fishing practices, including enforcing seasonal closures and preventing illegal fishing, was emphasized by 66 household respondents. Participants suggested that measures such as restricting fishing during breeding seasons and maintaining control over illegal fishing practices are crucial for sustaining fish populations. Furthermore, 29 households indicated that fish are able to reproduce naturally, especially during the rainy season, leading to an increase in their numbers. Respondents mentioned that because fish currently breed in large numbers, they will continue to do so in future. Furthermore, a number of respondents (n = 8) indicated that they believe continued effective management to contribute to the future conservation of fish stocks in Lake Tanganyika, with three respondents stating that BMUs play a crucial role.
+A number of participants (n = 91) highlighted that the protection of fish breeding areas and the establishment of dedicated fish conservation zones are crucial for ensuring sufficient fish populations in the future. Furthermore, the importance of government regulations in managing fishing practices, including enforcing seasonal closures and preventing illegal fishing, was emphasized by 66 household respondents. Participants suggested that measures such as restricting fishing during breeding seasons and maintaining control over illegal fishing practices are crucial for sustaining fish populations. Furthermore, 29 households indicated that fish are able to reproduce naturally, especially during the rainy season, leading to an increase in their numbers. Respondents mentioned that because fish currently breed in large numbers, they will continue to do so in future. Furthermore, a number of respondents (n = 8) indicated that they believe continued effective management to contribute to the future conservation of fish stocks in Lake Tanganyika, with three respondents stating that BMUs play a crucial role.
 
 “BMU wanajitahidi kutunza maeneo ya hifadhi ya samaki”
 
@@ -4358,23 +4613,28 @@ fishing_gear_data <- fishing_gear_design %>%
   group_by(village, cluster, fishing_gear) %>%
   summarise(proportion = survey_mean(vartype = "ci", na.rm = TRUE), total = survey_total(vartype = "ci", na.rm = TRUE), n = unweighted(n())) %>% ungroup()
 
-# Add a "Total" group to the data
-total_data <- fishing_gear_design %>%
-  group_by(fishing_gear) %>%
-  summarise(proportion = survey_mean(vartype = "ci", na.rm = TRUE),
-            total = survey_total(vartype = "ci", na.rm = TRUE),
-            n = unweighted(n())) %>%
-  mutate(village = "Overall", cluster = "Overall")  # Mark as "Total"
+overall_cluster_data <- fishing_gear_design %>%
+  filter(fishing_gear != "I DO NOT WANT TO ANSWER") %>%
+  group_by(cluster, fishing_gear) %>%
+  summarise(
+    proportion = survey_mean(vartype = "ci", na.rm = TRUE),
+    total = survey_total(vartype = "ci", na.rm = TRUE),
+    n = unweighted(n())
+  ) %>%
+  mutate(village = if_else(cluster == "Cluster 1", "Overall North", "Overall South"))
 
-# Combine the total_data with the original treatment_data
-fishing_gear_data <- bind_rows(fishing_gear_data, total_data)
-
-fishing_gear_data <- fishing_gear_data %>%
-  mutate(cluster = case_when(
-    cluster == "Overall" ~ "Cluster 2", TRUE ~ cluster))
+# Combine the overall cluster data with the original conflict_data
+fishing_gear_data <- bind_rows(fishing_gear_data, overall_cluster_data)
 
 fishing_gear_data <- fishing_gear_data %>%
-  mutate(village = reorder(village, -proportion))  # Reorder villages based on proportion
+  mutate(
+    village = factor(
+      village,
+      levels = c(
+        unique(fishing_gear_data$village[fishing_gear_data$cluster == "Cluster 1" & village != "Overall North"]),
+        "Overall North",
+        unique(fishing_gear_data$village[fishing_gear_data$cluster == "Cluster 2" & village != "Overall South"]),
+        "Overall South")))
 
 # Reorder treatment_method_dry based on average proportion for each method
 fishing_gear_data$fishing_gear <- factor(
@@ -4583,6 +4843,8 @@ combined_table <- combined_table %>%
   ) %>% select(Response, 
          `Change in time needed to get to grounds compared to 5 years ago (%)`, 
          `Change in average catch per trip compared to 5 years ago (%)`)
+
+add_lot_link(caption = 'Change in tiem required to access fishing ground and change in average catch compared to five years ago')
 
 # Add the flextable with a caption
 combined_table %>%
@@ -5462,23 +5724,28 @@ processing_form_data <- processing_form_design %>%
   group_by(village, cluster, processing_form) %>%
   summarise(proportion = survey_mean(vartype = "ci", na.rm = TRUE), total = survey_total(vartype = "ci", na.rm = TRUE), n = unweighted(n())) %>% ungroup()
 
-# Add a "Total" group to the data
-total_data <- processing_form_design %>%
-  group_by(processing_form) %>%
-  summarise(proportion = survey_mean(vartype = "ci", na.rm = TRUE),
-            total = survey_total(vartype = "ci", na.rm = TRUE),
-            n = unweighted(n())) %>%
-  mutate(village = "Overall", cluster = "Overall")  # Mark as "Total"
+overall_cluster_data <- processing_form_design %>%
+  filter(processing_form != "I DO NOT WANT TO ANSWER") %>%
+  group_by(cluster, processing_form) %>%
+  summarise(
+    proportion = survey_mean(vartype = "ci", na.rm = TRUE),
+    total = survey_total(vartype = "ci", na.rm = TRUE),
+    n = unweighted(n())
+  ) %>%
+  mutate(village = if_else(cluster == "Cluster 1", "Overall North", "Overall South"))
 
-# Combine the total_data with the original treatment_data
-processing_form_data <- bind_rows(processing_form_data, total_data)
-
-processing_form_data <- processing_form_data %>%
-  mutate(cluster = case_when(
-    cluster == "Overall" ~ "Cluster 2", TRUE ~ cluster))
+# Combine the overall cluster data with the original conflict_data
+processing_form_data <- bind_rows(processing_form_data, overall_cluster_data)
 
 processing_form_data <- processing_form_data %>%
-  mutate(village = reorder(village, -proportion))  # Reorder villages based on proportion
+  mutate(
+    village = factor(
+      village,
+      levels = c(
+        unique(processing_form_data$village[processing_form_data$cluster == "Cluster 1" & village != "Overall North"]),
+        "Overall North",
+        unique(processing_form_data$village[processing_form_data$cluster == "Cluster 2" & village != "Overall South"]),
+        "Overall South")))
 
 # Reorder treatment_method_dry based on average proportion for each method
 processing_form_data$processing_form <- factor(
@@ -5522,23 +5789,28 @@ processing_equipment_data <- processing_equipment_design %>%
   group_by(village, cluster, processing_equipment) %>%
   summarise(proportion = survey_mean(vartype = "ci", na.rm = TRUE), total = survey_total(vartype = "ci", na.rm = TRUE), n = unweighted(n())) %>% ungroup()
 
-# Add a "Total" group to the data
-total_data <- processing_equipment_design %>%
-  group_by(processing_equipment) %>%
-  summarise(proportion = survey_mean(vartype = "ci", na.rm = TRUE),
-            total = survey_total(vartype = "ci", na.rm = TRUE),
-            n = unweighted(n())) %>%
-  mutate(village = "Overall", cluster = "Overall")  # Mark as "Total"
+overall_cluster_data <- processing_equipment_design %>%
+  filter(processing_equipment != "I DO NOT WANT TO ANSWER") %>%
+  group_by(cluster, processing_equipment) %>%
+  summarise(
+    proportion = survey_mean(vartype = "ci", na.rm = TRUE),
+    total = survey_total(vartype = "ci", na.rm = TRUE),
+    n = unweighted(n())
+  ) %>%
+  mutate(village = if_else(cluster == "Cluster 1", "Overall North", "Overall South"))
 
-# Combine the total_data with the original treatment_data
-processing_equipment_data <- bind_rows(processing_equipment_data, total_data)
-
-processing_equipment_data <- processing_equipment_data %>%
-  mutate(cluster = case_when(
-    cluster == "Overall" ~ "Cluster 2", TRUE ~ cluster))
+# Combine the overall cluster data with the original conflict_data
+processing_equipment_data <- bind_rows(processing_equipment_data, overall_cluster_data)
 
 processing_equipment_data <- processing_equipment_data %>%
-  mutate(village = reorder(village, -proportion))  # Reorder villages based on proportion
+  mutate(
+    village = factor(
+      village,
+      levels = c(
+        unique(processing_equipment_data$village[processing_equipment_data$cluster == "Cluster 1" & village != "Overall North"]),
+        "Overall North",
+        unique(processing_equipment_data$village[processing_equipment_data$cluster == "Cluster 2" & village != "Overall South"]),
+        "Overall South")))
 
 # Reorder treatment_method_dry based on average proportion for each method
 processing_equipment_data$processing_equipment <- factor(
