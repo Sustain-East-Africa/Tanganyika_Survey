@@ -54,6 +54,7 @@ library(readr)
 library(leaflet)
 library(tidyr)
 library(flextable)
+library(viridis)
 
 #Sustain EA colour palette
 SEA_palette <- c("#d77e5e", "#a4b792", "#e6e7e2", "#3d5919", "#202C39", "#381D2A", "#000000",
@@ -398,9 +399,9 @@ ggplot(demo_summary, aes(x = age_group, y = ifelse(sex == "MALE", -percentage, p
   coord_flip() +
   scale_y_continuous(labels = function(x) paste0(abs(x), "%"), limits = c(-10, 10)) +
   labs(x = "Age Group", y = "Percentage of Total Population") +
-  sea::scale_fill_sea_discrete(labels = c("FEMALE" = "Female", "MALE" = "Male")) +
+  scale_fill_viridis(discrete = TRUE, option = "D",labels = c("FEMALE" = "Female", "MALE" = "Male")) +
   sea::theme_sea()+
-  theme(legend.title = element_blank())+
+  theme(legend.title = element_blank(), panel.grid.major = element_blank(), panel.grid.minor = element_blank())+
   geom_text(aes(label = paste0(round(abs(percentage), 1), "%")), 
             position = position_nudge(x = 0, y = ifelse(demo_summary$sex == "MALE", -1, 1)), 
             size = 3, 
@@ -886,7 +887,7 @@ ggplot(village_poverty_likelihood_long, aes(x = village, y = poverty_likelihood,
             vjust = -0.5, size = 3) +  # Add percentage labels above bars
   guides(fill = guide_legend(title = NULL)) +
   labs(x = "Village", y = "Percentage of Poverty Likelihood") +
-  scale_fill_manual(values = c("#3d5919", "#5b7a2e", "#a4b792"), labels = c(
+  scale_fill_viridis(discrete = TRUE, option = "D", labels = c(
     "extreme_poverty" = "Extreme Poverty Line (%)", 
     "lower_poverty" = "Lower National Poverty Line (%)", 
     "upper_poverty" = "Upper National Poverty Line (%)")) +
@@ -987,7 +988,7 @@ ggplot(village_data, aes(x = village, y = proportion * 100, group = household_ab
   #   position = position_dodge(width = 0.95), 
   #   vjust = 0, size = 3) +
   guides(fill = guide_legend(title = NULL, nrow = 1)) +
-  scale_fill_manual(values = c("#3d5919", "#5b7a2e", "#a4b792", "#d8e3cc"), labels = c(
+  scale_fill_viridis(discrete = TRUE, option = "D", labels = c(
       "WE CAN JUST MEET OUR DAILY NEEDS AND HAVE NO EXTRA THINGS" = "Just sufficient", 
       "WE HAVE DIFFICULTY IN MEETING OUR DAILY NEEDS" = "With difficulty", 
       "WE HAVE ENOUGH TO MEET OUR DAILY NEEDS AND HAVE SOME EXTRA THINGS" = "Can meet needs",
@@ -1061,7 +1062,7 @@ ggplot(village_data_combined, aes(x = reorder(WaterSource, -proportion), y = pro
                    paste0(round(proportion * 100), "%")),
     y = pmin(proportion_upp * 100, 100) + 1.5),  # Position label above the error bar
     position = position_dodge(width = 0.8), vjust = 0, size = 2) +
-  scale_fill_manual(values = c("Dry" =  "#d2d2c8", "Wet" =  "#5b7a2e")) +
+  scale_fill_viridis(discrete = TRUE, option = "D") +
   labs(x = "", y = "", fill = "") +
   theme_minimal() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1),
@@ -1193,7 +1194,7 @@ ggplot(treatment_data, aes(x = village, y = proportion * 100, group = treatment_
   #     position = position_dodge(width = 0.8), vjust = 0, size = 3) +
   guides(fill = guide_legend(title = NULL, nrow = 1, reverse = FALSE)) +
   labs(x = NULL, y = NULL) +
-  scale_fill_manual(values = c("#3d5919", "#5b7a2e", "#a4b792", "#d2d2c8", "#d8e3cc"), labels = c(
+  scale_fill_viridis(discrete = TRUE, option = "D", labels = c(
       "ADD BLEACH/CHLORINE" = "Add bleach or chlorine", 
       "BOIL" = "Boil",
       "LET IT STAND AND SETTLE" = "Let it stand and settle",
@@ -1271,7 +1272,7 @@ ggplot(treatment_data, aes(x = village, y = proportion * 100, group = treatment_
   #     position = position_dodge(width = 0.8), vjust = 0, size = 3) +
   guides(fill = guide_legend(title = NULL, nrow = 1, reverse = FALSE)) +
   labs(x = NULL, y = NULL) +
-  scale_fill_manual(values = c("#3d5919", "#5b7a2e", "#a4b792", "#d2d2c8", "#d8e3cc"), labels = c(
+  scale_fill_viridis(discrete = TRUE, option = "D", labels = c(
       "ADD BLEACH/CHLORINE" = "Add bleach or chlorine", 
       "BOIL" = "Boil",
       "STRAIN THROUGH A CLOTH" = "Strain through a cloth",
@@ -1564,7 +1565,7 @@ ggplot(household_item_data_combined, aes(x = reorder(household_item, -proportion
     position = position_dodge(width = 0.8), vjust = 0, size = 3) +
   guides(fill = guide_legend(title = NULL, nrow = 3)) +
   labs(x = "", y = NULL) +
-  sea::scale_fill_sea_discrete() +
+  scale_fill_viridis(discrete = TRUE, option = "D") +
   sea::theme_sea() + 
   theme(legend.position = "none",  # Remove the legend
         axis.text.x = element_text(angle = 45, hjust = 1), axis.text.y = element_blank(), axis.ticks.y = element_blank(),
@@ -1629,7 +1630,7 @@ ggplot(fuel_data, aes(x = village, y = proportion * 100, group = cooking_fuel, f
                 position = position_dodge(preserve = "single", width = 0.95), width = 0.1) +
   guides(fill = guide_legend(title = NULL)) +
   labs(x = NULL, y = NULL) +
-  scale_fill_manual(values = c("#3d5919", "#5b7a2e", "#a4b792", "#d2d2c8", "#d8e3cc"), labels = c(
+ scale_fill_viridis(discrete = TRUE, option = "D", labels = c(
       "CHARCOAL" = "Charcoal", 
       "CROP RESIDUALS" = "Crop Residuals",
       "FIREWOOD" = "Firewood",
@@ -1809,7 +1810,7 @@ ggplot(livelihood_data_combined, aes(x = reorder(livelihood_activities, -proport
     position = position_dodge(width = 0.8), vjust = 0, size = 3) +
   guides(fill = guide_legend(title = NULL, nrow = 3)) +
   labs(x = NULL, y = NULL) +
-  sea::scale_fill_sea_discrete() +
+  scale_fill_viridis(discrete = TRUE, option = "D") +
   sea::theme_sea() + 
   theme(legend.position = "none",  # Remove the legend
         axis.text.x = element_text(angle = 45, hjust = 1), axis.text.y = element_blank(), axis.ticks.y = element_blank(),
@@ -1822,6 +1823,7 @@ ggplot(livelihood_data_combined, aes(x = reorder(livelihood_activities, -proport
 
 ```
 
+\newpage
 
 ## Access to Credit
 
@@ -1884,7 +1886,7 @@ ggplot(village_data_yes, aes(x = village, y = proportion * 100, group = borrow_s
       position = position_dodge(width = 0.8), vjust = 0, size = 3) +
   guides(fill = guide_legend(title = NULL, nrow = 2)) +
   scale_fill_manual(values = SEA_palette) +
-  sea::scale_fill_sea_discrete() +
+  scale_fill_viridis(discrete = TRUE, option = "D") +
   sea::theme_sea() + 
   theme(
     legend.position = "none",  
@@ -1957,7 +1959,7 @@ ggplot(loan_usage_data_combined, aes(x = reorder(loan_usage, -proportion),
     position = position_dodge(width = 0.8), vjust = 0, size = 3) +
   guides(fill = guide_legend(title = NULL, nrow = 3)) +
   labs(x = "", y = "") +
-  sea::scale_fill_sea_discrete() +
+  scale_fill_viridis(discrete = TRUE, option = "D") +
   sea::theme_sea() + 
   theme(legend.position = "none",  # Remove the legend
         axis.text.x = element_text(angle = 45, hjust = 1), axis.text.y = element_blank(), axis.ticks.y = element_blank(),
@@ -2027,7 +2029,7 @@ ggplot(borrowing_source_data_combined, aes(x = reorder(borrowing_source, -propor
     position = position_dodge(width = 0.8), vjust = 0, size = 3) +
   guides(fill = guide_legend(title = NULL, nrow = 3)) +
   labs(x = "", y = "") +
-  sea::scale_fill_sea_discrete() +
+  scale_fill_viridis(discrete = TRUE, option = "D") +
   sea::theme_sea() + 
   theme(legend.position = "none",  # Remove the legend
         axis.text.x = element_text(angle = 45, hjust = 1), axis.text.y = element_blank(), axis.ticks.y = element_blank(),
@@ -2081,7 +2083,7 @@ ggplot(village_data_combined, aes(x = reorder(not_borrowed, -proportion),
       position = position_dodge(width = 0.8), vjust = 0, size = 3) +
   guides(fill = guide_legend(title = NULL, nrow = 3)) +
   labs(x = "", y = "") +
-  sea::scale_fill_sea_discrete() +
+  scale_fill_viridis(discrete = TRUE, option = "D") +
   sea::theme_sea() + 
   theme(legend.position = "none",  # Remove the legend
         axis.text.x = element_text(angle = 45, hjust = 1), axis.text.y = element_blank(), axis.ticks.y = element_blank(),
@@ -2163,8 +2165,7 @@ ggplot(village_data, aes(x = village, y = proportion * 100, group = cocoba_sacco
     aes(y = pmin(proportion_upp, 1) * 100 + 1, label = paste0(round(proportion * 100, 0), "%")),
     position = position_dodge(width = 0.95), vjust = 0, size = 3) +
   guides(fill = guide_legend(title = NULL, nrow = 2)) +
-  scale_fill_manual(values = SEA_palette) +
-  sea::scale_fill_sea_discrete() +
+  scale_fill_viridis(discrete = TRUE, option = "D") +
   sea::theme_sea() + 
   theme(
     legend.position = "none",  
@@ -2321,7 +2322,7 @@ ggplot(fish_proportions_combined, aes(x = fish_type, y = proportion, fill = freq
             position = position_dodge(width = 0.95), size = 3) +
   guides(fill = guide_legend(title = NULL)) +
   labs(x = NULL, y = NULL, fill = "Frequency of Consumption") +
-  sea::scale_fill_sea_discrete(labels = c("LESS THAN ONCE A WEEK" = "Less than Weekly",
+  scale_fill_viridis(discrete = TRUE, option = "D",labels = c("LESS THAN ONCE A WEEK" = "Less than Weekly",
                                           "AT LEAST ONCE A WEEK" = "Weekly",
                                           "ALMOST EVERY DAY" = "Daily")) +
   sea::theme_sea() +
@@ -2342,21 +2343,49 @@ village_data <- tanganyika_survey %>%
     group_by(primary_source) %>%
     summarise(proportion = survey_mean(vartype = "ci", na.rm = TRUE), total = survey_total(vartype = "ci", na.rm = TRUE), n = unweighted(n())) %>%  filter(primary_source != "OTHER" & primary_source != "I DON'T KNOW") %>% drop_na() 
 
-ggplot(village_data, aes(x = reorder(primary_source, -proportion), y = proportion * 100, fill = reorder(primary_source, -proportion))) +
+# Split data by clusters
+village_data_cluster_1 <- tanganyika_survey %>%
+  filter(village %in% cluster_1_villages) %>%
+  group_by(primary_source) %>%
+  summarise(proportion = survey_mean(vartype = "ci", na.rm = TRUE), 
+            total = survey_total(vartype = "ci", na.rm = TRUE), 
+            n = unweighted(n())) %>%  
+  filter(primary_source != "OTHER" & primary_source != "I DON'T KNOW") %>% 
+  drop_na()
+
+village_data_cluster_2 <- tanganyika_survey %>%
+  filter(village %in% cluster_2_villages) %>%
+  group_by(primary_source) %>%
+  summarise(proportion = survey_mean(vartype = "ci", na.rm = TRUE), 
+            total = survey_total(vartype = "ci", na.rm = TRUE), 
+            n = unweighted(n())) %>%  
+  filter(primary_source != "OTHER" & primary_source != "I DON'T KNOW") %>% 
+  drop_na()
+
+# Combine the two clusters' data
+village_data_combined <- bind_rows(
+  village_data_cluster_1 %>% mutate(cluster = "Overall North"),
+  village_data_cluster_2 %>% mutate(cluster = "Overall South")
+)
+
+# Create the grouped bar chart with clusters
+ggplot(village_data_combined, aes(x = reorder(primary_source, -proportion), y = proportion * 100, fill = reorder(primary_source, -proportion))) +
   geom_bar(stat = "identity", width = 0.8) +
   geom_errorbar(aes(ymax = pmin(proportion_upp, 1) * 100, ymin = pmax(proportion_low, 0) * 100), width = 0.2) +
-   geom_text(aes(
+  geom_text(aes(
       label = paste0(round(proportion * 100, 1), "%"),
       y = pmin(proportion_upp * 100, 100) + 2), 
       position = position_dodge(width = 0.8), vjust = 0, size = 3) +
   guides(fill = guide_legend(title = NULL)) + 
   labs(x = NULL, y = NULL) +  
-  sea::scale_fill_sea_discrete() +
+  scale_fill_viridis(discrete = TRUE, option = "D") +
   sea::theme_sea() + 
-  theme(legend.position = "none", axis.text.x = element_text(angle = 45, hjust = 1), panel.grid.major = element_blank(), panel.grid.minor = element_blank(), axis.text.y = element_blank(),
-    axis.title.y = element_blank()) +
-  scale_y_continuous(labels = label_percent(scale = 1))+
-  scale_x_discrete(labels = c("Purchase", "Own Catch", "Receiced as Gift", "Bartered", "Borrowed"))
+  theme(legend.position = "none", axis.text.x = element_text(angle = 45, hjust = 1), 
+        panel.grid.major = element_blank(), panel.grid.minor = element_blank(), 
+        axis.text.y = element_blank(), axis.title.y = element_blank()) +
+  scale_y_continuous(labels = label_percent(scale = 1)) +
+  scale_x_discrete(labels = c("Purchase", "Own Catch", "Received as Gift", "Bartered", "Borrowed")) +
+  facet_wrap(~ cluster, nrow = 2)  # Separate plots for each cluster
 
 ```
 
@@ -2367,7 +2396,33 @@ village_data <- tanganyika_survey %>%
     group_by(eat_changed) %>%
     summarise(proportion = survey_mean(vartype = "ci", na.rm = TRUE), total = survey_total(vartype = "ci", na.rm = TRUE), n = unweighted(n())) %>%  filter(eat_changed != "NOT SURE" & eat_changed != "I DON'T KNOW") %>% drop_na() 
 
-ggplot(village_data, aes(x = reorder(eat_changed, -proportion), y = proportion * 100, fill = reorder(eat_changed, -proportion))) +
+# Split data by clusters
+village_data_cluster_1 <- tanganyika_survey %>%
+  filter(village %in% cluster_1_villages) %>%
+  group_by(eat_changed) %>%
+  summarise(proportion = survey_mean(vartype = "ci", na.rm = TRUE), 
+            total = survey_total(vartype = "ci", na.rm = TRUE), 
+            n = unweighted(n())) %>%  
+  filter(eat_changed != "NOT SURE" & eat_changed != "I DON'T KNOW") %>% 
+  drop_na()
+
+village_data_cluster_2 <- tanganyika_survey %>%
+  filter(village %in% cluster_2_villages) %>%
+  group_by(eat_changed) %>%
+  summarise(proportion = survey_mean(vartype = "ci", na.rm = TRUE), 
+            total = survey_total(vartype = "ci", na.rm = TRUE), 
+            n = unweighted(n())) %>%  
+  filter(eat_changed != "NOT SURE" & eat_changed != "I DON'T KNOW") %>% 
+  drop_na()
+
+# Combine the two clusters' data
+village_data_combined <- bind_rows(
+  village_data_cluster_1 %>% mutate(cluster = "Overall North"),
+  village_data_cluster_2 %>% mutate(cluster = "Overall South")
+)
+
+# Create the grouped bar chart with clusters
+ggplot(village_data_combined, aes(x = reorder(eat_changed, -proportion), y = proportion * 100, fill = reorder(eat_changed, -proportion))) +
   geom_bar(stat = "identity", width = 0.8) +
   geom_errorbar(aes(ymax = pmin(proportion_upp, 1) * 100, ymin = pmax(proportion_low, 0) * 100), width = 0.2) +
   geom_text(aes(
@@ -2376,12 +2431,14 @@ ggplot(village_data, aes(x = reorder(eat_changed, -proportion), y = proportion *
       position = position_dodge(width = 0.8), vjust = 0, size = 3) +
   guides(fill = guide_legend(title = NULL)) + 
   labs(x = NULL, y = NULL) +  
-  sea::scale_fill_sea_discrete() +
+  scale_fill_viridis(discrete = TRUE, option = "D") +
   sea::theme_sea() + 
-  theme(legend.position = "none", axis.text.x = element_text(angle = 45, hjust = 1), panel.grid.major = element_blank(), panel.grid.minor = element_blank(), axis.text.y = element_blank(),
-    axis.title.y = element_blank()) +
-  scale_y_continuous(labels = label_percent(scale = 1))+
-  scale_x_discrete(labels = c("Eat Less Now", "Same as Before", "Eat More Now", "Bartered"))
+  theme(legend.position = "none", axis.text.x = element_text(angle = 45, hjust = 1), 
+        panel.grid.major = element_blank(), panel.grid.minor = element_blank(), 
+        axis.text.y = element_blank(), axis.title.y = element_blank()) +
+  scale_y_continuous(labels = label_percent(scale = 1)) +
+  scale_x_discrete(labels = c("Eat Less Now", "Same as Before", "Eat More Now", "Bartered")) +
+  facet_wrap(~ cluster, nrow = 2)  # Separate plots for each cluster
 
 ```
 
@@ -2400,18 +2457,30 @@ village_data <- tanganyika_survey %>%
 village_data_yes <- village_data %>%
   filter(worry_shortage == "YES")
 
-total_summary <- tanganyika_survey %>%
-  group_by(worry_shortage) %>%
+cluster_summary <- tanganyika_survey %>%
+  group_by(cluster = case_when(
+    village %in% cluster_1_villages ~ "Cluster 1",
+    village %in% cluster_2_villages ~ "Cluster 2"), worry_shortage) %>%
   summarise(
     proportion = survey_mean(vartype = "ci", na.rm = TRUE),
     total = survey_total(vartype = "ci", na.rm = TRUE),
-    n = unweighted(n())
-  ) %>%
-  mutate(village = "Overall", cluster = "Cluster 2") %>%
-  filter(worry_shortage == "YES") 
+    n = unweighted(n())) %>%
+  mutate(
+    village = case_when(
+      cluster == "Cluster 1" ~ "Overall North",
+      cluster == "Cluster 2" ~ "Overall South")) %>%
+  filter(worry_shortage == "YES")
 
-# Append the "Total" row to village_data_yes
-village_data_yes <- bind_rows(village_data_yes, total_summary)
+# Add cluster-level and total summaries to the data
+village_data_yes <- bind_rows(village_data_yes, cluster_summary)
+
+village_data_yes <- village_data_yes %>%
+  mutate(
+    village = factor(
+      village,
+      levels = c(
+        unique(village_data_yes$village[village_data_yes$cluster == "Cluster 1"]),
+        unique(village_data_yes$village[village_data_yes$cluster == "Cluster 2"]))))
 
 # Create the plot
 ggplot(village_data_yes, aes(x = village, y = proportion * 100, group = worry_shortage, fill = worry_shortage)) +
@@ -2424,7 +2493,7 @@ ggplot(village_data_yes, aes(x = village, y = proportion * 100, group = worry_sh
     aes(y = pmin(proportion_upp, 1) * 100 + 1, label = paste0(round(proportion * 100, 1), "%")), 
     position = position_dodge(width = 0.95), vjust = -0.5, size = 3) +
   guides(fill = guide_legend(title = NULL, nrow = 2)) +
-  sea::scale_fill_sea_discrete() +
+  scale_fill_viridis(discrete = TRUE, option = "D") +
   sea::theme_sea() + 
   theme(
     legend.position = "none",  
@@ -2457,24 +2526,66 @@ cleaned_data <- tanganyika_clean %>%
   mutate(month = factor(month, levels = month.name, ordered = TRUE),
          month_year = paste(month, year, sep = " ") %>% as.factor())
 
-shortage_design <- cleaned_data %>%
+# Split data by clusters
+shortage_data_cluster_1 <- cleaned_data %>%
+  filter(village %in% cluster_1_villages) %>%
+  mutate(food_shortage = str_split(food_shortage, " (?=\\w+\\.)")) %>%
+  unnest(food_shortage) %>%
+  mutate(
+    month = str_extract(food_shortage, "\\b\\w+"),
+    year = str_extract(food_shortage, "\\d{4}") %>% as.numeric()) %>%
+  filter(!is.na(month), !is.na(year)) %>%
+  mutate(month = factor(month, levels = month.name, ordered = TRUE),
+         month_year = paste(month, year, sep = " ") %>% as.factor())
+
+shortage_data_cluster_2 <- cleaned_data %>%
+  filter(village %in% cluster_2_villages) %>%
+  mutate(food_shortage = str_split(food_shortage, " (?=\\w+\\.)")) %>%
+  unnest(food_shortage) %>%
+  mutate(
+    month = str_extract(food_shortage, "\\b\\w+"),
+    year = str_extract(food_shortage, "\\d{4}") %>% as.numeric()) %>%
+  filter(!is.na(month), !is.na(year)) %>%
+  mutate(month = factor(month, levels = month.name, ordered = TRUE),
+         month_year = paste(month, year, sep = " ") %>% as.factor())
+
+# Create survey design for each cluster
+shortage_design_cluster_1 <- shortage_data_cluster_1 %>%
   as_survey_design(strata = stype, fpc = fpc)
 
-shortage_data <- shortage_design %>%
-  group_by(month_year) %>%
-  summarise(proportion = survey_mean(vartype = "ci", na.rm = TRUE), total = survey_total(vartype = "ci", na.rm = TRUE), n = unweighted(n())) %>% ungroup()
+shortage_design_cluster_2 <- shortage_data_cluster_2 %>%
+  as_survey_design(strata = stype, fpc = fpc)
 
+# Summarize data for each cluster
+shortage_data_cluster_1_summary <- shortage_design_cluster_1 %>%
+  group_by(month_year) %>%
+  summarise(proportion = survey_mean(vartype = "ci", na.rm = TRUE), 
+            total = survey_total(vartype = "ci", na.rm = TRUE), 
+            n = unweighted(n())) %>%
+  ungroup()
+
+shortage_data_cluster_2_summary <- shortage_design_cluster_2 %>%
+  group_by(month_year) %>%
+  summarise(proportion = survey_mean(vartype = "ci", na.rm = TRUE), 
+            total = survey_total(vartype = "ci", na.rm = TRUE), 
+            n = unweighted(n())) %>%
+  ungroup()
+
+# Complete months and ensure the month_year column includes all months
 complete_months <- c("November 2023", "December 2023",
                      "January 2024", "February 2024", "March 2024", 
                      "April 2024", "May 2024", "June 2024", 
                      "July 2024", "August 2024", "September 2024", "October 2024")
 
-# Step 4: Ensure the month_year column includes all months from Oct 2023 to Oct 2024
-shortage_data <- shortage_data %>%
+shortage_data_combined <- bind_rows(
+  shortage_data_cluster_1_summary %>% mutate(cluster = "Overall North"),
+  shortage_data_cluster_2_summary %>% mutate(cluster = "Overall South")
+) %>%
   complete(month_year = complete_months, fill = list(count = 0, proportion = 0)) %>%
   mutate(month_year = factor(month_year, levels = complete_months, ordered = TRUE))
 
-ggplot(shortage_data, aes(x = month_year, y = proportion * 100, fill = month_year)) +
+# Create the grouped bar chart with clusters
+ggplot(shortage_data_combined, aes(x = month_year, y = proportion * 100, fill = month_year)) +
   geom_bar(stat = "identity", width = 0.8) +
   geom_errorbar(aes(ymax = pmin(proportion_upp * 100, 100), ymin = pmax(proportion_low * 100, 0)),
                 position = position_dodge(preserve = "single", width = 0.95), width = 0.1) +
@@ -2485,9 +2596,12 @@ ggplot(shortage_data, aes(x = month_year, y = proportion * 100, fill = month_yea
   labs(x = NULL, y = NULL) +  
   sea::scale_fill_sea_discrete(4) +
   sea::theme_sea() + 
-  theme(axis.text.x = element_text(angle = 45, hjust = 1), panel.grid.major = element_blank(), panel.grid.minor = element_blank(), axis.text.y = element_blank(), axis.title.y = element_blank(), legend.position = "none") +
-  scale_y_continuous(labels = label_percent(scale = 1))+
-  scale_x_discrete(labels = function(x) str_wrap(x, width = 10))
+  theme(axis.text.x = element_text(angle = 45, hjust = 1), panel.grid.major = element_blank(), 
+        panel.grid.minor = element_blank(), axis.text.y = element_blank(), 
+        axis.title.y = element_blank(), legend.position = "none") +
+  scale_y_continuous(labels = label_percent(scale = 1)) +
+  scale_x_discrete(labels = function(x) str_wrap(x, width = 10)) +
+  facet_wrap(~ cluster, nrow = 2)  # Separate plots for each cluster
 
 ```
 
@@ -2498,19 +2612,50 @@ village_data <- tanganyika_survey %>%
     summarise(proportion = survey_mean(vartype = "ci", na.rm = TRUE), total = survey_total(vartype = "ci", na.rm = TRUE), n = unweighted(n())) %>% 
   filter(food_availability != "I DO NOT WANT TO ANSWER" & food_availability != "I DON'T KNOW") %>% drop_na() 
 
-ggplot(village_data, aes(x = fct_relevel(food_availability, "BETTER", "AVERAGE", "WORSE", "NOT SURE"), y = proportion * 100, fill = food_availability)) +
+# Split data by clusters
+village_data_cluster_1 <- tanganyika_survey %>%
+  filter(village %in% cluster_1_villages) %>%
+  group_by(food_availability) %>%
+  summarise(proportion = survey_mean(vartype = "ci", na.rm = TRUE), 
+            total = survey_total(vartype = "ci", na.rm = TRUE), 
+            n = unweighted(n())) %>% 
+  filter(food_availability != "I DO NOT WANT TO ANSWER" & food_availability != "I DON'T KNOW") %>%
+  drop_na()
+
+village_data_cluster_2 <- tanganyika_survey %>%
+  filter(village %in% cluster_2_villages) %>%
+  group_by(food_availability) %>%
+  summarise(proportion = survey_mean(vartype = "ci", na.rm = TRUE), 
+            total = survey_total(vartype = "ci", na.rm = TRUE), 
+            n = unweighted(n())) %>% 
+  filter(food_availability != "I DO NOT WANT TO ANSWER" & food_availability != "I DON'T KNOW") %>%
+  drop_na()
+
+# Combine the data from both clusters and add a 'cluster' column
+village_data_combined <- bind_rows(
+  village_data_cluster_1 %>% mutate(cluster = "Overall North"),
+  village_data_cluster_2 %>% mutate(cluster = "Overall South")
+)
+
+# Plot for each cluster
+ggplot(village_data_combined, aes(x = fct_relevel(food_availability, "BETTER", "AVERAGE", "WORSE", "NOT SURE"), 
+                                  y = proportion * 100, fill = food_availability)) +
   geom_bar(stat = "identity", width = 0.8) +
-  geom_errorbar(aes(ymax = pmin(proportion_upp, 1) * 100, ymin = pmax(proportion_low, 0) * 100), width = 0.2) +
+  geom_errorbar(aes(ymax = pmin(proportion_upp, 1) * 100, ymin = pmax(proportion_low, 0) * 100), 
+                width = 0.2) +
   geom_text(
     aes(y = pmin(proportion_upp, 1) * 100 + 1, label = paste0(round(proportion * 100, 0), "%")), 
     position = position_dodge(width = 0.95), vjust = -0.5, size = 3) +
   guides(fill = guide_legend(title = NULL)) + 
   labs(x = NULL, y = NULL) +  
-  sea::scale_fill_sea_discrete() +
+  scale_fill_viridis(discrete = TRUE, option = "D") +
   sea::theme_sea() + 
-  theme(legend.position = "none", axis.text.x = element_text(angle = 45, hjust = 1), panel.grid.major = element_blank(), panel.grid.minor = element_blank(), axis.text.y = element_blank(), axis.title.y = element_blank()) +
-  scale_y_continuous(labels = label_percent(scale = 1))+
-  scale_x_discrete(labels = c("Better", "Average", "Worse", "Not Sure"))
+  theme(legend.position = "none", axis.text.x = element_text(angle = 45, hjust = 1), 
+        panel.grid.major = element_blank(), panel.grid.minor = element_blank(), 
+        axis.text.y = element_blank(), axis.title.y = element_blank()) +
+  scale_y_continuous(labels = label_percent(scale = 1)) +
+  scale_x_discrete(labels = c("Better", "Average", "Worse", "Not Sure")) +
+  facet_wrap(~ cluster, nrow = 2)  # Separate plots for each cluster
 
 ```
 
@@ -2579,7 +2724,34 @@ village_data <- tanganyika_survey %>%
     group_by(availability_changed) %>%
     summarise(proportion = survey_mean(vartype = "ci", na.rm = TRUE), total = survey_total(vartype = "ci", na.rm = TRUE), n = unweighted(n())) %>%  filter(availability_changed != "I DO NOT WANT TO ANSWER" & availability_changed != "I DON'T KNOW") %>% drop_na() 
 
-ggplot(village_data, aes(x = fct_relevel(availability_changed, "BETTER NOW", "SAME", "WORSE NOW", "NOT  SURE"), y = proportion * 100, fill = availability_changed)) +
+# Split data by clusters
+village_data_cluster_1 <- tanganyika_survey %>%
+  filter(village %in% cluster_1_villages) %>%
+  group_by(availability_changed) %>%
+  summarise(proportion = survey_mean(vartype = "ci", na.rm = TRUE), 
+            total = survey_total(vartype = "ci", na.rm = TRUE), 
+            n = unweighted(n())) %>%
+  filter(availability_changed != "I DO NOT WANT TO ANSWER" & availability_changed != "I DON'T KNOW") %>%
+  drop_na()
+
+village_data_cluster_2 <- tanganyika_survey %>%
+  filter(village %in% cluster_2_villages) %>%
+  group_by(availability_changed) %>%
+  summarise(proportion = survey_mean(vartype = "ci", na.rm = TRUE), 
+            total = survey_total(vartype = "ci", na.rm = TRUE), 
+            n = unweighted(n())) %>%
+  filter(availability_changed != "I DO NOT WANT TO ANSWER" & availability_changed != "I DON'T KNOW") %>%
+  drop_na()
+
+# Combine the data from both clusters and add a 'cluster' column
+village_data_combined <- bind_rows(
+  village_data_cluster_1 %>% mutate(cluster = "Overall North"),
+  village_data_cluster_2 %>% mutate(cluster = "Overall South")
+)
+
+# Plot for each cluster
+ggplot(village_data_combined, aes(x = fct_relevel(availability_changed, "BETTER NOW", "SAME", "WORSE NOW", "NOT  SURE"), 
+                                  y = proportion * 100, fill = availability_changed)) +
   geom_bar(stat = "identity", width = 0.8) +
   geom_errorbar(aes(ymax = pmin(proportion_upp, 1) * 100, ymin = pmax(proportion_low, 0) * 100), width = 0.2) +
   geom_text(
@@ -2587,53 +2759,72 @@ ggplot(village_data, aes(x = fct_relevel(availability_changed, "BETTER NOW", "SA
     position = position_dodge(width = 0.95), vjust = -0.5, size = 3) +
   guides(fill = guide_legend(title = NULL)) + 
   labs(x = NULL, y = NULL) +  
-  sea::scale_fill_sea_discrete() +
+  scale_fill_viridis(discrete = TRUE, option = "D") +
   sea::theme_sea() + 
-  theme(legend.position = "none", axis.text.x = element_text(angle = 45, hjust = 1), panel.grid.major = element_blank(), panel.grid.minor = element_blank(), axis.text.y = element_blank(), axis.title.y = element_blank()) +
-  scale_y_continuous(labels = label_percent(scale = 1))+
-  scale_x_discrete(labels = c("Better Now", "Same", "Worse Now", "Not Sure"))
+  theme(legend.position = "none", axis.text.x = element_text(angle = 45, hjust = 1), 
+        panel.grid.major = element_blank(), panel.grid.minor = element_blank(), 
+        axis.text.y = element_blank(), axis.title.y = element_blank()) +
+  scale_y_continuous(labels = label_percent(scale = 1)) +
+  scale_x_discrete(labels = c("Better Now", "Same", "Worse Now", "Not Sure")) +
+  facet_wrap(~ cluster, nrow = 2)  # Separate plots for each cluster
 
 ```
 
 
 ```{r,  fig.cap='Reasons for increase in household food availability', fig.align='center', out.width = '90%'}
 
-availability_reason_expanded <- tanganyika_clean %>% select(hh_code, village, availability_reason, availability_changed, stype, fpc) %>%
+# Expand the data and add cluster information
+availability_reason_expanded <- tanganyika_clean %>% 
+  select(hh_code, village, availability_reason, availability_changed, stype, fpc) %>%
   separate_rows(availability_reason, sep = "\\|") %>%
-  mutate(availability_reason = trimws(availability_reason)) %>% drop_na() %>%
-  filter(availability_changed %in% c("BETTER NOW", "SAME")) 
+  mutate(availability_reason = trimws(availability_reason)) %>% 
+  drop_na() %>%
+  filter(availability_changed %in% c("BETTER NOW", "SAME")) %>%
+  mutate(cluster = case_when(
+    village %in% cluster_1_villages ~ "Overall North", 
+    village %in% cluster_2_villages ~ "Overall South", 
+    TRUE ~ "Other"
+  ))
 
-availability_reason_expanded <- availability_reason_expanded %>%
-  mutate(cluster = case_when(village %in% cluster_1_villages ~ "Cluster 1", village %in% cluster_2_villages ~ "Cluster 2", TRUE ~ "Other"))
-
+# Create a survey design object
 availability_reason_design <- availability_reason_expanded %>%
   as_survey_design(strata = stype, fpc = fpc)
 
 options(survey.lonely.psu = "adjust")
 
+# Summarize data for each cluster
 availability_reason_data <- availability_reason_design %>%
-filter(!(availability_reason == "I DON'T KNOW")) %>%
-group_by(availability_reason) %>%
+  filter(!(availability_reason == "I DON'T KNOW")) %>%
+  group_by(cluster, availability_reason) %>%
   summarise(
     proportion = survey_mean(vartype = "ci", na.rm = TRUE), 
     total = survey_total(vartype = "ci", na.rm = TRUE), 
-    n = unweighted(n()))
+    n = unweighted(n())
+  ) %>%
+  ungroup()
 
+# Create a grouped bar chart with clusters
 ggplot(availability_reason_data, aes(x = reorder(availability_reason, -proportion), y = proportion * 100, fill = reorder(availability_reason, -proportion))) + 
   geom_bar(stat = "identity", width = 0.8) +
-  geom_errorbar(aes(ymax = pmin(proportion_upp, 1)*100, ymin = pmax(proportion_low, 0)*100),
+  geom_errorbar(aes(ymax = pmin(proportion_upp, 1) * 100, ymin = pmax(proportion_low, 0) * 100), 
                 width = 0.2) +
   geom_text(
     aes(y = pmin(proportion_upp, 1) * 100 + 1, label = paste0(round(proportion * 100, 1), "%")), 
     position = position_dodge(width = 0.95), vjust = -0.5, size = 3) +
   guides(fill = guide_legend(title = NULL)) +
   labs(x = "", y = "") +
-  sea::scale_fill_sea_discrete() +
+  scale_fill_viridis(discrete = TRUE, option = "D") +
   sea::theme_sea() + 
   theme(legend.position = "none",  # Remove the legend
-        axis.text.x = element_text(angle = 45, hjust = 1), panel.grid.major = element_blank(), panel.grid.minor = element_blank(), axis.text.y = element_blank(), axis.title.y = element_blank()) +  
-  scale_y_continuous(labels = label_percent(scale = 1))+
-  scale_x_discrete(labels = c("High fish availability", "Crops thrived", "Use of fertilizer", "Other reasons", "Low fish availability", "Crops destroyed by bad weather", "Employment availabilities", "Normal situation", "Lack of fertilizer", "Remittances sent"))
+        axis.text.x = element_text(angle = 45, hjust = 1), 
+        panel.grid.major = element_blank(), 
+        panel.grid.minor = element_blank(), 
+        axis.text.y = element_blank(), 
+        axis.title.y = element_blank()) +  
+  scale_y_continuous(labels = label_percent(scale = 1)) +
+  scale_x_discrete(labels = c("High fish availability", "Crops thrived", "Use of fertilizer", "Other reasons", "Low fish availability", "Crops destroyed by bad weather", "Employment availabilities", "Normal situation", "Lack of fertilizer", "Remittances sent")) +
+  facet_wrap(~ cluster, nrow = 2)  # Separate plots for each cluster
+
 
 ```
 
@@ -2642,41 +2833,58 @@ The reasons for an increase in food availability vary (Figure 24). 33% of respon
 Diversification of income sources was stated as another reason as to why food availability had improved over the past year (n = 4). Households expressed that previously, their income was solely dependent on fishing, but now they have diversified their sources of income, such as (poultry) farming, improving their financial situation. Improved farming practices (n = 3), increases in agricultural productivity due to expanding land under cultivation (n = 2), improvements in business activities (n = 2), stabilized food prices  (n = 1), and improvements in personal life (n = 1) and financial support obtained (n = 1) include other reasons for which food availability has improved.
 
 ```{r,  fig.cap='Reasons for decrease in household food availability', fig.align='center', out.width = '90%'}
-
-availability_reason_expanded <- tanganyika_clean %>% select(hh_code, village, availability_reason, availability_changed, stype, fpc) %>%
+# Expand the data and add cluster information
+availability_reason_expanded <- tanganyika_clean %>% 
+  select(hh_code, village, availability_reason, availability_changed, stype, fpc) %>%
   separate_rows(availability_reason, sep = "\\|") %>%
-  mutate(availability_reason = trimws(availability_reason)) %>% drop_na() %>%
-  filter(availability_changed == "WORSE NOW") 
+  mutate(availability_reason = trimws(availability_reason)) %>% 
+  drop_na() %>%
+  filter(availability_changed == "WORSE NOW") %>%
+  mutate(cluster = case_when(
+    village %in% cluster_1_villages ~ "Overall North", 
+    village %in% cluster_2_villages ~ "Overall South", 
+    TRUE ~ "Other"
+  ))
 
-availability_reason_expanded <- availability_reason_expanded %>%
-  mutate(cluster = case_when(village %in% cluster_1_villages ~ "Cluster 1", village %in% cluster_2_villages ~ "Cluster 2", TRUE ~ "Other"))
-
+# Create a survey design object
 availability_reason_design <- availability_reason_expanded %>%
   as_survey_design(strata = stype, fpc = fpc)
 
+# Summarize data for each cluster
 availability_reason_data <- availability_reason_design %>%
   filter(!(availability_reason == "I DON'T KNOW")) %>%
-group_by(availability_reason) %>%
+  group_by(cluster, availability_reason) %>%
   summarise(
     proportion = survey_mean(vartype = "ci", na.rm = TRUE), 
     total = survey_total(vartype = "ci", na.rm = TRUE), 
-    n = unweighted(n()))
+    n = unweighted(n())
+  ) %>%
+  ungroup()
 
+# Create a grouped bar chart with clusters
 ggplot(availability_reason_data, aes(x = reorder(availability_reason, -proportion), y = proportion * 100, fill = reorder(availability_reason, -proportion))) + 
   geom_bar(stat = "identity", width = 0.8) +
-  geom_errorbar(aes(ymax = pmin(proportion_upp, 1)*100, ymin = pmax(proportion_low, 0)*100),
+  geom_errorbar(aes(ymax = pmin(proportion_upp, 1) * 100, ymin = pmax(proportion_low, 0) * 100), 
                 width = 0.2) +
   geom_text(
     aes(y = pmin(proportion_upp, 1) * 100 + 1, label = paste0(round(proportion * 100, 1), "%")), 
     position = position_dodge(width = 0.95), vjust = -0.5, size = 3) +
   guides(fill = guide_legend(title = NULL)) +
   labs(x = "", y = "") +
-  sea::scale_fill_sea_discrete() +
+  scale_fill_viridis(discrete = TRUE, option = "D") +
   sea::theme_sea() + 
-  theme(legend.position = "none",  # Remove the legend
-        axis.text.x = element_text(angle = 45, hjust = 1), panel.grid.major = element_blank(), panel.grid.minor = element_blank(), axis.text.y = element_blank(), axis.title.y = element_blank()) + 
-  scale_y_continuous(labels = label_percent(scale = 1))+
-  scale_x_discrete(labels = c("Crops destroyed\nby bad weather", "Low fish availability", "Other reasons", "Illness", "Crops damaged by wildlife", "Lack of fertilizer", "Crops destroyed by pests", "High fish availability", "Death of a family member", "Normal situation", "Remittances not sent", "Use of fertilizer", "Crops thrived", "Lack of employment"))
+  theme(
+    legend.position = "none",  # Remove the legend
+    axis.text.x = element_text(angle = 45, hjust = 1), 
+    panel.grid.major = element_blank(), 
+    panel.grid.minor = element_blank(), 
+    axis.text.y = element_blank(), 
+    axis.title.y = element_blank()
+  ) + 
+  scale_y_continuous(labels = label_percent(scale = 1)) +
+  scale_x_discrete(labels = c("Crops destroyed\nby bad weather", "Low fish availability", "Other reasons", "Illness", "Crops damaged by wildlife", "Lack of fertilizer", "Crops destroyed by pests", "High fish availability", "Death of a family member", "Normal situation", "Remittances not sent", "Use of fertilizer", "Crops thrived", "Lack of employment")) +
+  facet_wrap(~ cluster, nrow = 2)  # Separate plots for each cluster
+
 
 ```
 
@@ -2842,43 +3050,73 @@ filtered_data <- tanganyika_clean %>%
   filter(
     !people_trusted %in% c("NOT SURE", "I DO NOT WANT TO ANSWER"),
     !nearby_trusted %in% c("NOT SURE", "I DO NOT WANT TO ANSWER"),
-    !government_trusted %in% c("NOT SURE", "I DO NOT WANT TO ANSWER"))
+    !government_trusted %in% c("NOT SURE", "I DO NOT WANT TO ANSWER")
+  )
+
+# Add cluster information
+filtered_data <- filtered_data %>%
+  mutate(cluster = case_when(
+    village %in% cluster_1_villages ~ "Overall North", 
+    village %in% cluster_2_villages ~ "Overall South", 
+    TRUE ~ "Other"
+  ))
 
 # Reshape the data
 trust_data <- filtered_data %>%
   pivot_longer(
     cols = c(people_trusted, nearby_trusted, government_trusted),
     names_to = "party",
-    values_to = "trust")
+    values_to = "trust"
+  )
 
+# Create a survey design
 trust_design <- trust_data %>%
   as_survey_design(strata = stype, fpc = fpc)
 
+# Summarize proportions by cluster
 trust_proportions <- trust_design %>%
-  group_by(party, trust) %>%
+  group_by(cluster, party, trust) %>%
   summarise(proportion = survey_mean(vartype = "ci", na.rm = TRUE)) %>%
   ungroup()
 
 # Create the grouped bar chart
 ggplot(trust_proportions, aes(x = party, y = proportion, fill = fct_relevel(trust, "CAN ALWAYS BE TRUSTED", "CAN MOSTLY BE TRUSTED", "NEUTRAL", "CAN RARELY BE TRUSTED", "CAN NEVER BE TRUSTED"))) +
   geom_bar(stat = "identity", position = "dodge", width = 0.95) +
-  geom_errorbar(aes(ymax = pmin(proportion_upp, 100), ymin = pmax(proportion_low, 0)),
+  geom_errorbar(aes(ymax = pmin(proportion_upp, 1), ymin = pmax(proportion_low, 0)),
                 position = position_dodge(preserve = "single", width = 0.95), width = 0.1) +
-  geom_text(aes(y = pmin(proportion_upp, 100) + 0.04, 
+  geom_text(aes(y = pmin(proportion_upp, 1) + 0.04, 
                 label = scales::percent(proportion, accuracy = 1)),
             position = position_dodge(width = 0.95), size = 3) +
   guides(fill = guide_legend(title = NULL)) +
-  labs(x = NULL, y = NULL, fill = "Frequency of Consumption") +
-  sea::scale_fill_sea_discrete(labels = c("CAN ALWAYS BE TRUSTED" = "Always Trusted",
+  labs(x = NULL, y = NULL, fill = "Frequency of Trust") +
+  scale_fill_viridis(discrete = TRUE, option = "D",labels = c("CAN ALWAYS BE TRUSTED" = "Always Trusted",
                                           "CAN MOSTLY BE TRUSTED" = "Mostly Trusted",
                                           "NEUTRAL" = "Neutral",
                                           "CAN RARELY BE TRUSTED" = "Rarely Trusted",
                                           "CAN NEVER BE TRUSTED" = "Never Trusted")) +
   sea::theme_sea() +
-  theme(legend.position = "bottom",  legend.direction = "horizontal",  legend.justification = "center", 
-        axis.text.x = element_text(size = 10), strip.text = element_blank(), axis.text.y = element_blank(),  axis.title.y = element_blank(), panel.grid.major = element_blank(), panel.grid.minor = element_blank(), legend.box = "horizontal") +
-  scale_y_continuous(labels = scales::percent_format())+
-  scale_x_discrete(labels = c("government_trusted" = "Local government", "nearby_trusted" = "People in nearby villages", "people_trusted" = "People in own village"))
+  theme(
+    legend.position = "bottom", 
+    legend.direction = "horizontal",  
+    legend.justification = "center", 
+    axis.text.x = element_text(size = 10), 
+    strip.text.x = element_text(size = 12, face = "bold"),  # Adjust facet titles
+    axis.text.y = element_blank(),  
+    axis.title.y = element_blank(), 
+    panel.grid.major = element_blank(), 
+    panel.grid.minor = element_blank(), 
+    legend.box = "horizontal"
+  ) +
+  scale_y_continuous(labels = scales::percent_format()) +
+  scale_x_discrete(labels = c(
+    "government_trusted" = "Local government", 
+    "nearby_trusted" = "People in nearby villages", 
+    "people_trusted" = "People in own village"
+  )) +
+  facet_wrap(
+    ~ cluster, 
+    nrow = 2, 
+    labeller = as_labeller(c("Overall North" = "Overall North", "Overall South" = "Overall South", "Other" = "Other Villages")))
 
 ```
 
@@ -2970,7 +3208,7 @@ ggplot(conflict_data, aes(x = village, y = proportion * 100, group = fct_relevel
                 position = position_dodge(preserve = "single", width = 0.95), width = 0.1) +
   guides(fill = guide_legend(title = NULL)) +
   labs(x = NULL, y = NULL) +
-  scale_fill_manual(values = c("#3d5919", "#5b7a2e", "#a4b792", "#d2d2c8", "#d8e3cc"), labels = c("OFTEN" = "Often",
+  scale_fill_viridis(discrete = TRUE, option = "D", labels = c("OFTEN" = "Often",
                                           "RARELY" = "Rarely",
                                           "NEVER" = "Never",
                                           "NOT SURE" = "Not Sure")) +
@@ -3035,7 +3273,7 @@ ggplot(conflict_data, aes(x = village, y = proportion * 100, group = fct_relevel
                 position = position_dodge(preserve = "single", width = 0.95), width = 0.1) +
   guides(fill = guide_legend(title = NULL)) +
   labs(x = NULL, y = NULL) +
-  scale_fill_manual(values = c("#3d5919", "#5b7a2e", "#a4b792", "#d2d2c8", "#d8e3cc"), labels = c("MORE" = "More",
+  scale_fill_viridis(discrete = TRUE, option = "D", labels = c("MORE" = "More",
                                           "SAME" = "Same",
                                           "LESS" = "Less",
                                           "NOT SURE" = "Not Sure")) +
@@ -3052,40 +3290,73 @@ Approximately two thirds of all reasons for conflicts concern the closure of the
 
 ```{r,  fig.cap='Reasons for conflict', fig.align='center', out.width = '90%'}
 
-conflict_reason_expanded <- tanganyika_clean %>% select(hh_code, village, conflict_reason, stype, fpc) %>%
+# Expand and classify data by clusters
+conflict_reason_expanded <- tanganyika_clean %>% 
+  select(hh_code, village, conflict_reason, stype, fpc) %>%
   separate_rows(conflict_reason, sep = "\\|") %>%
-  mutate(conflict_reason = trimws(conflict_reason)) %>% drop_na()  
+  mutate(conflict_reason = trimws(conflict_reason)) %>% 
+  drop_na() %>%
+  mutate(cluster = case_when(
+    village %in% cluster_1_villages ~ "Cluster 1",
+    village %in% cluster_2_villages ~ "Cluster 2",
+    TRUE ~ "Other"
+  ))
 
-conflict_reason_expanded <- conflict_reason_expanded %>%
-  mutate(cluster = case_when(village %in% cluster_1_villages ~ "Cluster 1", village %in% cluster_2_villages ~ "Cluster 2", TRUE ~ "Other"))
-
-conflict_reason_design <- conflict_reason_expanded %>%
+# Create survey designs for each cluster
+conflict_reason_design_cluster_1 <- conflict_reason_expanded %>%
+  filter(cluster == "Cluster 1") %>%
   as_survey_design(strata = stype, fpc = fpc)
 
-conflict_reason_data <- conflict_reason_design %>%
-  filter(!(conflict_reason == "I DON'T KNOW")) %>%
-group_by(conflict_reason) %>%
-  summarise(
-    proportion = survey_mean(vartype = "ci", na.rm = TRUE), 
-    total = survey_total(vartype = "ci", na.rm = TRUE), 
-    n = unweighted(n()))
+conflict_reason_design_cluster_2 <- conflict_reason_expanded %>%
+  filter(cluster == "Cluster 2") %>%
+  as_survey_design(strata = stype, fpc = fpc)
 
-ggplot(conflict_reason_data, aes(x = reorder(conflict_reason, -proportion), y = proportion * 100, fill = reorder(conflict_reason, -proportion))) + 
+# Summarise for Cluster 1
+conflict_reason_data_cluster_1 <- conflict_reason_design_cluster_1 %>%
+  filter(!(conflict_reason == "I DON'T KNOW")) %>%
+  group_by(conflict_reason) %>%
+  summarise(
+    proportion = survey_mean(vartype = "ci", na.rm = TRUE),
+    total = survey_total(vartype = "ci", na.rm = TRUE),
+    n = unweighted(n())
+  )
+
+# Summarise for Cluster 2
+conflict_reason_data_cluster_2 <- conflict_reason_design_cluster_2 %>%
+  filter(!(conflict_reason == "I DON'T KNOW")) %>%
+  group_by(conflict_reason) %>%
+  summarise(
+    proportion = survey_mean(vartype = "ci", na.rm = TRUE),
+    total = survey_total(vartype = "ci", na.rm = TRUE),
+    n = unweighted(n())
+  )
+
+# Combine the two clusters' data
+conflict_reason_data_combined <- bind_rows(
+  conflict_reason_data_cluster_1 %>% mutate(cluster = "Overall North"),
+  conflict_reason_data_cluster_2 %>% mutate(cluster = "Overall South")
+)
+
+# Create the plot with two rows for clusters
+ggplot(conflict_reason_data_combined, aes(x = reorder(conflict_reason, -proportion), 
+                                          y = proportion * 100, fill = reorder(conflict_reason, -proportion))) + 
   geom_bar(stat = "identity", width = 0.8) +
-  geom_errorbar(aes(ymax = pmin(proportion_upp, 1)*100, ymin = pmax(proportion_low, 0)*100),
-                width = 0.2) +
+  geom_errorbar(aes(ymax = pmin(proportion_upp, 1) * 100, ymin = pmax(proportion_low, 0) * 100), width = 0.2) +
   geom_text(
     aes(y = pmin(proportion_upp, 1) * 100 + 1, label = paste0(round(proportion * 100, 1), "%")), 
     position = position_dodge(width = 0.95), vjust = -0.5, size = 3) +
   guides(fill = guide_legend(title = NULL)) +
   labs(x = "", y = "") +
-  sea::scale_fill_sea_discrete() +
+  scale_fill_viridis(discrete = TRUE, option = "D") +
   sea::theme_sea() + 
   theme(legend.position = "none",  # Remove the legend
         axis.text.x = element_text(angle = 45, hjust = 1), axis.text.y = element_blank(),  
-    axis.title.y = element_blank(), panel.grid.major = element_blank(), panel.grid.minor = element_blank()) +  
-  scale_y_continuous(labels = label_percent(scale = 1))+
-  scale_x_discrete(labels = c("Closure of the lake", "Use of illegal fishing gear", "Fishing in protected breeding area", "Catching undersized fish", "Other reasons", "Private land boundaries", "Fishing in the National Park"))
+        axis.title.y = element_blank(), panel.grid.major = element_blank(), panel.grid.minor = element_blank()) +  
+  scale_y_continuous(labels = label_percent(scale = 1)) +
+  scale_x_discrete(labels = c("Closure of the lake", "Use of illegal fishing gear", 
+                              "Fishing in protected breeding area", "Catching undersized fish", 
+                              "Other reasons", "Private land boundaries", "Fishing in the National Park")) +
+  facet_wrap(~ cluster, nrow = 2)  # Separate plots for each cluster
 
 ```
 
@@ -3145,7 +3416,7 @@ ggplot(conflict_parties_data, aes(x = village, y = proportion * 100, group = con
                 position = position_dodge(preserve = "single", width = 0.95), width = 0.1) +
   guides(fill = guide_legend(title = NULL, nrow = 2)) +
   labs(x = NULL, y = NULL) +
-  sea::scale_fill_sea_discrete(labels = c("AMONG FISHERS" = "Among fishers", "AMONG LOCAL VILLAGERS" = "Among local villagers", "BMUS WITH FISHERS" = "BMUs with fishers", "I DON'T KNOW" = "I don't know", "LOCAL VILLAGERS WITH GOVERNMENT" = "With government", "LOCAL VILLAGERS WITH IMMIGRANTS" = "With immigrants", "LOCAL VILLAGERS WITH PEOPLE FROM OTHER VILLAGES" = "With people from other villages", "OTHER" = "Other")) +
+  scale_fill_viridis(discrete = TRUE, option = "D", labels = c("AMONG FISHERS" = "Among fishers", "AMONG LOCAL VILLAGERS" = "Among local villagers", "BMUS WITH FISHERS" = "BMUs with fishers", "I DON'T KNOW" = "I don't know", "LOCAL VILLAGERS WITH GOVERNMENT" = "With government", "LOCAL VILLAGERS WITH IMMIGRANTS" = "With immigrants", "LOCAL VILLAGERS WITH PEOPLE FROM OTHER VILLAGES" = "With people from other villages", "OTHER" = "Other")) +
   sea::theme_sea() + 
   theme(legend.position = "bottom",  legend.direction = "horizontal",  legend.justification = "center", 
         axis.text.x = element_text(size = 7), strip.text = element_blank(), panel.grid.major = element_blank(), panel.grid.minor = element_blank(), legend.box = "horizontal") + facet_wrap(~cluster, ncol = 1, scales = "free_x")+
@@ -3208,7 +3479,7 @@ ggplot(conflict_data, aes(x = village, y = proportion * 100, group = fct_relevel
                 position = position_dodge(preserve = "single", width = 0.95), width = 0.1) +
   guides(fill = guide_legend(title = NULL)) +
   labs(x = NULL, y = NULL) +
-  scale_fill_manual(values = c("#3d5919", "#5b7a2e", "#a4b792", "#d2d2c8", "#d8e3cc"), labels = c("YES" = "Yes",
+  scale_fill_viridis(discrete = TRUE, option = "D", labels = c("YES" = "Yes",
                                           "NO" = "No",
                                           "NOT SURE" = "Not Sure")) +
   sea::theme_sea() + 
@@ -3225,40 +3496,74 @@ Two respondents indicated that disputes between BMUs and fishers are formally re
 Respondents were asked about who they thought to be an influential leader among their community, for instance a local leader whom they respect and who they think is good at raising awareness in their village about important communal issues (Figure 33). In response, political leaders (38%) and religious leaders (24%) were mentioned most commonly. Political party leaders, civil servants, and respected elders were also mentioned frequently. Of these influential leaders, 72% already occupied a village, ward, or regional government position (Figure 34). 
 
 ```{r,  fig.cap='Influential community leaders', fig.align='center', out.width = '90%'}
-influential_leaders_expanded <- tanganyika_clean %>% select(hh_code, village, influential_leaders, stype, fpc) %>%
+# Expand and classify data by clusters
+influential_leaders_expanded <- tanganyika_clean %>% 
+  select(hh_code, village, influential_leaders, stype, fpc) %>%
   separate_rows(influential_leaders, sep = "\\|") %>%
-  mutate(influential_leaders = trimws(influential_leaders)) %>% drop_na()  
+  mutate(influential_leaders = trimws(influential_leaders)) %>% 
+  drop_na() %>%
+  mutate(cluster = case_when(
+    village %in% cluster_1_villages ~ "Cluster 1",
+    village %in% cluster_2_villages ~ "Cluster 2",
+    TRUE ~ "Other"
+  ))
 
-influential_leaders_expanded <- influential_leaders_expanded %>%
-  mutate(cluster = case_when(village %in% cluster_1_villages ~ "Cluster 1", village %in% cluster_2_villages ~ "Cluster 2", TRUE ~ "Other"))
-
-influential_leaders_design <- influential_leaders_expanded %>%
+# Create survey designs for each cluster
+influential_leaders_design_cluster_1 <- influential_leaders_expanded %>%
+  filter(cluster == "Cluster 1") %>%
   as_survey_design(strata = stype, fpc = fpc)
 
-influential_leaders_data <- influential_leaders_design %>%
-  filter(!(influential_leaders == "I DON'T KNOW")) %>%
-group_by(influential_leaders) %>%
-  summarise(
-    proportion = survey_mean(vartype = "ci", na.rm = TRUE), 
-    total = survey_total(vartype = "ci", na.rm = TRUE), 
-    n = unweighted(n()))
+influential_leaders_design_cluster_2 <- influential_leaders_expanded %>%
+  filter(cluster == "Cluster 2") %>%
+  as_survey_design(strata = stype, fpc = fpc)
 
-ggplot(influential_leaders_data, aes(x = reorder(influential_leaders, -proportion), y = proportion * 100, fill = reorder(influential_leaders, -proportion))) + 
+# Summarise for Cluster 1
+influential_leaders_data_cluster_1 <- influential_leaders_design_cluster_1 %>%
+  filter(!(influential_leaders == "I DON'T KNOW")) %>%
+  group_by(influential_leaders) %>%
+  summarise(
+    proportion = survey_mean(vartype = "ci", na.rm = TRUE),
+    total = survey_total(vartype = "ci", na.rm = TRUE),
+    n = unweighted(n())
+  )
+
+# Summarise for Cluster 2
+influential_leaders_data_cluster_2 <- influential_leaders_design_cluster_2 %>%
+  filter(!(influential_leaders == "I DON'T KNOW")) %>%
+  group_by(influential_leaders) %>%
+  summarise(
+    proportion = survey_mean(vartype = "ci", na.rm = TRUE),
+    total = survey_total(vartype = "ci", na.rm = TRUE),
+    n = unweighted(n())
+  )
+
+# Combine the two clusters' data
+influential_leaders_data_combined <- bind_rows(
+  influential_leaders_data_cluster_1 %>% mutate(cluster = "Overall North"),
+  influential_leaders_data_cluster_2 %>% mutate(cluster = "Overall South")
+)
+
+# Create the plot with two rows for clusters
+ggplot(influential_leaders_data_combined, aes(x = reorder(influential_leaders, -proportion), 
+                                              y = proportion * 100, fill = reorder(influential_leaders, -proportion))) + 
   geom_bar(stat = "identity", width = 0.8) +
-  geom_errorbar(aes(ymax = pmin(proportion_upp, 1)*100, ymin = pmax(proportion_low, 0)*100),
-                width = 0.2) +
+  geom_errorbar(aes(ymax = pmin(proportion_upp, 1) * 100, ymin = pmax(proportion_low, 0) * 100), width = 0.2) +
   geom_text(
     aes(y = pmin(proportion_upp, 1) * 100 + 1, label = paste0(round(proportion * 100, 1), "%")), 
     position = position_dodge(width = 0.95), vjust = -0.5, size = 3) +
   guides(fill = guide_legend(title = NULL)) +
   labs(x = "", y = "") +
-  sea::scale_fill_sea_discrete() +
+  scale_fill_viridis(discrete = TRUE, option = "D") +
   sea::theme_sea() + 
   theme(legend.position = "none",  # Remove the legend
         axis.text.x = element_text(angle = 45, hjust = 1), axis.text.y = element_blank(),  
-    axis.title.y = element_blank(), panel.grid.major = element_blank(), panel.grid.minor = element_blank()) +  # Rotate x-axis labels
-  scale_y_continuous(labels = label_percent(scale = 1))+
-  scale_x_discrete(labels = c("Political Leaders", "Religious Leaders", "Political Party Leaders", "Civil Servants", "Respected Elders", "Fishing Equipment Owners", "Fishing Equipment Leaders", "Sports Leaders", "Fishing Equipment Repairers", "Witch Doctors", "Farmers", "Others"))
+        axis.title.y = element_blank(), panel.grid.major = element_blank(), panel.grid.minor = element_blank()) +  
+  scale_y_continuous(labels = label_percent(scale = 1)) +
+  scale_x_discrete(labels = c("Political Leaders", "Religious Leaders", "Political Party Leaders", 
+                              "Civil Servants", "Respected Elders", "Fishing Equipment Owners", 
+                              "Fishing Equipment Leaders", "Sports Leaders", "Fishing Equipment Repairers", 
+                              "Witch Doctors", "Farmers", "Others")) +
+  facet_wrap(~ cluster, nrow = 2)  # Separate plots for each cluster
 
 ```
 
@@ -3854,72 +4159,167 @@ combined_table %>%
 Respondents indicated that they frequently engage in activities organized by the BMU (Figure 39). Common activities that are engaged in frequently include raising awareness around conserving Lake Tanganyika, as well as the monitoring of illegal fishing practices, monitoring use of illegal fishing gear, and performing BMU patrols. Fish catch data is also collected frequently and aids in managing local fisheries resources. Meetings to discuss fisheries management across the BMUs appear to be held occasionally.
 
 ```{r, fig.cap='An indication of frequency for BMU activities', fig.align='center', out.width = '90%'}
-# Define the mapping for satisfaction levels
+# Mapping activity levels to numeric values
 activity_mapping <- c(
   "NEVER" = 1,
   "RARELY" = 2,
-  "FREQUENTLY" = 3)
+  "FREQUENTLY" = 3
+)
 
-activity_columns <- c("meetings", "patrolling", "illegal_fishing", "illegal_gears", "raise_awareness", "collect_fees", "engage_activities", "forms_revenue", "collect_data", "other_activity")
+# Specified activity columns
+activity_columns <- c(
+  "meetings", "patrolling", "illegal_fishing", "illegal_gears", 
+  "raise_awareness", "collect_fees", "engage_activities", 
+  "forms_revenue", "collect_data", "other_activity"
+)
 
-# Convert columns to numeric values
+# Convert columns to numeric using the mapping
 tanganyika_clean <- tanganyika_clean %>%
-  mutate(across(all_of(activity_columns), 
-                ~ recode(., !!!activity_mapping)))
+  mutate(across(all_of(activity_columns), ~ recode(., !!!activity_mapping)))
 
-# Pivot longer to reshape the data
+# Reshape data to long format
 activity_long <- tanganyika_clean %>%
-  pivot_longer(cols = all_of(activity_columns), names_to = "Activity", values_to = "Frequency")
-
-# Create survey design
-activity_long <- activity_long %>%
+  pivot_longer(
+    cols = all_of(activity_columns), 
+    names_to = "Activity", 
+    values_to = "Frequency"
+  ) %>%
   filter(!is.na(Frequency))
 
+# Add cluster classification
 activity_long <- activity_long %>%
+  mutate(cluster = case_when(
+    village %in% cluster_1_villages ~ "Overall North",
+    village %in% cluster_2_villages ~ "Overall South",
+    TRUE ~ "Other"
+  ))
+
+# Create survey design for Cluster 1
+activity_design_cluster_1 <- activity_long %>%
+  filter(cluster == "Overall North") %>%
   group_by(stype) %>%
   mutate(fpc = ifelse(n() > first(fpc), n(), first(fpc))) %>%
-  ungroup()
-
-# Proceed with the survey design creation
-strat_design_activity <- activity_long %>%
+  ungroup() %>%
   as_survey_design(strata = stype, fpc = fpc)
 
-# Summarize satisfaction values
-aggregate_activity <- strat_design_activity %>%
+# Create survey design for Cluster 2
+activity_design_cluster_2 <- activity_long %>%
+  filter(cluster == "Overall South") %>%
+  group_by(stype) %>%
+  mutate(fpc = ifelse(n() > first(fpc), n(), first(fpc))) %>%
+  ungroup() %>%
+  as_survey_design(strata = stype, fpc = fpc)
+
+# Summarize for Cluster 1
+aggregate_activity_cluster_1 <- activity_design_cluster_1 %>%
   group_by(Activity) %>%
   summarise(
     mean_activity_value = survey_mean(Frequency, vartype = "ci", na.rm = TRUE),
     n = unweighted(n())
   ) %>%
-  ungroup()
+  mutate(cluster = "Overall North")
 
-# Plotting Satisfaction Values
-ggplot(aggregate_activity, aes(x = reorder(Activity, -mean_activity_value), y = mean_activity_value, fill = Activity)) +
+# Summarize for Cluster 2
+aggregate_activity_cluster_2 <- activity_design_cluster_2 %>%
+  group_by(Activity) %>%
+  summarise(
+    mean_activity_value = survey_mean(Frequency, vartype = "ci", na.rm = TRUE),
+    n = unweighted(n())
+  ) %>%
+  mutate(cluster = "Overall South")
+
+# Combine the results from both clusters
+aggregate_activity_combined <- bind_rows(aggregate_activity_cluster_1, aggregate_activity_cluster_2)
+
+# Plotting activity values with clusters separated
+ggplot(aggregate_activity_combined, aes(
+  x = reorder(Activity, -mean_activity_value), 
+  y = mean_activity_value, 
+  fill = Activity
+)) +
   geom_bar(stat = "identity", width = 0.75) +
   labs(x = NULL, y = NULL) +
   guides(fill = guide_legend(title = NULL)) + 
-  sea::scale_fill_sea_discrete() +
+  scale_fill_viridis(discrete = TRUE, option = "D") +
   sea::theme_sea() + 
-  theme(legend.position = "none", 
-        axis.text.x = element_text(angle = 45, hjust = 1),
-        panel.grid.major = element_blank(), 
+  theme(
+    legend.position = "none", 
+    axis.text.x = element_text(angle = 45, hjust = 1),
+    panel.grid.major = element_blank(), 
     panel.grid.minor = element_blank(),
-        strip.text = element_blank(), 
-        legend.box = "horizontal") +
-  scale_y_continuous(limits = c(0,3), breaks = 1:3, labels = c("Never", "Rarely", "Frequently"))+
-  scale_x_discrete(labels = c("Raising awareness about\nconserving the lake", "Controlling illegal\nfishing", "Controlling illegal\nfishing gear", "Patrolling", "Collecting data", "Meetings", "Collect fees or levies\nfrom outside fishers", "Engage in\nbusiness activities", "Collect other\nforms of revenue", "Other activities"))
-
+    strip.text = element_text(size = 12, face = "bold"), # Add bold, larger cluster titles
+    legend.box = "horizontal"
+  ) +
+  scale_y_continuous(
+    limits = c(0, 3), 
+    breaks = 1:3, 
+    labels = c("Never", "Rarely", "Frequently")
+  ) +
+  scale_x_discrete(labels = c(
+    "Raising awareness about\nconserving the lake", 
+    "Controlling illegal\nfishing", 
+    "Controlling illegal\nfishing gear", 
+    "Patrolling", 
+    "Collecting data", 
+    "Meetings", 
+    "Collect fees or levies\nfrom outside fishers", 
+    "Engage in\nbusiness activities", 
+    "Collect other\nforms of revenue", 
+    "Other activities"
+  )) +
+  facet_wrap(~ cluster, nrow = 2, scales = "free_y", strip.position = "top") 
 ```
 
 Three quarters of all households believed that their BMU had good leaders in place (Figure 40). In most instances (85%), respondents indicated that election procedures to choose BMU leaders were fair (Figure 41). Only 8% believed that BMU leaders were elected unfairly. Furthermore, two thirds of people indicated that there is good trust and collaboration between their BMU and government authorities in the management of fishing resources (Figure 42). 
 
 ```{r, fig.cap='Do you think the BMU has good leaders?', fig.align='center', out.width = '90%'}
-village_data <- tanganyika_survey %>%
-   filter(!is.na(good_leaders) & good_leaders != "I DON'T KNOW") %>% 
-    group_by(good_leaders) %>%
-    summarise(proportion = survey_mean(vartype = "ci", na.rm = TRUE), total = survey_total(vartype = "ci", na.rm = TRUE), n = unweighted(n())) %>% drop_na()
+# Expand the data with cluster classification
+village_data_expanded <- tanganyika_survey %>%
+  filter(!is.na(good_leaders) & good_leaders != "I DON'T KNOW") %>%
+  mutate(cluster = case_when(
+    village %in% cluster_1_villages ~ "Cluster 1",
+    village %in% cluster_2_villages ~ "Cluster 2",
+    TRUE ~ "Other"
+  ))
 
-ggplot(village_data, aes(x = fct_relevel(good_leaders, "YES", "NO", "NOT SURE"), y = proportion * 100, fill = good_leaders)) +
+# Create survey designs for each cluster
+village_data_design_cluster_1 <- village_data_expanded %>%
+  filter(cluster == "Cluster 1") %>%
+  as_survey_design()
+
+village_data_design_cluster_2 <- village_data_expanded %>%
+  filter(cluster == "Cluster 2") %>%
+  as_survey_design()
+
+# Summarise for Cluster 1
+village_data_cluster_1 <- village_data_design_cluster_1 %>%
+  group_by(good_leaders) %>%
+  summarise(
+    proportion = survey_mean(vartype = "ci", na.rm = TRUE),
+    total = survey_total(vartype = "ci", na.rm = TRUE),
+    n = unweighted(n())
+  ) %>%
+  drop_na()
+
+# Summarise for Cluster 2
+village_data_cluster_2 <- village_data_design_cluster_2 %>%
+  group_by(good_leaders) %>%
+  summarise(
+    proportion = survey_mean(vartype = "ci", na.rm = TRUE),
+    total = survey_total(vartype = "ci", na.rm = TRUE),
+    n = unweighted(n())
+  ) %>%
+  drop_na()
+
+# Combine the two clusters' data
+village_data_combined <- bind_rows(
+  village_data_cluster_1 %>% mutate(cluster = "Overall North"),
+  village_data_cluster_2 %>% mutate(cluster = "Overall South")
+)
+
+# Create the plot with two rows for clusters
+ggplot(village_data_combined, aes(x = fct_relevel(good_leaders, "YES", "NO", "NOT SURE"), 
+                                  y = proportion * 100, fill = good_leaders)) +
   geom_bar(stat = "identity", width = 0.8) +
   geom_errorbar(aes(ymax = pmin(proportion_upp, 1) * 100, ymin = pmax(proportion_low, 0) * 100), width = 0.2) +
   geom_text(
@@ -3929,20 +4329,64 @@ ggplot(village_data, aes(x = fct_relevel(good_leaders, "YES", "NO", "NOT SURE"),
   labs(x = NULL, y = NULL) +  
   sea::scale_fill_sea_discrete(4) +
   sea::theme_sea() + 
-  theme(legend.position = "none", axis.text.x = element_text(angle = 45, hjust = 1), panel.grid.major = element_blank(), panel.grid.minor = element_blank(), axis.text.y = element_blank(), axis.title.y = element_blank()) +
-  scale_y_continuous(labels = label_percent(scale = 1))+
-  scale_x_discrete(labels = c("Yes", "No", "Not Sure"))
+  theme(legend.position = "none", axis.text.x = element_text(angle = 45, hjust = 1), 
+        panel.grid.major = element_blank(), panel.grid.minor = element_blank(), 
+        axis.text.y = element_blank(), axis.title.y = element_blank()) +
+  scale_y_continuous(labels = label_percent(scale = 1)) +
+  scale_x_discrete(labels = c("Yes", "No", "Not Sure")) +
+  facet_wrap(~ cluster, nrow = 2)  # Separate plots for each cluster
 
 ```
 
 
 ```{r, fig.cap='Were BMU leaders elected or chosen fairly?', fig.align='center', out.width = '90%'}
-village_data <- tanganyika_survey %>%
-   filter(!is.na(leaders_elected) & leaders_elected != "I DON'T KNOW") %>% 
-    group_by(leaders_elected) %>%
-    summarise(proportion = survey_mean(vartype = "ci", na.rm = TRUE), total = survey_total(vartype = "ci", na.rm = TRUE), n = unweighted(n())) %>% drop_na()
+# Expand the data with cluster classification
+leaders_elected_expanded <- tanganyika_survey %>%
+  filter(!is.na(leaders_elected) & leaders_elected != "I DON'T KNOW") %>%
+  mutate(cluster = case_when(
+    village %in% cluster_1_villages ~ "Cluster 1",
+    village %in% cluster_2_villages ~ "Cluster 2",
+    TRUE ~ "Other"
+  ))
 
-ggplot(village_data, aes(x = fct_relevel(leaders_elected, "YES", "NO", "NOT SURE"), y = proportion * 100, fill = leaders_elected)) +
+# Create survey designs for each cluster
+leaders_elected_design_cluster_1 <- leaders_elected_expanded %>%
+  filter(cluster == "Cluster 1") %>%
+  as_survey_design()
+
+leaders_elected_design_cluster_2 <- leaders_elected_expanded %>%
+  filter(cluster == "Cluster 2") %>%
+  as_survey_design()
+
+# Summarise for Cluster 1
+leaders_elected_cluster_1 <- leaders_elected_design_cluster_1 %>%
+  group_by(leaders_elected) %>%
+  summarise(
+    proportion = survey_mean(vartype = "ci", na.rm = TRUE),
+    total = survey_total(vartype = "ci", na.rm = TRUE),
+    n = unweighted(n())
+  ) %>%
+  drop_na()
+
+# Summarise for Cluster 2
+leaders_elected_cluster_2 <- leaders_elected_design_cluster_2 %>%
+  group_by(leaders_elected) %>%
+  summarise(
+    proportion = survey_mean(vartype = "ci", na.rm = TRUE),
+    total = survey_total(vartype = "ci", na.rm = TRUE),
+    n = unweighted(n())
+  ) %>%
+  drop_na()
+
+# Combine the two clusters' data
+leaders_elected_combined <- bind_rows(
+  leaders_elected_cluster_1 %>% mutate(cluster = "Overall North"),
+  leaders_elected_cluster_2 %>% mutate(cluster = "Overall South")
+)
+
+# Create the plot with two rows for clusters
+ggplot(leaders_elected_combined, aes(x = fct_relevel(leaders_elected, "YES", "NO", "NOT SURE"), 
+                                    y = proportion * 100, fill = leaders_elected)) +
   geom_bar(stat = "identity", width = 0.8) +
   geom_errorbar(aes(ymax = pmin(proportion_upp, 1) * 100, ymin = pmax(proportion_low, 0) * 100), width = 0.2) +
   geom_text(
@@ -3952,21 +4396,66 @@ ggplot(village_data, aes(x = fct_relevel(leaders_elected, "YES", "NO", "NOT SURE
   labs(x = NULL, y = NULL) +  
   sea::scale_fill_sea_discrete(4) +
   sea::theme_sea() + 
-  theme(legend.position = "none", axis.text.x = element_text(angle = 45, hjust = 1), panel.grid.major = element_blank(), panel.grid.minor = element_blank(), axis.text.y = element_blank(), axis.title.y = element_blank()) +
-  scale_y_continuous(labels = label_percent(scale = 1))+
-  scale_x_discrete(labels = c("Yes", "No", "Not Sure"))
+  theme(legend.position = "none", axis.text.x = element_text(angle = 45, hjust = 1), 
+        panel.grid.major = element_blank(), panel.grid.minor = element_blank(), 
+        axis.text.y = element_blank(), axis.title.y = element_blank()) +
+  scale_y_continuous(labels = label_percent(scale = 1)) +
+  scale_x_discrete(labels = c("Yes", "No", "Not Sure")) +
+  facet_wrap(~ cluster, nrow = 2)  # Separate plots for each cluster
+
 ```
 
 
 ```{r, fig.cap='Indication of trust and collaboration between BMU and the Government in the management of fishing resources', fig.align='center', out.width = '90%'}
-village_data <- tanganyika_survey %>%
-   filter(!is.na(trust_collaboration) & trust_collaboration != "I DON'T KNOW" & 
-            trust_collaboration != "I DO NOT WANT TO ANSWER" & trust_collaboration != "NOT SURE") %>% 
-    group_by(trust_collaboration) %>%
-    summarise(proportion = survey_mean(vartype = "ci", na.rm = TRUE), total = survey_total(vartype = "ci", na.rm = TRUE), n = unweighted(n())) %>% drop_na()
+# Expand the data with cluster classification
+trust_collaboration_expanded <- tanganyika_survey %>%
+  filter(!is.na(trust_collaboration) & trust_collaboration != "I DON'T KNOW" & 
+         trust_collaboration != "I DO NOT WANT TO ANSWER" & trust_collaboration != "NOT SURE") %>%
+  mutate(cluster = case_when(
+    village %in% cluster_1_villages ~ "Cluster 1",
+    village %in% cluster_2_villages ~ "Cluster 2",
+    TRUE ~ "Other"
+  ))
 
-ggplot(village_data, aes(x = fct_relevel(trust_collaboration, "GOOD", "AVERAGE", "BAD"), y = proportion * 100, fill = trust_collaboration)) +
- geom_bar(stat = "identity", width = 0.8) +
+# Create survey designs for each cluster
+trust_collaboration_design_cluster_1 <- trust_collaboration_expanded %>%
+  filter(cluster == "Cluster 1") %>%
+  as_survey_design()
+
+trust_collaboration_design_cluster_2 <- trust_collaboration_expanded %>%
+  filter(cluster == "Cluster 2") %>%
+  as_survey_design()
+
+# Summarise for Cluster 1
+trust_collaboration_cluster_1 <- trust_collaboration_design_cluster_1 %>%
+  group_by(trust_collaboration) %>%
+  summarise(
+    proportion = survey_mean(vartype = "ci", na.rm = TRUE),
+    total = survey_total(vartype = "ci", na.rm = TRUE),
+    n = unweighted(n())
+  ) %>%
+  drop_na()
+
+# Summarise for Cluster 2
+trust_collaboration_cluster_2 <- trust_collaboration_design_cluster_2 %>%
+  group_by(trust_collaboration) %>%
+  summarise(
+    proportion = survey_mean(vartype = "ci", na.rm = TRUE),
+    total = survey_total(vartype = "ci", na.rm = TRUE),
+    n = unweighted(n())
+  ) %>%
+  drop_na()
+
+# Combine the two clusters' data
+trust_collaboration_combined <- bind_rows(
+  trust_collaboration_cluster_1 %>% mutate(cluster = "Overall North"),
+  trust_collaboration_cluster_2 %>% mutate(cluster = "Overall South")
+)
+
+# Create the plot with two rows for clusters
+ggplot(trust_collaboration_combined, aes(x = fct_relevel(trust_collaboration, "GOOD", "AVERAGE", "BAD"), 
+                                        y = proportion * 100, fill = trust_collaboration)) +
+  geom_bar(stat = "identity", width = 0.8) +
   geom_errorbar(aes(ymax = pmin(proportion_upp, 1) * 100, ymin = pmax(proportion_low, 0) * 100), width = 0.2) +
   geom_text(
     aes(y = pmin(proportion_upp, 1) * 100 + 1, label = paste0(round(proportion * 100, 0), "%")), 
@@ -3975,9 +4464,13 @@ ggplot(village_data, aes(x = fct_relevel(trust_collaboration, "GOOD", "AVERAGE",
   labs(x = NULL, y = NULL) +  
   sea::scale_fill_sea_discrete(4) +
   sea::theme_sea() + 
-  theme(legend.position = "none", axis.text.x = element_text(angle = 45, hjust = 1), panel.grid.major = element_blank(), panel.grid.minor = element_blank(), axis.text.y = element_blank(), axis.title.y = element_blank()) +
-  scale_y_continuous(labels = label_percent(scale = 1))+
-  scale_x_discrete(labels = c("Good", "Average", "Bad"))
+  theme(legend.position = "none", axis.text.x = element_text(angle = 45, hjust = 1), 
+        panel.grid.major = element_blank(), panel.grid.minor = element_blank(), 
+        axis.text.y = element_blank(), axis.title.y = element_blank()) +
+  scale_y_continuous(labels = label_percent(scale = 1)) +
+  scale_x_discrete(labels = c("Good", "Average", "Bad")) +
+  facet_wrap(~ cluster, nrow = 2)  # Separate plots for each cluster
+
 ```
 
 Few power struggles and/or conflicts of interest occur between village leaders and the BMU (21%; Table 13). However, despite a very limited sample size, respondents from Izinga (n = 2) and Mwinza (n = 1) indicated that power struggles and/or conflicts of interest were ubiquitous among village leaders and the BMU. In the instances that conflicts of interest occur, they are predominantly solved internally, by negotiating with one another (51%). Only in 17% of instances do parties go to the village government to discuss matters and fewer (8%) go to the ward or district government to discuss matters. 
@@ -4192,12 +4685,55 @@ ggplot(village_data, aes(x = village, y = proportion * 100, group = bmu_bylaws, 
 
 ```{r, fig.cap='Statement: BMU bylaws are being followed', fig.align='center', out.width = '90%'}
 
-village_data <- tanganyika_survey %>%
-  filter(!is.na(bylaws_followed) & bylaws_followed != "97 I DON'T KNOW") %>% 
-    group_by(bylaws_followed) %>%
-    summarise(proportion = survey_mean(vartype = "ci", na.rm = TRUE), total = survey_total(vartype = "ci", na.rm = TRUE), n = unweighted(n())) %>% drop_na()
+# Expand the data with cluster classification
+bylaws_followed_expanded <- tanganyika_survey %>%
+  filter(!is.na(bylaws_followed) & bylaws_followed != "97 I DON'T KNOW") %>%
+  mutate(cluster = case_when(
+    village %in% cluster_1_villages ~ "Cluster 1",
+    village %in% cluster_2_villages ~ "Cluster 2",
+    TRUE ~ "Other"
+  ))
 
-ggplot(village_data, aes(x = fct_relevel(bylaws_followed, "1 STRONGLY DISAGREE", "2 DISAGREE", "3 NEUTRAL", "4 AGREE", "5 STRONGLY AGREE"), y = proportion * 100, fill = bylaws_followed)) +
+# Create survey designs for each cluster
+bylaws_followed_design_cluster_1 <- bylaws_followed_expanded %>%
+  filter(cluster == "Cluster 1") %>%
+  as_survey_design()
+
+bylaws_followed_design_cluster_2 <- bylaws_followed_expanded %>%
+  filter(cluster == "Cluster 2") %>%
+  as_survey_design()
+
+# Summarise for Cluster 1
+bylaws_followed_cluster_1 <- bylaws_followed_design_cluster_1 %>%
+  group_by(bylaws_followed) %>%
+  summarise(
+    proportion = survey_mean(vartype = "ci", na.rm = TRUE),
+    total = survey_total(vartype = "ci", na.rm = TRUE),
+    n = unweighted(n())
+  ) %>%
+  drop_na()
+
+# Summarise for Cluster 2
+bylaws_followed_cluster_2 <- bylaws_followed_design_cluster_2 %>%
+  group_by(bylaws_followed) %>%
+  summarise(
+    proportion = survey_mean(vartype = "ci", na.rm = TRUE),
+    total = survey_total(vartype = "ci", na.rm = TRUE),
+    n = unweighted(n())
+  ) %>%
+  drop_na()
+
+# Combine the two clusters' data
+bylaws_followed_combined <- bind_rows(
+  bylaws_followed_cluster_1 %>% mutate(cluster = "Overall North"),
+  bylaws_followed_cluster_2 %>% mutate(cluster = "Overall South")
+)
+
+# Create the plot with two rows for clusters
+ggplot(bylaws_followed_combined, aes(x = fct_relevel(bylaws_followed, 
+                                                    "1 STRONGLY DISAGREE", "2 DISAGREE", 
+                                                    "3 NEUTRAL", "4 AGREE", "5 STRONGLY AGREE"), 
+                                    y = proportion * 100, fill = bylaws_followed)) +
   geom_bar(stat = "identity", width = 0.8) +
   geom_errorbar(aes(ymax = pmin(proportion_upp, 1) * 100, ymin = pmax(proportion_low, 0) * 100), width = 0.2) +
   geom_text(
@@ -4207,9 +4743,12 @@ ggplot(village_data, aes(x = fct_relevel(bylaws_followed, "1 STRONGLY DISAGREE",
   labs(x = NULL, y = NULL) +  
   sea::scale_fill_sea_discrete(4) +
   sea::theme_sea() + 
-  theme(legend.position = "none", axis.text.x = element_text(angle = 45, hjust = 1), panel.grid.major = element_blank(), panel.grid.minor = element_blank(), axis.text.y = element_blank(), axis.title.y = element_blank()) +
-  scale_y_continuous(labels = label_percent(scale = 1))+
-  scale_x_discrete(labels = c("Strongly Disagree", "Disagree", "Neutral", "Agree", "Strongly Agree"))
+  theme(legend.position = "none", axis.text.x = element_text(angle = 45, hjust = 1), 
+        panel.grid.major = element_blank(), panel.grid.minor = element_blank(), 
+        axis.text.y = element_blank(), axis.title.y = element_blank()) +
+  scale_y_continuous(labels = label_percent(scale = 1)) +
+  scale_x_discrete(labels = c("Strongly Disagree", "Disagree", "Neutral", "Agree", "Strongly Agree")) +
+  facet_wrap(~ cluster, nrow = 2)  # Separate plots for each cluster
 
 ```
 
@@ -4217,13 +4756,56 @@ When asked whether BMUs have improved fishing practices, 45% of households respo
 
 ```{r, fig.cap='Do you think the BMU has improved fishing practices?', fig.align='center', out.width = '90%'}
 
-village_data <- tanganyika_survey %>%
-  filter(!is.na(bmu_practice) & bmu_practice != "97 I DON'T KNOW") %>% 
-    group_by(bmu_practice) %>%
-    summarise(proportion = survey_mean(vartype = "ci", na.rm = TRUE), total = survey_total(vartype = "ci", na.rm = TRUE), n = unweighted(n())) %>% drop_na()
+# Expand the data with cluster classification
+bmu_practice_expanded <- tanganyika_survey %>%
+  filter(!is.na(bmu_practice) & bmu_practice != "97 I DON'T KNOW") %>%
+  mutate(cluster = case_when(
+    village %in% cluster_1_villages ~ "Cluster 1",
+    village %in% cluster_2_villages ~ "Cluster 2",
+    TRUE ~ "Other"
+  ))
 
-ggplot(village_data, aes(x = fct_relevel(bmu_practice, "1 STRONGLY DISAGREE", "2 DISAGREE", "3 NEUTRAL", "4 AGREE", "5 STRONGLY AGREE"), y = proportion * 100, fill = bmu_practice)) +
-   geom_bar(stat = "identity", width = 0.8) +
+# Create survey designs for each cluster
+bmu_practice_design_cluster_1 <- bmu_practice_expanded %>%
+  filter(cluster == "Cluster 1") %>%
+  as_survey_design()
+
+bmu_practice_design_cluster_2 <- bmu_practice_expanded %>%
+  filter(cluster == "Cluster 2") %>%
+  as_survey_design()
+
+# Summarise for Cluster 1
+bmu_practice_cluster_1 <- bmu_practice_design_cluster_1 %>%
+  group_by(bmu_practice) %>%
+  summarise(
+    proportion = survey_mean(vartype = "ci", na.rm = TRUE),
+    total = survey_total(vartype = "ci", na.rm = TRUE),
+    n = unweighted(n())
+  ) %>%
+  drop_na()
+
+# Summarise for Cluster 2
+bmu_practice_cluster_2 <- bmu_practice_design_cluster_2 %>%
+  group_by(bmu_practice) %>%
+  summarise(
+    proportion = survey_mean(vartype = "ci", na.rm = TRUE),
+    total = survey_total(vartype = "ci", na.rm = TRUE),
+    n = unweighted(n())
+  ) %>%
+  drop_na()
+
+# Combine the two clusters' data
+bmu_practice_combined <- bind_rows(
+  bmu_practice_cluster_1 %>% mutate(cluster = "Overall North"),
+  bmu_practice_cluster_2 %>% mutate(cluster = "Overall South")
+)
+
+# Create the plot with two rows for clusters
+ggplot(bmu_practice_combined, aes(x = fct_relevel(bmu_practice, 
+                                                 "1 STRONGLY DISAGREE", "2 DISAGREE", 
+                                                 "3 NEUTRAL", "4 AGREE", "5 STRONGLY AGREE"), 
+                                 y = proportion * 100, fill = bmu_practice)) +
+  geom_bar(stat = "identity", width = 0.8) +
   geom_errorbar(aes(ymax = pmin(proportion_upp, 1) * 100, ymin = pmax(proportion_low, 0) * 100), width = 0.2) +
   geom_text(
     aes(y = pmin(proportion_upp, 1) * 100 + 1, label = paste0(round(proportion * 100, 0), "%")), 
@@ -4232,9 +4814,12 @@ ggplot(village_data, aes(x = fct_relevel(bmu_practice, "1 STRONGLY DISAGREE", "2
   labs(x = NULL, y = NULL) +  
   sea::scale_fill_sea_discrete(4) +
   sea::theme_sea() + 
-  theme(legend.position = "none", axis.text.x = element_text(angle = 45, hjust = 1), panel.grid.major = element_blank(), panel.grid.minor = element_blank(), axis.text.y = element_blank(), axis.title.y = element_blank()) +
-  scale_y_continuous(labels = label_percent(scale = 1))+
-  scale_x_discrete(labels = c("Strongly Disagree", "Disagree", "Neutral", "Agree", "Strongly Agree"))
+  theme(legend.position = "none", axis.text.x = element_text(angle = 45, hjust = 1), 
+        panel.grid.major = element_blank(), panel.grid.minor = element_blank(), 
+        axis.text.y = element_blank(), axis.title.y = element_blank()) +
+  scale_y_continuous(labels = label_percent(scale = 1)) +
+  scale_x_discrete(labels = c("Strongly Disagree", "Disagree", "Neutral", "Agree", "Strongly Agree")) +
+  facet_wrap(~ cluster, nrow = 2)  # Separate plots for each cluster
 
 ```
 
@@ -4311,7 +4896,7 @@ ggplot(boat_type_data, aes(x = village, y = proportion * 100, group = boat_type,
   #     position = position_dodge(width = 0.8), vjust = 0, size = 3) +
   guides(fill = guide_legend(title = NULL, nrow = 1, reverse = FALSE)) +
   labs(x = NULL, y = NULL) +
-  scale_fill_manual(values = c("#3d5919", "#5b7a2e", "#a4b792", "#d2d2c8", "#d8e3cc", "#3c3c3c"),labels = c(
+  scale_fill_viridis(discrete = TRUE, option = "D",labels = c(
       "CANOE BOAT" = "Canoe", 
       "CANOE WITHOUT MOTOR" = "Canoe without engine",
       "ENGINE BOAT" = "Engine boat",
@@ -4423,12 +5008,55 @@ ggplot(aggregate_fish_importance, aes(x = village, y = mean_importance_percent, 
 
 
 ```{r, fig.cap='Self-assessment of fisheries resource management over the past five years', fig.align='center', out.width = '90%'}
-village_data <- tanganyika_survey %>%
-  filter(!is.na(fisheries_resources) & fisheries_resources != "I DO NOT WANT TO ANSWER") %>% 
-    group_by(fisheries_resources) %>%
-    summarise(proportion = survey_mean(vartype = "ci", na.rm = TRUE), total = survey_total(vartype = "ci", na.rm = TRUE), n = unweighted(n())) %>% drop_na()
+# Expand the data with cluster classification
+fisheries_resources_expanded <- tanganyika_survey %>%
+  filter(!is.na(fisheries_resources) & fisheries_resources != "I DO NOT WANT TO ANSWER") %>%
+  mutate(cluster = case_when(
+    village %in% cluster_1_villages ~ "Cluster 1",
+    village %in% cluster_2_villages ~ "Cluster 2",
+    TRUE ~ "Other"
+  ))
 
-ggplot(village_data, aes(x = fct_relevel(fisheries_resources, "VERY BAD", "BAD", "NEUTRAL", "GOOD", "VERY GOOD"), y = proportion * 100, fill = fisheries_resources)) +
+# Create survey designs for each cluster
+fisheries_resources_design_cluster_1 <- fisheries_resources_expanded %>%
+  filter(cluster == "Cluster 1") %>%
+  as_survey_design()
+
+fisheries_resources_design_cluster_2 <- fisheries_resources_expanded %>%
+  filter(cluster == "Cluster 2") %>%
+  as_survey_design()
+
+# Summarise for Cluster 1
+fisheries_resources_cluster_1 <- fisheries_resources_design_cluster_1 %>%
+  group_by(fisheries_resources) %>%
+  summarise(
+    proportion = survey_mean(vartype = "ci", na.rm = TRUE),
+    total = survey_total(vartype = "ci", na.rm = TRUE),
+    n = unweighted(n())
+  ) %>%
+  drop_na()
+
+# Summarise for Cluster 2
+fisheries_resources_cluster_2 <- fisheries_resources_design_cluster_2 %>%
+  group_by(fisheries_resources) %>%
+  summarise(
+    proportion = survey_mean(vartype = "ci", na.rm = TRUE),
+    total = survey_total(vartype = "ci", na.rm = TRUE),
+    n = unweighted(n())
+  ) %>%
+  drop_na()
+
+# Combine the two clusters' data
+fisheries_resources_combined <- bind_rows(
+  fisheries_resources_cluster_1 %>% mutate(cluster = "Overall North"),
+  fisheries_resources_cluster_2 %>% mutate(cluster = "Overall South")
+)
+
+# Create the plot with two rows for clusters
+ggplot(fisheries_resources_combined, aes(x = fct_relevel(fisheries_resources, 
+                                                       "VERY BAD", "BAD", 
+                                                       "NEUTRAL", "GOOD", "VERY GOOD"), 
+                                       y = proportion * 100, fill = fisheries_resources)) +
   geom_bar(stat = "identity", width = 0.8) +
   geom_errorbar(aes(ymax = pmin(proportion_upp, 1) * 100, ymin = pmax(proportion_low, 0) * 100), width = 0.2) +
   geom_text(
@@ -4438,9 +5066,12 @@ ggplot(village_data, aes(x = fct_relevel(fisheries_resources, "VERY BAD", "BAD",
   labs(x = NULL, y = NULL) +  
   sea::scale_fill_sea_discrete(4) +
   sea::theme_sea() + 
-  theme(legend.position = "none", axis.text.x = element_text(angle = 45, hjust = 1), panel.grid.major = element_blank(), panel.grid.minor = element_blank(), axis.text.y = element_blank(), axis.title.y = element_blank()) +
-  scale_y_continuous(labels = label_percent(scale = 1))+
-  scale_x_discrete(labels = c("Very Bad", "Bad", "Neutral", "Good", "Very Good"))
+  theme(legend.position = "none", axis.text.x = element_text(angle = 45, hjust = 1), 
+        panel.grid.major = element_blank(), panel.grid.minor = element_blank(), 
+        axis.text.y = element_blank(), axis.title.y = element_blank()) +
+  scale_y_continuous(labels = label_percent(scale = 1)) +
+  scale_x_discrete(labels = c("Very Bad", "Bad", "Neutral", "Good", "Very Good")) +
+  facet_wrap(~ cluster, nrow = 2)  # Separate plots for each cluster
 
 ```
 
@@ -4542,12 +5173,54 @@ combined_table %>%
 
 
 ```{r, fig.cap='Satisfaction with involvement in decision-making around fisheries resources?', fig.align='center', out.width = '90%'}
-village_data <- tanganyika_survey %>%
-   filter(!is.na(satisfaction_involvement)) %>% 
-    group_by(satisfaction_involvement) %>%
-    summarise(proportion = survey_mean(vartype = "ci", na.rm = TRUE), total = survey_total(vartype = "ci", na.rm = TRUE), n = unweighted(n())) %>% drop_na()
+# Expand the data with cluster classification
+satisfaction_involvement_expanded <- tanganyika_survey %>%
+  filter(!is.na(satisfaction_involvement)) %>%
+  mutate(cluster = case_when(
+    village %in% cluster_1_villages ~ "Cluster 1",
+    village %in% cluster_2_villages ~ "Cluster 2",
+    TRUE ~ "Other"
+  ))
 
-ggplot(village_data, aes(x = fct_relevel(satisfaction_involvement, "HAPPY", "NOT HAPPY"), y = proportion * 100, fill = satisfaction_involvement)) +
+# Create survey designs for each cluster
+satisfaction_involvement_design_cluster_1 <- satisfaction_involvement_expanded %>%
+  filter(cluster == "Cluster 1") %>%
+  as_survey_design()
+
+satisfaction_involvement_design_cluster_2 <- satisfaction_involvement_expanded %>%
+  filter(cluster == "Cluster 2") %>%
+  as_survey_design()
+
+# Summarise for Cluster 1
+satisfaction_involvement_cluster_1 <- satisfaction_involvement_design_cluster_1 %>%
+  group_by(satisfaction_involvement) %>%
+  summarise(
+    proportion = survey_mean(vartype = "ci", na.rm = TRUE),
+    total = survey_total(vartype = "ci", na.rm = TRUE),
+    n = unweighted(n())
+  ) %>%
+  drop_na()
+
+# Summarise for Cluster 2
+satisfaction_involvement_cluster_2 <- satisfaction_involvement_design_cluster_2 %>%
+  group_by(satisfaction_involvement) %>%
+  summarise(
+    proportion = survey_mean(vartype = "ci", na.rm = TRUE),
+    total = survey_total(vartype = "ci", na.rm = TRUE),
+    n = unweighted(n())
+  ) %>%
+  drop_na()
+
+# Combine the two clusters' data
+satisfaction_involvement_combined <- bind_rows(
+  satisfaction_involvement_cluster_1 %>% mutate(cluster = "Overall North"),
+  satisfaction_involvement_cluster_2 %>% mutate(cluster = "Overall South")
+)
+
+# Create the plot with two rows for clusters
+ggplot(satisfaction_involvement_combined, aes(x = fct_relevel(satisfaction_involvement, 
+                                                           "HAPPY", "NOT HAPPY"), 
+                                               y = proportion * 100, fill = satisfaction_involvement)) +
   geom_bar(stat = "identity", width = 0.8) +
   geom_errorbar(aes(ymax = pmin(proportion_upp, 1) * 100, ymin = pmax(proportion_low, 0) * 100), width = 0.2) +
   geom_text(
@@ -4557,19 +5230,64 @@ ggplot(village_data, aes(x = fct_relevel(satisfaction_involvement, "HAPPY", "NOT
   labs(x = NULL, y = NULL) +  
   sea::scale_fill_sea_discrete(4) +
   sea::theme_sea() + 
-  theme(legend.position = "none", axis.text.x = element_text(angle = 45, hjust = 1), panel.grid.major = element_blank(), panel.grid.minor = element_blank(), axis.text.y = element_blank(), axis.title.y = element_blank()) +
-  scale_y_continuous(labels = label_percent(scale = 1))+
-  scale_x_discrete(labels = c("Happy", "Not Happy"))
+  theme(legend.position = "none", axis.text.x = element_text(angle = 45, hjust = 1), 
+        panel.grid.major = element_blank(), panel.grid.minor = element_blank(), 
+        axis.text.y = element_blank(), axis.title.y = element_blank()) +
+  scale_y_continuous(labels = label_percent(scale = 1)) +
+  scale_x_discrete(labels = c("Happy", "Not Happy")) +
+  facet_wrap(~ cluster, nrow = 2)  # Separate plots for each cluster
+
 ```
 
 
 ```{r, fig.cap='An indication of the relationship with fisheries extension officers', fig.align='center', out.width = '90%'}
-village_data <- tanganyika_survey %>%
-   filter(!is.na(relationship_officer) & relationship_officer != "NOT SURE" & relationship_officer != "I DO NOT WANT TO ANSWER") %>% 
-    group_by(relationship_officer) %>%
-    summarise(proportion = survey_mean(vartype = "ci", na.rm = TRUE), total = survey_total(vartype = "ci", na.rm = TRUE), n = unweighted(n())) %>% drop_na()
+# Expand the data with cluster classification
+relationship_officer_expanded <- tanganyika_survey %>%
+  filter(!is.na(relationship_officer) & relationship_officer != "NOT SURE" & relationship_officer != "I DO NOT WANT TO ANSWER") %>%
+  mutate(cluster = case_when(
+    village %in% cluster_1_villages ~ "Cluster 1",
+    village %in% cluster_2_villages ~ "Cluster 2",
+    TRUE ~ "Other"
+  ))
 
-ggplot(village_data, aes(x = fct_relevel(relationship_officer, "GOOD", "AVERAGE", "BAD"), y = proportion * 100, fill = relationship_officer)) +
+# Create survey designs for each cluster
+relationship_officer_design_cluster_1 <- relationship_officer_expanded %>%
+  filter(cluster == "Cluster 1") %>%
+  as_survey_design()
+
+relationship_officer_design_cluster_2 <- relationship_officer_expanded %>%
+  filter(cluster == "Cluster 2") %>%
+  as_survey_design()
+
+# Summarise for Cluster 1
+relationship_officer_cluster_1 <- relationship_officer_design_cluster_1 %>%
+  group_by(relationship_officer) %>%
+  summarise(
+    proportion = survey_mean(vartype = "ci", na.rm = TRUE),
+    total = survey_total(vartype = "ci", na.rm = TRUE),
+    n = unweighted(n())
+  ) %>%
+  drop_na()
+
+# Summarise for Cluster 2
+relationship_officer_cluster_2 <- relationship_officer_design_cluster_2 %>%
+  group_by(relationship_officer) %>%
+  summarise(
+    proportion = survey_mean(vartype = "ci", na.rm = TRUE),
+    total = survey_total(vartype = "ci", na.rm = TRUE),
+    n = unweighted(n())
+  ) %>%
+  drop_na()
+
+# Combine the two clusters' data
+relationship_officer_combined <- bind_rows(
+  relationship_officer_cluster_1 %>% mutate(cluster = "Overall North"),
+  relationship_officer_cluster_2 %>% mutate(cluster = "Overall South")
+)
+
+# Create the plot with two rows for clusters
+ggplot(relationship_officer_combined, aes(x = fct_relevel(relationship_officer, "GOOD", "AVERAGE", "BAD"), 
+                                          y = proportion * 100, fill = relationship_officer)) +
   geom_bar(stat = "identity", width = 0.8) +
   geom_errorbar(aes(ymax = pmin(proportion_upp, 1) * 100, ymin = pmax(proportion_low, 0) * 100), width = 0.2) +
   geom_text(
@@ -4579,9 +5297,13 @@ ggplot(village_data, aes(x = fct_relevel(relationship_officer, "GOOD", "AVERAGE"
   labs(x = NULL, y = NULL) +  
   sea::scale_fill_sea_discrete(4) +
   sea::theme_sea() + 
-  theme(legend.position = "none", axis.text.x = element_text(angle = 45, hjust = 1), panel.grid.major = element_blank(), panel.grid.minor = element_blank(), axis.text.y = element_blank(), axis.title.y = element_blank()) +
-  scale_y_continuous(labels = label_percent(scale = 1))+
-  scale_x_discrete(labels = c("Good", "Average", "Bad"))
+  theme(legend.position = "none", axis.text.x = element_text(angle = 45, hjust = 1), 
+        panel.grid.major = element_blank(), panel.grid.minor = element_blank(), 
+        axis.text.y = element_blank(), axis.title.y = element_blank()) +
+  scale_y_continuous(labels = label_percent(scale = 1)) +
+  scale_x_discrete(labels = c("Good", "Average", "Bad")) +
+  facet_wrap(~ cluster, nrow = 2)  # Separate plots for each cluster
+
 ```
 
 Amongst 14% (n = 144) of all household respondents, no challenges concerning fisheries extension officers were mentioned. In contrast, 7% (n = 65) of all household listed abuse of power by fisheries extension officers as a key issue. Respondents mentioned that officers often apply unfair tactics, such as confiscating fishing gear or boats over minor infractions or expired licenses and imposing fines without clear justification. Fisheries extension officers also use intimidation, force, and harassment, making it difficult for fishers to comply peacefully. Unfair enforcement of fishing regulations was listed by a further 36 households. For instance, license payments are demanded from individuals who aren't even fishers, while allowing illegal fishers to operate freely. Those fishers with valid licenses may also be harassed and fined unnecessarily.
@@ -4695,12 +5417,53 @@ Negative opinions on the implementation of fish reserves were varied but limited
 
 ```{r, fig.cap='At the moment, do you think the current number of fish in the lake is sufficient to meet the fishing, food, and livelihood needs of the community?', fig.align='center', out.width = '90%'}
 
-village_data <- tanganyika_survey %>%
-   filter(!is.na(sustainability_population) & sustainability_population != "I DON'T KNOW") %>% 
-    group_by(sustainability_population) %>%
-    summarise(proportion = survey_mean(vartype = "ci", na.rm = TRUE), total = survey_total(vartype = "ci", na.rm = TRUE), n = unweighted(n())) %>% drop_na()
+# Expand the data with cluster classification
+sustainability_population_expanded <- tanganyika_survey %>%
+  filter(!is.na(sustainability_population) & sustainability_population != "I DON'T KNOW") %>%
+  mutate(cluster = case_when(
+    village %in% cluster_1_villages ~ "Cluster 1",
+    village %in% cluster_2_villages ~ "Cluster 2",
+    TRUE ~ "Other"
+  ))
 
-ggplot(village_data, aes(x = fct_relevel(sustainability_population, "YES", "NO", "NOT SURE"), y = proportion * 100, fill = sustainability_population)) +
+# Create survey designs for each cluster
+sustainability_population_design_cluster_1 <- sustainability_population_expanded %>%
+  filter(cluster == "Cluster 1") %>%
+  as_survey_design()
+
+sustainability_population_design_cluster_2 <- sustainability_population_expanded %>%
+  filter(cluster == "Cluster 2") %>%
+  as_survey_design()
+
+# Summarise for Cluster 1
+sustainability_population_cluster_1 <- sustainability_population_design_cluster_1 %>%
+  group_by(sustainability_population) %>%
+  summarise(
+    proportion = survey_mean(vartype = "ci", na.rm = TRUE),
+    total = survey_total(vartype = "ci", na.rm = TRUE),
+    n = unweighted(n())
+  ) %>%
+  drop_na()
+
+# Summarise for Cluster 2
+sustainability_population_cluster_2 <- sustainability_population_design_cluster_2 %>%
+  group_by(sustainability_population) %>%
+  summarise(
+    proportion = survey_mean(vartype = "ci", na.rm = TRUE),
+    total = survey_total(vartype = "ci", na.rm = TRUE),
+    n = unweighted(n())
+  ) %>%
+  drop_na()
+
+# Combine the two clusters' data
+sustainability_population_combined <- bind_rows(
+  sustainability_population_cluster_1 %>% mutate(cluster = "Overall North"),
+  sustainability_population_cluster_2 %>% mutate(cluster = "Overall South")
+)
+
+# Create the plot with two rows for clusters
+ggplot(sustainability_population_combined, aes(x = fct_relevel(sustainability_population, "YES", "NO", "NOT SURE"), 
+                                               y = proportion * 100, fill = sustainability_population)) +
   geom_bar(stat = "identity", width = 0.8) +
   geom_errorbar(aes(ymax = pmin(proportion_upp, 1) * 100, ymin = pmax(proportion_low, 0) * 100), width = 0.2) +
   geom_text(
@@ -4710,18 +5473,63 @@ ggplot(village_data, aes(x = fct_relevel(sustainability_population, "YES", "NO",
   labs(x = NULL, y = NULL) +  
   sea::scale_fill_sea_discrete(4) +
   sea::theme_sea() + 
-  theme(legend.position = "none", axis.text.x = element_text(angle = 45, hjust = 1), panel.grid.major = element_blank(), panel.grid.minor = element_blank(), axis.text.y = element_blank(), axis.title.y = element_blank()) +
-  scale_y_continuous(labels = label_percent(scale = 1))+
-  scale_x_discrete(labels = c("Yes", "No", "Not Sure"))
+  theme(legend.position = "none", axis.text.x = element_text(angle = 45, hjust = 1), 
+        panel.grid.major = element_blank(), panel.grid.minor = element_blank(), 
+        axis.text.y = element_blank(), axis.title.y = element_blank()) +
+  scale_y_continuous(labels = label_percent(scale = 1)) +
+  scale_x_discrete(labels = c("Yes", "No", "Not Sure")) +
+  facet_wrap(~ cluster, nrow = 2)  # Separate plots for each cluster
+
 ```
 
 ```{r, fig.cap='In the future, do you think there will be sufficient fish for the communities?', fig.align='center', out.width = '90%'}
-village_data <- tanganyika_survey %>%
-   filter(!is.na(sufficiency_fish) & sufficiency_fish != "I DON'T KNOW") %>% 
-    group_by(sufficiency_fish) %>%
-    summarise(proportion = survey_mean(vartype = "ci", na.rm = TRUE), total = survey_total(vartype = "ci", na.rm = TRUE), n = unweighted(n())) %>% drop_na()
+# Expand the data with cluster classification
+sufficiency_fish_expanded <- tanganyika_survey %>%
+  filter(!is.na(sufficiency_fish) & sufficiency_fish != "I DON'T KNOW") %>%
+  mutate(cluster = case_when(
+    village %in% cluster_1_villages ~ "Cluster 1",
+    village %in% cluster_2_villages ~ "Cluster 2",
+    TRUE ~ "Other"
+  ))
 
-ggplot(village_data, aes(x = fct_relevel(sufficiency_fish, "YES", "NO", "NOT SURE"), y = proportion * 100, fill = sufficiency_fish)) +
+# Create survey designs for each cluster
+sufficiency_fish_design_cluster_1 <- sufficiency_fish_expanded %>%
+  filter(cluster == "Cluster 1") %>%
+  as_survey_design()
+
+sufficiency_fish_design_cluster_2 <- sufficiency_fish_expanded %>%
+  filter(cluster == "Cluster 2") %>%
+  as_survey_design()
+
+# Summarise for Cluster 1
+sufficiency_fish_cluster_1 <- sufficiency_fish_design_cluster_1 %>%
+  group_by(sufficiency_fish) %>%
+  summarise(
+    proportion = survey_mean(vartype = "ci", na.rm = TRUE),
+    total = survey_total(vartype = "ci", na.rm = TRUE),
+    n = unweighted(n())
+  ) %>%
+  drop_na()
+
+# Summarise for Cluster 2
+sufficiency_fish_cluster_2 <- sufficiency_fish_design_cluster_2 %>%
+  group_by(sufficiency_fish) %>%
+  summarise(
+    proportion = survey_mean(vartype = "ci", na.rm = TRUE),
+    total = survey_total(vartype = "ci", na.rm = TRUE),
+    n = unweighted(n())
+  ) %>%
+  drop_na()
+
+# Combine the two clusters' data
+sufficiency_fish_combined <- bind_rows(
+  sufficiency_fish_cluster_1 %>% mutate(cluster = "Overall North"),
+  sufficiency_fish_cluster_2 %>% mutate(cluster = "Overall South")
+)
+
+# Create the plot with two rows for clusters
+ggplot(sufficiency_fish_combined, aes(x = fct_relevel(sufficiency_fish, "YES", "NO", "NOT SURE"), 
+                                      y = proportion * 100, fill = sufficiency_fish)) +
   geom_bar(stat = "identity", width = 0.8) +
   geom_errorbar(aes(ymax = pmin(proportion_upp, 1) * 100, ymin = pmax(proportion_low, 0) * 100), width = 0.2) +
   geom_text(
@@ -4731,9 +5539,13 @@ ggplot(village_data, aes(x = fct_relevel(sufficiency_fish, "YES", "NO", "NOT SUR
   labs(x = NULL, y = NULL) +  
   sea::scale_fill_sea_discrete(4) +
   sea::theme_sea() + 
-  theme(legend.position = "none", axis.text.x = element_text(angle = 45, hjust = 1), panel.grid.major = element_blank(), panel.grid.minor = element_blank(), axis.text.y = element_blank(), axis.title.y = element_blank()) +
-  scale_y_continuous(labels = label_percent(scale = 1))+
-  scale_x_discrete(labels = c("Yes", "No", "Not Sure"))
+  theme(legend.position = "none", axis.text.x = element_text(angle = 45, hjust = 1), 
+        panel.grid.major = element_blank(), panel.grid.minor = element_blank(), 
+        axis.text.y = element_blank(), axis.title.y = element_blank()) +
+  scale_y_continuous(labels = label_percent(scale = 1)) +
+  scale_x_discrete(labels = c("Yes", "No", "Not Sure")) +
+  facet_wrap(~ cluster, nrow = 2)  # Separate plots for each cluster
+
 ```
 
 A number of participants (n = 91) highlighted that the protection of fish breeding areas and the establishment of dedicated fish conservation zones are crucial for ensuring sufficient fish populations in the future. Furthermore, the importance of government regulations in managing fishing practices, including enforcing seasonal closures and preventing illegal fishing, was emphasized by 66 household respondents. Participants suggested that measures such as restricting fishing during breeding seasons and maintaining control over illegal fishing practices are crucial for sustaining fish populations. Furthermore, 29 households indicated that fish are able to reproduce naturally, especially during the rainy season, leading to an increase in their numbers. Respondents mentioned that because fish currently breed in large numbers, they will continue to do so in future. Furthermore, a number of respondents (n = 8) indicated that they believe continued effective management to contribute to the future conservation of fish stocks in Lake Tanganyika, with three respondents stating that BMUs play a crucial role.
@@ -4796,7 +5608,7 @@ ggplot(fishing_gear_data, aes(x = village, y = proportion * 100, group = fishing
     position = position_dodge(width = 0.8), width = 0.25) +
   guides(fill = guide_legend(title = NULL, nrow = 2, reverse = FALSE)) +
   labs(x = NULL, y = NULL) +
-  scale_fill_sea_discrete(labels = function(labels) str_to_title(str_to_lower(labels))) +
+  scale_fill_viridis(discrete = TRUE, option = "D", labels = function(labels) str_to_title(str_to_lower(labels))) +
   sea::theme_sea() + 
   theme(legend.position = "bottom",  legend.direction = "horizontal",  legend.justification = "center", 
     # axis.text.y = element_blank(),  # Remove y-axis labels
@@ -4834,19 +5646,45 @@ target_type_long <- target_type_long %>%
       Season == "I DON'T KNOW" ~ NA_character_,  
       TRUE ~ Season))
 
-# Create survey design
-strat_design <- target_type_long %>%
+# Expand the data with cluster classification
+target_type_long_expanded <- target_type_long %>%
+  mutate(cluster = case_when(
+    village %in% cluster_1_villages ~ "Cluster 1",
+    village %in% cluster_2_villages ~ "Cluster 2",
+    TRUE ~ "Other"
+  ))
+
+# Create survey design for each cluster
+target_type_design_cluster_1 <- target_type_long_expanded %>%
+  filter(cluster == "Cluster 1") %>%
   as_survey_design(strata = stype, fpc = fpc)
 
-# Summarize by Fish_Species and Season
-aggregate_target_type <- strat_design %>%
+target_type_design_cluster_2 <- target_type_long_expanded %>%
+  filter(cluster == "Cluster 2") %>%
+  as_survey_design(strata = stype, fpc = fpc)
+
+# Summarize by Fish_Species and Season for Cluster 1
+aggregate_target_type_cluster_1 <- target_type_design_cluster_1 %>%
   group_by(Fish_Species, Season) %>%
-  summarise(mean_season = survey_mean(vartype = "ci", na.rm = TRUE), n = unweighted(n())) %>% ungroup()
+  summarise(mean_season = survey_mean(vartype = "ci", na.rm = TRUE), n = unweighted(n())) %>%
+  ungroup()
+
+# Summarize by Fish_Species and Season for Cluster 2
+aggregate_target_type_cluster_2 <- target_type_design_cluster_2 %>%
+  group_by(Fish_Species, Season) %>%
+  summarise(mean_season = survey_mean(vartype = "ci", na.rm = TRUE), n = unweighted(n())) %>%
+  ungroup()
+
+# Combine the two clusters' data
+aggregate_target_type_combined <- bind_rows(
+  aggregate_target_type_cluster_1 %>% mutate(cluster = "Overall North"),
+  aggregate_target_type_cluster_2 %>% mutate(cluster = "Overall South")
+)
 
 # Calculate percentages and handle totals
-aggregate_target_type <- aggregate_target_type %>%
+aggregate_target_type_combined <- aggregate_target_type_combined %>%
   filter(!is.na(Season) & Season != "NONE") %>% 
-  group_by(Fish_Species) %>%
+  group_by(Fish_Species, cluster) %>%
   mutate(
     total_season = sum(mean_season, na.rm = TRUE), # Total importance per Fish_Species
     mean_season_percent = (mean_season / total_season) * 100, # Relative percentage
@@ -4856,16 +5694,16 @@ aggregate_target_type <- aggregate_target_type %>%
   ungroup()
 
 # Plotting
-ggplot(aggregate_target_type, aes(x = Fish_Species, y = mean_season_percent, group = Season, fill = Season)) +
+ggplot(aggregate_target_type_combined, aes(x = Fish_Species, y = mean_season_percent, group = Season, fill = Season)) +
   geom_bar(stat = "identity", position = position_dodge(preserve = "single"), width = 0.95) +
   geom_errorbar(aes(ymin = mean_season_percent_low, ymax = mean_season_percent_upp),
                 position = position_dodge(width = 0.95), width = 0.2) +
   geom_text(aes(y = pmin(mean_season_percent_upp, 100) + 2, 
-                label = scales::percent(mean_season_percent/100, accuracy = 1)),
+                label = scales::percent(mean_season_percent / 100, accuracy = 1)),
             position = position_dodge(width = 0.95), size = 3) +
   labs(x = NULL, y = NULL) +
   guides(fill = guide_legend(title = NULL)) + 
-  scale_fill_sea_discrete(labels = function(labels) str_to_title(str_to_lower(labels))) +
+  scale_fill_viridis(discrete = TRUE, option = "D",labels = function(labels) str_to_title(str_to_lower(labels))) +
   sea::theme_sea() + 
   theme(legend.position = "bottom", 
         legend.direction = "horizontal", 
@@ -4875,10 +5713,11 @@ ggplot(aggregate_target_type, aes(x = Fish_Species, y = mean_season_percent, gro
         panel.grid.minor = element_blank(),
         axis.text.y = element_blank(),
         axis.title.y = element_blank(),
-        strip.text = element_blank(), 
+        strip.text = element_text(size = 12, face = "bold"),  # Increase font size for facet titles
         legend.box = "horizontal") + 
   scale_y_continuous(labels = label_percent(scale = 1)) +
-  scale_x_discrete(labels = function(x) str_wrap(x, width = 10))
+  scale_x_discrete(labels = function(x) str_wrap(x, width = 10)) +
+  facet_wrap(~ cluster, nrow = 2, labeller = labeller(cluster = c("Overall North" = "Overall North", "Overall South" = "Overall South")))  # Custom facet labels
 
 ```
 
@@ -5025,20 +5864,46 @@ target_type_best_long <- tanganyika_clean %>%
 target_type_best_long <- target_type_best_long %>%
   mutate(Best_Value = ifelse(Best_Value == 97, NA, Best_Value))
 
-# Create survey design for Best values
-strat_design_best <- target_type_best_long %>%
+# Split data based on clusters for Best values
+target_type_best_long_cluster_1 <- target_type_best_long %>%
+  filter(village %in% cluster_1_villages)
+
+target_type_best_long_cluster_2 <- target_type_best_long %>%
+  filter(village %in% cluster_2_villages)
+
+# Create survey design for Best values (Cluster 1)
+strat_design_best_cluster_1 <- target_type_best_long_cluster_1 %>%
   as_survey_design(strata = stype, fpc = fpc)
 
-# Summarize by Fish_Species for Best values
-aggregate_target_best <- strat_design_best %>%
+# Create survey design for Best values (Cluster 2)
+strat_design_best_cluster_2 <- target_type_best_long_cluster_2 %>%
+  as_survey_design(strata = stype, fpc = fpc)
+
+# Summarize Best values for Cluster 1
+aggregate_target_best_cluster_1 <- strat_design_best_cluster_1 %>%
   group_by(Fish_Species) %>%
   summarise(
     mean_best_value = survey_mean(Best_Value, vartype = "ci", na.rm = TRUE),
     mean_best_value_low = attr(mean_best_value, "ci")[1],
     mean_best_value_upp = attr(mean_best_value, "ci")[2],
     n = unweighted(n())
-  ) %>%
-  ungroup()
+  ) %>% ungroup()
+
+# Summarize Best values for Cluster 2
+aggregate_target_best_cluster_2 <- strat_design_best_cluster_2 %>%
+  group_by(Fish_Species) %>%
+  summarise(
+    mean_best_value = survey_mean(Best_Value, vartype = "ci", na.rm = TRUE),
+    mean_best_value_low = attr(mean_best_value, "ci")[1],
+    mean_best_value_upp = attr(mean_best_value, "ci")[2],
+    n = unweighted(n())
+  ) %>% ungroup()
+
+# Combine Best values for both clusters
+aggregate_target_best_combined <- bind_rows(
+  aggregate_target_best_cluster_1 %>% mutate(cluster = "Cluster 1"),
+  aggregate_target_best_cluster_2 %>% mutate(cluster = "Cluster 2")
+)
 
 # Define target type variables for worst values
 target_type_worst_vars <- c("dagaa_worst", "migebuka_worst", "kungura_worst", 
@@ -5055,32 +5920,59 @@ target_type_worst_long <- tanganyika_clean %>%
 target_type_worst_long <- target_type_worst_long %>%
   mutate(Worst_Value = ifelse(Worst_Value == 97, NA, Worst_Value))
 
-# Create survey design for Worst values
-strat_design_worst <- target_type_worst_long %>%
+# Split data based on clusters for Worst values
+target_type_worst_long_cluster_1 <- target_type_worst_long %>%
+  filter(village %in% cluster_1_villages)
+
+target_type_worst_long_cluster_2 <- target_type_worst_long %>%
+  filter(village %in% cluster_2_villages)
+
+# Create survey design for Worst values (Cluster 1)
+strat_design_worst_cluster_1 <- target_type_worst_long_cluster_1 %>%
   as_survey_design(strata = stype, fpc = fpc)
 
-# Summarize by Fish_Species for Worst values
-aggregate_target_worst <- strat_design_worst %>%
+# Create survey design for Worst values (Cluster 2)
+strat_design_worst_cluster_2 <- target_type_worst_long_cluster_2 %>%
+  as_survey_design(strata = stype, fpc = fpc)
+
+# Summarize Worst values for Cluster 1
+aggregate_target_worst_cluster_1 <- strat_design_worst_cluster_1 %>%
   group_by(Fish_Species) %>%
   summarise(
     mean_worst_value = survey_mean(Worst_Value, vartype = "ci", na.rm = TRUE),
     mean_worst_value_low = attr(mean_worst_value, "ci")[1],
     mean_worst_value_upp = attr(mean_worst_value, "ci")[2],
     n = unweighted(n())
-  ) %>%
-  ungroup()
+  ) %>% ungroup()
+
+# Summarize Worst values for Cluster 2
+aggregate_target_worst_cluster_2 <- strat_design_worst_cluster_2 %>%
+  group_by(Fish_Species) %>%
+  summarise(
+    mean_worst_value = survey_mean(Worst_Value, vartype = "ci", na.rm = TRUE),
+    mean_worst_value_low = attr(mean_worst_value, "ci")[1],
+    mean_worst_value_upp = attr(mean_worst_value, "ci")[2],
+    n = unweighted(n())
+  ) %>% ungroup()
+
+# Combine Worst values for both clusters
+aggregate_target_worst_combined <- bind_rows(
+  aggregate_target_worst_cluster_1 %>% mutate(cluster = "Cluster 1"),
+  aggregate_target_worst_cluster_2 %>% mutate(cluster = "Cluster 2")
+)
 
 # Combine Best and Worst values into one dataframe
-combined_target <- aggregate_target_best %>%
-  left_join(aggregate_target_worst, by = "Fish_Species") %>%
-  pivot_longer(cols = c(mean_best_value, mean_worst_value), 
-               names_to = "Value_Type", 
-               values_to = "Value") %>%
-  mutate(Value_Type = recode(Value_Type, 
-                             "mean_best_value" = "Highest Sale Price", 
-                             "mean_worst_value" = "Lowest Sale Price"))
+combined_target <- bind_rows(
+  aggregate_target_best_combined %>%
+    mutate(Value_Type = "Highest Sale Price", Value = mean_best_value) %>%
+    select(-mean_best_value),  # remove `mean_best_value` after mutating
+  aggregate_target_worst_combined %>%
+    mutate(Value_Type = "Lowest Sale Price", Value = mean_worst_value) %>%
+    select(-mean_worst_value))
+  
+combined_target$Fish_Species <- gsub("_process", "", combined_target$Fish_Species)
 
-# Plotting the combined grouped bar chart
+# Plotting the combined grouped bar chart with facets for each cluster and custom row titles
 ggplot(combined_target, aes(x = Fish_Species, y = Value, fill = Value_Type)) +
   geom_bar(stat = "identity", position = "dodge", width = 0.75) +
   geom_errorbar(aes(ymin = ifelse(Value_Type == "Highest Sale Price", 
@@ -5090,16 +5982,18 @@ ggplot(combined_target, aes(x = Fish_Species, y = Value, fill = Value_Type)) +
                 position = position_dodge(0.75), width = 0.2) +
   labs(x = NULL, y = "Sale Price (TSh)") +
   guides(fill = guide_legend(title = NULL)) + 
-  sea::scale_fill_sea_discrete() +
+  scale_fill_viridis(discrete = TRUE, option = "D") +
   sea::theme_sea() + 
   theme(legend.position = "bottom", 
         axis.text.x = element_text(size = 10), 
-        strip.text = element_blank(),
+        strip.text = element_text(size = 12, face = "bold"),  # Set custom size and bold text for facet labels
         panel.grid.major = element_blank(),  
         panel.grid.minor = element_blank(),
         legend.box = "horizontal") +
   scale_x_discrete(labels = function(x) str_wrap(x, width = 10)) +
-  scale_y_continuous(labels = scales::label_comma())
+  scale_y_continuous(labels = scales::label_comma()) +
+  facet_wrap(~ cluster, nrow = 2, labeller = labeller(cluster = c("Cluster 1" = "Overall North", "Cluster 2" = "Overall South")))
+
 
 ```
 
@@ -5117,8 +6011,10 @@ satisfaction_mapping <- c(
   "2 UNSATISFIED" = 2,
   "3 NEUTRAL" = 3,
   "4 SATISFIED" = 4,
-  "5 VERY SATISFIED" = 5)
+  "5 VERY SATISFIED" = 5
+)
 
+# Satisfaction columns
 satisfaction_columns <- c("satisfaction_skills", "tools_used", "catch_gained", 
                           "market_supply", "satisfaction_purchase", "satisfaction_market", 
                           "satisfaction_income", "satisfaction_capital", "business_skills", 
@@ -5133,39 +6029,93 @@ tanganyika_clean <- tanganyika_clean %>%
 satisfaction_long <- tanganyika_clean %>%
   pivot_longer(cols = all_of(satisfaction_columns), names_to = "Satisfaction_Area", values_to = "Satisfaction_Value")
 
-# Create survey design
+# Filter out rows with NA values
 satisfaction_long <- satisfaction_long %>%
   filter(!is.na(Satisfaction_Value))
 
-# Proceed with the survey design creation
-strat_design_satisfaction <- satisfaction_long %>%
+# Add cluster classification
+satisfaction_long <- satisfaction_long %>%
+  mutate(cluster = case_when(
+    village %in% cluster_1_villages ~ "Overall North",
+    village %in% cluster_2_villages ~ "Overall South",
+    TRUE ~ "Other"
+  ))
+
+# Create survey design for Cluster 1
+satisfaction_design_cluster_1 <- satisfaction_long %>%
+  filter(cluster == "Overall North") %>%
+  group_by(stype) %>%
+  mutate(fpc = ifelse(n() > first(fpc), n(), first(fpc))) %>%
+  ungroup() %>%
   as_survey_design(strata = stype, fpc = fpc)
 
-# Summarize satisfaction values
-aggregate_satisfaction <- strat_design_satisfaction %>%
+# Create survey design for Cluster 2
+satisfaction_design_cluster_2 <- satisfaction_long %>%
+  filter(cluster == "Overall South") %>%
+  group_by(stype) %>%
+  mutate(fpc = ifelse(n() > first(fpc), n(), first(fpc))) %>%
+  ungroup() %>%
+  as_survey_design(strata = stype, fpc = fpc)
+
+# Summarize for Cluster 1
+aggregate_satisfaction_cluster_1 <- satisfaction_design_cluster_1 %>%
   group_by(Satisfaction_Area) %>%
   summarise(
     mean_satisfaction_value = survey_mean(Satisfaction_Value, vartype = "ci", na.rm = TRUE),
     n = unweighted(n())
   ) %>%
-  ungroup()
+  mutate(cluster = "Overall North")
 
-# Plotting Satisfaction Values
-ggplot(aggregate_satisfaction, aes(x = reorder(Satisfaction_Area, -mean_satisfaction_value), y = mean_satisfaction_value, fill = Satisfaction_Area)) +
+# Summarize for Cluster 2
+aggregate_satisfaction_cluster_2 <- satisfaction_design_cluster_2 %>%
+  group_by(Satisfaction_Area) %>%
+  summarise(
+    mean_satisfaction_value = survey_mean(Satisfaction_Value, vartype = "ci", na.rm = TRUE),
+    n = unweighted(n())
+  ) %>%
+  mutate(cluster = "Overall South")
+
+# Combine the results from both clusters
+aggregate_satisfaction_combined <- bind_rows(aggregate_satisfaction_cluster_1, aggregate_satisfaction_cluster_2)
+
+# Plotting Satisfaction Values with clusters separated
+ggplot(aggregate_satisfaction_combined, aes(
+  x = reorder(Satisfaction_Area, -mean_satisfaction_value), 
+  y = mean_satisfaction_value, 
+  fill = Satisfaction_Area
+)) +
   geom_bar(stat = "identity", width = 0.75) +
   labs(x = NULL, y = NULL) +
   guides(fill = guide_legend(title = NULL)) + 
-  sea::scale_fill_sea_discrete() +
+  scale_fill_viridis(discrete = TRUE, option = "D") +
   sea::theme_sea() + 
-  theme(legend.position = "none", 
-        axis.text.x = element_text(angle = 45, hjust = 1), 
-        strip.text = element_blank(),
-        panel.grid.major = element_blank(),  
-        panel.grid.minor = element_blank(),
-        legend.box = "horizontal") +
-  scale_y_continuous(limits = c(0, 5), breaks = 1:5, labels = c("VERY UNSATISFIED", "UNSATISFIED", "NEUTRAL", "SATISFIED", "VERY SATISFIED"))+
-  scale_x_discrete(labels = c("Your fishing skills", "Your own business skills", "Your access to markets\nofftake/sales", "Your catch\nlevels gained", "Your income\nlevels generated", 
-                              "The tools and\ntechnologies you use", "Your access to\nmarket supply (inputs)", "Your access to capital", "Your access to purchasing\nequipment for fishing", "The support you get from\ngroups or organizations"))
+  theme(
+    legend.position = "none", 
+    axis.text.x = element_text(angle = 45, hjust = 1), 
+    strip.text = element_text(size = 12, face = "bold"), # Add bold, larger cluster titles
+    panel.grid.major = element_blank(),  
+    panel.grid.minor = element_blank(),
+    legend.box = "horizontal"
+  ) +
+  scale_y_continuous(
+    limits = c(0, 5), 
+    breaks = 1:5, 
+    labels = c("VERY UNSATISFIED", "UNSATISFIED", "NEUTRAL", "SATISFIED", "VERY SATISFIED")
+  ) +
+  scale_x_discrete(labels = c(
+    "Your fishing skills", 
+    "Your own business skills", 
+    "Your access to markets\nofftake/sales", 
+    "Your catch\nlevels gained", 
+    "Your income\nlevels generated", 
+    "The tools and\ntechnologies you use", 
+    "Your access to\nmarket supply (inputs)", 
+    "Your access to capital", 
+    "Your access to purchasing\nequipment for fishing", 
+    "The support you get from\ngroups or organizations"
+  )) +
+  facet_wrap(~ cluster, nrow = 2, scales = "free_y", strip.position = "top")
+
 
 ```
 
@@ -5174,12 +6124,53 @@ Fishers expressed a variety of challenges that they face on and off the water. M
 A significant number of fishers highlighted several changes that could improve fishing practices, including access to modern and reliable equipment such as improved boats, modern nets, and even safety tools like buoys and fire extinguishers (n = 181). Improved safety and protective measures were also emphasized to address theft, piracy, and weather-related risks (n = 57). Suggestions focused on both immediate security needs and proactive safety strategies. Access to financial support like loans and microfinance to invest in better gear and increase productivity were also highly sought after (n = 96). Support for education and skill development related to trainings on sustainable fishing methods were also considered vital (n = 61), along with improved governance, stricter enforcement of fishing regulations, and better market access to stabilize fish prices and boost profitability. Strengthened collaboration among fishers and relevant stakeholders was suggested to improve fair representation in decision-making processes and to address challenges. Fishermen consistently emphasized the urgent need to address illegal fishing to sustain fish populations and improve legal fishers' livelihoods (n = 41). Suggestions highlighted stricter enforcement of fishing regulations, eradication of illegal gear, and empowering local authorities to monitor and control illegal practices. Fishers also highlighted the need to protect fish breeding areas, address the impact of changing weather conditions, and promote the use of sustainable fishing tools. They emphasized that improving the ecosystem is essential for ensuring a steady supply of fish and increasing their income.
 
 ```{r, fig.cap='Do you think BMUs are helpful to improving your fishing practices?', fig.align='center', out.width = '90%'}
-village_data <- tanganyika_survey %>%
-   filter(!is.na(sustainability_population) & sustainability_population != "I DON'T KNOW") %>% 
-    group_by(sustainability_population) %>%
-    summarise(proportion = survey_mean(vartype = "ci", na.rm = TRUE), total = survey_total(vartype = "ci", na.rm = TRUE), n = unweighted(n())) %>% drop_na()
+# Expand the data with cluster classification
+village_data_expanded <- tanganyika_survey %>%
+  filter(!is.na(sustainability_population) & sustainability_population != "I DON'T KNOW") %>%
+  mutate(cluster = case_when(
+    village %in% cluster_1_villages ~ "Cluster 1",
+    village %in% cluster_2_villages ~ "Cluster 2",
+    TRUE ~ "Other"
+  ))
 
-ggplot(village_data, aes(x = fct_relevel(sustainability_population, "YES", "NO", "NOT SURE"), y = proportion * 100, fill = sustainability_population)) +
+# Create survey designs for each cluster
+village_data_design_cluster_1 <- village_data_expanded %>%
+  filter(cluster == "Cluster 1") %>%
+  as_survey_design()
+
+village_data_design_cluster_2 <- village_data_expanded %>%
+  filter(cluster == "Cluster 2") %>%
+  as_survey_design()
+
+# Summarise for Cluster 1
+village_data_cluster_1 <- village_data_design_cluster_1 %>%
+  group_by(sustainability_population) %>%
+  summarise(
+    proportion = survey_mean(vartype = "ci", na.rm = TRUE),
+    total = survey_total(vartype = "ci", na.rm = TRUE),
+    n = unweighted(n())
+  ) %>%
+  drop_na()
+
+# Summarise for Cluster 2
+village_data_cluster_2 <- village_data_design_cluster_2 %>%
+  group_by(sustainability_population) %>%
+  summarise(
+    proportion = survey_mean(vartype = "ci", na.rm = TRUE),
+    total = survey_total(vartype = "ci", na.rm = TRUE),
+    n = unweighted(n())
+  ) %>%
+  drop_na()
+
+# Combine the two clusters' data
+village_data_combined <- bind_rows(
+  village_data_cluster_1 %>% mutate(cluster = "Overall North"),
+  village_data_cluster_2 %>% mutate(cluster = "Overall South")
+)
+
+# Create the plot with two rows for clusters
+ggplot(village_data_combined, aes(x = fct_relevel(sustainability_population, "YES", "NO", "NOT SURE"), 
+                                  y = proportion * 100, fill = sustainability_population)) +
   geom_bar(stat = "identity", width = 0.8) +
   geom_errorbar(aes(ymax = pmin(proportion_upp, 1) * 100, ymin = pmax(proportion_low, 0) * 100), width = 0.2) +
   geom_text(
@@ -5189,18 +6180,66 @@ ggplot(village_data, aes(x = fct_relevel(sustainability_population, "YES", "NO",
   labs(x = NULL, y = NULL) +  
   sea::scale_fill_sea_discrete(4) +
   sea::theme_sea() + 
-  theme(legend.position = "none", axis.text.x = element_text(angle = 45, hjust = 1), panel.grid.major = element_blank(), panel.grid.minor = element_blank(), axis.text.y = element_blank(), axis.title.y = element_blank()) +
-  scale_y_continuous(labels = label_percent(scale = 1))+
-  scale_x_discrete(labels = c("Yes", "No", "Not Sure"))
+  theme(legend.position = "none", 
+        axis.text.x = element_text(angle = 45, hjust = 1), 
+        panel.grid.major = element_blank(), 
+        panel.grid.minor = element_blank(), 
+        axis.text.y = element_blank(), 
+        axis.title.y = element_blank()) +
+  scale_y_continuous(labels = label_percent(scale = 1)) +
+  scale_x_discrete(labels = c("Yes", "No", "Not Sure")) +
+  facet_wrap(~ cluster, nrow = 2)  # Separate plots for each cluster
+
 ```
 
 ```{r, fig.cap='Do you think BMUs are helpful to improving your fishing practices?', fig.align='center', out.width = '90%'}
-village_data <- tanganyika_survey %>%
-   filter(!is.na(bmu_helpfulness)) %>% 
-    group_by(bmu_helpfulness) %>%
-    summarise(proportion = survey_mean(vartype = "ci", na.rm = TRUE), total = survey_total(vartype = "ci", na.rm = TRUE), n = unweighted(n())) %>% drop_na()
+# Expand the data with cluster classification
+village_data_expanded <- tanganyika_survey %>%
+  filter(!is.na(bmu_helpfulness)) %>%
+  mutate(cluster = case_when(
+    village %in% cluster_1_villages ~ "Cluster 1",
+    village %in% cluster_2_villages ~ "Cluster 2",
+    TRUE ~ "Other"
+  ))
 
-ggplot(village_data, aes(x = fct_relevel(bmu_helpfulness, "YES", "NO", "NOT SURE"), y = proportion * 100, fill = bmu_helpfulness)) +
+# Create survey designs for each cluster
+village_data_design_cluster_1 <- village_data_expanded %>%
+  filter(cluster == "Cluster 1") %>%
+  as_survey_design()
+
+village_data_design_cluster_2 <- village_data_expanded %>%
+  filter(cluster == "Cluster 2") %>%
+  as_survey_design()
+
+# Summarise for Cluster 1
+village_data_cluster_1 <- village_data_design_cluster_1 %>%
+  group_by(bmu_helpfulness) %>%
+  summarise(
+    proportion = survey_mean(vartype = "ci", na.rm = TRUE),
+    total = survey_total(vartype = "ci", na.rm = TRUE),
+    n = unweighted(n())
+  ) %>%
+  drop_na()
+
+# Summarise for Cluster 2
+village_data_cluster_2 <- village_data_design_cluster_2 %>%
+  group_by(bmu_helpfulness) %>%
+  summarise(
+    proportion = survey_mean(vartype = "ci", na.rm = TRUE),
+    total = survey_total(vartype = "ci", na.rm = TRUE),
+    n = unweighted(n())
+  ) %>%
+  drop_na()
+
+# Combine the two clusters' data
+village_data_combined <- bind_rows(
+  village_data_cluster_1 %>% mutate(cluster = "Overall North"),
+  village_data_cluster_2 %>% mutate(cluster = "Overall South")
+)
+
+# Create the plot with two rows for clusters
+ggplot(village_data_combined, aes(x = fct_relevel(bmu_helpfulness, "YES", "NO", "NOT SURE"), 
+                                  y = proportion * 100, fill = bmu_helpfulness)) +
   geom_bar(stat = "identity", width = 0.8) +
   geom_errorbar(aes(ymax = pmin(proportion_upp, 1) * 100, ymin = pmax(proportion_low, 0) * 100), width = 0.2) +
   geom_text(
@@ -5210,9 +6249,16 @@ ggplot(village_data, aes(x = fct_relevel(bmu_helpfulness, "YES", "NO", "NOT SURE
   labs(x = NULL, y = NULL) +  
   sea::scale_fill_sea_discrete(4) +
   sea::theme_sea() + 
-  theme(legend.position = "none", axis.text.x = element_text(angle = 45, hjust = 1), panel.grid.major = element_blank(), panel.grid.minor = element_blank(), axis.text.y = element_blank(), axis.title.y = element_blank()) +
-  scale_y_continuous(labels = label_percent(scale = 1))+
-  scale_x_discrete(labels = c("Yes", "No", "Not Sure"))
+  theme(legend.position = "none", 
+        axis.text.x = element_text(angle = 45, hjust = 1), 
+        panel.grid.major = element_blank(), 
+        panel.grid.minor = element_blank(), 
+        axis.text.y = element_blank(), 
+        axis.title.y = element_blank()) +
+  scale_y_continuous(labels = label_percent(scale = 1)) +
+  scale_x_discrete(labels = c("Yes", "No", "Not Sure")) +
+  facet_wrap(~ cluster, nrow = 2)  # Separate plots for each cluster
+
 ```
 
 ```{r}
@@ -5367,12 +6413,53 @@ combined_table %>%
 Fishing group members indicated the need for increased financial support and resources, such as providing capital or loans, and creating group laws to facilitate access to loans (n = 10). They also mentioned for the members themselves they need to be more accountable in paying their membership shares on time, encouraging timely repayment. Furthermore, respondents shared the need for increased education and training, including education on illegal fishing, entrepreneurship, and loans. They emphasized the importance of seminars and meetings for better management of activities. Furthermore, group members reiterated the need to increase access to improved fishing equipment, group and governance structures.
 
 ```{r, fig.cap='Do you think your current activities are likely to support your needs over the long term (next 5 - 10 years)?', fig.align='center', out.width = '90%'}
-village_data <- tanganyika_survey %>%
-   filter(!is.na(activity_long_term)) %>% 
-    group_by(activity_long_term) %>%
-    summarise(proportion = survey_mean(vartype = "ci", na.rm = TRUE), total = survey_total(vartype = "ci", na.rm = TRUE), n = unweighted(n())) %>% drop_na()
+# Expand the data with cluster classification
+village_data_expanded <- tanganyika_survey %>%
+  filter(!is.na(activity_long_term)) %>%
+  mutate(cluster = case_when(
+    village %in% cluster_1_villages ~ "Cluster 1",
+    village %in% cluster_2_villages ~ "Cluster 2",
+    TRUE ~ "Other"
+  ))
 
-ggplot(village_data, aes(x = fct_relevel(activity_long_term, "YES", "NO", "NOT SURE"), y = proportion * 100, fill = activity_long_term)) +
+# Create survey designs for each cluster
+village_data_design_cluster_1 <- village_data_expanded %>%
+  filter(cluster == "Cluster 1") %>%
+  as_survey_design()
+
+village_data_design_cluster_2 <- village_data_expanded %>%
+  filter(cluster == "Cluster 2") %>%
+  as_survey_design()
+
+# Summarise for Cluster 1
+village_data_cluster_1 <- village_data_design_cluster_1 %>%
+  group_by(activity_long_term) %>%
+  summarise(
+    proportion = survey_mean(vartype = "ci", na.rm = TRUE),
+    total = survey_total(vartype = "ci", na.rm = TRUE),
+    n = unweighted(n())
+  ) %>%
+  drop_na()
+
+# Summarise for Cluster 2
+village_data_cluster_2 <- village_data_design_cluster_2 %>%
+  group_by(activity_long_term) %>%
+  summarise(
+    proportion = survey_mean(vartype = "ci", na.rm = TRUE),
+    total = survey_total(vartype = "ci", na.rm = TRUE),
+    n = unweighted(n())
+  ) %>%
+  drop_na()
+
+# Combine the two clusters' data
+village_data_combined <- bind_rows(
+  village_data_cluster_1 %>% mutate(cluster = "Overall North"),
+  village_data_cluster_2 %>% mutate(cluster = "Overall South")
+)
+
+# Create the plot with two rows for clusters
+ggplot(village_data_combined, aes(x = fct_relevel(activity_long_term, "YES", "NO", "NOT SURE"), 
+                                  y = proportion * 100, fill = activity_long_term)) +
   geom_bar(stat = "identity", width = 0.8) +
   geom_errorbar(aes(ymax = pmin(proportion_upp, 1) * 100, ymin = pmax(proportion_low, 0) * 100), width = 0.2) +
   geom_text(
@@ -5382,9 +6469,16 @@ ggplot(village_data, aes(x = fct_relevel(activity_long_term, "YES", "NO", "NOT S
   labs(x = NULL, y = NULL) +  
   sea::scale_fill_sea_discrete(4) +
   sea::theme_sea() + 
-  theme(legend.position = "none", axis.text.x = element_text(angle = 45, hjust = 1), panel.grid.major = element_blank(), panel.grid.minor = element_blank(), axis.text.y = element_blank(), axis.title.y = element_blank()) +
-  scale_y_continuous(labels = label_percent(scale = 1))+
-  scale_x_discrete(labels = c("Yes", "No", "Not Sure"))
+  theme(legend.position = "none", 
+        axis.text.x = element_text(angle = 45, hjust = 1), 
+        panel.grid.major = element_blank(), 
+        panel.grid.minor = element_blank(), 
+        axis.text.y = element_blank(), 
+        axis.title.y = element_blank()) +
+  scale_y_continuous(labels = label_percent(scale = 1)) +
+  scale_x_discrete(labels = c("Yes", "No", "Not Sure")) +
+  facet_wrap(~ cluster, nrow = 2)  # Separate plots for each cluster
+
 ```
 
 Households expressed confidence in their current activities, citing financial stability and the ability to meet their needs as well as being able to save for the future (n = 9). Respondents highlighted that their income from activities like fishing and business is sufficient to support their families. They feel secure about their ability to sustain their livelihoods over the next 5-10 years and are satisfied with the level of income they currently earn. One respondent noted that conservation and sustainable fishing practices in their area provide long-term assurance of fish availability. They expressed confidence that such measures would ensure their activities remain viable over the next 5-10 years. Another respondent was optimistic about future improvements in their livelihood, believing that fish populations and agricultural productivity will increase.
@@ -5409,12 +6503,53 @@ Respondents from some households (n = 4) stated that there are no unsustainable 
 ## Livelihood Practices of Fish Traders
 
 ```{r, fig.cap='Forms of fish trading', fig.align='center', out.width = '90%'}
-village_data <- tanganyika_survey %>%
-   filter(!is.na(trading_form)) %>% 
-    group_by(trading_form) %>%
-    summarise(proportion = survey_mean(vartype = "ci", na.rm = TRUE), total = survey_total(vartype = "ci", na.rm = TRUE), n = unweighted(n())) %>% drop_na()
+# Expand the data with cluster classification
+village_data_expanded <- tanganyika_survey %>%
+  filter(!is.na(trading_form)) %>%
+  mutate(cluster = case_when(
+    village %in% cluster_1_villages ~ "Cluster 1",
+    village %in% cluster_2_villages ~ "Cluster 2",
+    TRUE ~ "Other"
+  ))
 
-ggplot(village_data, aes(x = fct_relevel(trading_form, "TRADER", "PREPARES FISH"), y = proportion * 100, fill = trading_form)) +
+# Create survey designs for each cluster
+village_data_design_cluster_1 <- village_data_expanded %>%
+  filter(cluster == "Cluster 1") %>%
+  as_survey_design()
+
+village_data_design_cluster_2 <- village_data_expanded %>%
+  filter(cluster == "Cluster 2") %>%
+  as_survey_design()
+
+# Summarise for Cluster 1
+village_data_cluster_1 <- village_data_design_cluster_1 %>%
+  group_by(trading_form) %>%
+  summarise(
+    proportion = survey_mean(vartype = "ci", na.rm = TRUE),
+    total = survey_total(vartype = "ci", na.rm = TRUE),
+    n = unweighted(n())
+  ) %>%
+  drop_na()
+
+# Summarise for Cluster 2
+village_data_cluster_2 <- village_data_design_cluster_2 %>%
+  group_by(trading_form) %>%
+  summarise(
+    proportion = survey_mean(vartype = "ci", na.rm = TRUE),
+    total = survey_total(vartype = "ci", na.rm = TRUE),
+    n = unweighted(n())
+  ) %>%
+  drop_na()
+
+# Combine the two clusters' data
+village_data_combined <- bind_rows(
+  village_data_cluster_1 %>% mutate(cluster = "Overall North"),
+  village_data_cluster_2 %>% mutate(cluster = "Overall South")
+)
+
+# Create the plot with two rows for clusters
+ggplot(village_data_combined, aes(x = fct_relevel(trading_form, "TRADER", "PREPARES FISH"), 
+                                  y = proportion * 100, fill = trading_form)) +
   geom_bar(stat = "identity", width = 0.8) +
   geom_errorbar(aes(ymax = pmin(proportion_upp, 1) * 100, ymin = pmax(proportion_low, 0) * 100), width = 0.2) +
   geom_text(
@@ -5424,9 +6559,16 @@ ggplot(village_data, aes(x = fct_relevel(trading_form, "TRADER", "PREPARES FISH"
   labs(x = NULL, y = NULL) +  
   sea::scale_fill_sea_discrete(4) +
   sea::theme_sea() + 
-  theme(legend.position = "none", axis.text.x = element_text(angle = 45, hjust = 1), panel.grid.major = element_blank(), panel.grid.minor = element_blank(), axis.text.y = element_blank(), axis.title.y = element_blank()) +
-  scale_y_continuous(labels = label_percent(scale = 1))+
-  scale_x_discrete(labels = c("Trader", "Prepares Fish"))
+  theme(legend.position = "none", 
+        axis.text.x = element_text(angle = 45, hjust = 1), 
+        panel.grid.major = element_blank(), 
+        panel.grid.minor = element_blank(), 
+        axis.text.y = element_blank(), 
+        axis.title.y = element_blank()) +
+  scale_y_continuous(labels = label_percent(scale = 1)) +
+  scale_x_discrete(labels = c("Trader", "Prepares Fish")) +
+  facet_wrap(~ cluster, nrow = 2)  # Separate plots for each cluster
+
 ```
 
 The majority of fish traders (n = 92) mentioned buying fish directly from fishers at the shore, then selling them fresh or after processing at local markets. Few traders stated that they purchase fish from different villages and coastal areas (n = 25), directly from processing facilities (n = 2), or from local middlemen (n = 2). The primary customer base of fish traders were wholesale buyers (n = 67). Respondents shared that they sell primarily to small and large-scale traders within the region, neighboring areas, and internationally, including markets in Zambia, Burundi, and Congo. Key markets include Namanyere, Sumbawanga, and Songwe, with customers ranging from local vendors to wholesalers and exporters.
@@ -5453,19 +6595,28 @@ target_type_long <- target_type_long %>%
       Season == "I DON'T KNOW" ~ NA_character_,  
       TRUE ~ Season))
 
+# Add cluster classification
+target_type_long <- target_type_long %>%
+  mutate(cluster = case_when(
+    village %in% cluster_1_villages ~ "Cluster 1",
+    village %in% cluster_2_villages ~ "Cluster 2",
+    TRUE ~ "Other"
+  ))
+
 # Create survey design
 strat_design <- target_type_long %>%
   as_survey_design(strata = stype, fpc = fpc)
 
-# Summarize by Fish_Species and Season
+# Summarize by Fish_Species and Season for each cluster
 aggregate_target_type <- strat_design %>%
-  group_by(Fish_Species, Season) %>%
-  summarise(mean_season = survey_mean(vartype = "ci", na.rm = TRUE), n = unweighted(n())) %>% ungroup()
+  group_by(Fish_Species, Season, cluster) %>%
+  summarise(mean_season = survey_mean(vartype = "ci", na.rm = TRUE), 
+            n = unweighted(n())) %>% ungroup()
 
 # Calculate percentages and handle totals
 aggregate_target_type <- aggregate_target_type %>%
   filter(!is.na(Season) & Season != "NONE") %>% 
-  group_by(Fish_Species) %>%
+  group_by(Fish_Species, cluster) %>%
   mutate(
     total_season = sum(mean_season, na.rm = TRUE), # Total importance per Fish_Species
     mean_season_percent = (mean_season / total_season) * 100, # Relative percentage
@@ -5474,7 +6625,7 @@ aggregate_target_type <- aggregate_target_type %>%
   ) %>%
   ungroup()
 
-# Plotting
+# Plotting with facet_wrap to separate by Cluster
 ggplot(aggregate_target_type, aes(x = Fish_Species, y = mean_season_percent, group = Season, fill = Season)) +
   geom_bar(stat = "identity", position = position_dodge(preserve = "single"), width = 0.95) +
   geom_errorbar(aes(ymin = mean_season_percent_low, ymax = mean_season_percent_upp),
@@ -5484,7 +6635,7 @@ ggplot(aggregate_target_type, aes(x = Fish_Species, y = mean_season_percent, gro
             position = position_dodge(width = 0.95), size = 3) +
   labs(x = NULL, y = NULL) +
   guides(fill = guide_legend(title = NULL)) + 
-  scale_fill_sea_discrete(labels = function(labels) str_to_title(str_to_lower(labels))) +
+  scale_fill_viridis(discrete = TRUE, option = "D", labels = function(labels) str_to_title(str_to_lower(labels))) +
   sea::theme_sea() + 
   theme(legend.position = "bottom", 
         legend.direction = "horizontal", 
@@ -5494,15 +6645,15 @@ ggplot(aggregate_target_type, aes(x = Fish_Species, y = mean_season_percent, gro
         panel.grid.minor = element_blank(),
         axis.text.y = element_blank(),
         axis.title.y = element_blank(),
-        strip.text = element_blank(), 
+        strip.text = element_text(size = 12, face = "bold"),  # Customizing strip text size and style
         legend.box = "horizontal") + 
   scale_y_continuous(labels = label_percent(scale = 1)) +
-  scale_x_discrete(labels = function(x) str_wrap(x, width = 10))
-
+  scale_x_discrete(labels = function(x) str_wrap(x, width = 10)) +
+  facet_wrap(~ cluster, nrow = 2, labeller = labeller(cluster = c("Cluster 1" = "Overall North", "Cluster 2" = "Overall South")))  # Custom labels for cluster
 ```
 
 
-```{r, fig.cap='Sale prices (TSh) of fish species over the past five years for fish traders', fig.align='center', out.width = '90%'}
+```{r, fig.cap='Fish trading sale prices (TSh) of fish species over the past five years', fig.align='center', out.width = '90%'}
 # Define target type variables for best values
 target_type_best_vars <- c("dagaa_trade_best", "migebuka_trade_best", "kungura_trade_best", 
                            "ngege_trade_best", "kuhe_trade_best", "sangara_trade_best")
@@ -5518,20 +6669,46 @@ target_type_best_long <- tanganyika_clean %>%
 target_type_best_long <- target_type_best_long %>%
   mutate(Best_Value = ifelse(Best_Value == 97, NA, Best_Value))
 
-# Create survey design for Best values
-strat_design_best <- target_type_best_long %>%
+# Split data based on clusters for Best values
+target_type_best_long_cluster_1 <- target_type_best_long %>%
+  filter(village %in% cluster_1_villages)
+
+target_type_best_long_cluster_2 <- target_type_best_long %>%
+  filter(village %in% cluster_2_villages)
+
+# Create survey design for Best values (Cluster 1)
+strat_design_best_cluster_1 <- target_type_best_long_cluster_1 %>%
   as_survey_design(strata = stype, fpc = fpc)
 
-# Summarize by Fish_Species for Best values
-aggregate_target_best <- strat_design_best %>%
+# Create survey design for Best values (Cluster 2)
+strat_design_best_cluster_2 <- target_type_best_long_cluster_2 %>%
+  as_survey_design(strata = stype, fpc = fpc)
+
+# Summarize Best values for Cluster 1
+aggregate_target_best_cluster_1 <- strat_design_best_cluster_1 %>%
   group_by(Fish_Species) %>%
   summarise(
     mean_best_value = survey_mean(Best_Value, vartype = "ci", na.rm = TRUE),
     mean_best_value_low = attr(mean_best_value, "ci")[1],
     mean_best_value_upp = attr(mean_best_value, "ci")[2],
     n = unweighted(n())
-  ) %>%
-  ungroup()
+  ) %>% ungroup()
+
+# Summarize Best values for Cluster 2
+aggregate_target_best_cluster_2 <- strat_design_best_cluster_2 %>%
+  group_by(Fish_Species) %>%
+  summarise(
+    mean_best_value = survey_mean(Best_Value, vartype = "ci", na.rm = TRUE),
+    mean_best_value_low = attr(mean_best_value, "ci")[1],
+    mean_best_value_upp = attr(mean_best_value, "ci")[2],
+    n = unweighted(n())
+  ) %>% ungroup()
+
+# Combine Best values for both clusters
+aggregate_target_best_combined <- bind_rows(
+  aggregate_target_best_cluster_1 %>% mutate(cluster = "Cluster 1"),
+  aggregate_target_best_cluster_2 %>% mutate(cluster = "Cluster 2")
+)
 
 # Define target type variables for worst values
 target_type_worst_vars <- c("dagaa_trade_worst", "migebuka_trade_worst", "kungura_trade_worst", 
@@ -5548,34 +6725,59 @@ target_type_worst_long <- tanganyika_clean %>%
 target_type_worst_long <- target_type_worst_long %>%
   mutate(Worst_Value = ifelse(Worst_Value == 97, NA, Worst_Value))
 
-# Create survey design for Worst values
-strat_design_worst <- target_type_worst_long %>%
+# Split data based on clusters for Worst values
+target_type_worst_long_cluster_1 <- target_type_worst_long %>%
+  filter(village %in% cluster_1_villages)
+
+target_type_worst_long_cluster_2 <- target_type_worst_long %>%
+  filter(village %in% cluster_2_villages)
+
+# Create survey design for Worst values (Cluster 1)
+strat_design_worst_cluster_1 <- target_type_worst_long_cluster_1 %>%
   as_survey_design(strata = stype, fpc = fpc)
 
-# Summarize by Fish_Species for Worst values
-aggregate_target_worst <- strat_design_worst %>%
+# Create survey design for Worst values (Cluster 2)
+strat_design_worst_cluster_2 <- target_type_worst_long_cluster_2 %>%
+  as_survey_design(strata = stype, fpc = fpc)
+
+# Summarize Worst values for Cluster 1
+aggregate_target_worst_cluster_1 <- strat_design_worst_cluster_1 %>%
   group_by(Fish_Species) %>%
   summarise(
     mean_worst_value = survey_mean(Worst_Value, vartype = "ci", na.rm = TRUE),
     mean_worst_value_low = attr(mean_worst_value, "ci")[1],
     mean_worst_value_upp = attr(mean_worst_value, "ci")[2],
     n = unweighted(n())
-  ) %>%
-  ungroup()
+  ) %>% ungroup()
+
+# Summarize Worst values for Cluster 2
+aggregate_target_worst_cluster_2 <- strat_design_worst_cluster_2 %>%
+  group_by(Fish_Species) %>%
+  summarise(
+    mean_worst_value = survey_mean(Worst_Value, vartype = "ci", na.rm = TRUE),
+    mean_worst_value_low = attr(mean_worst_value, "ci")[1],
+    mean_worst_value_upp = attr(mean_worst_value, "ci")[2],
+    n = unweighted(n())
+  ) %>% ungroup()
+
+# Combine Worst values for both clusters
+aggregate_target_worst_combined <- bind_rows(
+  aggregate_target_worst_cluster_1 %>% mutate(cluster = "Cluster 1"),
+  aggregate_target_worst_cluster_2 %>% mutate(cluster = "Cluster 2")
+)
 
 # Combine Best and Worst values into one dataframe
-combined_target <- aggregate_target_best %>%
-  left_join(aggregate_target_worst, by = "Fish_Species") %>%
-  pivot_longer(cols = c(mean_best_value, mean_worst_value), 
-               names_to = "Value_Type", 
-               values_to = "Value") %>%
-  mutate(Value_Type = recode(Value_Type, 
-                             "mean_best_value" = "Highest Sale Price", 
-                             "mean_worst_value" = "Lowest Sale Price"))
+combined_target <- bind_rows(
+  aggregate_target_best_combined %>%
+    mutate(Value_Type = "Highest Sale Price", Value = mean_best_value) %>%
+    select(-mean_best_value),  # remove `mean_best_value` after mutating
+  aggregate_target_worst_combined %>%
+    mutate(Value_Type = "Lowest Sale Price", Value = mean_worst_value) %>%
+    select(-mean_worst_value))
+  
+combined_target$Fish_Species <- gsub("_process", "", combined_target$Fish_Species)
 
-combined_target$Fish_Species <- gsub("_trade", "", combined_target$Fish_Species)
-
-# Plotting the combined grouped bar chart
+# Plotting the combined grouped bar chart with facets for each cluster and custom row titles
 ggplot(combined_target, aes(x = Fish_Species, y = Value, fill = Value_Type)) +
   geom_bar(stat = "identity", position = "dodge", width = 0.75) +
   geom_errorbar(aes(ymin = ifelse(Value_Type == "Highest Sale Price", 
@@ -5585,16 +6787,19 @@ ggplot(combined_target, aes(x = Fish_Species, y = Value, fill = Value_Type)) +
                 position = position_dodge(0.75), width = 0.2) +
   labs(x = NULL, y = "Sale Price (TSh)") +
   guides(fill = guide_legend(title = NULL)) + 
-  sea::scale_fill_sea_discrete() +
+  scale_fill_viridis(discrete = TRUE, option = "D") +
   sea::theme_sea() + 
   theme(legend.position = "bottom", 
-        axis.text.x = element_text(size = 10),
+        axis.text.x = element_text(size = 10), 
+        strip.text = element_text(size = 12, face = "bold"),  # Set custom size and bold text for facet labels
         panel.grid.major = element_blank(),  
         panel.grid.minor = element_blank(),
-        strip.text = element_blank(), 
         legend.box = "horizontal") +
   scale_x_discrete(labels = function(x) str_wrap(x, width = 10)) +
-  scale_y_continuous(labels = scales::label_comma())
+  scale_y_continuous(labels = scales::label_comma()) +
+  facet_wrap(~ cluster, nrow = 2, labeller = labeller(cluster = c("Cluster 1" = "Overall North", "Cluster 2" = "Overall South")))
+
+
 
 ```
 
@@ -5605,7 +6810,8 @@ satisfaction_mapping <- c(
   "2 UNSATISFIED" = 2,
   "3 NEUTRAL" = 3,
   "4 SATISFIED" = 4,
-  "5 VERY SATISFIED" = 5)
+  "5 VERY SATISFIED" = 5
+)
 
 satisfaction_columns <- c("satisfaction_trade_skills", "trade_tools_used", "trade_productivity", 
                           "trade_market_supply", "satisfaction_trade_purchase", "trade_market", 
@@ -5621,38 +6827,69 @@ tanganyika_clean <- tanganyika_clean %>%
 satisfaction_long <- tanganyika_clean %>%
   pivot_longer(cols = all_of(satisfaction_columns), names_to = "Satisfaction_Area", values_to = "Satisfaction_Value")
 
-# Create survey design
+# Filter out rows with NA values
 satisfaction_long <- satisfaction_long %>%
   filter(!is.na(Satisfaction_Value))
 
-# Proceed with the survey design creation
+# Add cluster classification
+satisfaction_long <- satisfaction_long %>%
+  mutate(cluster = case_when(
+    village %in% cluster_1_villages ~ "Overall North",  # Cluster 1
+    village %in% cluster_2_villages ~ "Overall South",  # Cluster 2
+    TRUE ~ "Other"
+  ))
+
+# Create survey design
 strat_design_satisfaction <- satisfaction_long %>%
   as_survey_design(strata = stype, fpc = fpc)
 
-# Summarize satisfaction values
+# Summarize satisfaction values by cluster
 aggregate_satisfaction <- strat_design_satisfaction %>%
-  group_by(Satisfaction_Area) %>%
+  group_by(Satisfaction_Area, cluster) %>%
   summarise(
     mean_satisfaction_value = survey_mean(Satisfaction_Value, vartype = "ci", na.rm = TRUE),
     n = unweighted(n())
   ) %>%
   ungroup()
 
-# Plotting Satisfaction Values
-ggplot(aggregate_satisfaction, aes(x = reorder(Satisfaction_Area, -mean_satisfaction_value), y = mean_satisfaction_value, fill = Satisfaction_Area)) +
+# Plotting Satisfaction Values with clusters separated into rows
+ggplot(aggregate_satisfaction, aes(
+  x = reorder(Satisfaction_Area, -mean_satisfaction_value), 
+  y = mean_satisfaction_value, 
+  fill = Satisfaction_Area
+)) +
   geom_bar(stat = "identity", width = 0.75) +
   labs(x = NULL, y = NULL) +
   guides(fill = guide_legend(title = NULL)) + 
-  sea::scale_fill_sea_discrete() +
+  scale_fill_viridis(discrete = TRUE, option = "D") +
   sea::theme_sea() + 
-  theme(legend.position = "none", 
-        axis.text.x = element_text(angle = 45, hjust = 1), 
-        panel.grid.major = element_blank(),  
-        panel.grid.minor = element_blank(),
-        strip.text = element_blank(), 
-        legend.box = "horizontal") +
-  scale_y_continuous(limits = c(0, 5), breaks = 1:5, labels = c("VERY UNSATISFIED", "UNSATISFIED", "NEUTRAL", "SATISFIED", "VERY SATISFIED"))+
-  scale_x_discrete(labels = c("Your skills", "Your own business skills", "The tools and\ntechnologies you use", "Your productivity levels", "Your access to\nmarket supply (inputs)", "Your access to markets\nofftake/sales", "Your income\nlevels generated","Your access to materials and\nequipment needed for trading", "Your access to capital", "The support you get from\ngroups or organizations"))
+  theme(
+    legend.position = "none", 
+    axis.text.x = element_text(angle = 45, hjust = 1), 
+    strip.text = element_text(size = 12, face = "bold"), # Add bold, larger cluster titles
+    panel.grid.major = element_blank(),  
+    panel.grid.minor = element_blank(),
+    legend.box = "horizontal"
+  ) +
+  scale_y_continuous(
+    limits = c(0, 5), 
+    breaks = 1:5, 
+    labels = c("VERY UNSATISFIED", "UNSATISFIED", "NEUTRAL", "SATISFIED", "VERY SATISFIED")
+  ) +
+  scale_x_discrete(labels = c(
+    "Your skills", 
+    "Your own business skills", 
+    "The tools and\ntechnologies you use", 
+    "Your productivity levels", 
+    "Your access to\nmarket supply (inputs)", 
+    "Your access to markets\nofftake/sales", 
+    "Your income\nlevels generated", 
+    "Your access to materials and\nequipment needed for trading", 
+    "Your access to capital", 
+    "The support you get from\ngroups or organizations"
+  )) +
+  facet_wrap(~ cluster, nrow = 2, scales = "free_y", strip.position = "top")
+
 ```
 
 Fish traders indicated a variety of challenges that compromise their operations and profitability. Fluctuating fish prices and market instability often lead to financial losses (n = 43), while limited capital restricts the ability to expand or invest in essential tools (n = 48). Inadequate storage and poor transportation infrastructure contribute to fish spoilage, reducing quality and market value (n = 24). Accessing reliable markets and customers is stated to be difficult and compounded by long travel distances and oversaturation of markets (n = 24). Traders also encounter regulatory hurdles, such as high taxes and permit costs, and financial constraints, including delayed payments and limited access to loans. Poor infrastructure, competition, insufficient equipment, and lack of education in business management further exacerbate these issues. Additionally, seasonal and environmental factors, such as reduced fish availability during rainy seasons, pose significant challenges to sustaining livelihoods.
@@ -5817,24 +7054,77 @@ Changes to improve fish trading groups include securing access to loans from ban
 
 
 ```{r, fig.cap='Do you think your current trading activities are likely to support your needs over the long term (next 5 - 10 years)?', fig.align='center', out.width = '90%'}
-village_data <- tanganyika_survey %>%
-   filter(!is.na(trading_long_term) & trading_long_term != "I DON'T KNOW") %>% 
-    group_by(trading_long_term) %>%
-    summarise(proportion = survey_mean(vartype = "ci", na.rm = TRUE), total = survey_total(vartype = "ci", na.rm = TRUE), n = unweighted(n())) %>% drop_na()
+# Expand the data with cluster classification
+village_data_expanded <- tanganyika_survey %>%
+  filter(!is.na(trading_long_term) & trading_long_term != "I DON'T KNOW") %>%
+  mutate(cluster = case_when(
+    village %in% cluster_1_villages ~ "Cluster 1",  # Replace with your actual cluster 1 villages
+    village %in% cluster_2_villages ~ "Cluster 2",  # Replace with your actual cluster 2 villages
+    TRUE ~ "Other"
+  ))
 
-ggplot(village_data, aes(x = fct_relevel(trading_long_term, "YES", "NO", "NOT SURE"), y = proportion * 100, fill = trading_long_term)) +
+# Create survey designs for each cluster
+village_data_design_cluster_1 <- village_data_expanded %>%
+  filter(cluster == "Cluster 1") %>%
+  as_survey_design()
+
+village_data_design_cluster_2 <- village_data_expanded %>%
+  filter(cluster == "Cluster 2") %>%
+  as_survey_design()
+
+# Summarise for Cluster 1
+village_data_cluster_1 <- village_data_design_cluster_1 %>%
+  group_by(trading_long_term) %>%
+  summarise(
+    proportion = survey_mean(vartype = "ci", na.rm = TRUE),
+    total = survey_total(vartype = "ci", na.rm = TRUE),
+    n = unweighted(n())
+  ) %>%
+  drop_na()
+
+# Summarise for Cluster 2
+village_data_cluster_2 <- village_data_design_cluster_2 %>%
+  group_by(trading_long_term) %>%
+  summarise(
+    proportion = survey_mean(vartype = "ci", na.rm = TRUE),
+    total = survey_total(vartype = "ci", na.rm = TRUE),
+    n = unweighted(n())
+  ) %>%
+  drop_na()
+
+# Combine the two clusters' data
+village_data_combined <- bind_rows(
+  village_data_cluster_1 %>% mutate(cluster = "Overall North"),
+  village_data_cluster_2 %>% mutate(cluster = "Overall South")
+)
+
+# Create the plot with two rows for clusters
+ggplot(village_data_combined, aes(x = fct_relevel(trading_long_term, "YES", "NO", "NOT SURE"), 
+                                  y = proportion * 100, fill = trading_long_term)) +
   geom_bar(stat = "identity", width = 0.8) +
-  geom_errorbar(aes(ymax = pmin(proportion_upp, 1) * 100, ymin = pmax(proportion_low, 0) * 100), width = 0.2) +
-  geom_text(
-    aes(y = pmin(proportion_upp, 1) * 100 + 1, label = paste0(round(proportion * 100, 0), "%")), 
-    position = position_dodge(width = 0.95), vjust = -0.5, size = 3) +
+  geom_errorbar(aes(ymax = pmin(proportion_upp, 1) * 100, 
+                    ymin = pmax(proportion_low, 0) * 100), 
+                width = 0.2) +
+  geom_text(aes(
+    y = pmin(proportion_upp, 1) * 100 + 1, 
+    label = paste0(round(proportion * 100, 0), "%")
+  ), position = position_dodge(width = 0.95), vjust = -0.5, size = 3) +
   guides(fill = guide_legend(title = NULL)) + 
   labs(x = NULL, y = NULL) +  
   sea::scale_fill_sea_discrete(4) +
   sea::theme_sea() + 
-  theme(legend.position = "none", axis.text.x = element_text(angle = 45, hjust = 1), panel.grid.major = element_blank(), panel.grid.minor = element_blank(), axis.text.y = element_blank(), axis.title.y = element_blank()) +
-  scale_y_continuous(labels = label_percent(scale = 1))+
-  scale_x_discrete(labels = c("Yes", "No", "Not Sure"))
+  theme(
+    legend.position = "none", 
+    axis.text.x = element_text(angle = 45, hjust = 1), 
+    panel.grid.major = element_blank(), 
+    panel.grid.minor = element_blank(), 
+    axis.text.y = element_blank(), 
+    axis.title.y = element_blank()
+  ) +
+  scale_y_continuous(labels = label_percent(scale = 1)) +
+  scale_x_discrete(labels = c("Yes", "No", "Not Sure")) +
+  facet_wrap(~ cluster, nrow = 2)  # Separate plots for each cluster (2 rows)
+
 ```
 
 Several households expressed satisfaction with their current income from fish trading, noting that it sufficiently meets their basic needs. Respondents (n = 3) also reported that their income from activities like fishing or business is adequate to support their families, and they feel secure in their ability to sustain their livelihoods over the next 5-10 years. Others (n = 2) highlighted the importance of diversifying their activities to ensure long-term stability. By engaging in multiple income-generating activities, they can meet the needs of their families. A small number of respondents emphasized that they are able to save from their income, ensuring that they can meet future needs. Some respondents provided additional factors that contribute to their outlook on long-term sustainability, such as good work practices, timing fishing activities well, and a general improvement in their current economic situation compared to the past (n = 5).
@@ -5907,7 +7197,7 @@ ggplot(processing_form_data, aes(x = village, y = proportion * 100, group = proc
                 position = position_dodge(preserve = "single", width = 0.95), width = 0.1) +
   guides(fill = guide_legend(title = NULL, nrow = 1)) +
   labs(x = NULL, y = NULL) +
-  scale_fill_sea_discrete(labels = function(labels) str_to_title(str_to_lower(labels))) +
+  scale_fill_viridis(discrete = TRUE, option = "D", labels = function(labels) str_to_title(str_to_lower(labels))) +
   sea::theme_sea() + 
   theme(legend.position = "bottom",  legend.direction = "horizontal",  legend.justification = "center", 
         axis.text.x = element_text(size = 7), panel.grid.major = element_blank(), panel.grid.minor = element_blank(), strip.text = element_blank(), legend.box = 
@@ -5972,7 +7262,7 @@ ggplot(processing_equipment_data, aes(x = village, y = proportion * 100, group =
                 position = position_dodge(preserve = "single", width = 0.95), width = 0.1) +
   guides(fill = guide_legend(title = NULL, nrow = 2)) +
   labs(x = NULL, y = NULL) +
-  scale_fill_sea_discrete(labels = function(labels) str_to_title(str_to_lower(labels))) +
+  scale_fill_viridis(discrete = TRUE, option = "D", labels = function(labels) str_to_title(str_to_lower(labels))) +
   sea::theme_sea() + 
   theme(legend.position = "bottom",  legend.direction = "horizontal",  legend.justification = "center", 
         axis.text.x = element_text(size = 7), panel.grid.major = element_blank(), panel.grid.minor = element_blank(), strip.text = element_blank(), legend.box = 
@@ -6004,19 +7294,29 @@ target_type_long <- target_type_long %>%
       Season == "I DON'T KNOW" ~ NA_character_,  
       TRUE ~ Season))
 
+# Add cluster classification
+target_type_long <- target_type_long %>%
+  mutate(cluster = case_when(
+    village %in% cluster_1_villages ~ "Cluster 1",
+    village %in% cluster_2_villages ~ "Cluster 2",
+    TRUE ~ "Other"))
+
 # Create survey design
 strat_design <- target_type_long %>%
   as_survey_design(strata = stype, fpc = fpc)
 
-# Summarize by Fish_Species and Season
+# Summarize by Fish_Species and Season for each cluster
 aggregate_target_type <- strat_design %>%
-  group_by(Fish_Species, Season) %>%
-  summarise(mean_season = survey_mean(vartype = "ci", na.rm = TRUE), n = unweighted(n())) %>% ungroup()
+  group_by(Fish_Species, Season, cluster) %>%
+  summarise(mean_season = survey_mean(vartype = "ci", na.rm = TRUE), 
+            n = unweighted(n())) %>% ungroup()
+
+
 
 # Calculate percentages and handle totals
 aggregate_target_type <- aggregate_target_type %>%
   filter(!is.na(Season) & Season != "NONE") %>% 
-  group_by(Fish_Species) %>%
+  group_by(Fish_Species, cluster) %>%
   mutate(
     total_season = sum(mean_season, na.rm = TRUE), # Total importance per Fish_Species
     mean_season_percent = (mean_season / total_season) * 100, # Relative percentage
@@ -6025,7 +7325,8 @@ aggregate_target_type <- aggregate_target_type %>%
   ) %>%
   ungroup()
 
-# Plotting
+
+# Plotting with facet_wrap to separate by Cluster
 ggplot(aggregate_target_type, aes(x = Fish_Species, y = mean_season_percent, group = Season, fill = Season)) +
   geom_bar(stat = "identity", position = position_dodge(preserve = "single"), width = 0.95) +
   geom_errorbar(aes(ymin = mean_season_percent_low, ymax = mean_season_percent_upp),
@@ -6035,7 +7336,7 @@ ggplot(aggregate_target_type, aes(x = Fish_Species, y = mean_season_percent, gro
             position = position_dodge(width = 0.95), size = 3) +
   labs(x = NULL, y = NULL) +
   guides(fill = guide_legend(title = NULL)) + 
-  scale_fill_sea_discrete(labels = function(labels) str_to_title(str_to_lower(labels))) +
+  scale_fill_viridis(discrete = TRUE, option = "D", labels = function(labels) str_to_title(str_to_lower(labels))) +
   sea::theme_sea() + 
   theme(legend.position = "bottom", 
         legend.direction = "horizontal", 
@@ -6045,10 +7346,11 @@ ggplot(aggregate_target_type, aes(x = Fish_Species, y = mean_season_percent, gro
         panel.grid.minor = element_blank(),
         axis.text.y = element_blank(),
         axis.title.y = element_blank(),
-        strip.text = element_blank(), 
+        strip.text = element_text(size = 12, face = "bold"),  # Customizing strip text size and style
         legend.box = "horizontal") + 
   scale_y_continuous(labels = label_percent(scale = 1)) +
-  scale_x_discrete(labels = function(x) str_wrap(x, width = 10))
+  scale_x_discrete(labels = function(x) str_wrap(x, width = 10)) +
+  facet_wrap(~ cluster, nrow = 2, labeller = labeller(cluster = c("Cluster 1" = "Overall North", "Cluster 2" = "Overall South")))  # Custom labels for cluster
 
 ```
 
@@ -6069,20 +7371,46 @@ target_type_best_long <- tanganyika_clean %>%
 target_type_best_long <- target_type_best_long %>%
   mutate(Best_Value = ifelse(Best_Value == 97, NA, Best_Value))
 
-# Create survey design for Best values
-strat_design_best <- target_type_best_long %>%
+# Split data based on clusters for Best values
+target_type_best_long_cluster_1 <- target_type_best_long %>%
+  filter(village %in% cluster_1_villages)
+
+target_type_best_long_cluster_2 <- target_type_best_long %>%
+  filter(village %in% cluster_2_villages)
+
+# Create survey design for Best values (Cluster 1)
+strat_design_best_cluster_1 <- target_type_best_long_cluster_1 %>%
   as_survey_design(strata = stype, fpc = fpc)
 
-# Summarize by Fish_Species for Best values
-aggregate_target_best <- strat_design_best %>%
+# Create survey design for Best values (Cluster 2)
+strat_design_best_cluster_2 <- target_type_best_long_cluster_2 %>%
+  as_survey_design(strata = stype, fpc = fpc)
+
+# Summarize Best values for Cluster 1
+aggregate_target_best_cluster_1 <- strat_design_best_cluster_1 %>%
   group_by(Fish_Species) %>%
   summarise(
     mean_best_value = survey_mean(Best_Value, vartype = "ci", na.rm = TRUE),
     mean_best_value_low = attr(mean_best_value, "ci")[1],
     mean_best_value_upp = attr(mean_best_value, "ci")[2],
     n = unweighted(n())
-  ) %>%
-  ungroup()
+  ) %>% ungroup()
+
+# Summarize Best values for Cluster 2
+aggregate_target_best_cluster_2 <- strat_design_best_cluster_2 %>%
+  group_by(Fish_Species) %>%
+  summarise(
+    mean_best_value = survey_mean(Best_Value, vartype = "ci", na.rm = TRUE),
+    mean_best_value_low = attr(mean_best_value, "ci")[1],
+    mean_best_value_upp = attr(mean_best_value, "ci")[2],
+    n = unweighted(n())
+  ) %>% ungroup()
+
+# Combine Best values for both clusters
+aggregate_target_best_combined <- bind_rows(
+  aggregate_target_best_cluster_1 %>% mutate(cluster = "Cluster 1"),
+  aggregate_target_best_cluster_2 %>% mutate(cluster = "Cluster 2")
+)
 
 # Define target type variables for worst values
 target_type_worst_vars <- c("dagaa_process_worst", "migebuka_process_worst", "kungura_process_worst", 
@@ -6099,34 +7427,59 @@ target_type_worst_long <- tanganyika_clean %>%
 target_type_worst_long <- target_type_worst_long %>%
   mutate(Worst_Value = ifelse(Worst_Value == 97, NA, Worst_Value))
 
-# Create survey design for Worst values
-strat_design_worst <- target_type_worst_long %>%
+# Split data based on clusters for Worst values
+target_type_worst_long_cluster_1 <- target_type_worst_long %>%
+  filter(village %in% cluster_1_villages)
+
+target_type_worst_long_cluster_2 <- target_type_worst_long %>%
+  filter(village %in% cluster_2_villages)
+
+# Create survey design for Worst values (Cluster 1)
+strat_design_worst_cluster_1 <- target_type_worst_long_cluster_1 %>%
   as_survey_design(strata = stype, fpc = fpc)
 
-# Summarize by Fish_Species for Worst values
-aggregate_target_worst <- strat_design_worst %>%
+# Create survey design for Worst values (Cluster 2)
+strat_design_worst_cluster_2 <- target_type_worst_long_cluster_2 %>%
+  as_survey_design(strata = stype, fpc = fpc)
+
+# Summarize Worst values for Cluster 1
+aggregate_target_worst_cluster_1 <- strat_design_worst_cluster_1 %>%
   group_by(Fish_Species) %>%
   summarise(
     mean_worst_value = survey_mean(Worst_Value, vartype = "ci", na.rm = TRUE),
     mean_worst_value_low = attr(mean_worst_value, "ci")[1],
     mean_worst_value_upp = attr(mean_worst_value, "ci")[2],
     n = unweighted(n())
-  ) %>%
-  ungroup()
+  ) %>% ungroup()
+
+# Summarize Worst values for Cluster 2
+aggregate_target_worst_cluster_2 <- strat_design_worst_cluster_2 %>%
+  group_by(Fish_Species) %>%
+  summarise(
+    mean_worst_value = survey_mean(Worst_Value, vartype = "ci", na.rm = TRUE),
+    mean_worst_value_low = attr(mean_worst_value, "ci")[1],
+    mean_worst_value_upp = attr(mean_worst_value, "ci")[2],
+    n = unweighted(n())
+  ) %>% ungroup()
+
+# Combine Worst values for both clusters
+aggregate_target_worst_combined <- bind_rows(
+  aggregate_target_worst_cluster_1 %>% mutate(cluster = "Cluster 1"),
+  aggregate_target_worst_cluster_2 %>% mutate(cluster = "Cluster 2")
+)
 
 # Combine Best and Worst values into one dataframe
-combined_target <- aggregate_target_best %>%
-  left_join(aggregate_target_worst, by = "Fish_Species") %>%
-  pivot_longer(cols = c(mean_best_value, mean_worst_value), 
-               names_to = "Value_Type", 
-               values_to = "Value") %>%
-  mutate(Value_Type = recode(Value_Type, 
-                             "mean_best_value" = "Highest Sale Price", 
-                             "mean_worst_value" = "Lowest Sale Price"))
-
+combined_target <- bind_rows(
+  aggregate_target_best_combined %>%
+    mutate(Value_Type = "Highest Sale Price", Value = mean_best_value) %>%
+    select(-mean_best_value),  # remove `mean_best_value` after mutating
+  aggregate_target_worst_combined %>%
+    mutate(Value_Type = "Lowest Sale Price", Value = mean_worst_value) %>%
+    select(-mean_worst_value))
+  
 combined_target$Fish_Species <- gsub("_process", "", combined_target$Fish_Species)
 
-# Plotting the combined grouped bar chart
+# Plotting the combined grouped bar chart with facets for each cluster and custom row titles
 ggplot(combined_target, aes(x = Fish_Species, y = Value, fill = Value_Type)) +
   geom_bar(stat = "identity", position = "dodge", width = 0.75) +
   geom_errorbar(aes(ymin = ifelse(Value_Type == "Highest Sale Price", 
@@ -6136,16 +7489,17 @@ ggplot(combined_target, aes(x = Fish_Species, y = Value, fill = Value_Type)) +
                 position = position_dodge(0.75), width = 0.2) +
   labs(x = NULL, y = "Sale Price (TSh)") +
   guides(fill = guide_legend(title = NULL)) + 
-  sea::scale_fill_sea_discrete() +
+  scale_fill_viridis(discrete = TRUE, option = "D") +
   sea::theme_sea() + 
-  theme(legend.position = "bottome", 
-        axis.text.x = element_text(size = 10),
+  theme(legend.position = "bottom", 
+        axis.text.x = element_text(size = 10), 
+        strip.text = element_text(size = 12, face = "bold"),  # Set custom size and bold text for facet labels
         panel.grid.major = element_blank(),  
         panel.grid.minor = element_blank(),
-        strip.text = element_blank(), 
         legend.box = "horizontal") +
   scale_x_discrete(labels = function(x) str_wrap(x, width = 10)) +
-  scale_y_continuous(labels = scales::label_comma())
+  scale_y_continuous(labels = scales::label_comma()) +
+  facet_wrap(~ cluster, nrow = 2, labeller = labeller(cluster = c("Cluster 1" = "Overall North", "Cluster 2" = "Overall South")))
 
 ```
 
@@ -6156,7 +7510,8 @@ satisfaction_mapping <- c(
   "2 UNSATISFIED" = 2,
   "3 NEUTRAL" = 3,
   "4 SATISFIED" = 4,
-  "5 VERY SATISFIED" = 5)
+  "5 VERY SATISFIED" = 5
+)
 
 satisfaction_columns <- c("satisfaction_process_skills", "process_tools_used", "process_productivity", 
                           "process_market_supply", "satisfaction_process_materials", "process_market", 
@@ -6172,38 +7527,69 @@ tanganyika_clean <- tanganyika_clean %>%
 satisfaction_long <- tanganyika_clean %>%
   pivot_longer(cols = all_of(satisfaction_columns), names_to = "Satisfaction_Area", values_to = "Satisfaction_Value")
 
-# Create survey design
+# Filter out rows with NA values
 satisfaction_long <- satisfaction_long %>%
   filter(!is.na(Satisfaction_Value))
 
-# Proceed with the survey design creation
+# Add cluster classification
+satisfaction_long <- satisfaction_long %>%
+  mutate(cluster = case_when(
+    village %in% cluster_1_villages ~ "Overall North",  # Cluster 1
+    village %in% cluster_2_villages ~ "Overall South",  # Cluster 2
+    TRUE ~ "Other"
+  ))
+
+# Create survey design
 strat_design_satisfaction <- satisfaction_long %>%
   as_survey_design(strata = stype, fpc = fpc)
 
-# Summarize satisfaction values
+# Summarize satisfaction values by cluster
 aggregate_satisfaction <- strat_design_satisfaction %>%
-  group_by(Satisfaction_Area) %>%
+  group_by(Satisfaction_Area, cluster) %>%
   summarise(
     mean_satisfaction_value = survey_mean(Satisfaction_Value, vartype = "ci", na.rm = TRUE),
     n = unweighted(n())
   ) %>%
   ungroup()
 
-# Plotting Satisfaction Values
-ggplot(aggregate_satisfaction, aes(x = reorder(Satisfaction_Area, -mean_satisfaction_value), y = mean_satisfaction_value, fill = Satisfaction_Area)) +
+# Plotting Satisfaction Values with clusters separated into rows
+ggplot(aggregate_satisfaction, aes(
+  x = reorder(Satisfaction_Area, -mean_satisfaction_value), 
+  y = mean_satisfaction_value, 
+  fill = Satisfaction_Area
+)) +
   geom_bar(stat = "identity", width = 0.75) +
   labs(x = NULL, y = NULL) +
   guides(fill = guide_legend(title = NULL)) + 
-  sea::scale_fill_sea_discrete() +
+  scale_fill_viridis(discrete = TRUE, option = "D") +
   sea::theme_sea() + 
-  theme(legend.position = "none", 
-        axis.text.x = element_text(angle = 45, hjust = 1), 
-        strip.text = element_blank(), 
-        panel.grid.major = element_blank(),  
-        panel.grid.minor = element_blank(),
-        legend.box = "horizontal") +
-  scale_y_continuous(limits = c(0, 5), breaks = 1:5, labels = c("VERY UNSATISFIED", "UNSATISFIED", "NEUTRAL", "SATISFIED", "VERY SATISFIED"))+
-  scale_x_discrete(labels = c("Your skills", "Your own business skills", "The tools and\ntechnologies you use", "Your access to markets\nofftake/sales", "Your access to\nmarket supply (inputs)", "Your income\nlevels generated", "Your productivity levels", "Your access to materials and\nequipment needed for processing", "Your access to capital", "The support you get from\ngroups or organizations"))
+  theme(
+    legend.position = "none", 
+    axis.text.x = element_text(angle = 45, hjust = 1), 
+    strip.text = element_text(size = 12, face = "bold"),  # Bold, larger cluster titles
+    panel.grid.major = element_blank(),  
+    panel.grid.minor = element_blank(),
+    legend.box = "horizontal"
+  ) +
+  scale_y_continuous(
+    limits = c(0, 5), 
+    breaks = 1:5, 
+    labels = c("VERY UNSATISFIED", "UNSATISFIED", "NEUTRAL", "SATISFIED", "VERY SATISFIED")
+  ) +
+  scale_x_discrete(labels = c(
+    "Your skills", 
+    "Your own business skills", 
+    "The tools and\ntechnologies you use", 
+    "Your productivity levels", 
+    "Your access to\nmarket supply (inputs)", 
+    "Your access to markets\nofftake/sales", 
+    "Your income\nlevels generated", 
+    "Your access to materials and\nequipment needed for processing", 
+    "Your access to capital", 
+    "The support you get from\ngroups or organizations"
+  )) +
+  facet_wrap(~ cluster, nrow = 2, scales = "free_y", strip.position = "top")
+
 ```
 
 Fish processors face a range of challenges that compromise their businesses and livelihoods. Market-related issues such as fluctuating fish prices, lack of standardized pricing, limited markets for fish products, and interference from middlemen were stated as common (n = 19). Respondents also highlight health risks, which arise from prolonged smoke exposure, leading to respiratory issues, and injuries during processing (n = 13). Outdated equipment, frequent power outages, and limited access to energy resources (i.e. firewood) exacerbate processing difficulties, leading to spoilage of fish (n = 30). Rising input costs, poor infrastructure, and insufficient fish stock create further obstacles. Adverse weather conditions, financial constraints, and limited access to capital limit scalability, while quality control issues and fish spoilage result in financial losses. Additionally, theft during processing, lack of education on modern techniques, and bureaucratic hurdles such as securing permits and paying taxes further complicate their work. These challenges collectively impede the growth and sustainability of fish processing businesses.
@@ -6367,24 +7753,77 @@ In order to improve conditions of the fish processing groups, respondents emphas
 
 
 ```{r, fig.cap='Do you think your current processing activities are likely to support your needs over the long term (next 5 - 10 years)?', fig.align='center', out.width = '90%'}
-village_data <- tanganyika_survey %>%
-   filter(!is.na(process_long_term)) %>% 
-    group_by(process_long_term) %>%
-    summarise(proportion = survey_mean(vartype = "ci", na.rm = TRUE), total = survey_total(vartype = "ci", na.rm = TRUE), n = unweighted(n())) %>% drop_na()
+# Expand the data with cluster classification
+village_data_expanded <- tanganyika_survey %>%
+  filter(!is.na(process_long_term)) %>%
+  mutate(cluster = case_when(
+    village %in% cluster_1_villages ~ "Cluster 1",  # Replace with your actual cluster 1 villages
+    village %in% cluster_2_villages ~ "Cluster 2",  # Replace with your actual cluster 2 villages
+    TRUE ~ "Other"
+  ))
 
-ggplot(village_data, aes(x = fct_relevel(process_long_term, "YES", "NO", "NOT SURE"), y = proportion * 100, fill = process_long_term)) +
+# Create survey designs for each cluster
+village_data_design_cluster_1 <- village_data_expanded %>%
+  filter(cluster == "Cluster 1") %>%
+  as_survey_design()
+
+village_data_design_cluster_2 <- village_data_expanded %>%
+  filter(cluster == "Cluster 2") %>%
+  as_survey_design()
+
+# Summarise for Cluster 1
+village_data_cluster_1 <- village_data_design_cluster_1 %>%
+  group_by(process_long_term) %>%
+  summarise(
+    proportion = survey_mean(vartype = "ci", na.rm = TRUE),
+    total = survey_total(vartype = "ci", na.rm = TRUE),
+    n = unweighted(n())
+  ) %>%
+  drop_na()
+
+# Summarise for Cluster 2
+village_data_cluster_2 <- village_data_design_cluster_2 %>%
+  group_by(process_long_term) %>%
+  summarise(
+    proportion = survey_mean(vartype = "ci", na.rm = TRUE),
+    total = survey_total(vartype = "ci", na.rm = TRUE),
+    n = unweighted(n())
+  ) %>%
+  drop_na()
+
+# Combine the two clusters' data
+village_data_combined <- bind_rows(
+  village_data_cluster_1 %>% mutate(cluster = "Overall North"),
+  village_data_cluster_2 %>% mutate(cluster = "Overall South")
+)
+
+# Create the plot with two rows for clusters
+ggplot(village_data_combined, aes(x = fct_relevel(process_long_term, "YES", "NO", "NOT SURE"), 
+                                  y = proportion * 100, fill = process_long_term)) +
   geom_bar(stat = "identity", width = 0.8) +
-  geom_errorbar(aes(ymax = pmin(proportion_upp, 1) * 100, ymin = pmax(proportion_low, 0) * 100), width = 0.2) +
-  geom_text(
-    aes(y = pmin(proportion_upp, 1) * 100 + 1, label = paste0(round(proportion * 100, 0), "%")), 
-    position = position_dodge(width = 0.95), vjust = -0.5, size = 3) +
+  geom_errorbar(aes(ymax = pmin(proportion_upp, 1) * 100, 
+                    ymin = pmax(proportion_low, 0) * 100), 
+                width = 0.2) +
+  geom_text(aes(
+    y = pmin(proportion_upp, 1) * 100 + 1, 
+    label = paste0(round(proportion * 100, 0), "%")
+  ), position = position_dodge(width = 0.95), vjust = -0.5, size = 3) +
   guides(fill = guide_legend(title = NULL)) + 
   labs(x = NULL, y = NULL) +  
   sea::scale_fill_sea_discrete(4) +
   sea::theme_sea() + 
-  theme(legend.position = "none", axis.text.x = element_text(angle = 45, hjust = 1), panel.grid.major = element_blank(), panel.grid.minor = element_blank(), axis.text.y = element_blank(), axis.title.y = element_blank()) +
-  scale_y_continuous(labels = label_percent(scale = 1))+
-  scale_x_discrete(labels = c("Yes", "No", "Not Sure"))
+  theme(
+    legend.position = "none", 
+    axis.text.x = element_text(angle = 45, hjust = 1), 
+    panel.grid.major = element_blank(), 
+    panel.grid.minor = element_blank(), 
+    axis.text.y = element_blank(), 
+    axis.title.y = element_blank()
+  ) +
+  scale_y_continuous(labels = label_percent(scale = 1)) +
+  scale_x_discrete(labels = c("Yes", "No", "Not Sure")) +
+  facet_wrap(~ cluster, nrow = 2)  # Separate plots for each cluster (2 rows)
+
 ```
 
 Few households felt their current activities were likely to support their long-term needs as they have a strong production capacity and the ability to access markets in a timely manner, which they believe will enable them to engage in activities sustainably in future. Others reported that their current activities are likely to support their long-term needs because they provide sufficient income to meet their family's basic needs, ensuring financial stability. Some stated that sustainable fishing practices would enhance processing activities, and they anticipated that their business would grow significantly, enabling them to generate sufficient income in the future.
