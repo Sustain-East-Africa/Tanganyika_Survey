@@ -183,23 +183,9 @@ The study population was defined as those households currently living within the
 A stratified random sampling design was employed across the study population. Stratified sampling involved dividing the study population strata (villages) and drawing separate probability samples from each stratum. Stratification ensures that a pre-specified number of observations from each stratum end up in the sample, which is therefore less variable, yet may provide more precise estimates to adequately represent the entire population.
 The strata in this study were defined based on household locations and represent the different villages. By dividing the population into strata, the sampling design aims to capture the variability within these groups and ensure that each important subgroup is well-represented in the final sample. The sampling frame for the stratified design represents the total list of households within the two clusters of villages. A finite population correction (FPC), is applied to reduce the variance of estimates, which accounts for the fact that sampling a substantial proportion of households in each stratum may lead to a decrease in variability. As such, the FPC is incorporated into the weighting of final survey estimates to correct for finite population size. The stratified sampling design ensures that each stratum is adequately represented and reduces variability within the sample, leading to more accurate conclusions and better-informed policy recommendations.
 
-
 <!-- ```{r} -->
 <!-- # Data -->
-<!-- data <- data.frame( -->
-<!--   Variables = c("Population", "Proportion of population", "Sample", "Proportion of sample", "Final sample number"), -->
-<!--   `Kichangani` = c(325, 0.09323006311, 46.61503155, 0.09323006311, 47), -->
-<!--   `Mtakuja` = c(364, 0.1044176707, 52.20883534, 0.1044176707, 52), -->
-<!--   `Mkinga` = c(325, 0.09323006311, 46.61503155, 0.09323006311, 47), -->
-<!--   `Majengo Mapya` = c(210, 0.06024096386, 30.12048193, 0.06024096386, 30), -->
-<!--   `Manda Uhuru` = c(147, 0.0421686747, 21.08433735, 0.0421686747, 21), -->
-<!--   `Kalungu` = c(566, 0.1623637407, 81.18187034, 0.1623637407, 81), -->
-<!--   `Ntanganyika` = c(229, 0.06569133678, 32.84566839, 0.06569133678, 33), -->
-<!--   `Isasa` = c(281, 0.08060814687, 40.30407344, 0.08060814687, 40), -->
-<!--   `Kipili` = c(383, 0.1098680436, 54.9340218, 0.1098680436, 55), -->
-<!--   `Manda Kerenge` = c(656, 0.1881812966, 94.09064831, 0.1881812966, 94), -->
-<!--   Total = c(3486, 1, 500, 0.1434308663, 500) -->
-<!-- ) -->
+<!-- data <- data <- readRDS("cluster_north_sample_design.rds") -->
 
 <!-- # Rename columns to preserve spacing -->
 <!-- colnames(data) <- gsub("\\.", " ", colnames(data)) -->
@@ -212,7 +198,7 @@ The strata in this study were defined based on household locations and represent
 <!--   )) -->
 
 <!-- # Create and style flextable -->
-<!-- add_lot_link(caption = 'Cluster 1 sampling design for households along Lake Tanganyika') -->
+<!-- add_lot_link(caption = 'Northern village cluster sampling design for households along Lake Tanganyika') -->
 
 <!-- data_formatted %>% -->
 <!--   sea::sea_table( -->
@@ -235,21 +221,7 @@ The strata in this study were defined based on household locations and represent
 
 <!-- ```{r} -->
 <!-- # Data -->
-<!-- data <- data.frame( -->
-<!--   Variables = c("Population", "Proportion of population", "Sample", "Proportion of sample", "Final sample number"), -->
-<!--   `Kala` = c(358, 0.07631635046, 38.15817523, 0.07631635046, 38), -->
-<!--   `Mpasa` = c(795, 0.1694734598, 84.73672991, 0.1694734598, 85), -->
-<!--   `Kilambo cha Mkolechi` = c(344, 0.07333191217, 36.66595609, 0.07333191217, 37), -->
-<!--   `Tundu` = c(301, 0.06416542315, 32.08271158, 0.06416542315, 32), -->
-<!--   `Wampembe` = c(802, 0.170965679, 85.48283948, 0.170965679, 86), -->
-<!--   `Mwinza` = c(356, 0.07589000213, 37.94500107, 0.07589000213, 38), -->
-<!--   `Izinga` = c(527, 0.1123427841, 56.17139203, 0.1123427841, 56), -->
-<!--   `Kizumbi` = c(293, 0.06246002984, 31.23001492, 0.06246002984, 31), -->
-<!--   `Lyapinda` = c(600, 0.127904498, 63.95224899, 0.127904498, 64), -->
-<!--   `Ng'anga` = c(172, 0.03666595609, 18.33297804, 0.03666595609, 18), -->
-<!--   `Katenge` = c(143, 0.03048390535, 15.24195268, 0.03048390535, 15), -->
-<!--   Total = c(4691, 1, 500, 0.1065870816, 500) -->
-<!-- ) -->
+<!-- data <- readRDS("cluster_south_sample_design.rds") -->
 
 <!-- # Rename columns to preserve spacing -->
 <!-- colnames(data) <- gsub("\\.", " ", colnames(data)) -->
@@ -262,7 +234,7 @@ The strata in this study were defined based on household locations and represent
 <!--   )) -->
 
 <!-- # Create and style flextable -->
-<!-- add_lot_link(caption = 'Cluster 2 sampling design for households along Lake Tanganyika') -->
+<!-- add_lot_link(caption = 'Southern village cluster sampling design for households along Lake Tanganyika') -->
 
 <!-- data_formatted %>% -->
 <!--   sea::sea_table( -->
@@ -281,7 +253,6 @@ The strata in this study were defined based on household locations and represent
 <!--   autofit() -->
 
 <!-- ``` -->
-
 
 
 ::: 
@@ -2529,7 +2500,7 @@ ggplot(village_data_yes, aes(x = village, y = proportion * 100, group = worry_sh
 
 ```
 
-Primary reasons for food shortages experienced in the last 12 months include inadequate storage of food reserves (n = 14), increases in food prices (n = 12), financial strains related to a limited income and/or the rising costs of basic needs (n = 11), and challenges experienced due to a limited harvest season (n = 10). Inadequate food reserves have led to ongoing food insecurity among households; families sold their crops without setting aside sufficient reserves, whilst low crop yields depleted available stores. Other reasons for food shortages pertain to ineffective farming practices, the high costs and limited access of manure, a significant drop in crop sale prices, which adversely affected household income and the ability to cover living expenses. Seven households referred to the adverse impacts of climate change, expressing that severe flooding due to excessive rainfall caused major crop losses and asset damage. Cross-border trading of food resources was stated by one household as a concern, exacerbating limited food supplies as traders opt to export crops to neighboring countries (Democratic Republic of Congo). 
+Respondents were asked to elaborate on the primary reasons for food shortages in their household. Reasons for food shortages experienced in the last 12 months include inadequate storage of food reserves (n = 14), increases in food prices (n = 12), financial strains related to a limited income and/or the rising costs of basic needs (n = 11), and challenges experienced due to a limited harvest season (n = 10). Inadequate food reserves have led to ongoing food insecurity among households; families sold their crops without setting aside sufficient reserves, whilst low crop yields depleted available stores. Other reasons for food shortages pertain to ineffective farming practices, the high costs and limited access of manure, a significant drop in crop sale prices, which adversely affected household income and the ability to cover living expenses. Seven households referred to the adverse impacts of climate change, expressing that severe flooding due to excessive rainfall caused major crop losses and asset damage. Cross-border trading of food resources was stated by one household as a concern, exacerbating limited food supplies as traders opt to export crops to neighboring countries (Democratic Republic of Congo). 
 
 In terms of food shortages, the period between December 2023 and February 2024 appears to have been the worst for households among the survey population (Figure 21). Likewise, a higher frequency of food shortages during the months of May, June, and July 2024 also appeared to affect many households. Despite the frequency of food shortages, many households (70%) indicated that food availability was average or better than usual over the past year (Figure 22). However, food availability was worse than usual for 28% of all households. At village level, half the households in Mwinza expressed having worse food availability in the past year (Table 9). 
 
@@ -2849,7 +2820,7 @@ ggplot(availability_reason_data, aes(x = reorder(availability_reason, -proportio
 
 The reasons for an increase in food availability vary (Figure 24). 33% of respondents attributed their increase in food availability to improvements in fish stocks. Reasons also pertained to agriculture, as 29% of respondents attributed the improvements to food availability to thriving crop harvests, whereas 19% of respondents linked it to the use of fertilizer applied to their fields. Interestingly, a small subset of respondents linked their improvement in food availability to decreases in fish availability or destroyed crops, this may perhaps be related to a diversification in income or simply a misunderstanding.
 
-Diversification of income sources was stated as another reason as to why food availability had improved over the past year (n = 4). Households expressed that previously, their income was solely dependent on fishing, but now they have diversified their sources of income, such as (poultry) farming, improving their financial situation. Improved farming practices (n = 3), increases in agricultural productivity due to expanding land under cultivation (n = 2), improvements in business activities (n = 2), stabilized food prices  (n = 1), and improvements in personal life (n = 1) and financial support obtained (n = 1) include other reasons for which food availability has improved.
+In response to being asked why food availability might be better now due to other reasosn, household respondents mentioned a variety of reasons. Diversification of income sources was stated as another reason as to why food availability had improved over the past year (n = 4). Households expressed that previously, their income was solely dependent on fishing, but now they have diversified their sources of income, such as (poultry) farming, improving their financial situation. Improved farming practices (n = 3), increases in agricultural productivity due to expanding land under cultivation (n = 2), improvements in business activities (n = 2), stabilized food prices  (n = 1), and improvements in personal life (n = 1) and financial support obtained (n = 1) include other reasons for which food availability has improved.
 
 ```{r,  fig.cap='Reasons for decrease in household food availability', fig.align='center', out.width = '90%'}
 # Expand the data and add cluster information
@@ -2909,7 +2880,7 @@ ggplot(availability_reason_data, aes(x = reorder(availability_reason, -proportio
 
 The destruction of crops by bad weather and low fish availability were the two primary reasons for a decrease in household food availability (Figure 25). Crop damage could also be attributed to wildlife (8%) and pests (7%). Respondents also expressed other reasons and illness to have affected food availability negatively. 
 
-Other reasons expressed for a decrease in food availability pertain to financial strains attributed to the lack of a stable income source, with household income falling short of daily expenses (n = 12). Furthermore, limited crop yields and a drop in crop sale prices, as well as a lack of available land for farming, the use of low-quality farming inputs and reliance on basic farming equipment contributed to the reasons related to agricultural productivity, which caused lower food availability. Two households provided responses related to fishing, stating that underinvestment in fishing practices has reduced its potential for high yield. The rising cost of fishing operations and a lack of adequate fishing equipment limit access to abundant fishing ground, as reaching distant waters now requires more advanced vessels.
+Households were further asked to list and elaborate upon the other reasons that they thought had contributed to a decrease in food availability at the moment. Other reasons expressed for a decrease in food availability pertain to financial strains attributed to the lack of a stable income source, with household income falling short of daily expenses (n = 12). Furthermore, limited crop yields and a drop in crop sale prices, as well as a lack of available land for farming, the use of low-quality farming inputs and reliance on basic farming equipment contributed to the reasons related to agricultural productivity, which caused lower food availability. Two households provided responses related to fishing, stating that underinvestment in fishing practices has reduced its potential for high yield. The rising cost of fishing operations and a lack of adequate fishing equipment limit access to abundant fishing ground, as reaching distant waters now requires more advanced vessels.
 
 </div>
 \newpage
@@ -2988,7 +2959,7 @@ hh_influence_table %>%
   align(i = 1, align = "center", part = "header")
 ```
 
-5% of all household respondents (n = 51) actively participate in the decision-making process about fisheries resources and livelihoods through attending various meetings and workshops. These activities include planning meetings, government meetings, BMU and village meetings, as well as public meetings. A further 3% of households (n = 27) indicated they contribute significantly to decision-making about fisheries resources and livelihoods by providing input and suggestions. Their involvement includes voicing opinions, offering ideas, and participating in discussions to ensure effective management and sustainable practices. 15 respondents suggested that following guidelines and regulations is a way of contributing to decision-making. By adhering to these rules, they ensure sustainable fishing practices and compliance with legal requirements. Other contributions to the decision-making around fisheries resources and livelihoods include involvement as representatives or community leaders (n = 6), encouraging sustainable fishing practices and safeguarding fish breeding zones in their communities through active engagement with BMU activities (n = 4), education and awareness (n = 6), policy enforcement (n = 4), and participation in patrols and conservation efforts (n = 3).
+Households were asked to describe ow they participate in decision making processes concerning the management fisheries resources and their livelihoods. Respondents provided a variety of answers. Five percent of all household respondents (n = 51) actively participate in the decision-making process about fisheries resources and livelihoods through attending various meetings and workshops. These activities include planning meetings, government meetings, BMU and village meetings, as well as public meetings. A further 3% of households (n = 27) indicated they contribute significantly to decision-making about fisheries resources and livelihoods by providing input and suggestions. Their involvement includes voicing opinions, offering ideas, and participating in discussions to ensure effective management and sustainable practices. 15 respondents suggested that following guidelines and regulations is a way of contributing to decision-making. By adhering to these rules, they ensure sustainable fishing practices and compliance with legal requirements. Other contributions to the decision-making around fisheries resources and livelihoods include involvement as representatives or community leaders (n = 6), encouraging sustainable fishing practices and safeguarding fish breeding zones in their communities through active engagement with BMU activities (n = 4), education and awareness (n = 6), policy enforcement (n = 4), and participation in patrols and conservation efforts (n = 3).
 
 Respondents were asked whether anyone in their household is a member of a village organisation, such as a cooperative, a self-help group, a women’s group, or some other group (Figure 26). Although the affirmative responses were low overall (13%), group membership in villages such as Mtakuja (45%), Kichangani (26%), and Katenge (20%) was markedly higher.
 
@@ -3307,6 +3278,8 @@ ggplot(conflict_data, aes(x = village, y = proportion * 100, group = fct_relevel
 
 Approximately two thirds of all reasons for conflicts concern the closure of the lake to fishers or the conflicts surrounding the use of illegal fishing gear (Figure 30). Fishing in protected breeding areas and the catching of undersized fish also contributed to conflicts. 
 
+Respondents were asked about other reasons that conflicts and/or disputes were about. Other conflict reasons described relate to permit challenges (n = 8), as some fishers appear to struggle with the high costs and complicated requirements for obtaining fishing licenses, including having to pay for multiple licenses for both the fisher and the boat. Furthermore, conflict may occur around instances of corruption and/or bribery of BMU officers (n = 2), arguments on the market surrounding fish pricing (n = 2), theft and security issues (n = 2).
+
 ```{r,  fig.cap='Reasons for conflict', fig.align='center', out.width = '90%'}
 
 # Expand and classify data by clusters
@@ -3446,7 +3419,7 @@ ggplot(conflict_parties_data, aes(x = village, y = proportion * 100, group = con
 
 The majority of conflicts are resolved in a fair manner (Figure 32). Once again, Katenge stands out as a vast majority of respondents do not believe that conflicts are resolved fairly (80%). Unfair conflict resolution also appears high in Izinga and Wampembe. In general, it appears that in the southern cluster of villages fair conflict resolution is higher than in the northern cluster. 
 
-Other parties listed among which disputes or conflicts occur include fishers and fisheries officers (n = 17) and include reasons such as conflict over illegal fishing, disagreements over payments and equipment provision, and conflicts regarding the lake closure. Fishers also experience disputes with government (n = 10), including national government, Nkasi district government, and the government of Izinga village. Furthermore, bandits (n = 3) were also listed as a conflict party.
+In response to the question “Among whom do these disputes or conflicts mostly occur?”, respondents listed a few other options. Other parties listed among which disputes or conflicts occur include fishers and fisheries officers (n = 17) and include reasons such as conflict over illegal fishing, disagreements over payments and equipment provision, and conflicts regarding the lake closure. Fishers also experience disputes with government (n = 10), including national government, Nkasi district government, and the government of Izinga village. Furthermore, bandits (n = 3) were also listed as a conflict party.
 
 ```{r, fig.cap='Fair conflict resolution at village level (%)', fig.align='center', out.width = '90%'}
 expanded <- tanganyika_clean %>%
@@ -3510,7 +3483,7 @@ ggplot(conflict_data, aes(x = village, y = proportion * 100, group = fct_relevel
 
 ```
 
-Two respondents indicated that disputes between BMUs and fishers are formally resolved by involving law enforcement authorities. This usually involves reporting the issue to the local police station for investigation and resolution. One respondent highlighted the role of community gatherings in resolving conflicts. These gatherings provide a platform for fishers and BMUs to engage in open discussions and come to a consensus on how to address the issue. Another respondent mentioned that some conflicts do not escalate to a level requiring intervention. These are perceived as minor issues that do not cause significant harm and, as such, are often left unresolved.
+Respondents were asked “If there is a dispute or conflict between BMUs and fishers, how do people in your village try to solve it?”. In response, households indicated that conflicts may be solved in several ways. Two respondents indicated that disputes between BMUs and fishers are formally resolved by involving law enforcement authorities. This usually involves reporting the issue to the local police station for investigation and resolution. One respondent highlighted the role of community gatherings in resolving conflicts. These gatherings provide a platform for fishers and BMUs to engage in open discussions and come to a consensus on how to address the issue. Another respondent mentioned that some conflicts do not escalate to a level requiring intervention. These are perceived as minor issues that do not cause significant harm and, as such, are often left unresolved.
 
 Respondents were asked about who they thought to be an influential leader among their community, for instance a local leader whom they respect and who they think is good at raising awareness in their village about important communal issues (Figure 33). In response, political leaders (38%) and religious leaders (24%) were mentioned most commonly. Political party leaders, civil servants, and respected elders were also mentioned frequently. Of these influential leaders, 72% already occupied a village, ward, or regional government position (Figure 34). 
 
@@ -4844,7 +4817,7 @@ ggplot(bmu_practice_combined, aes(x = fct_relevel(bmu_practice,
 
 ### BMU Challenges
 
-A major challenge faced by BMUs pertains to illegal fishing practices, including the use of unauthorized nets and fishing in protected areas, which was listed by 11% (n = 106) of all households surveyed. According to respondents, BMUs often face resistance from fishers when enforcing regulations, which undermines conservation efforts. A significant proportion of respondents, 9% of all households surveyed (n = 91), also indicated that BMUs face challenges related to a lack of resources and equipment. These include a lack of patrol boats, safety gear, and insufficient funds for operations such as fuel and maintenance. 6% (n = 64)  of all households regarded insecurity, violence, and threats as a significant challenge faced by BMU members. These include physical attacks from illegal fishers, threats to their lives, and verbal abuse from community members. Furthermore, conflict issues were highlighted as a significant challenge faced by BMU (n = 34). These conflicts arise between BMU members and fishers, as well as between BMU and the community and include a lack of understanding, opposition from locals, and disputes during enforcement activities. Several respondents (n = 29) identified inadequate training and knowledge as a significant challenge, including a lack of education about the purpose and regulations of BMUs, insufficient knowledge on conservation, and the absence of regularly held training sessions.
+In order to find out what challenges are faced by the BMUs, households were asked to elaborate on the question “What are the challenges that the BMU faces?”. A major challenge faced by BMUs pertains to illegal fishing practices, including the use of unauthorized nets and fishing in protected areas, which was listed by 11% (n = 106) of all households surveyed. According to respondents, BMUs often face resistance from fishers when enforcing regulations, which undermines conservation efforts. A significant proportion of respondents, 9% of all households surveyed (n = 91), also indicated that BMUs face challenges related to a lack of resources and equipment. These include a lack of patrol boats, safety gear, and insufficient funds for operations such as fuel and maintenance. 6% (n = 64)  of all households regarded insecurity, violence, and threats as a significant challenge faced by BMU members. These include physical attacks from illegal fishers, threats to their lives, and verbal abuse from community members. Furthermore, conflict issues were highlighted as a significant challenge faced by BMU (n = 34). These conflicts arise between BMU members and fishers, as well as between BMU and the community and include a lack of understanding, opposition from locals, and disputes during enforcement activities. Several respondents (n = 29) identified inadequate training and knowledge as a significant challenge, including a lack of education about the purpose and regulations of BMUs, insufficient knowledge on conservation, and the absence of regularly held training sessions.
 
 Other challenges faced by BMUs include corruption and bribery of BMU leaders and law enforcement officers (n = 14), a lack of collaboration between the BMU, local authorities, and other stakeholders (n = 13), compliance and law enforcement issues (n = 24), administrative challenges (n = 7), financial constraints (n = 13),  environmental challenges (n = 6), interference from local administrations and government officials on BMU activities (n = 5), poor working conditions (n = 3), as well as a lack of support from relevant stakeholders (n = 3). Together, these challenges hamper the effectiveness and compromise the integrity of BMU activities and enforcement of fishing regulations. 
 
@@ -4854,9 +4827,13 @@ Other improvements to BMUs related to improved governance, stronger leadership, 
 
 
 
-</div>
 
-## Fishing
+<!-- rust page -->
+<div class ="section-rust">
+
+## Livelihood Practices of Fishers
+
+Overall, in both the northern and southern clusters of villages, canoes without engine are the most frequently used type of fishing boat (Figure 46). Only in Majengo Mapy and Ntanganyika are engine boats more frequently used than canoes without engine. In Izinga, fishers indicated using using large boats with an engine most frequently. Across village clusters, large boats with engine appear more frequently used in the northern villages.
 
 ```{r,  fig.cap='Type of fishing boats used at village level', fig.align='center', out.width = '90%'}
 boat_type_expanded <- tanganyika_clean %>% select(hh_code, village, boat_type, stype, fpc) %>%
@@ -4935,6 +4912,7 @@ ggplot(boat_type_data, aes(x = village, y = proportion * 100, group = boat_type,
 
 ```
 
+As part of an exercise in the fisheries sub-section of the question, respondent were asked to rank six fish species based on their importance. Migebuka, a perch-like fish, and dagaa , a type of freshwater sardine, represent the most important fish in the region (18% respectively). Other species of near-shore fish, such as kungura and ngege, were also perceived as important. Overall, there appeared little variation in the perceived importance of fish species across the northern and southern clusters of villages (Figure 47).
 
 ```{r,  fig.cap='Relative importance of different fish species at village level', fig.align='center', out.width = '90%'}
 fish_importance_vars <- c("dagaa_importance", "migebuka_importance", "kungura_importance", "ngege_importance", "kuhe_importance", "sangara_importance")
@@ -4948,7 +4926,7 @@ strat_design <- fish_importance_long %>%
   as_survey_design(strata = stype, fpc = fpc)
 
 aggregate_fish_importance <- strat_design %>%
-  group_by(village, cluster, Fish_Species) %>%
+  group_by(cluster, Fish_Species) %>%
   summarise(
     mean_importance = survey_mean(Importance, vartype = "ci", na.rm = TRUE),
     mean_importance_low = survey_mean(Importance, vartype = "ci", na.rm = TRUE, level = 0.95)[["ci_low"]],
@@ -4956,7 +4934,7 @@ aggregate_fish_importance <- strat_design %>%
     n = unweighted(n())
   ) %>%
   ungroup() %>%
-  group_by(village) %>%
+  group_by(cluster) %>%
   mutate(
     total_importance = sum(mean_importance, na.rm = TRUE), # Total importance per village
     mean_importance_percent = (mean_importance / total_importance) * 100, # Relative percentage
@@ -4964,8 +4942,9 @@ aggregate_fish_importance <- strat_design %>%
     mean_importance_percent_upp = (mean_importance_upp / total_importance) * 100  # Upper bound of percentage
   )
 
-# Add a "Total" group to the data
-total_data <- strat_design %>%
+# Add a "Total" group for Cluster 1 and Cluster 2 separately
+total_data_cluster_1 <- strat_design %>%
+  filter(cluster == "Cluster 1") %>%
   group_by(Fish_Species) %>%
   summarise(
     mean_importance = survey_mean(Importance, vartype = "ci", na.rm = TRUE),
@@ -4975,8 +4954,8 @@ total_data <- strat_design %>%
     n = unweighted(n())
   ) %>%
   mutate(
-    village = "Overall",
-    cluster = "Overall",
+    village = "Overall North",
+    cluster = "Cluster 1",
     total_importance = sum(mean_importance, na.rm = TRUE),
     mean_importance_percent = (mean_importance / total_importance) * 100,
     mean_importance_percent_low = (mean_importance_low / total_importance) * 100,
@@ -4984,17 +4963,37 @@ total_data <- strat_design %>%
   ) %>%
   ungroup()
 
-# Combine the total_data with the original treatment_data
-aggregate_fish_importance <- bind_rows(aggregate_fish_importance, total_data)
+total_data_cluster_2 <- strat_design %>%
+  filter(cluster == "Cluster 2") %>%
+  group_by(Fish_Species) %>%
+  summarise(
+    mean_importance = survey_mean(Importance, vartype = "ci", na.rm = TRUE),
+    mean_importance_low = survey_mean(Importance, vartype = "ci", na.rm = TRUE, level = 0.95)[["ci_low"]],
+    mean_importance_upp = survey_mean(Importance, vartype = "ci", na.rm = TRUE, level = 0.95)[["ci_upp"]],
+    total = survey_total(Importance, vartype = "ci", na.rm = TRUE),
+    n = unweighted(n())
+  ) %>%
+  mutate(
+    village = "Overall South",
+    cluster = "Cluster 2",
+    total_importance = sum(mean_importance, na.rm = TRUE),
+    mean_importance_percent = (mean_importance / total_importance) * 100,
+    mean_importance_percent_low = (mean_importance_low / total_importance) * 100,
+    mean_importance_percent_upp = (mean_importance_upp / total_importance) * 100
+  ) %>%
+  ungroup()
+
+# Combine the total_data for both clusters
+aggregate_fish_importance <- bind_rows(total_data_cluster_1, total_data_cluster_2)
 
 aggregate_fish_importance <- aggregate_fish_importance %>%
   mutate(cluster = case_when(
-    cluster == "Overall" ~ "Cluster 2", TRUE ~ cluster))
+    cluster == "Overall South" ~ "Cluster 2", TRUE ~ cluster))
 
 aggregate_fish_importance <- aggregate_fish_importance %>%
   mutate(village = reorder(village, -mean_importance_percent))  # Reorder villages based on proportion
 
-# Reorder treatment_method_dry based on average proportion for each method
+# Reorder Fish_Species based on average proportion for each species
 aggregate_fish_importance$Fish_Species <- factor(
   aggregate_fish_importance$Fish_Species,
   levels = aggregate_fish_importance %>%
@@ -5010,21 +5009,21 @@ ggplot(aggregate_fish_importance, aes(x = village, y = mean_importance_percent, 
                 position = position_dodge(width = 0.95), width = 0.2) +
   guides(fill = guide_legend(title = NULL, nrow = 1, reverse = FALSE)) +
   labs(x = "Village", y = "Relative Importance (%)") +
-  sea::scale_fill_sea_discrete() +
+  scale_fill_manual( values = SEA_palette_3) +
   sea::theme_sea() + 
   theme(legend.position = "bottom",  legend.direction = "horizontal",  legend.justification = "center", 
-    # axis.text.y = element_blank(),  # Remove y-axis labels
-    # axis.ticks.y = element_blank(),  # Remove y-axis ticks
-    panel.grid.major = element_blank(),  # Remove major gridlines
-    panel.grid.minor = element_blank(),  # Remove minor gridlines
-    strip.text = element_blank(), 
-    legend.box = "horizontal") + facet_wrap(~cluster, ncol = 1, scales = "free_x")+
-  scale_x_discrete(labels = function(x) str_wrap(x, width = 10))+
+        # axis.text.y = element_blank(),  # Remove y-axis labels
+        # axis.ticks.y = element_blank(),  # Remove y-axis ticks
+        panel.grid.major = element_blank(),  # Remove major gridlines
+        panel.grid.minor = element_blank(),  # Remove minor gridlines
+        strip.text = element_blank(), 
+        legend.box = "horizontal") + facet_wrap(~cluster, ncol = 1, scales = "free_x")+
+  scale_x_discrete(labels = function(x) str_wrap(x, width = 10)) +
   scale_y_continuous(labels = label_percent(scale = 1))
-
 
 ```
 
+Fishers were asked to provide a self-assessment of fisheries resource management over the past five years (Figure 48). Across both village clusters, half of the respondents indicated that they had participated in good fisheries management practices (north 52%; south 49%). Respectively, in the northern and southern village clusters, 37% and 34% indicated that fisheries management had been bad or very bad over the past five years. Overall, 58%of fishers believed that their rights to access and use resources of the fishery are being upheld by regulatory and/or communal systems (Table 14). Additionally, 62% of fishers expressed that they were happy with the current security of their rights over fisheries resources. However, only 24% indicated that they were involved in decision-making processes regarding resource management of their fishery. Of the fishers involved in decision-making processes concerning the fisheries resource, the vast majority of fishers in both the northern and southern clusters of villages stated they were happy with their level of involvement (Figure 49).
 
 ```{r, fig.cap='Self-assessment of fisheries resource management over the past five years', fig.align='center', out.width = '90%'}
 # Expand the data with cluster classification
@@ -5258,6 +5257,7 @@ ggplot(satisfaction_involvement_combined, aes(x = fct_relevel(satisfaction_invol
 
 ```
 
+Furthermore, fishers were asked to provide an indication of their relationship with fisheries extension officers. In the northern village cluster, 63% of respondents stated they had a good relationship, 20% described their relationship with fisheries extension officers as average, and a further 17% stated they maintained a bad relationship (Figure 50). Similarly, 65% of respondents in the southern village cluster indicated their relationship with fisheries extension officers to be good, while 18% described it as average, and 16% as bad. 
 
 ```{r, fig.cap='An indication of the relationship with fisheries extension officers', fig.align='center', out.width = '90%'}
 # Expand the data with cluster classification
@@ -5325,12 +5325,13 @@ ggplot(relationship_officer_combined, aes(x = fct_relevel(relationship_officer, 
 
 ```
 
-Amongst 14% (n = 144) of all household respondents, no challenges concerning fisheries extension officers were mentioned. In contrast, 7% (n = 65) of all household listed abuse of power by fisheries extension officers as a key issue. Respondents mentioned that officers often apply unfair tactics, such as confiscating fishing gear or boats over minor infractions or expired licenses and imposing fines without clear justification. Fisheries extension officers also use intimidation, force, and harassment, making it difficult for fishers to comply peacefully. Unfair enforcement of fishing regulations was listed by a further 36 households. For instance, license payments are demanded from individuals who aren't even fishers, while allowing illegal fishers to operate freely. Those fishers with valid licenses may also be harassed and fined unnecessarily.
+Households were asked to list the top three current problems and/or challenges that they experienced with fisheries extension officers. Amongst 14% (n = 144) of all household respondents, no challenges concerning fisheries extension officers were mentioned. In contrast, 7% (n = 65) of all household listed abuse of power by fisheries extension officers as a key issue. Respondents mentioned that officers often apply unfair tactics, such as confiscating fishing gear or boats over minor infractions or expired licenses and imposing fines without clear justification. Fisheries extension officers also use intimidation, force, and harassment, making it difficult for fishers to comply peacefully. Unfair enforcement of fishing regulations was listed by a further 36 households. For instance, license payments are demanded from individuals who aren't even fishers, while allowing illegal fishers to operate freely. Those fishers with valid licenses may also be harassed and fined unnecessarily.
 
 Issues pertaining to delays in fishing license processing affected 25 respondents. These mentioned that despite paying fees, they often receive receipts instead of licenses, with delays in issuance. The process for obtaining a license is thought to be confusing and fishers are sometimes forced to pay multiple times without receiving proper documentation. High license fees also pose an issue (n = 20), as officers charge large amounts for licenses and impose heavy fines, which are often unrelated to the severity of offenses. The fees vary periodically, sometimes increasing significantly, and many fishers struggle to afford them. Five respondents revealed that fishers continue to pay for licenses during closure of the fishing season, leading to under utilization of the license. The mismatch between the license duration and the actual fishing time results in an unfair distribution of costs and benefits.
 
 Limited transparency and community engagement result in weak relationships, insufficient involvement in decision-making processes, and inadequate information sharing (n = 21). However, a lack of compliance with regulations by fishermen also contributes to challenges (n = 25), leading to the issuance of fines, confiscation of equipment, and restricted access to fishing areas, creating further difficulties for enforcement. A further 13 respondents stated that fisheries officers fail to meet their core responsibilities, including the effective regulation of fishing gear, with some accused of misusing funds meant for fishing equipment.
 
+Awareness of fish reserves was uniformly high amongst fishers (81%; Table 15). Furthermore, 84% of respondents were aware of the purpose of fish reserves and 88% indicated that they thought the implementation of fish reserves to be a good idea. Awareness of fish reserves and their respective purpose was lowest in Ng’anga, however this may at least in part be attributed to the low sampling size of fishers in the village (n = 5). 
 
 ```{r}
 summary_by_village <- tanganyika_survey %>%
@@ -5429,10 +5430,11 @@ combined_table %>%
 
 ```
 
-The implementation of fish reserves received both positive and negative feedback. Positively, 24% of all household respondents (n = 237) stated that fish reserves are useful because they ensure that fish have adequate time and space to breed without disturbance, helping to preserve and boost fish stocks, support sustainable fishing, and secure long-term availability of fish resources for communities. 5% (n = 53) mentioned that fish reserves are beneficial as they ensure sustainability and abundance of fish for future generations. They also mentioned that fish reserves allow conserving fish stocks for both current and future use, reducing overfishing, and providing long-term benefits for the environment and society. The size of fishes was a consideration too, as 32 respondents highlighted that reserves help prevent the capture of immature fish, thus providing a safe space for fish to grow, and ultimately supporting better fishing practices by increasing the yield of fully grown fish. Another 2% (n = 17) of household respondents said they supported sustainable fishing practices, stating that fish reserves prevent overfishing, safeguard aquatic ecosystems, and ensure that fish populations remain available to the community. Arguments voicing the positive benefits of fish reserves also pertained to financial benefits, as 20 household respondents believed fish reserves generate reliable revenue for the local government, contribute to community development through projects funded by fishing fees, and help ensure fish populations increase and are preserved for better economic returns.
+Households were posed the question “Why are fish reserves a good idea?” and asked to elaborate on their opinions. The implementation of fish reserves received both positive and negative feedback. Positively, 24% of all household respondents (n = 237) stated that fish reserves are useful because they ensure that fish have adequate time and space to breed without disturbance, helping to preserve and boost fish stocks, support sustainable fishing, and secure long-term availability of fish resources for communities. 5% (n = 53) mentioned that fish reserves are beneficial as they ensure sustainability and abundance of fish for future generations. They also mentioned that fish reserves allow conserving fish stocks for both current and future use, reducing overfishing, and providing long-term benefits for the environment and society. The size of fishes was a consideration too, as 32 respondents highlighted that reserves help prevent the capture of immature fish, thus providing a safe space for fish to grow, and ultimately supporting better fishing practices by increasing the yield of fully grown fish. Another 2% (n = 17) of household respondents said they supported sustainable fishing practices, stating that fish reserves prevent overfishing, safeguard aquatic ecosystems, and ensure that fish populations remain available to the community. Arguments voicing the positive benefits of fish reserves also pertained to financial benefits, as 20 household respondents believed fish reserves generate reliable revenue for the local government, contribute to community development through projects funded by fishing fees, and help ensure fish populations increase and are preserved for better economic returns.
 
 Negative opinions on the implementation of fish reserves were varied but limited and pertained to a perceived lack of impact from fish reserves (n = 9), concerns about location and boundaries (n = 8), a loss of income and fish (n = 4), and the idea that the sheer size of Lake Tanganyika aids in self-regulating fish population (n = 3). People that reported a perceived lack of impact from fish reserves argued that fish were reproducing even before the reserves were established, and natural systems were intact. Some shared that fish migrate to reserves, causing scarcity in non-reserve areas, and despite the reserves, fish remain scarce. Those with concerns about the location and boundaries of fish reserves highlighted that within the large areas designated as reserves, the fishing zones are small, and the number of fishers is high. They also criticized the location of the reserves, saying that fish do not remain in those areas, but simply pass through. Financial concerns pertained to the idea that fish reserves lead to a lack of fish, which tend to escape to the reserves, making fishing more difficult in the remaining areas. The fees imposed on fishers in conjunction with short fishing periods, disrupt livelihoods as communities depend on the lake for income. In Manda Kerenge, one respondent shared that households in the village feel heavily restricted because of the intervention.
 
+Half of fishers in the northern and southern village clusters indicated that they believed current fish stocks to be sufficient in meeting the fishing, food, and livelihood needs of their community (Figure 51). Respectively, a further 39% and 44% of fishers in the northern and southern village clusters did not believe this to be true.
 
 ```{r, fig.cap='At the moment, do you think the current number of fish in the lake is sufficient to meet the fishing, food, and livelihood needs of the community?', fig.align='center', out.width = '90%'}
 
@@ -5501,6 +5503,8 @@ ggplot(sustainability_population_combined, aes(x = fct_relevel(sustainability_po
 
 ```
 
+In terms of the sustainability of current fishing practices on fish stocks, almost two thirds of fishers in southern villages believed there to be sufficient fish for communities in future (Figure 52). In contrast, merely half of the fishers in northern villages believed this statement to be true. Furthermore, 37% of fishers in the northern villages did not believe there would be enough fish whilst 16% weren’t sure. In southern villages, 30% of fishers did not think there will be sufficient fish for the communities in future. 
+
 ```{r, fig.cap='In the future, do you think there will be sufficient fish for the communities?', fig.align='center', out.width = '90%'}
 # Expand the data with cluster classification
 sufficiency_fish_expanded <- tanganyika_survey %>%
@@ -5567,11 +5571,15 @@ ggplot(sufficiency_fish_combined, aes(x = fct_relevel(sufficiency_fish, "YES", "
 
 ```
 
-A number of participants (n = 91) highlighted that the protection of fish breeding areas and the establishment of dedicated fish conservation zones are crucial for ensuring sufficient fish populations in the future. Furthermore, the importance of government regulations in managing fishing practices, including enforcing seasonal closures and preventing illegal fishing, was emphasized by 66 household respondents. Participants suggested that measures such as restricting fishing during breeding seasons and maintaining control over illegal fishing practices are crucial for sustaining fish populations. Furthermore, 29 households indicated that fish are able to reproduce naturally, especially during the rainy season, leading to an increase in their numbers. Respondents mentioned that because fish currently breed in large numbers, they will continue to do so in future. Furthermore, a number of respondents (n = 8) indicated that they believe continued effective management to contribute to the future conservation of fish stocks in Lake Tanganyika, with three respondents stating that BMUs play a crucial role.
+In order to gain a further understanding of the perceived impacts and sustainability of current fishing practices, households were also asked why they thought that there will be sufficient fish for the communities in future. A number of participants (n = 91) highlighted that the protection of fish breeding areas and the establishment of dedicated fish conservation zones are crucial for ensuring sufficient fish populations in the future. Furthermore, the importance of government regulations in managing fishing practices, including enforcing seasonal closures and preventing illegal fishing, was emphasized by 66 household respondents. Participants suggested that measures such as restricting fishing during breeding seasons and maintaining control over illegal fishing practices are crucial for sustaining fish populations. Furthermore, 29 households indicated that fish are able to reproduce naturally, especially during the rainy season, leading to an increase in their numbers. Respondents mentioned that because fish currently breed in large numbers, they will continue to do so in future. Furthermore, a number of respondents (n = 8) indicated that they believe continued effective management to contribute to the future conservation of fish stocks in Lake Tanganyika, with three respondents stating that BMUs play a crucial role.
 
 “BMU wanajitahidi kutunza maeneo ya hifadhi ya samaki”
 
-Concerns about the future availability of fish in Lake Tanganyika were widely expressed. A significant number of respondents (n = 55) highlighted the prevalence of illegal fishing as a critical challenge to fish populations and sustainability. They expressed concerns about the destructive impact of illegal practices, which disrupt fish breeding grounds and lead to overfishing. Some respondents (n = 11) expressed concern about the growing amount of fishing gear being used. They believe that the abundance of fishing tools, especially modern equipment, is contributing to overfishing and a significant decline in fish populations. Furthermore, 34 respondents addressed an increased use of illegal fishing gear as a concern. According to them, this equipment catches too many fish, including undersized ones, which threatens fish growth and reproduction. Fishing pressure was further addressed by respondents (n = 13) highlighting concerns about the growing number of fishers, which they believe is contributing to a decline in fish populations.
+Concerns about the future availability of fish in Lake Tanganyika were widely expressed. A high number of respondents (n = 55) highlighted the prevalence of illegal fishing as a critical challenge to fish populations and sustainability. They expressed concerns about the destructive impact of illegal practices, which disrupt fish breeding grounds and lead to overfishing. Some respondents (n = 11) expressed concern about the growing amount of fishing gear being used. They believe that the abundance of fishing tools, especially modern equipment, is contributing to overfishing and a significant decline in fish populations. Furthermore, 34 respondents addressed an increased use of illegal fishing gear as a concern. According to them, this equipment catches too many fish, including undersized ones, which threatens fish growth and reproduction. Fishing pressure was further addressed by respondents (n = 13) highlighting concerns about the growing number of fishers, which they believe is contributing to a decline in fish populations.
+
+There appears to be a lot of variation in the type of fishing gear used at village level (Figure 53). Overall, however, ring nets (purse-seine) appear to be most commonly used across all villages in the northern and southern clusters. Thereafter, the use of gill nets, long lines, and lift nets is not uncommon. The use of long lines appears more common in northern villages than in southern villages, especially in Ng’anga and Mpasa is the use of long lines common. Interestingly, in Kipili more than two thirds of the fishing gear used is comprised of gill nets.
+
+Respondents were asked to elaborate on the other types of fishing gear that they use. Other types of fishing gear listed by fishers include long lines, hooks, nets, as well as torches/lights, presumably for use at night. In one instance, diving equipment was mentioned.
 
 
 ```{r, fig.cap='Type of fishing gear used at village level (%)', fig.align='center', out.width = '90%'}
@@ -5641,7 +5649,7 @@ ggplot(fishing_gear_data, aes(x = village, y = proportion * 100, group = fishing
 
 ```
 
-Other types of fishing gear listed by fishers include long lines, hooks, nets, as well as torches/lights, presumably for use at night. In one instance, diving equipment was mentioned.
+Fish may be targeted seasonally. However, all fish species that were surveyed appear to be targeted throughout the year by at least 40% of all fishers (Figure 54). Dagaa represents the only fish species that is more commonly targeted in the dry season than in the wet season for both northern and southern village clusters.
 
 ```{r, fig.cap='Seasonal targeting of fish species over the past five years', fig.align='center', out.width = '90%'}
 # Define target type variables
@@ -5740,6 +5748,8 @@ ggplot(aggregate_target_type_combined, aes(x = Fish_Species, y = mean_season_per
 
 ```
 
+The majority of fishers require less than six hours to access their fishing grounds (69%; Table 16). The average time required to access fishing grounds is estimated at 02:44:00. Fishers in Kala require the longest time to access their fishing grounds, just short of four hours. On the contrary, fishers from Manda Uhuru are the fastest to reach their fishing grounds at under two hours. 
+
 ```{r}
 # Convert time_input to duration in seconds
 tanganyika_time <- tanganyika_survey %>%
@@ -5766,7 +5776,21 @@ summary_table <- tanganyika_time %>%
     `More than 10 hrs` = paste0(round(mean(time_category == ">10 hours") * 100, 0)),
     `Mean time (hrs)` = sprintf("%02d:%02d:%02d", as.integer(mean(time_hours)), as.integer((mean(time_hours) %% 1) * 60), round(((mean(time_hours) %% 1) * 60 %% 1) * 60)))
 
-colnames(summary_table) <- c("Village", "Less than 2 hrs (%)", "Less than 6 hrs (%)", "Less than 10 hrs (%)", "More than 10 hrs (%)", "Mean time (hrs) (%)")
+colnames(summary_table) <- c("Village", "Less than 2 hrs (%)", "Less than 6 hrs (%)", "Less than 10 hrs (%)", "More than 10 hrs (%)", "Mean time (hrs)")
+
+overall_row <- tanganyika_time %>%
+  summarise(
+    Village = "Overall",
+    `Less than 2 hrs (%)` = paste0(round(mean(time_category == "<2 hours") * 100, 0)),
+    `Less than 6 hrs (%)` = paste0(round(mean(time_category == "<6 hours") * 100, 0)),
+    `Less than 10 hrs (%)` = paste0(round(mean(time_category == "<10 hours") * 100, 0)),
+    `More than 10 hrs (%)` = paste0(round(mean(time_category == ">10 hours") * 100, 0)),
+    `Mean time (hrs)` = sprintf("%02d:%02d:%02d",
+                                    as.integer(mean(time_hours)),
+                                    as.integer((mean(time_hours) %% 1) * 60),
+                                    round(((mean(time_hours) %% 1) * 60 %% 1) * 60)))
+
+summary_table <- bind_rows(summary_table, overall_row)
 
 add_lot_link(caption = 'Time required to get to fishing grounds at village level (%)')
 
@@ -5779,6 +5803,7 @@ summary_table %>%
   flextable::autofit()
 ```
 
+Forty percent of fishermen state that there is no change in the time required to access their fishing ground when compared to five years ago (Table 17). Three out of ten fishermen stated that it takes them longer to reach their fishing grounds, while another three out of ten indicate to be faster nowadays compared to five years ago. Average catches have changed in the last five years. More than two thirds of fishers stated that their catch size has decreased. Only 13% of fishers have increased their catch sizes in comparison to five years ago.
 
 ```{r}
 # Summarize the data by village shared_facilities
@@ -5847,7 +5872,7 @@ combined_table <- combined_table %>%
          `Change in time needed to get to grounds compared to 5 years ago (%)`, 
          `Change in average catch per trip compared to 5 years ago (%)`)
 
-add_lot_link(caption = 'Change in tiem required to access fishing ground and change in average catch compared to five years ago')
+add_lot_link(caption = 'Change in time required to access fishing ground and change in average catch compared to five years ago')
 
 # Add the flextable with a caption
 combined_table %>%
@@ -5860,12 +5885,14 @@ combined_table %>%
 
 ```
 
-Respondents who stated they require less time to get to their fishing grounds revealed that they now have access to boats with engines (n = 35). They also highlighted the use of newer fishing tools and engines, which allow for quicker transportation to fishing areas. Interestingly, 50 household respondents mentioned that fish are now found closer to shore due to higher water levels, seasonal changes, and increased fish populations. Additionally, specific fish, such as dagaa, are more readily accessible near shallow waters, leading to shorter travel times for fishermen. Others (n = 10) mentioned that the reduction in time is simply because of the increased demands of other work, time constraints, and the need to balance fishing with business activities. However, they also highlighted that delayed departures make it harder to catch fish early, as fish are found farther away and are caught earlier in the day. 
+Fishers were asked to elaborate about why they thought that they now generally require less, the same, or more time to get to their fishing grounds. Respondents who stated they require less time to get to their fishing grounds revealed that they now have access to boats with engines (n = 35). They also highlighted the use of newer fishing tools and engines, which allow for quicker transportation to fishing areas. Interestingly, 50 household respondents mentioned that fish are now found closer to shore due to higher water levels, seasonal changes, and increased fish populations. Additionally, specific fish, such as dagaa, are more readily accessible near shallow waters, leading to shorter travel times for fishermen. Others (n = 10) mentioned that the reduction in time is simply because of the increased demands of other work, time constraints, and the need to balance fishing with business activities. However, they also highlighted that delayed departures make it harder to catch fish early, as fish are found farther away and are caught earlier in the day. 
 
 Many fishers (n = 164) stated that it takes them roughly the same amount of time to reach their fishing ground. These fishers reported that the fishing activities still take place in the same areas, and the time taken to reach the grounds has not changed. Many highlighted that they continue to fish in the same spots, and the environmental conditions have not altered. However, a subset also expressed frustration as a lack of improvement in transportation and equipment, has resulted in no significant change in travel time to fishing areas as compared to five years ago. The challenges they face include using outdated boats and equipment, which are not suitable for long-distance travel, especially when weather conditions, such as wind, are unfavorable. 
 
 Those fishers spending more time getting to their fishing grounds emphasized that, compared to 5 years ago, they need more time to reach the fishing grounds because fish have become scarce and are now found farther away (n = 82). The increasing number of fishers and illegal fishing practices have contributed to the depletion of nearby fish populations. As a result, fishers are traveling greater distances to find fish, which has led to longer travel times. Also, environmental changes, such as rising water levels, have pushed fish to deeper areas, further increasing the distance needed to access them. Five household respondents specifically mentioned that due to the establishment of fishing boundaries, including protected breeding areas and buoy barriers, they are now required to fish farther from the shore compared to five years ago.
 
+
+Sale prices of fish appear to have fluctuated a lot in the past five years (Figure 55). Dagaa fetched the highest sale price in southern villages at TSh 21,039. In northern villages, the highest sale price for dagaa was TSh 17,868. Lowest sale prices for dagaa were estimated at TSh 9,958 in southern villages and TSh 6,744 in northern villages. The highest sale price for migebuka is estimated at TSh 14,570 in in northern villages and TSh 13,587 in southern villages. Migebuka sale prices reached as low as TSh 7,187 in northern villages and TSh 9,236 in southern villages. Interestingly, the average lowest price of sangara in southern villages appears higher than the average best price fetched for this species. However, there appears little variation in the two prices, which may indicate a relatively stable price for sangara over the past five years. This is corroborated by the limited variation observed in the price of sangara in northern villages.
 
 ```{r, fig.cap='Sale prices (TSh) of fish species over the past five years', fig.align='center', out.width = '90%'}
 # Define target type variables for best values
@@ -6016,12 +6043,14 @@ ggplot(combined_target, aes(x = Fish_Species, y = Value, fill = Value_Type)) +
 
 ```
 
-Most fish, as was indicated by 129 fishers, is sold locally to small-scale fish traders. A further 83 respondents indicated selling their fish to traders. These traders include various individuals and groups involved in the fish market, both locally and from outside the region. A notable portion of participants (n = 42) mentioned selling their fish directly to fish buyers, consumers, and end users. These buyers are often local residents, or individuals seeking fish for personal consumption. Other fish sales were made to local communities and markets, boat owners, large-scale fish traders, fish brokers and intermediaries, as well as fish traders from neighboring countries including Zambia, Congo, and Burundi.
+To gain an understanding of the fish value chain, fishers were asked the question “Who are you currently selling your fish to?”. Most fish, as was indicated by 129 fishers, is sold locally to small-scale fish traders. A further 83 respondents indicated selling their fish to traders. These traders include various individuals and groups involved in the fish market, both locally and from outside the region. A notable portion of participants (n = 42) mentioned selling their fish directly to fish buyers, consumers, and end users. These buyers are often local residents, or individuals seeking fish for personal consumption. Other fish sales were made to local communities and markets, boat owners, large-scale fish traders, fish brokers and intermediaries, as well as fish traders from neighboring countries including Zambia, Congo, and Burundi.
 
-Decreases in catch were attributed to an increase in illegal fishing practices (n = 121). The widespread use of illegal fishing gear, such as monofilament nets, has significantly depleted fish populations. These practices, which include night fishing and the use of harmful nets, not only catch large numbers of fish but also target juvenile fish, disrupting fish breeding areas. Others voiced their concern about increasing fishing pressure (n = 60), increases in the number of fishers, fishing gear, and fishing boats has led to a decrease in fish availability compared to five years ago. The growing demand for fish and the rise in fishing activities have intensified competition for resources, resulting in fewer fish in the waters. On the contrary, some respondents (n = 17) argued that decreases in fish catch are due to a lack of proper fishing equipment, the use of outdated or poor-quality tools, and the absence of modern fishing techniques and machinery such as boats and advanced nets. Some attributed decreases in catch to changing weather patterns, including increased wind, storms, and irregular rainfall. These weather changes have made fish more difficult to find, especially during dry seasons when they move farther away.
+Fishers were also asked to think about their perceived reasons for the changes in fish catch that they experienced over the past fiver years. Decreases in catch were attributed to an increase in illegal fishing practices (n = 121). The widespread use of illegal fishing gear, such as monofilament nets, has significantly depleted fish populations. These practices, which include night fishing and the use of harmful nets, not only catch large numbers of fish but also target juvenile fish, disrupting fish breeding areas. Others voiced their concern about increasing fishing pressure (n = 60), increases in the number of fishers, fishing gear, and fishing boats has led to a decrease in fish availability compared to five years ago. The growing demand for fish and the rise in fishing activities have intensified competition for resources, resulting in fewer fish in the waters. On the contrary, some respondents (n = 17) argued that decreases in fish catch are due to a lack of proper fishing equipment, the use of outdated or poor-quality tools, and the absence of modern fishing techniques and machinery such as boats and advanced nets. Some attributed decreases in catch to changing weather patterns, including increased wind, storms, and irregular rainfall. These weather changes have made fish more difficult to find, especially during dry seasons when they move farther away.
 
 Few fishers indicated stability or an increase in fish catches compared to five years ago. Nine respondents shared that their catch has remained the same as their fishing methods have not changed, whereas five respondents reported that they catch more fish now due to having better and modern fishing equipment, including high-quality tools and nets. Other reasons for unchanged catch levels pertained to increased variability in fish movements, weather patterns, and water levels, but an overall consistency in conditions. Four respondents stated that an increase in the fish caught could be attributed to the decline of illegal fishing practices, which has been controlled and reduced. Positively, respondents also stated that the closure of fishing sites has facilitated fish breeding, leading to a higher number of fish available for capture (n = 30). Also, the enforcement of fishing regulations and the improved management of the lake were mentioned as important factors in the increase in fish caught. 
 
+
+When asked to rate their satisfaction levels, fishers appeared to express neutrality or a low satisfaction on most aspects affecting their fishing practices (Figure 56). Fishers were most satisfied with their fishing skills, business skills, and access to markets, however this only amounted to a neutral score.
 
 ```{r, fig.cap='Satisfaction levels of fishers', fig.align='center', out.width = '90%'}
 # Define the mapping for satisfaction levels
@@ -6138,11 +6167,14 @@ ggplot(aggregate_satisfaction_combined, aes(
 
 ```
 
-Fishers expressed a variety of challenges that they face on and off the water. Most significantly, unfavorable weather conditions, such as strong winds, storms, and heavy rains, pose significant risks, including accidents and disruptions to fishing activities (n =  232). Inadequate fishing gear and outdated technology (i.e. old boats, engines, and low-quality tools) limit fisher’s efficiency and safety (n = 106), while financial constraints prevent investments in modern equipment (n = 29). Declining fish stock availability and illegal fishing practices exacerbate these difficulties. Piracy was listed as a major concern (n = 74), common issues include theft and destruction of fishing gear, hijacking boats, and violent attacks during fishing activities. Many fishers reported being attacked by pirates at night, losing valuable equipment like engines and nets, and being left without resources. Additional issues include unreliable markets and fluctuating prices. Regulatory challenges, such as high fees and equipment confiscation, were stated to further complicate their work. Furthermore, rising costs, a lack of education, human-wildlife conflict (i.e. hippos, crocodiles), and restrictions imposed on fishing areas due to the implementation conservation zones also pose other challenges.
+In response to the question “What are the top 3 current challenges you experience in fishing?”, fishers expressed a variety of challenges that they face on and off the water. Most significantly, unfavorable weather conditions, such as strong winds, storms, and heavy rains, pose significant risks, including accidents and disruptions to fishing activities (n =  232). Inadequate fishing gear and outdated technology (i.e. old boats, engines, and low-quality tools) limit fisher’s efficiency and safety (n = 106), while financial constraints prevent investments in modern equipment (n = 29). Declining fish stock availability and illegal fishing practices exacerbate these difficulties. Piracy was listed as a major concern (n = 74), common issues include theft and destruction of fishing gear, hijacking boats, and violent attacks during fishing activities. Many fishers reported being attacked by pirates at night, losing valuable equipment like engines and nets, and being left without resources. Additional issues include unreliable markets and fluctuating prices. Regulatory challenges, such as high fees and equipment confiscation, were stated to further complicate their work. Furthermore, rising costs, a lack of education, human-wildlife conflict (i.e. hippos, crocodiles), and restrictions imposed on fishing areas due to the implementation conservation zones also pose other challenges.
 
-A significant number of fishers highlighted several changes that could improve fishing practices, including access to modern and reliable equipment such as improved boats, modern nets, and even safety tools like buoys and fire extinguishers (n = 181). Improved safety and protective measures were also emphasized to address theft, piracy, and weather-related risks (n = 57). Suggestions focused on both immediate security needs and proactive safety strategies. Access to financial support like loans and microfinance to invest in better gear and increase productivity were also highly sought after (n = 96). Support for education and skill development related to trainings on sustainable fishing methods were also considered vital (n = 61), along with improved governance, stricter enforcement of fishing regulations, and better market access to stabilize fish prices and boost profitability. Strengthened collaboration among fishers and relevant stakeholders was suggested to improve fair representation in decision-making processes and to address challenges. Fishermen consistently emphasized the urgent need to address illegal fishing to sustain fish populations and improve legal fishers' livelihoods (n = 41). Suggestions highlighted stricter enforcement of fishing regulations, eradication of illegal gear, and empowering local authorities to monitor and control illegal practices. Fishers also highlighted the need to protect fish breeding areas, address the impact of changing weather conditions, and promote the use of sustainable fishing tools. They emphasized that improving the ecosystem is essential for ensuring a steady supply of fish and increasing their income.
+Respondents were asked the question the “What are the key changes for you to improve your fishing practice?”. A large number of fishers highlighted several changes that could improve fishing practices, including access to modern and reliable equipment such as improved boats, modern nets, and even safety tools like buoys and fire extinguishers (n = 181). Improved safety and protective measures were also emphasized to address theft, piracy, and weather-related risks (n = 57). Suggestions focused on both immediate security needs and proactive safety strategies. Access to financial support like loans and microfinance to invest in better gear and increase productivity were also highly sought after (n = 96). Support for education and skill development related to trainings on sustainable fishing methods were also considered vital (n = 61), along with improved governance, stricter enforcement of fishing regulations, and better market access to stabilize fish prices and boost profitability. Strengthened collaboration among fishers and relevant stakeholders was suggested to improve fair representation in decision-making processes and to address challenges. Fishermen consistently emphasized the urgent need to address illegal fishing to sustain fish populations and improve legal fishers' livelihoods (n = 41). Suggestions highlighted stricter enforcement of fishing regulations, eradication of illegal gear, and empowering local authorities to monitor and control illegal practices. Fishers also highlighted the need to protect fish breeding areas, address the impact of changing weather conditions, and promote the use of sustainable fishing tools. They emphasized that improving the ecosystem is essential for ensuring a steady supply of fish and increasing their income.
 
-```{r, fig.cap='Do you think BMUs are helpful to improving your fishing practices?', fig.align='center', out.width = '90%'}
+
+Half of all fishers in northern and southern village clusters do not believe that the current number of fish in the lake is sufficient to meet the community's fishing, food, and livelihood needs (Figure 57). On the contrary, approximately 40% fishers believed that there are sufficient fish in the lake. There appear no large differences between the village clusters.
+
+```{r, fig.cap='Do you think the current number of fish in the lake is sufficient to meet the fishing, food, and livelihood needs of the community?', fig.align='center', out.width = '90%'}
 # Expand the data with cluster classification
 village_data_expanded <- tanganyika_survey %>%
   filter(!is.na(sustainability_population) & sustainability_population != "I DON'T KNOW") %>%
@@ -6210,6 +6242,8 @@ ggplot(village_data_combined, aes(x = fct_relevel(sustainability_population, "YE
   facet_wrap(~ cluster, nrow = 2)  # Separate plots for each cluster
 
 ```
+
+Three quarters of fishers in the southern village cluster believe that BMUs are helpful to improving fishing practices (Figure 58). There are no estimates for this statistic in the northern village cluster as BMUs do not appear to be established yet. As such, fishing group membership of cooperatives, FICOs, COCOBA or savings groups across villages of the northern cluster appears to be very limited (Table 18).  Where fishermen were members of a group, practically all stated that these were supported by TNC and many indicated the group to be helpful.
 
 ```{r, fig.cap='Do you think BMUs are helpful to improving your fishing practices?', fig.align='center', out.width = '90%'}
 # Expand the data with cluster classification
@@ -6279,6 +6313,7 @@ ggplot(village_data_combined, aes(x = fct_relevel(bmu_helpfulness, "YES", "NO", 
   facet_wrap(~ cluster, nrow = 2)  # Separate plots for each cluster
 
 ```
+
 
 ```{r}
 summary_by_village <- tanganyika_survey %>%
@@ -6429,7 +6464,9 @@ combined_table %>%
 
 ```
 
-Fishing group members indicated the need for increased financial support and resources, such as providing capital or loans, and creating group laws to facilitate access to loans (n = 10). They also mentioned for the members themselves they need to be more accountable in paying their membership shares on time, encouraging timely repayment. Furthermore, respondents shared the need for increased education and training, including education on illegal fishing, entrepreneurship, and loans. They emphasized the importance of seminars and meetings for better management of activities. Furthermore, group members reiterated the need to increase access to improved fishing equipment, group and governance structures.
+In response to the question “What are the top three key changes to improve the group?”, fishing group members indicated the need for increased financial support and resources, such as providing capital or loans, and creating group laws to facilitate access to loans (n = 10). They also mentioned for the members themselves they need to be more accountable in paying their membership shares on time, encouraging timely repayment. Furthermore, respondents shared the need for increased education and training, including education on illegal fishing, entrepreneurship, and loans. They emphasized the importance of seminars and meetings for better management of activities. Furthermore, group members reiterated the need to increase access to improved fishing equipment, group and governance structures.
+
+Two thirds of fishers in the southern village cluster di not feel that their current activities are likely to support their needs over the long term (Figure 59). There was no data available to gauge this statistic in the northern village cluster.
 
 ```{r, fig.cap='Do you think your current activities are likely to support your needs over the long term (next 5 - 10 years)?', fig.align='center', out.width = '90%'}
 # Expand the data with cluster classification
@@ -6500,26 +6537,23 @@ ggplot(village_data_combined, aes(x = fct_relevel(activity_long_term, "YES", "NO
 
 ```
 
-Households expressed confidence in their current activities, citing financial stability and the ability to meet their needs as well as being able to save for the future (n = 9). Respondents highlighted that their income from activities like fishing and business is sufficient to support their families. They feel secure about their ability to sustain their livelihoods over the next 5-10 years and are satisfied with the level of income they currently earn. One respondent noted that conservation and sustainable fishing practices in their area provide long-term assurance of fish availability. They expressed confidence that such measures would ensure their activities remain viable over the next 5-10 years. Another respondent was optimistic about future improvements in their livelihood, believing that fish populations and agricultural productivity will increase.
+In order to gauge the long-term sustainability of fishing practices and livelihood activities, respondents were asked “do you think your current activities are likely to support your needs over the long term (next 5 - 10 years)?”. Households expressed confidence in their current activities, citing financial stability and the ability to meet their needs as well as being able to save for the future (n = 9). Respondents highlighted that their income from activities like fishing and business is sufficient to support their families. They feel secure about their ability to sustain their livelihoods over the next 5-10 years and are satisfied with the level of income they currently earn. One respondent noted that conservation and sustainable fishing practices in their area provide long-term assurance of fish availability. They expressed confidence that such measures would ensure their activities remain viable over the next 5-10 years. Another respondent was optimistic about future improvements in their livelihood, believing that fish populations and agricultural productivity will increase.
 
 Many households (n = 32) expressed that their current income levels are insufficient to meet their basic needs, both in the short and long term. The income they earn is too low to provide long-term financial security, and with current activities offering little opportunity for growth, they are uncertain about sustaining their needs over the next 5-10 years. Respondents felt that their low income, especially from seasonal or unstable sources, makes long-term financial stability unlikely. Four households mentioned that a lack of proper tools and fishing equipment severely limits their ability to generate enough income over the long term. Without adequate equipment, their fishing activities cannot meet their needs consistently, and the time and cost involved in replacing broken tools will make it difficult to sustain their livelihood in the coming years. Others (n = 2) worried about the declining availability of fish due to an increasing number of fishermen and the use of improved fishing equipment. They noted that as more fishermen enter the industry with improved tools, the pressure on fish stocks intensifies, leading to a decrease in the number of fish available for catch. This, combined with occasional poor catches, threatens their ability to rely on fishing as a long-term livelihood. Furthermore, respondents indicated reasons pertaining to pressures exerted by illegal fishing practices, broader economic challenges including high living costs and limited opportunities for alternative income, their age and health affecting their ability to support their livelihood, as well as the pressures and uncertainties surrounding fishing- and farming-based practices, which threaten the long-term sustainability of their livelihoods.
 
-Unsustainable practices
 
-Ecologically unsustainable fishing practices persist due to the widespread use of illegal nets (i.e. monofilament, kokoro), which damage aquatic ecosystems and deplete fish stocks (n = 51). Pollution from oil spills, improper waste disposal, and the mishandling of fish are also believed to cause harm to the environment, disrupting aquatic ecosystems and compromising vital habitats for fish reproduction (n = 3). Limited capital prevents fishers from acquiring proper tools and equipment needed for sustainable fishing and conservation efforts (n = 4), while security challenges like theft of boats and gear discourage investment in better practices (n = 9). Additionally, one respondent highlighted that gaps in knowledge about sustainable fishing techniques lead to harmful methods that exacerbate resource depletion and threaten the long-term stability of fishing communities.
+
+Households were asked to elaborate on the occurrence of ecologically unsustainable fishing practices. Respondents indicated that ecologically unsustainable fishing practices persist due to the widespread use of illegal nets (i.e. monofilament, kokoro), which damage aquatic ecosystems and deplete fish stocks (n = 51). Pollution from oil spills, improper waste disposal, and the mishandling of fish are also believed to cause harm to the environment, disrupting aquatic ecosystems and compromising vital habitats for fish reproduction (n = 3). Limited capital prevents fishers from acquiring proper tools and equipment needed for sustainable fishing and conservation efforts (n = 4), while security challenges like theft of boats and gear discourage investment in better practices (n = 9). Additionally, one respondent highlighted that gaps in knowledge about sustainable fishing techniques lead to harmful methods that exacerbate resource depletion and threaten the long-term stability of fishing communities.
 
 Respondents from some households (n = 4) stated that there are no unsustainable practices in their fishing activities. These responses might suggest an unfamiliarity with the concept of sustainability or that respondents do not recognize the potentially negative impacts of their fishing methods. This highlights the need for greater education and awareness about sustainable fishing practices and the long-term effects of certain fishing methods on the environment and community livelihoods.
 
-
-
-
-</div>
-\newpage
 
 <!-- rust page -->
 <div class ="section-rust">
 
 ## Livelihood Practices of Fish Traders
+
+Although there exist different forms of fish traders, the majority of respondents simply labelled themselves as a trader, whereas a remaining 9% and 8% considered themselves to be someone who prepares fish in northern and southern village clusters (Figure 60). 
 
 ```{r, fig.cap='Forms of fish trading', fig.align='center', out.width = '90%'}
 # Expand the data with cluster classification
@@ -6590,7 +6624,9 @@ ggplot(village_data_combined, aes(x = fct_relevel(trading_form, "TRADER", "PREPA
 
 ```
 
-The majority of fish traders (n = 92) mentioned buying fish directly from fishers at the shore, then selling them fresh or after processing at local markets. Few traders stated that they purchase fish from different villages and coastal areas (n = 25), directly from processing facilities (n = 2), or from local middlemen (n = 2). The primary customer base of fish traders were wholesale buyers (n = 67). Respondents shared that they sell primarily to small and large-scale traders within the region, neighboring areas, and internationally, including markets in Zambia, Burundi, and Congo. Key markets include Namanyere, Sumbawanga, and Songwe, with customers ranging from local vendors to wholesalers and exporters.
+To better understand the fish supply chain, fish traders were asked about where they buy their fish from. The majority of fish traders (n = 92) mentioned buying fish directly from fishers at the shore, then selling them fresh or after processing at local markets. Few traders stated that they purchase fish from different villages and coastal areas (n = 25), directly from processing facilities (n = 2), or from local middlemen (n = 2). The primary customer base of fish traders were wholesale buyers (n = 67). Respondents shared that they sell primarily to small and large-scale traders within the region, neighboring areas, and internationally, including markets in Zambia, Burundi, and Congo. Key markets include Namanyere, Sumbawanga, and Songwe, with customers ranging from local vendors to wholesalers and exporters.
+
+Trading of fish species can be bound to seasonal changes in climate and/or lake conditions. However, over the past five years, the majority of fish traders indicated that trading activities of fish species such as dagaa, kuhe, kungura, migebuka, ngege, and sangara may occur during all seasons (Figure 61). With the exception of dagaa, fish species in the northern village cluster are traded more frequently during the dry season. In northern villages, no dagaa is traded in the rainy season. In contrary, across the southern village cluster, the majority of dagaa is traded during the rainy season (42%). Likewise, rainy season trade is higher for all fish species across the southern villages in comparison to the northern cluster. Dry season trade of kuhe (56%), ngege (58%), and sangara (59%) appears particularly high in the northern village cluster. 
 
 ```{r, fig.cap='Seasonal trading of fish species over the past five years', fig.align='center', out.width = '90%'}
 # Define target type variables
@@ -6674,6 +6710,7 @@ ggplot(aggregate_target_type, aes(x = Fish_Species, y = mean_season_percent, gro
 
 ```
 
+Sale prices of fish according to fish traders displayed notable variation. The highest sale prices are exhibited for dagaa and kungura in southern villages at TSh 18,904 and TSh 17,578 (Table 62). Respectively, the lowest price for dagaa is estimated at TSh 8,002 and TSh 9,700 for migebuka in southern villages. In the northern village cluster, the best price fetched for dagaa was TSh 15,988 and the lowest TSh 6,623. The highest price for kungura in the north was TSh 12,025 and TSh 6,261 at its lowest. Respectively, across the northern and southern cluster, the highest prices fetched for migebuka was TSh 14,617 and TSh 15,740. The lowest sale price for migebuka was TSh 8,153 and TSh 8,326 across northern and southern clusters respectively.
 
 ```{r, fig.cap='Fish trading sale prices (TSh) of fish species over the past five years', fig.align='center', out.width = '90%'}
 # Define target type variables for best values
@@ -6825,6 +6862,8 @@ ggplot(combined_target, aes(x = Fish_Species, y = Value, fill = Value_Type)) +
 
 ```
 
+Satisfaction levels of fish traders was reflected that of fishers. Fish traders were most satisfied about their skills and business skills (Figure 63). Fish traders appeared least satisfied with the support they receive from groups and/or organizations, this is especially true for villages in the northern cluster.
+
 ```{r, fig.cap='Satisfaction of fish traders', fig.align='center', out.width = '90%'}
 # Define the mapping for satisfaction levels
 satisfaction_mapping <- c(
@@ -6914,10 +6953,9 @@ ggplot(aggregate_satisfaction, aes(
 
 ```
 
-Fish traders indicated a variety of challenges that compromise their operations and profitability. Fluctuating fish prices and market instability often lead to financial losses (n = 43), while limited capital restricts the ability to expand or invest in essential tools (n = 48). Inadequate storage and poor transportation infrastructure contribute to fish spoilage, reducing quality and market value (n = 24). Accessing reliable markets and customers is stated to be difficult and compounded by long travel distances and oversaturation of markets (n = 24). Traders also encounter regulatory hurdles, such as high taxes and permit costs, and financial constraints, including delayed payments and limited access to loans. Poor infrastructure, competition, insufficient equipment, and lack of education in business management further exacerbate these issues. Additionally, seasonal and environmental factors, such as reduced fish availability during rainy seasons, pose significant challenges to sustaining livelihoods.
+Fish traders were asked the question “What are the top 3 current challenges you experience as a fish trader?”. Many indicated a variety of challenges that compromise their operations and profitability. Fluctuating fish prices and market instability often lead to financial losses (n = 43), while limited capital restricts the ability to expand or invest in essential tools (n = 48). Inadequate storage and poor transportation infrastructure contribute to fish spoilage, reducing quality and market value (n = 24). Accessing reliable markets and customers is stated to be difficult and compounded by long travel distances and oversaturation of markets (n = 24). Traders also encounter regulatory hurdles, such as high taxes and permit costs, and financial constraints, including delayed payments and limited access to loans. Poor infrastructure, competition, insufficient equipment, and lack of education in business management further exacerbate these issues. Additionally, seasonal and environmental factors, such as reduced fish availability during rainy seasons, pose significant challenges to sustaining livelihoods.
 
-Changes to improve fish trading
-To improve fish trader livelihoods, respondents emphasized the need for more accessible and reliable markets, both locally and internationally, with government support to establish and expand connections to external markets for better sales opportunities (n = 33). Respondents advocated for fair and standardized pricing to ensure market stability and profitability (n = 11). Furthermore, access to affordable capital and financial support, such as low-interest loans, is regarded as essential for expanding operations (n = 65). Traders also requested improved tools, storage facilities, and modern preservation technologies to maintain fish quality (n = 16). Better infrastructure, including reliable transportation and electricity, is deemed necessary to enhance fish preservation (n = 12). Education and training in business management and fish preparation were highlighted as critical for improving skills (n = 8). Additionally, respondents called for regulatory reforms for fish trading and improve tax policies  (n = 9), along with establishing fish processing plants to add value and ensure steady market access (n = 2). 
+Fish traders were also asked to elaborate on the three key changes that might improve their business activities. To improve fish trader livelihoods, respondents emphasized the need for more accessible and reliable markets, both locally and internationally, with government support to establish and expand connections to external markets for better sales opportunities (n = 33). Respondents advocated for fair and standardized pricing to ensure market stability and profitability (n = 11). Furthermore, access to affordable capital and financial support, such as low-interest loans, is regarded as essential for expanding operations (n = 65). Traders also requested improved tools, storage facilities, and modern preservation technologies to maintain fish quality (n = 16). Better infrastructure, including reliable transportation and electricity, is deemed necessary to enhance fish preservation (n = 12). Education and training in business management and fish preparation were highlighted as critical for improving skills (n = 8). Additionally, respondents called for regulatory reforms for fish trading and improve tax policies  (n = 9), along with establishing fish processing plants to add value and ensure steady market access (n = 2). 
 
 
 ```{r}
@@ -7070,10 +7108,11 @@ combined_table %>%
 
 ```
 
-Fish trading groups face several challenges, including insufficient capital and limited access to loans, which compromise their ability to finance activities and expand operations (n = 7). Three respondents cited that delayed loan repayments create financial strain and disrupt group functionality. Inequitable distribution of group funds further compounds this issue, as leaders benefit disproportionately, leaving other members dissatisfied. A lack of skills, education, and entrepreneurial training further hampers group effectiveness (n = 4), while poor awareness among members about group activities weakens cohesion (n = 3). Additionally, small group sizes limit collective capacity, and irregular meetings and training sessions hinder progress and collaboration. These challenges collectively impact the efficiency and success of trader groups.
+Fish trading groups may face a variety of challenges, as such, they were asked about the three key challenges that they faced within their group. Fish trading groups face several challenges, including insufficient capital and limited access to loans, which compromise their ability to finance activities and expand operations (n = 7). Three respondents cited that delayed loan repayments create financial strain and disrupt group functionality. Inequitable distribution of group funds further compounds this issue, as leaders benefit disproportionately, leaving other members dissatisfied. A lack of skills, education, and entrepreneurial training further hampers group effectiveness (n = 4), while poor awareness among members about group activities weakens cohesion (n = 3). Additionally, small group sizes limit collective capacity, and irregular meetings and training sessions hinder progress and collaboration. These challenges collectively impact the efficiency and success of trader groups.
 
 Changes to improve fish trading groups include securing access to loans from banks or other institutions to increase capital, receiving direct financial support or loans from the government and/or organizations for the purposes of expanding business ventures (n = 10). Furthermore, to improve groups, key changes highlighted by ten respondents include providing regular seminars and training on entrepreneurship and financial management, sharing experiences and knowledge with other groups within and outside the region, and educating members on the importance of being part of financial cooperatives (FICOs).
 
+Three quarters of fish traders do not believe that their current trading activities are likely to support their needs over the long term (Figure 64). 
 
 ```{r, fig.cap='Do you think your current trading activities are likely to support your needs over the long term (next 5 - 10 years)?', fig.align='center', out.width = '90%'}
 # Expand the data with cluster classification
@@ -7149,13 +7188,11 @@ ggplot(village_data_combined, aes(x = fct_relevel(trading_long_term, "YES", "NO"
 
 ```
 
-Several households expressed satisfaction with their current income from fish trading, noting that it sufficiently meets their basic needs. Respondents (n = 3) also reported that their income from activities like fishing or business is adequate to support their families, and they feel secure in their ability to sustain their livelihoods over the next 5-10 years. Others (n = 2) highlighted the importance of diversifying their activities to ensure long-term stability. By engaging in multiple income-generating activities, they can meet the needs of their families. A small number of respondents emphasized that they are able to save from their income, ensuring that they can meet future needs. Some respondents provided additional factors that contribute to their outlook on long-term sustainability, such as good work practices, timing fishing activities well, and a general improvement in their current economic situation compared to the past (n = 5).
+Fish traders were asked whether they thought their current activities are likely to support their needs over the long-term. Several households expressed satisfaction with their current income from fish trading, noting that it sufficiently meets their basic needs. Respondents (n = 3) also reported that their income from activities like fishing or business is adequate to support their families, and they feel secure in their ability to sustain their livelihoods over the next 5-10 years. Others (n = 2) highlighted the importance of diversifying their activities to ensure long-term stability. By engaging in multiple income-generating activities, they can meet the needs of their families. A small number of respondents emphasized that they are able to save from their income, ensuring that they can meet future needs. Some respondents provided additional factors that contribute to their outlook on long-term sustainability, such as good work practices, timing fishing activities well, and a general improvement in their current economic situation compared to the past (n = 5).
 
 On the contrary, many respondents (n = 47) expressed concerns about their ability to sustain their livelihoods over the next 5-10 years due to low or insufficient income. Respondents noted that their earnings are not enough to meet their families' growing needs, and this lack of financial stability makes it difficult to plan for the future. Another significant number of respondents identified limited capital as a primary constraint to the sustainability of their current activities over the long term (n = 28). They highlighted that insufficient financial resources limit their ability to expand their businesses, invest in operations, and generate adequate returns to support their families. Some respondents highlighted various environmental and external challenges that hinder the sustainability of their current activities (n = 9). These include changes in natural resources, environmental degradation, and regulations that limit access to key livelihood resources like fish. Other concerns addressed broader economic challenges, business challenges in terms of seasonal variability, and the lack of reliable markets.
-
-Unsustainable practices
  
-Unsustainable practices in the fish trade include the use of illegal and harmful fishing gear such as poisoned nets, non-standard equipment, and filemayaa, which contribute to overfishing and depletion of fish stocks (n = 23). The practices are thought to threaten long-term sustainability by disrupting fish reproduction. Poor resource management, including the destruction of fish habitats and improper handling of fish remains, further exacerbates the problem (n = 3). Over-exploitation, such as harvesting immature fish and dependency solely on lake fisheries, limits resilience to stock depletion (n = 10). These practices, compounded by weak regulatory enforcement and exploitation by large companies and intermediaries, marginalize small-scale traders and undermine the viability of fish-based livelihoods.
+In response to the question “What unsustainable practices exist in your area when it comes to fish business activities?”, a variety of reasons were mentioned by households involved with the fish trade. Unsustainable practices in the fish trade include the use of illegal and harmful fishing gear such as poisoned nets, non-standard equipment, and filemayaa, which contribute to overfishing and depletion of fish stocks (n = 23). The practices are thought to threaten long-term sustainability by disrupting fish reproduction. Poor resource management, including the destruction of fish habitats and improper handling of fish remains, further exacerbates the problem (n = 3). Over-exploitation, such as harvesting immature fish and dependency solely on lake fisheries, limits resilience to stock depletion (n = 10). These practices, compounded by weak regulatory enforcement and exploitation by large companies and intermediaries, marginalize small-scale traders and undermine the viability of fish-based livelihoods.
 
 In terms of financial sustainability, some households highlighted the instability of fish prices, with frequent and unpredictable price increases by fishermen (n = 12). The absence of a standardized pricing system renders the market unreliable, and large middlemen often exacerbate the situation by inflating prices. These fluctuations negatively affect the profitability of the fish trade, making it difficult for small-scale traders to plan and sustain their businesses, while also impacting the overall stability of the local fish market. Furthermore, a few households noted that conflicts between fishermen and Beach Management Units (BMUs) disrupt the reliability of fish availability (n = 3). Additionally, the lack of proper licensing often leads to bribery, further complicating the fishing process and contributing to unfair practices that affect the sustainability of fish trade.
 
@@ -7164,6 +7201,8 @@ In terms of financial sustainability, some households highlighted the instabilit
 </div>
 
 ## Livelihood Practices of Fish Processors
+
+Processing forms vary widely across different villages (Table 65). Overall, most commonly smoking is the preferred method of fish processing. In four villages, namely Lyapinda, Mpasa, Tundu, and Kalungu smoking is the only method of fish processing. Sundrying also forms another method of fish processing, and is most frequently practiced in Kala, Manda Kerenge, and Manda Uhuru. In Kipili, sundrying and cold storage are the most common methods of fish processing. Cold storage facilities appear extremely limited in all other villages, except for Kilambo cha Mikolechi.
 
 ```{r, fig.cap='Processing form at village level (%)', fig.align='center', out.width = '90%'}
 processing_form_expanded <- tanganyika_clean %>% select(hh_code, village, processing_form, stype, fpc) %>%
@@ -7229,6 +7268,7 @@ ggplot(processing_form_data, aes(x = village, y = proportion * 100, group = proc
 
 ```
 
+As varied as the processing forms are at village level, are the equipment used to process fish (Figure 66). As smoking is the most common processing form, twigs and firewood are the most frequently listed equipment used as a fuel source. Cooking oil is also used in southern villages, but not in the northern cluster. Other equipment used includes wire mech, corrugated iron sheets nets, and refrigerators. Use of the latter appears extremely limited across both northern and southern villages. 
 
 ```{r, fig.cap='Processing equipment at village level (%)', fig.align='center', out.width = '90%'}
 processing_equipment_expanded <- tanganyika_clean %>% select(hh_code, village, processing_equipment, stype, fpc) %>%
@@ -7293,6 +7333,7 @@ ggplot(processing_equipment_data, aes(x = village, y = proportion * 100, group =
   scale_x_discrete(labels = function(x) str_wrap(x, width = 10))
 ```
 
+Fish processing of different species appears least affected by the seasons (Figure 66). Respondents in the northern village cluster indicated that most species are processed in all seasons. In the southern village cluster however, there appears a uniform distribution of responses, as approximately 20% process fish during all seasons, 40% during dry season, and 40% during the rainy season.
 
 ```{r, fig.cap='Seasonal processing of fish species over the past five years', fig.align='center', out.width = '90%'}
 # Define target type variables
@@ -7378,6 +7419,7 @@ ggplot(aggregate_target_type, aes(x = Fish_Species, y = mean_season_percent, gro
 
 ```
 
+Sale prices of fish species also fluctuate for fish processors (Figure 68). The highest prices were fetched for migebuka in the northern village cluster (TSh 20,785), dagaa in the southern village cluster (TSh 20,745), and dagaa in the northern village cluster (TSh 17,237). The lowest prices for these species were TSh 8,078 for dagaa and TSh 8,516 for migebuka in the southern village cluster, and TSh 14,777 for dagaa and TSh 9,751 for migebuka in the northern village cluster.
 
 ```{r, fig.cap='Sale prices (TSh) of fish species over the past five years for fish processors', fig.align='center', out.width = '90%'}
 # Define target type variables for best values
@@ -7527,6 +7569,8 @@ ggplot(combined_target, aes(x = Fish_Species, y = Value, fill = Value_Type)) +
 
 ```
 
+Again, also fish processors appeared most satisfied with their own processing skills, business skills, and the tools and technologies they and least satisfied with the support they receive from groups and/or organizations (Figure 69). 
+
 ```{r, fig.cap='Satisfaction of fish processors', fig.align='center', out.width = '90%'}
 # Define the mapping for satisfaction levels
 satisfaction_mapping <- c(
@@ -7616,11 +7660,11 @@ ggplot(aggregate_satisfaction, aes(
 
 ```
 
-Fish processors face a range of challenges that compromise their businesses and livelihoods. Market-related issues such as fluctuating fish prices, lack of standardized pricing, limited markets for fish products, and interference from middlemen were stated as common (n = 19). Respondents also highlight health risks, which arise from prolonged smoke exposure, leading to respiratory issues, and injuries during processing (n = 13). Outdated equipment, frequent power outages, and limited access to energy resources (i.e. firewood) exacerbate processing difficulties, leading to spoilage of fish (n = 30). Rising input costs, poor infrastructure, and insufficient fish stock create further obstacles. Adverse weather conditions, financial constraints, and limited access to capital limit scalability, while quality control issues and fish spoilage result in financial losses. Additionally, theft during processing, lack of education on modern techniques, and bureaucratic hurdles such as securing permits and paying taxes further complicate their work. These challenges collectively impede the growth and sustainability of fish processing businesses.
+When asked about the three key challenges that they face, fish processors expressed a range of concerns that compromise their businesses and livelihoods. Market-related issues such as fluctuating fish prices, lack of standardized pricing, limited markets for fish products, and interference from middlemen were stated as common (n = 19). Respondents also highlight health risks, which arise from prolonged smoke exposure, leading to respiratory issues, and injuries during processing (n = 13). Outdated equipment, frequent power outages, and limited access to energy resources (i.e. firewood) exacerbate processing difficulties, leading to spoilage of fish (n = 30). Rising input costs, poor infrastructure, and insufficient fish stock create further obstacles. Adverse weather conditions, financial constraints, and limited access to capital limit scalability, while quality control issues and fish spoilage result in financial losses. Additionally, theft during processing, lack of education on modern techniques, and bureaucratic hurdles such as securing permits and paying taxes further complicate their work. These challenges collectively impede the growth and sustainability of fish processing businesses.
 
-Changes to improve fish processing
+Fish processors were asked to list and elaborate upon the three key changes required to improve fish processing activities. A major concern for respondents was the lack of sufficient capital or loans to enhance their fish processing operations (n = 37). The need for financial support was emphasized repeatedly, with many expressing that without adequate funds, they struggle to invest in necessary equipment required to expand their businesses. They requested access to microloans or financial assistance to improve their fish processing capacity and secure raw materials. Furthermore, access to modern and efficient tools for fish processing was another key request from respondents (n = 32). Many indicated that outdated or inadequate equipment hinders their ability to produce high-quality products and run efficient operations. Respondents highlighted the need for better processing tools, such as modern drying racks, cold storage, and improved fish preservation methods to reduce spoilage. Some respondents suggested that improved market access, both locally and internationally, would help reduce spoilage and increase profits (n = 7). They emphasized the importance of reliable market connections and the establishment of fair pricing systems to ensure that fish processing businesses remain sustainable. Another small group of respondents (n = 10) highlighted that training and education are crucial for improving their fish processing activities. They mentioned the need for learning new and modern ways to process fish, which would help them work more efficiently and produce better quality products. The establishment of a centralized location for fish trade, which could help streamline operations and reduce logistical challenges, was proposed by four processors. They also expressed interest in the availability of alternative energy sources, particularly for smoking fish, which could improve the efficiency of the processing process and reduce reliance on wood.
 
-A major concern for respondents was the lack of sufficient capital or loans to enhance their fish processing operations (n = 37). The need for financial support was emphasized repeatedly, with many expressing that without adequate funds, they struggle to invest in necessary equipment required to expand their businesses. They requested access to microloans or financial assistance to improve their fish processing capacity and secure raw materials. Furthermore, access to modern and efficient tools for fish processing was another key request from respondents (n = 32). Many indicated that outdated or inadequate equipment hinders their ability to produce high-quality products and run efficient operations. Respondents highlighted the need for better processing tools, such as modern drying racks, cold storage, and improved fish preservation methods to reduce spoilage. Some respondents suggested that improved market access, both locally and internationally, would help reduce spoilage and increase profits (n = 7). They emphasized the importance of reliable market connections and the establishment of fair pricing systems to ensure that fish processing businesses remain sustainable. Another small group of respondents (n = 10) highlighted that training and education are crucial for improving their fish processing activities. They mentioned the need for learning new and modern ways to process fish, which would help them work more efficiently and produce better quality products. The establishment of a centralized location for fish trade, which could help streamline operations and reduce logistical challenges, was proposed by four processors. They also expressed interest in the availability of alternative energy sources, particularly for smoking fish, which could improve the efficiency of the processing process and reduce reliance on wood.
+Membership of fish processing groups such as cooperatives and/or FICOs is very low among fish processors (Table 20). Only in Kalungu and Ntanganyika did fish processors indicate being part of these groups. This is also true for COCOBA and/or savings group membership, only in Kalungu, Manda Kerenge, and Ntanganyika did some fish processors indicate membership. TNC support was varied among groups, but highest in Kalungu. Group membership was generally deemed helpful by those that had indicated being a member of a group. 
 
 
 ```{r}
@@ -7771,10 +7815,9 @@ combined_table %>%
  
 ```
 
-Challenges pertaining to fish processing groups pertained to financial hardships. Six respondents expressed insufficient group funds, limited capital, and reliance on member contributions as a primary challenge. Financial instability restricts the processing group’s ability to scale up operations, invest in new ventures, or support members adequately during periods of economic strain or fishing bans. A further three households indicated that challenges included low meeting attendance during gatherings, a lack of alternative income-generating activities, and limited education among members. These factors contribute to the group’s inability to sustain operations during difficult periods (i.e. fishing bans) when member contributions are also reduced.
+Fish processing groups were asked to provide information on the three key challenges that they faced. Challenges pertaining to fish processing groups pertained to financial hardships. Six respondents expressed insufficient group funds, limited capital, and reliance on member contributions as a primary challenge. Financial instability restricts the processing group’s ability to scale up operations, invest in new ventures, or support members adequately during periods of economic strain or fishing bans. A further three households indicated that challenges included low meeting attendance during gatherings, a lack of alternative income-generating activities, and limited education among members. These factors contribute to the group’s inability to sustain operations during difficult periods (i.e. fishing bans) when member contributions are also reduced.
 
 In order to improve conditions of the fish processing groups, respondents emphasized the importance of accessing loans and increasing group capital (n = 6). They noted that the group currently relies on member contributions, which limits its ability to provide sufficient funds for investments, loans, and growth opportunities. Financial empowerment is seen as critical for supporting group sustainability and member livelihoods. A further two respondents identified training as a key improvement area. Skills development could strengthen management, promote better decision-making, and equip members with strategies to improve group operations. One household member proposed seeking external partnerships and funding to ensure group sustainability. They felt collaborations with organizations could reduce reliance on internal contributions and provide additional resources to grow the group. External support would also help stabilize finances and introduce new opportunities for innovation and expansion of group activities.
-
 
 ```{r, fig.cap='Do you think your current processing activities are likely to support your needs over the long term (next 5 - 10 years)?', fig.align='center', out.width = '90%'}
 # Expand the data with cluster classification
@@ -7850,13 +7893,13 @@ ggplot(village_data_combined, aes(x = fct_relevel(process_long_term, "YES", "NO"
 
 ```
 
-Few households felt their current activities were likely to support their long-term needs as they have a strong production capacity and the ability to access markets in a timely manner, which they believe will enable them to engage in activities sustainably in future. Others reported that their current activities are likely to support their long-term needs because they provide sufficient income to meet their family's basic needs, ensuring financial stability. Some stated that sustainable fishing practices would enhance processing activities, and they anticipated that their business would grow significantly, enabling them to generate sufficient income in the future.
+Three quarters of all fish processors did not believe that their current processing activities were likely to support their needs over the long term (Figure 70).
+
+When asked whether they thought that their current activities are likely to support their needs over the long-term (next 5 - 10 years), fish processors felt their current activities were likely to support their long-term needs as they have a strong production capacity and the ability to access markets in a timely manner, which they believe will enable them to engage in activities sustainably in future. Others reported that their current activities are likely to support their long-term needs because they provide sufficient income to meet their family's basic needs, ensuring financial stability. Some stated that sustainable fishing practices would enhance processing activities, and they anticipated that their business would grow significantly, enabling them to generate sufficient income in the future.
 
 Many household felt that their income will remain insufficient to cover basic needs, including family requirements, and that the limited capital prevents them from reaching their goals or continuing their businesses (n = 52). They also expressed concerns about the instability of their earnings, particularly in times of drought or market fluctuations. Other concerns regarding long-term sustainability of their processing practices pertained to declines in production levels, reductions in fish stock due to overfishing and illegal fishing practices, and constraints related to the seasonal nature of the business, which cannot sustain them throughout the year. These respondents also mentioned that the fish processing industry is unpredictable, with fluctuating availability leading to inconsistent business performance. 
 
-Processing unsustainable practices
-
-Fish processors indicated that they encounter various unsustainable practices that undermine their livelihoods and environment. Most significantly, the purchase of fish caught using illegal fishing methods result in the spoilage of fish, which are often unfit for processing (n = 21). Illegal fishing, particularly targeting small fish, depletes fish stocks and disrupts breeding, negatively affecting the processing supply chain. Unhygienic and unsustainable processing practices contribute to environmental degradation, by means of tree cutting for firewood and improper disposal of fish waste into water bodies (n = 20). Market practices, including reliance on middlemen, fluctuating fish prices, and insufficient customer engagement compromise the financial sustainability of processing (n = 11). Collectively, these practices threaten the sustainability of the fish processing industry.
+Fish processors were also asked “What unsustainable practices exist in your area when it comes to fish business activities?”. In response, processors indicated that they encounter various unsustainable practices that undermine their livelihoods and environment. Most significantly, the purchase of fish caught using illegal fishing methods result in the spoilage of fish, which are often unfit for processing (n = 21). Illegal fishing, particularly targeting small fish, depletes fish stocks and disrupts breeding, negatively affecting the processing supply chain. Unhygienic and unsustainable processing practices contribute to environmental degradation, by means of tree cutting for firewood and improper disposal of fish waste into water bodies (n = 20). Market practices, including reliance on middlemen, fluctuating fish prices, and insufficient customer engagement compromise the financial sustainability of processing (n = 11). Collectively, these practices threaten the sustainability of the fish processing industry.
 
 
 </div>
