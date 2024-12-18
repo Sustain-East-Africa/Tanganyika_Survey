@@ -175,85 +175,6 @@ Below are examples of some of the issues that were raised.
 
 ::: {.section-rust}
 
-## Methodology and Sampling
-
-### Sampling Design
-
-The study population was defined as those households currently living within the two village clusters, which comprise the 21 villages along the Lake Tanganyika shoreline.
-A stratified random sampling design was employed across the study population. Stratified sampling involved dividing the study population strata (villages) and drawing separate probability samples from each stratum. Stratification ensures that a pre-specified number of observations from each stratum end up in the sample, which is therefore less variable, yet may provide more precise estimates to adequately represent the entire population.
-The strata in this study were defined based on household locations and represent the different villages. By dividing the population into strata, the sampling design aims to capture the variability within these groups and ensure that each important subgroup is well-represented in the final sample. The sampling frame for the stratified design represents the total list of households within the two clusters of villages. A finite population correction (FPC), is applied to reduce the variance of estimates, which accounts for the fact that sampling a substantial proportion of households in each stratum may lead to a decrease in variability. As such, the FPC is incorporated into the weighting of final survey estimates to correct for finite population size. The stratified sampling design ensures that each stratum is adequately represented and reduces variability within the sample, leading to more accurate conclusions and better-informed policy recommendations.
-
-<!-- ```{r} -->
-<!-- # Data -->
-<!-- data <- data <- readRDS("cluster_north_sample_design.rds") -->
-
-<!-- # Rename columns to preserve spacing -->
-<!-- colnames(data) <- gsub("\\.", " ", colnames(data)) -->
-
-<!-- # Round values based on conditions -->
-<!-- data_formatted <- data %>% -->
-<!--   mutate(across( -->
-<!--     where(is.numeric), -->
-<!--     ~ ifelse(Variables %in% c("Population", "Sample", "Final sample number"), round(.), round(., 3)) -->
-<!--   )) -->
-
-<!-- # Create and style flextable -->
-<!-- add_lot_link(caption = 'Northern village cluster sampling design for households along Lake Tanganyika') -->
-
-<!-- data_formatted %>% -->
-<!--   sea::sea_table( -->
-<!--     dark_color = sea_colors("gunmetal"), -->
-<!--     pale_color = sea_colors("grey"), -->
-<!--     third_color = "white") %>% -->
-<!--   colformat_double( -->
-<!--     j = 2:ncol(data_formatted), -->
-<!--     digits = 3 -->
-<!--   ) %>% -->
-<!--   colformat_double( -->
-<!--     j = 2:ncol(data_formatted), -->
-<!--     i = which(data_formatted$Variables %in% c("Population", "Sample", "Final sample number")), -->
-<!--     digits = 0 -->
-<!--   ) %>% -->
-<!--   autofit() -->
-
-<!-- ``` -->
-
-
-<!-- ```{r} -->
-<!-- # Data -->
-<!-- data <- readRDS("cluster_south_sample_design.rds") -->
-
-<!-- # Rename columns to preserve spacing -->
-<!-- colnames(data) <- gsub("\\.", " ", colnames(data)) -->
-
-<!-- # Round values based on conditions -->
-<!-- data_formatted <- data %>% -->
-<!--   mutate(across( -->
-<!--     where(is.numeric), -->
-<!--     ~ ifelse(Variables %in% c("Population", "Sample", "Final sample number"), round(.), round(., 3)) -->
-<!--   )) -->
-
-<!-- # Create and style flextable -->
-<!-- add_lot_link(caption = 'Southern village cluster sampling design for households along Lake Tanganyika') -->
-
-<!-- data_formatted %>% -->
-<!--   sea::sea_table( -->
-<!--     dark_color = sea_colors("gunmetal"), -->
-<!--     pale_color = sea_colors("grey"), -->
-<!--     third_color = "white") %>% -->
-<!--   colformat_double( -->
-<!--     j = 2:ncol(data_formatted), -->
-<!--     digits = 3 -->
-<!--   ) %>% -->
-<!--   colformat_double( -->
-<!--     j = 2:ncol(data_formatted), -->
-<!--     i = which(data_formatted$Variables %in% c("Population", "Sample", "Final sample number")), -->
-<!--     digits = 0 -->
-<!--   ) %>% -->
-<!--   autofit() -->
-
-<!-- ``` -->
-
 
 ::: 
 
@@ -262,6 +183,87 @@ The strata in this study were defined based on household locations and represent
 
 <!-- columns layout -->
 <!-- article instead of a div if you have titles to should go in the TOC -->
+
+## Methodology and Sampling
+
+### Sampling Design
+
+The study population was defined as those households currently living within the two village clusters, which comprise the 21 villages along the Lake Tanganyika shoreline.
+A stratified random sampling design was employed across the study population. Stratified sampling involved dividing the study population strata (villages) and drawing separate probability samples from each stratum. Stratification ensures that a pre-specified number of observations from each stratum end up in the sample, which is therefore less variable, yet may provide more precise estimates to adequately represent the entire population.
+The strata in this study were defined based on household locations and represent the different villages. By dividing the population into strata, the sampling design aims to capture the variability within these groups and ensure that each important subgroup is well-represented in the final sample. The sampling frame for the stratified design represents the total list of households within the two clusters of villages. A finite population correction (FPC), is applied to reduce the variance of estimates, which accounts for the fact that sampling a substantial proportion of households in each stratum may lead to a decrease in variability. As such, the FPC is incorporated into the weighting of final survey estimates to correct for finite population size. The stratified sampling design ensures that each stratum is adequately represented and reduces variability within the sample, leading to more accurate conclusions and better-informed policy recommendations.
+
+```{r}
+# Data
+data <- data <- readRDS("cluster_north_sample_design.rds")
+
+# Rename columns to preserve spacing
+colnames(data) <- gsub("\\.", " ", colnames(data))
+
+# Round values based on conditions
+data_formatted <- data %>%
+  mutate(across(
+    where(is.numeric),
+    ~ ifelse(Variables %in% c("Population", "Sample", "Final sample number"), round(.), round(., 3))
+  ))
+
+# Create and style flextable
+add_lot_link(caption = 'Northern village cluster sampling design for households along Lake Tanganyika')
+
+data_formatted %>%
+  sea::sea_table(
+    dark_color = sea_colors("gunmetal"),
+    pale_color = sea_colors("grey"),
+    third_color = "white") %>%
+  colformat_double(
+    j = 2:ncol(data_formatted),
+    digits = 3
+  ) %>%
+  colformat_double(
+    j = 2:ncol(data_formatted),
+    i = which(data_formatted$Variables %in% c("Population", "Sample", "Final sample number")),
+    digits = 0
+  ) %>%
+  autofit()
+
+```
+
+
+```{r}
+# Data
+data <- readRDS("cluster_south_sample_design.rds")
+
+# Rename columns to preserve spacing
+colnames(data) <- gsub("\\.", " ", colnames(data))
+
+# Round values based on conditions
+data_formatted <- data %>%
+  mutate(across(
+    where(is.numeric),
+    ~ ifelse(Variables %in% c("Population", "Sample", "Final sample number"), round(.), round(., 3))
+  ))
+
+# Create and style flextable
+add_lot_link(caption = 'Southern village cluster sampling design for households along Lake Tanganyika')
+
+data_formatted %>%
+  sea::sea_table(
+    dark_color = sea_colors("gunmetal"),
+    pale_color = sea_colors("grey"),
+    third_color = "white") %>%
+  colformat_double(
+    j = 2:ncol(data_formatted),
+    digits = 3
+  ) %>%
+  colformat_double(
+    j = 2:ncol(data_formatted),
+    i = which(data_formatted$Variables %in% c("Population", "Sample", "Final sample number")),
+    digits = 0
+  ) %>%
+  autofit()
+
+```
+
+
 
 ## General Household Information
 
@@ -336,14 +338,14 @@ sampling_overview %>%
   autofit()
 ```
 
-
+### Map of Study Site
 
 ```{r, fig.cap='Map of lake Tanganyika with sample sizes from each locations', fig.align='center', out.width = '70%'}
 knitr::include_graphics('img/village_sample_size_map.png')
 ```
 
 
-Population Pyramid
+### Population Pyramid
 
 Nearly half (45.5%) the population of the households surveyed was under the age of 15 (Figure 2). This is comparable to the national average of 46% (2022 TDHSMIS). Most of the other half of the Lake Tanganyika population is between 15 and 64 (52.2%); people aged 65 and older only make up 2.3% of the population. 
 
@@ -997,7 +999,7 @@ ggplot(village_data, aes(x = village, y = proportion * 100, group = household_ab
 
 ```
 
-83% of households indicated that they either have just enough or have difficulty meeting their daily needs (Figure 4). Approximately 5% of households were able to save extra. Even though there are some differences, this general picture roughly applies to all villages.
+The majority of households indicated that they either have just enough or have difficulty meeting their daily needs (83%; Figure 4). Approximately 5% of households were able to save extra. Even though there are some differences, this general picture roughly applies to all villages.
 
 </div>
 
@@ -1016,7 +1018,9 @@ Use of the lake water is more common in the dry season when there are fewer alte
 
 ```{r,  fig.cap='Main source of water', fig.align='center', out.width = '90%'}
 # Combine data for wet and dry seasons
-village_data_dry <- tanganyika_survey %>%
+# Separate data by clusters for Dry Season
+village_data_dry_cluster_1 <- tanganyika_survey %>%
+  filter(village %in% cluster_1_villages) %>%
   group_by(drinking_water_dry) %>%
   summarise(
     proportion = survey_mean(vartype = "ci", na.rm = TRUE),
@@ -1025,9 +1029,23 @@ village_data_dry <- tanganyika_survey %>%
     total = survey_total(vartype = "ci", na.rm = TRUE),
     n = unweighted(n())
   ) %>%
-  mutate(Season = "Dry", WaterSource = drinking_water_dry)
+  mutate(Season = "Dry", WaterSource = drinking_water_dry, Cluster = "Overall North")
 
-village_data_wet <- tanganyika_survey %>%
+village_data_dry_cluster_2 <- tanganyika_survey %>%
+  filter(village %in% cluster_2_villages) %>%
+  group_by(drinking_water_dry) %>%
+  summarise(
+    proportion = survey_mean(vartype = "ci", na.rm = TRUE),
+    proportion_low = survey_mean(vartype = "ci", na.rm = TRUE)[2],
+    proportion_upp = survey_mean(vartype = "ci", na.rm = TRUE)[3],
+    total = survey_total(vartype = "ci", na.rm = TRUE),
+    n = unweighted(n())
+  ) %>%
+  mutate(Season = "Dry", WaterSource = drinking_water_dry, Cluster = "Overall South")
+
+# Separate data by clusters for Wet Season
+village_data_wet_cluster_1 <- tanganyika_survey %>%
+  filter(village %in% cluster_1_villages) %>%
   group_by(drinking_water_wet) %>%
   summarise(
     proportion = survey_mean(vartype = "ci", na.rm = TRUE),
@@ -1036,12 +1054,29 @@ village_data_wet <- tanganyika_survey %>%
     total = survey_total(vartype = "ci", na.rm = TRUE),
     n = unweighted(n())
   ) %>%
-  mutate(Season = "Wet", WaterSource = drinking_water_wet)
+  mutate(Season = "Wet", WaterSource = drinking_water_wet, Cluster = "Overall North")
+
+village_data_wet_cluster_2 <- tanganyika_survey %>%
+  filter(village %in% cluster_2_villages) %>%
+  group_by(drinking_water_wet) %>%
+  summarise(
+    proportion = survey_mean(vartype = "ci", na.rm = TRUE),
+    proportion_low = survey_mean(vartype = "ci", na.rm = TRUE)[2],
+    proportion_upp = survey_mean(vartype = "ci", na.rm = TRUE)[3],
+    total = survey_total(vartype = "ci", na.rm = TRUE),
+    n = unweighted(n())
+  ) %>%
+  mutate(Season = "Wet", WaterSource = drinking_water_wet, Cluster = "Overall South")
 
 # Combine dataframes
-village_data_combined <- bind_rows(village_data_dry, village_data_wet)
+village_data_combined <- bind_rows(
+  village_data_dry_cluster_1,
+  village_data_dry_cluster_2,
+  village_data_wet_cluster_1,
+  village_data_wet_cluster_2
+)
 
-# Create grouped bar chart
+# Create grouped bar chart with two rows for clusters
 ggplot(village_data_combined, aes(x = reorder(WaterSource, -proportion), y = proportion * 100, fill = Season)) +
   geom_bar(stat = "identity", position = position_dodge(width = 0.8), width = 0.7) +
   geom_errorbar(aes(ymax = pmin(proportion_upp, 1) * 100, ymin = pmax(proportion_low, 0) * 100),
@@ -1065,8 +1100,8 @@ ggplot(village_data_combined, aes(x = reorder(WaterSource, -proportion), y = pro
   scale_x_discrete(labels = c("Rainwater", "River or Stream", "Public Tap", "Pond or Lake", "Open Public Well",
                               "Protected Public Well", "Spring", "Piped into Dwelling", "Water Vendor",
                               "Neighbour's Open Well", "Neighbour's Borehole", "Protected Well in Plot",
-                              "Open Well in Plot", "Piped into Plot", "Neighbour's Tap", "Other"))
-
+                              "Open Well in Plot", "Piped into Plot", "Neighbour's Tap", "Other")) +
+  facet_wrap(~ Cluster, nrow = 2)  # Separate rows for Cluster 1 and Cluster 2
 ```
 
 ```{r}
@@ -1562,7 +1597,7 @@ ggplot(household_item_data_combined, aes(x = reorder(household_item, -proportion
         panel.grid.major = element_blank(),
         panel.grid.minor = element_blank()) +  # Rotate x-axis labels
   scale_y_continuous(labels = label_percent(scale = 1)) +
-  scale_x_discrete(labels = c("Bed or Mattress", "Mobile Phone", "Solar Panel", "Table", "Radio", "TV", "Smartphone", "TANESCO Power", "Iron", "Sofa", "Refrigerator", "Clock", "Generator")) +
+  scale_x_discrete(labels = c("Mattress", "Mobile Phone", "Solar Panel", "Table", "Radio", "TV", "Smartphone", "TANESCO Power", "Iron", "Sofa", "Refrigerator", "Clock", "Generator")) +
   facet_wrap(~ cluster, nrow = 2)  # Separate plots for each cluster
 
 
@@ -2155,7 +2190,7 @@ ggplot(village_data, aes(x = village, y = proportion * 100, group = cocoba_sacco
     aes(y = pmin(proportion_upp, 1) * 100 + 1, label = paste0(round(proportion * 100, 0), "%")),
     position = position_dodge(width = 0.95), vjust = 0, size = 3) +
   guides(fill = guide_legend(title = NULL, nrow = 2)) +
-  scale_fill_manual(values = SEA_palette) +
+  sea::scale_fill_sea_discrete() +
   sea::theme_sea() + 
   theme(
     legend.position = "none",  
@@ -2434,7 +2469,7 @@ ggplot(village_data_combined, aes(x = reorder(eat_changed, -proportion), y = pro
 
 Food shortages occurred amongst 62% of all households during the last 12 months (Figure 20). In all villages, half or more than half of the household experienced at least one food shortage over the past 12 months. Shortages were most frequent in Manda Uhuru, where 95% of households were affected. 
 
-```{r, fig.cap='Proportion of food shortages experienced during the last 12 months at village level (%)', fig.align='center', out.width = '90%'}
+```{r, fig.cap='Proportion of food shortages experienced during the last 12 months at village level (%)', fig.align='center', out.width = '90%', fig.height=7}
 
 village_data <- tanganyika_survey %>%
   group_by(village, worry_shortage) %>%
@@ -2504,7 +2539,7 @@ Respondents were asked to elaborate on the primary reasons for food shortages in
 
 In terms of food shortages, the period between December 2023 and February 2024 appears to have been the worst for households among the survey population (Figure 21). Likewise, a higher frequency of food shortages during the months of May, June, and July 2024 also appeared to affect many households. Despite the frequency of food shortages, many households (70%) indicated that food availability was average or better than usual over the past year (Figure 22). However, food availability was worse than usual for 28% of all households. At village level, half the households in Mwinza expressed having worse food availability in the past year (Table 9). 
 
-```{r, fig.cap='Monthly proportions of food shortages experienced over the past 12 months', fig.align='center', out.width = '90%'}
+```{r, fig.cap='Monthly proportions of food shortages experienced over the past 12 months', fig.align='center', out.width = '90%', fig.height=8}
 # Step 1: Clean and prepare the data
 cleaned_data <- tanganyika_clean %>%
   mutate(food_shortage = str_split(food_shortage, " (?=\\w+\\.)")) %>%
@@ -2596,7 +2631,7 @@ ggplot(shortage_data_combined, aes(x = month_year, y = proportion * 100, fill = 
 ```
 
 
-```{r, fig.cap='Changes in household food availability over the past 12 months', fig.align='center', out.width = '90%'}
+```{r, fig.cap='Changes in household food availability over the past 12 months', fig.align='center', out.width = '90%', fig.height=8}
 village_data <- tanganyika_survey %>%
     group_by(food_availability) %>%
     summarise(proportion = survey_mean(vartype = "ci", na.rm = TRUE), total = survey_total(vartype = "ci", na.rm = TRUE), n = unweighted(n())) %>% 
@@ -2709,7 +2744,7 @@ proportion_table %>%
 
 When viewed over the period of the last five years, the trend in food availability appears the same (Figure 23). Overall, 16% of households experience better food availability, 54% experience the same availability of food, and 28% of households express being worse off now. 
 
-```{r, fig.cap='Change in household food availability over the last 5 years', fig.align='center', out.width = '90%'}
+```{r, fig.cap='Change in household food availability over the last 5 years', fig.align='center', out.width = '90%', fig.height=8}
 village_data <- tanganyika_survey %>%
     group_by(availability_changed) %>%
     summarise(proportion = survey_mean(vartype = "ci", na.rm = TRUE), total = survey_total(vartype = "ci", na.rm = TRUE), n = unweighted(n())) %>%  filter(availability_changed != "I DO NOT WANT TO ANSWER" & availability_changed != "I DON'T KNOW") %>% drop_na() 
@@ -2761,7 +2796,7 @@ ggplot(village_data_combined, aes(x = fct_relevel(availability_changed, "BETTER 
 ```
 
 
-```{r,  fig.cap='Reasons for increase in household food availability', fig.align='center', out.width = '90%'}
+```{r,  fig.cap='Reasons for increase in household food availability', fig.align='center', out.width = '90%', fig.height=9, fig.width=10}
 
 # Expand the data and add cluster information
 availability_reason_expanded <- tanganyika_clean %>% 
@@ -2822,7 +2857,7 @@ The reasons for an increase in food availability vary (Figure 24). 33% of respon
 
 In response to being asked why food availability might be better now due to other reasosn, household respondents mentioned a variety of reasons. Diversification of income sources was stated as another reason as to why food availability had improved over the past year (n = 4). Households expressed that previously, their income was solely dependent on fishing, but now they have diversified their sources of income, such as (poultry) farming, improving their financial situation. Improved farming practices (n = 3), increases in agricultural productivity due to expanding land under cultivation (n = 2), improvements in business activities (n = 2), stabilized food prices  (n = 1), and improvements in personal life (n = 1) and financial support obtained (n = 1) include other reasons for which food availability has improved.
 
-```{r,  fig.cap='Reasons for decrease in household food availability', fig.align='center', out.width = '90%'}
+```{r,  fig.cap='Reasons for decrease in household food availability', fig.align='center', out.width = '90%', fig.height=9, fig.width=10}
 # Expand the data and add cluster information
 availability_reason_expanded <- tanganyika_clean %>% 
   select(hh_code, village, availability_reason, availability_changed, stype, fpc) %>%
@@ -2963,7 +2998,7 @@ Households were asked to describe ow they participate in decision making process
 
 Respondents were asked whether anyone in their household is a member of a village organisation, such as a cooperative, a self-help group, a women’s group, or some other group (Figure 26). Although the affirmative responses were low overall (13%), group membership in villages such as Mtakuja (45%), Kichangani (26%), and Katenge (20%) was markedly higher.
 
-```{r, fig.cap='Village organisation membership at village level (%)', fig.align='center', out.width = '90%'}
+```{r, fig.cap='Village organisation membership at village level (%)', fig.align='center', out.width = '90%', fig.height=8}
 
 village_data <- tanganyika_survey %>%
   group_by(village, village_membership) %>%
@@ -3280,7 +3315,7 @@ Approximately two thirds of all reasons for conflicts concern the closure of the
 
 Respondents were asked about other reasons that conflicts and/or disputes were about. Other conflict reasons described relate to permit challenges (n = 8), as some fishers appear to struggle with the high costs and complicated requirements for obtaining fishing licenses, including having to pay for multiple licenses for both the fisher and the boat. Furthermore, conflict may occur around instances of corruption and/or bribery of BMU officers (n = 2), arguments on the market surrounding fish pricing (n = 2), theft and security issues (n = 2).
 
-```{r,  fig.cap='Reasons for conflict', fig.align='center', out.width = '90%'}
+```{r,  fig.cap='Reasons for conflict', fig.align='center', out.width = '90%', fig.height=7}
 
 # Expand and classify data by clusters
 conflict_reason_expanded <- tanganyika_clean %>% 
@@ -3487,7 +3522,8 @@ Respondents were asked “If there is a dispute or conflict between BMUs and fis
 
 Respondents were asked about who they thought to be an influential leader among their community, for instance a local leader whom they respect and who they think is good at raising awareness in their village about important communal issues (Figure 33). In response, political leaders (38%) and religious leaders (24%) were mentioned most commonly. Political party leaders, civil servants, and respected elders were also mentioned frequently. Of these influential leaders, 72% already occupied a village, ward, or regional government position (Figure 34). 
 
-```{r,  fig.cap='Influential community leaders', fig.align='center', out.width = '90%'}
+```{r,  fig.cap='Influential community leaders', fig.align='center', out.width = '90%', fig.height=7, fig.width=8}
+
 # Expand and classify data by clusters
 influential_leaders_expanded <- tanganyika_clean %>% 
   select(hh_code, village, influential_leaders, stype, fpc) %>%
@@ -3560,7 +3596,7 @@ ggplot(influential_leaders_data_combined, aes(x = reorder(influential_leaders, -
 ```
 
 
-```{r, fig.cap='Influential leaders currently involved in a village, ward, or regional government position at village level (%)', fig.align='center', out.width = '90%'}
+```{r, fig.cap='Influential leaders currently involved in a village, ward, or regional government position at village level (%)', fig.align='center', out.width = '90%', fig.height=9}
 village_data <- tanganyika_survey %>%
   group_by(village, leader_position) %>%
   summarise(proportion = survey_mean(vartype = "ci", na.rm = TRUE), 
@@ -4264,7 +4300,7 @@ ggplot(aggregate_activity_combined, aes(
 
 Three quarters of all households believed that their BMU had good leaders in place (Figure 40). In most instances (85%), respondents indicated that election procedures to choose BMU leaders were fair (Figure 41). Only 8% believed that BMU leaders were elected unfairly. Furthermore, two thirds of people indicated that there is good trust and collaboration between their BMU and government authorities in the management of fishing resources (Figure 42). 
 
-```{r, fig.cap='Do you think the BMU has good leaders?', fig.align='center', out.width = '90%'}
+```{r, fig.cap='Do you think the BMU has good leaders?', fig.align='center', out.width = '90%', fig.height=9}
 # Expand the data with cluster classification
 village_data_expanded <- tanganyika_survey %>%
   filter(!is.na(good_leaders) & good_leaders != "I DON'T KNOW") %>%
@@ -4890,7 +4926,7 @@ ggplot(boat_type_data, aes(x = village, y = proportion * 100, group = boat_type,
   #     label = paste0(round(proportion * 100, 0)),
   #     y = pmin(proportion_upp * 100, 100) + 2),
   #     position = position_dodge(width = 0.8), vjust = 0, size = 3) +
-  guides(fill = guide_legend(title = NULL, nrow = 1, reverse = FALSE)) +
+  guides(fill = guide_legend(title = NULL, nrow = 2, reverse = FALSE)) +
   labs(x = NULL, y = NULL) +
   scale_fill_manual(values = SEA_palette,labels = c(
       "CANOE BOAT" = "Canoe", 
@@ -5025,7 +5061,7 @@ ggplot(aggregate_fish_importance, aes(x = village, y = mean_importance_percent, 
 
 Fishers were asked to provide a self-assessment of fisheries resource management over the past five years (Figure 48). Across both village clusters, half of the respondents indicated that they had participated in good fisheries management practices (north 52%; south 49%). Respectively, in the northern and southern village clusters, 37% and 34% indicated that fisheries management had been bad or very bad over the past five years. Overall, 58%of fishers believed that their rights to access and use resources of the fishery are being upheld by regulatory and/or communal systems (Table 14). Additionally, 62% of fishers expressed that they were happy with the current security of their rights over fisheries resources. However, only 24% indicated that they were involved in decision-making processes regarding resource management of their fishery. Of the fishers involved in decision-making processes concerning the fisheries resource, the vast majority of fishers in both the northern and southern clusters of villages stated they were happy with their level of involvement (Figure 49).
 
-```{r, fig.cap='Self-assessment of fisheries resource management over the past five years', fig.align='center', out.width = '90%'}
+```{r, fig.cap='Self-assessment of fisheries resource management over the past five years', fig.align='center', out.width = '90%', fig.height=8}
 # Expand the data with cluster classification
 fisheries_resources_expanded <- tanganyika_survey %>%
   filter(!is.na(fisheries_resources) & fisheries_resources != "I DO NOT WANT TO ANSWER") %>%
@@ -5190,7 +5226,7 @@ combined_table %>%
 ```
 
 
-```{r, fig.cap='Satisfaction with involvement in decision-making around fisheries resources?', fig.align='center', out.width = '90%'}
+```{r, fig.cap='Satisfaction with involvement in decision-making around fisheries resources?', fig.align='center', out.width = '90%', fig.height=8}
 # Expand the data with cluster classification
 satisfaction_involvement_expanded <- tanganyika_survey %>%
   filter(!is.na(satisfaction_involvement)) %>%
@@ -5259,7 +5295,7 @@ ggplot(satisfaction_involvement_combined, aes(x = fct_relevel(satisfaction_invol
 
 Furthermore, fishers were asked to provide an indication of their relationship with fisheries extension officers. In the northern village cluster, 63% of respondents stated they had a good relationship, 20% described their relationship with fisheries extension officers as average, and a further 17% stated they maintained a bad relationship (Figure 50). Similarly, 65% of respondents in the southern village cluster indicated their relationship with fisheries extension officers to be good, while 18% described it as average, and 16% as bad. 
 
-```{r, fig.cap='An indication of the relationship with fisheries extension officers', fig.align='center', out.width = '90%'}
+```{r, fig.cap='An indication of the relationship with fisheries extension officers', fig.align='center', out.width = '90%', fig.height=8}
 # Expand the data with cluster classification
 relationship_officer_expanded <- tanganyika_survey %>%
   filter(!is.na(relationship_officer) & relationship_officer != "NOT SURE" & relationship_officer != "I DO NOT WANT TO ANSWER") %>%
@@ -5436,7 +5472,7 @@ Negative opinions on the implementation of fish reserves were varied but limited
 
 Half of fishers in the northern and southern village clusters indicated that they believed current fish stocks to be sufficient in meeting the fishing, food, and livelihood needs of their community (Figure 51). Respectively, a further 39% and 44% of fishers in the northern and southern village clusters did not believe this to be true.
 
-```{r, fig.cap='At the moment, do you think the current number of fish in the lake is sufficient to meet the fishing, food, and livelihood needs of the community?', fig.align='center', out.width = '90%'}
+```{r, fig.cap='At the moment, do you think the current number of fish in the lake is sufficient to meet the fishing, food, and livelihood needs of the community?', fig.align='center', out.width = '90%', fig.height=8}
 
 # Expand the data with cluster classification
 sustainability_population_expanded <- tanganyika_survey %>%
@@ -6680,14 +6716,37 @@ aggregate_target_type <- aggregate_target_type %>%
   ) %>%
   ungroup()
 
-# Plotting with facet_wrap to separate by Cluster
+# Ensure all combinations of Fish_Species, Season, and cluster exist
+complete_data <- expand.grid(
+  Fish_Species = unique(aggregate_target_type$Fish_Species),
+  Season = unique(aggregate_target_type$Season),
+  cluster = unique(aggregate_target_type$cluster))
+
+# Merge with existing data to fill in missing combinations
+aggregate_target_type <- complete_data %>%
+  left_join(aggregate_target_type, by = c("Fish_Species", "Season", "cluster")) %>%
+  mutate(
+    mean_season = replace_na(mean_season, 0),
+    mean_season_low = replace_na(mean_season_low, 0),
+    mean_season_upp = replace_na(mean_season_upp, 0),
+    mean_season_percent = replace_na(mean_season_percent, 0),
+    mean_season_percent_low = replace_na(mean_season_percent_low, 0),
+    mean_season_percent_upp = replace_na(mean_season_percent_upp, 0))
+
+# Restrict confidence intervals between 0 and 100
+aggregate_target_type <- aggregate_target_type %>%
+  mutate(
+    mean_season_percent_low = pmax(mean_season_percent_low, 0),
+    mean_season_percent_upp = pmin(mean_season_percent_upp, 100))
+
 ggplot(aggregate_target_type, aes(x = Fish_Species, y = mean_season_percent, group = Season, fill = Season)) +
   geom_bar(stat = "identity", position = position_dodge(preserve = "single"), width = 0.95) +
   geom_errorbar(aes(ymin = mean_season_percent_low, ymax = mean_season_percent_upp),
                 position = position_dodge(width = 0.95), width = 0.2) +
-  geom_text(aes(y = pmin(mean_season_percent_upp, 100) + 3, 
-                label = scales::percent(mean_season_percent/100, accuracy = 1)),
-            position = position_dodge(width = 0.95), size = 3) +
+  geom_text(aes(
+    y = ifelse(mean_season_percent_upp == 100, 100.5, mean_season_percent_upp + 2),  # Adjust labels for 100%
+    label = ifelse(mean_season_percent > 0, scales::percent(mean_season_percent / 100, accuracy = 1), "")),
+  position = position_dodge(width = 0.95), size = 3, vjust = 0) +
   labs(x = NULL, y = NULL) +
   guides(fill = guide_legend(title = NULL)) + 
   scale_fill_manual(values = SEA_palette, labels = function(labels) str_to_title(str_to_lower(labels))) +
@@ -6702,10 +6761,9 @@ ggplot(aggregate_target_type, aes(x = Fish_Species, y = mean_season_percent, gro
         axis.title.y = element_blank(),
         strip.text = element_text(size = 12, face = "bold"),  # Customizing strip text size and style
         legend.box = "horizontal") + 
-  scale_y_continuous(labels = label_percent(scale = 1)) +
+  scale_y_continuous(labels = label_percent(scale = 1), limits = c(0, 105)) +  # Expand y-axis slightly above 100%
   scale_x_discrete(labels = function(x) str_wrap(x, width = 10)) +
-  facet_wrap(~ cluster, nrow = 2, labeller = labeller(cluster = c("Cluster 1" = "Overall North", "Cluster 2" = "Overall South")))  # Custom labels for cluster
-
+  facet_wrap(~ cluster, nrow = 2, labeller = labeller(cluster = c("Cluster 1" = "Overall North", "Cluster 2" = "Overall South")))
 
 
 ```
@@ -7389,14 +7447,37 @@ aggregate_target_type <- aggregate_target_type %>%
   ungroup()
 
 
-# Plotting with facet_wrap to separate by Cluster
+# Ensure all combinations of Fish_Species, Season, and cluster exist
+complete_data <- expand.grid(
+  Fish_Species = unique(aggregate_target_type$Fish_Species),
+  Season = unique(aggregate_target_type$Season),
+  cluster = unique(aggregate_target_type$cluster))
+
+# Merge with existing data to fill in missing combinations
+aggregate_target_type <- complete_data %>%
+  left_join(aggregate_target_type, by = c("Fish_Species", "Season", "cluster")) %>%
+  mutate(
+    mean_season = replace_na(mean_season, 0),
+    mean_season_low = replace_na(mean_season_low, 0),
+    mean_season_upp = replace_na(mean_season_upp, 0),
+    mean_season_percent = replace_na(mean_season_percent, 0),
+    mean_season_percent_low = replace_na(mean_season_percent_low, 0),
+    mean_season_percent_upp = replace_na(mean_season_percent_upp, 0))
+
+# Restrict confidence intervals between 0 and 100
+aggregate_target_type <- aggregate_target_type %>%
+  mutate(
+    mean_season_percent_low = pmax(mean_season_percent_low, 0),
+    mean_season_percent_upp = pmin(mean_season_percent_upp, 100))
+
 ggplot(aggregate_target_type, aes(x = Fish_Species, y = mean_season_percent, group = Season, fill = Season)) +
   geom_bar(stat = "identity", position = position_dodge(preserve = "single"), width = 0.95) +
   geom_errorbar(aes(ymin = mean_season_percent_low, ymax = mean_season_percent_upp),
                 position = position_dodge(width = 0.95), width = 0.2) +
-  geom_text(aes(y = pmin(mean_season_percent_upp, 100) + 3, 
-                label = scales::percent(mean_season_percent/100, accuracy = 1)),
-            position = position_dodge(width = 0.95), size = 3) +
+  geom_text(aes(
+    y = ifelse(mean_season_percent_upp == 100, 100.5, mean_season_percent_upp + 2),  # Adjust labels for 100%
+    label = ifelse(mean_season_percent > 0, scales::percent(mean_season_percent / 100, accuracy = 1), "")),
+  position = position_dodge(width = 0.95), size = 3, vjust = 0) +
   labs(x = NULL, y = NULL) +
   guides(fill = guide_legend(title = NULL)) + 
   scale_fill_manual(values = SEA_palette, labels = function(labels) str_to_title(str_to_lower(labels))) +
@@ -7411,10 +7492,9 @@ ggplot(aggregate_target_type, aes(x = Fish_Species, y = mean_season_percent, gro
         axis.title.y = element_blank(),
         strip.text = element_text(size = 12, face = "bold"),  # Customizing strip text size and style
         legend.box = "horizontal") + 
-  scale_y_continuous(labels = label_percent(scale = 1)) +
+  scale_y_continuous(labels = label_percent(scale = 1), limits = c(0, 105)) +  # Expand y-axis slightly above 100%
   scale_x_discrete(labels = function(x) str_wrap(x, width = 10)) +
-  facet_wrap(~ cluster, nrow = 2, labeller = labeller(cluster = c("Cluster 1" = "Overall North", "Cluster 2" = "Overall South")))  # Custom labels for cluster
-
+  facet_wrap(~ cluster, nrow = 2, labeller = labeller(cluster = c("Cluster 1" = "Overall North", "Cluster 2" = "Overall South")))
 
 
 ```
