@@ -57,9 +57,28 @@ library(flextable)
 library(viridis)
 
 #Sustain EA colour palette
-SEA_palette <- c("#d77e5e", "#a4b792", "#e6e7e2", "#3d5919", "#202C39", "#381D2A", "#000000",
-                 "#f2a084", "#b9c9b1", "#f0f1ed", "#5b7a2e", "#404b58", "#522a3b", "#1a1a1a", 
-                 "#b15e42", "#839c7a", "#d2d2c8", "#293c14", "#151d29", "#2a171e", "#3c3c3c")
+SEA_palette <- c("#3d5919",  "#5b7a2e",  "#a4b792", "#d2d2c8", "#b9c9b1", "#839c7a",  "#293c14", "#151d29", "#d77e5e", "#e6e7e2",  "#202C39", "#381D2A", "#000000", "#f2a084", "#f0f1ed", "#404b58", "#522a3b", "#1a1a1a", "#b15e42",   "#2a171e", "#3c3c3c")
+
+SEA_palette_2 <- c( "#d2d2c8", "#5b7a2e", "#a4b792")
+
+SEA_palette_3 <- c(
+  "#3d5919", # Deep earthy green
+  "#5b7a2e", # Olive green
+  "#d2d2c8", # Neutral beige
+  "#88CC88", # Soft green
+  "#DDCC77", # Muted yellow
+  "#AA4499", # Earthy plum
+  "#44AA99", # Turquoise
+  "#332288", # Deep blue
+  "#882255", # Wine
+  "#6699CC", # Slate blue
+  "#E6AB02", # Golden ochre
+  "#FDDC91", # Peachy beige
+  "#B2182B", # Burnt red
+  "#2166AC", # Rich sky blue
+  "#1B7837"  # Dark forest green
+)
+
 
 # Load data
 tanganyika_clean <- readRDS("LTP_Baseline_2024_Clean.rds")
@@ -399,7 +418,7 @@ ggplot(demo_summary, aes(x = age_group, y = ifelse(sex == "MALE", -percentage, p
   coord_flip() +
   scale_y_continuous(labels = function(x) paste0(abs(x), "%"), limits = c(-10, 10)) +
   labs(x = "Age Group", y = "Percentage of Total Population") +
-  scale_fill_viridis(discrete = TRUE, option = "D",labels = c("FEMALE" = "Female", "MALE" = "Male")) +
+  scale_fill_manual(values = SEA_palette_2,labels = c("FEMALE" = "Female", "MALE" = "Male")) +
   sea::theme_sea()+
   theme(legend.title = element_blank(), panel.grid.major = element_blank(), panel.grid.minor = element_blank())+
   geom_text(aes(label = paste0(round(abs(percentage), 1), "%")), 
@@ -887,7 +906,7 @@ ggplot(village_poverty_likelihood_long, aes(x = village, y = poverty_likelihood,
             vjust = -0.5, size = 3) +  # Add percentage labels above bars
   guides(fill = guide_legend(title = NULL)) +
   labs(x = "Village", y = "Percentage of Poverty Likelihood") +
-  scale_fill_viridis(discrete = TRUE, option = "D", labels = c(
+  scale_fill_manual(values = SEA_palette, labels = c(
     "extreme_poverty" = "Extreme Poverty Line (%)", 
     "lower_poverty" = "Lower National Poverty Line (%)", 
     "upper_poverty" = "Upper National Poverty Line (%)")) +
@@ -988,7 +1007,7 @@ ggplot(village_data, aes(x = village, y = proportion * 100, group = household_ab
   #   position = position_dodge(width = 0.95), 
   #   vjust = 0, size = 3) +
   guides(fill = guide_legend(title = NULL, nrow = 1)) +
-  scale_fill_viridis(discrete = TRUE, option = "D", labels = c(
+  scale_fill_manual(values = SEA_palette, labels = c(
       "WE CAN JUST MEET OUR DAILY NEEDS AND HAVE NO EXTRA THINGS" = "Just sufficient", 
       "WE HAVE DIFFICULTY IN MEETING OUR DAILY NEEDS" = "With difficulty", 
       "WE HAVE ENOUGH TO MEET OUR DAILY NEEDS AND HAVE SOME EXTRA THINGS" = "Can meet needs",
@@ -1062,7 +1081,7 @@ ggplot(village_data_combined, aes(x = reorder(WaterSource, -proportion), y = pro
                    paste0(round(proportion * 100), "%")),
     y = pmin(proportion_upp * 100, 100) + 1.5),  # Position label above the error bar
     position = position_dodge(width = 0.8), vjust = 0, size = 2) +
-  scale_fill_viridis(discrete = TRUE, option = "D") +
+  scale_fill_manual(values = SEA_palette_2) +
   labs(x = "", y = "", fill = "") +
   theme_minimal() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1),
@@ -1194,7 +1213,7 @@ ggplot(treatment_data, aes(x = village, y = proportion * 100, group = treatment_
   #     position = position_dodge(width = 0.8), vjust = 0, size = 3) +
   guides(fill = guide_legend(title = NULL, nrow = 1, reverse = FALSE)) +
   labs(x = NULL, y = NULL) +
-  scale_fill_viridis(discrete = TRUE, option = "D", labels = c(
+  scale_fill_manual(values = SEA_palette, labels = c(
       "ADD BLEACH/CHLORINE" = "Add bleach or chlorine", 
       "BOIL" = "Boil",
       "LET IT STAND AND SETTLE" = "Let it stand and settle",
@@ -1272,7 +1291,7 @@ ggplot(treatment_data, aes(x = village, y = proportion * 100, group = treatment_
   #     position = position_dodge(width = 0.8), vjust = 0, size = 3) +
   guides(fill = guide_legend(title = NULL, nrow = 1, reverse = FALSE)) +
   labs(x = NULL, y = NULL) +
-  scale_fill_viridis(discrete = TRUE, option = "D", labels = c(
+  scale_fill_manual(values = SEA_palette, labels = c(
       "ADD BLEACH/CHLORINE" = "Add bleach or chlorine", 
       "BOIL" = "Boil",
       "STRAIN THROUGH A CLOTH" = "Strain through a cloth",
@@ -1565,7 +1584,7 @@ ggplot(household_item_data_combined, aes(x = reorder(household_item, -proportion
     position = position_dodge(width = 0.8), vjust = 0, size = 3) +
   guides(fill = guide_legend(title = NULL, nrow = 3)) +
   labs(x = "", y = NULL) +
-  scale_fill_viridis(discrete = TRUE, option = "D") +
+  scale_fill_manual(values = SEA_palette_3) +
   sea::theme_sea() + 
   theme(legend.position = "none",  # Remove the legend
         axis.text.x = element_text(angle = 45, hjust = 1), axis.text.y = element_blank(), axis.ticks.y = element_blank(),
@@ -1630,7 +1649,7 @@ ggplot(fuel_data, aes(x = village, y = proportion * 100, group = cooking_fuel, f
                 position = position_dodge(preserve = "single", width = 0.95), width = 0.1) +
   guides(fill = guide_legend(title = NULL)) +
   labs(x = NULL, y = NULL) +
- scale_fill_viridis(discrete = TRUE, option = "D", labels = c(
+ scale_fill_manual(values = SEA_palette, labels = c(
       "CHARCOAL" = "Charcoal", 
       "CROP RESIDUALS" = "Crop Residuals",
       "FIREWOOD" = "Firewood",
@@ -1810,7 +1829,7 @@ ggplot(livelihood_data_combined, aes(x = reorder(livelihood_activities, -proport
     position = position_dodge(width = 0.8), vjust = 0, size = 3) +
   guides(fill = guide_legend(title = NULL, nrow = 3)) +
   labs(x = NULL, y = NULL) +
-  scale_fill_viridis(discrete = TRUE, option = "D") +
+  scale_fill_manual(values = SEA_palette_3) +
   sea::theme_sea() + 
   theme(legend.position = "none",  # Remove the legend
         axis.text.x = element_text(angle = 45, hjust = 1), axis.text.y = element_blank(), axis.ticks.y = element_blank(),
@@ -1885,8 +1904,8 @@ ggplot(village_data_yes, aes(x = village, y = proportion * 100, group = borrow_s
       y = pmin(proportion_upp * 100, 100) + 2), 
       position = position_dodge(width = 0.8), vjust = 0, size = 3) +
   guides(fill = guide_legend(title = NULL, nrow = 2)) +
-  scale_fill_manual(values = SEA_palette) +
-  scale_fill_viridis(discrete = TRUE, option = "D") +
+  scale_fill_manual(values = SEA_palette_2) +
+  sea::scale_fill_sea_discrete()+
   sea::theme_sea() + 
   theme(
     legend.position = "none",  
@@ -1959,7 +1978,7 @@ ggplot(loan_usage_data_combined, aes(x = reorder(loan_usage, -proportion),
     position = position_dodge(width = 0.8), vjust = 0, size = 3) +
   guides(fill = guide_legend(title = NULL, nrow = 3)) +
   labs(x = "", y = "") +
-  scale_fill_viridis(discrete = TRUE, option = "D") +
+  scale_fill_manual(values = SEA_palette_3) +
   sea::theme_sea() + 
   theme(legend.position = "none",  # Remove the legend
         axis.text.x = element_text(angle = 45, hjust = 1), axis.text.y = element_blank(), axis.ticks.y = element_blank(),
@@ -2029,7 +2048,7 @@ ggplot(borrowing_source_data_combined, aes(x = reorder(borrowing_source, -propor
     position = position_dodge(width = 0.8), vjust = 0, size = 3) +
   guides(fill = guide_legend(title = NULL, nrow = 3)) +
   labs(x = "", y = "") +
-  scale_fill_viridis(discrete = TRUE, option = "D") +
+  scale_fill_manual(values = SEA_palette_3) +
   sea::theme_sea() + 
   theme(legend.position = "none",  # Remove the legend
         axis.text.x = element_text(angle = 45, hjust = 1), axis.text.y = element_blank(), axis.ticks.y = element_blank(),
@@ -2083,7 +2102,7 @@ ggplot(village_data_combined, aes(x = reorder(not_borrowed, -proportion),
       position = position_dodge(width = 0.8), vjust = 0, size = 3) +
   guides(fill = guide_legend(title = NULL, nrow = 3)) +
   labs(x = "", y = "") +
-  scale_fill_viridis(discrete = TRUE, option = "D") +
+  scale_fill_manual(values = SEA_palette_3) +
   sea::theme_sea() + 
   theme(legend.position = "none",  # Remove the legend
         axis.text.x = element_text(angle = 45, hjust = 1), axis.text.y = element_blank(), axis.ticks.y = element_blank(),
@@ -2165,7 +2184,7 @@ ggplot(village_data, aes(x = village, y = proportion * 100, group = cocoba_sacco
     aes(y = pmin(proportion_upp, 1) * 100 + 1, label = paste0(round(proportion * 100, 0), "%")),
     position = position_dodge(width = 0.95), vjust = 0, size = 3) +
   guides(fill = guide_legend(title = NULL, nrow = 2)) +
-  scale_fill_viridis(discrete = TRUE, option = "D") +
+  scale_fill_manual(values = SEA_palette) +
   sea::theme_sea() + 
   theme(
     legend.position = "none",  
@@ -2322,7 +2341,7 @@ ggplot(fish_proportions_combined, aes(x = fish_type, y = proportion, fill = freq
             position = position_dodge(width = 0.95), size = 3) +
   guides(fill = guide_legend(title = NULL)) +
   labs(x = NULL, y = NULL, fill = "Frequency of Consumption") +
-  scale_fill_viridis(discrete = TRUE, option = "D",labels = c("LESS THAN ONCE A WEEK" = "Less than Weekly",
+  scale_fill_manual(values = SEA_palette,labels = c("LESS THAN ONCE A WEEK" = "Less than Weekly",
                                           "AT LEAST ONCE A WEEK" = "Weekly",
                                           "ALMOST EVERY DAY" = "Daily")) +
   sea::theme_sea() +
@@ -2378,7 +2397,7 @@ ggplot(village_data_combined, aes(x = reorder(primary_source, -proportion), y = 
       position = position_dodge(width = 0.8), vjust = 0, size = 3) +
   guides(fill = guide_legend(title = NULL)) + 
   labs(x = NULL, y = NULL) +  
-  scale_fill_viridis(discrete = TRUE, option = "D") +
+  scale_fill_manual(values = SEA_palette) +
   sea::theme_sea() + 
   theme(legend.position = "none", axis.text.x = element_text(angle = 45, hjust = 1), 
         panel.grid.major = element_blank(), panel.grid.minor = element_blank(), 
@@ -2431,7 +2450,7 @@ ggplot(village_data_combined, aes(x = reorder(eat_changed, -proportion), y = pro
       position = position_dodge(width = 0.8), vjust = 0, size = 3) +
   guides(fill = guide_legend(title = NULL)) + 
   labs(x = NULL, y = NULL) +  
-  scale_fill_viridis(discrete = TRUE, option = "D") +
+  scale_fill_manual(values = SEA_palette) +
   sea::theme_sea() + 
   theme(legend.position = "none", axis.text.x = element_text(angle = 45, hjust = 1), 
         panel.grid.major = element_blank(), panel.grid.minor = element_blank(), 
@@ -2493,7 +2512,7 @@ ggplot(village_data_yes, aes(x = village, y = proportion * 100, group = worry_sh
     aes(y = pmin(proportion_upp, 1) * 100 + 1, label = paste0(round(proportion * 100, 1), "%")), 
     position = position_dodge(width = 0.95), vjust = -0.5, size = 3) +
   guides(fill = guide_legend(title = NULL, nrow = 2)) +
-  scale_fill_viridis(discrete = TRUE, option = "D") +
+  sea::scale_fill_sea_discrete() +
   sea::theme_sea() + 
   theme(
     legend.position = "none",  
@@ -2648,7 +2667,7 @@ ggplot(village_data_combined, aes(x = fct_relevel(food_availability, "BETTER", "
     position = position_dodge(width = 0.95), vjust = -0.5, size = 3) +
   guides(fill = guide_legend(title = NULL)) + 
   labs(x = NULL, y = NULL) +  
-  scale_fill_viridis(discrete = TRUE, option = "D") +
+  scale_fill_manual(values = SEA_palette) +
   sea::theme_sea() + 
   theme(legend.position = "none", axis.text.x = element_text(angle = 45, hjust = 1), 
         panel.grid.major = element_blank(), panel.grid.minor = element_blank(), 
@@ -2759,7 +2778,7 @@ ggplot(village_data_combined, aes(x = fct_relevel(availability_changed, "BETTER 
     position = position_dodge(width = 0.95), vjust = -0.5, size = 3) +
   guides(fill = guide_legend(title = NULL)) + 
   labs(x = NULL, y = NULL) +  
-  scale_fill_viridis(discrete = TRUE, option = "D") +
+  scale_fill_manual(values = SEA_palette) +
   sea::theme_sea() + 
   theme(legend.position = "none", axis.text.x = element_text(angle = 45, hjust = 1), 
         panel.grid.major = element_blank(), panel.grid.minor = element_blank(), 
@@ -2813,7 +2832,7 @@ ggplot(availability_reason_data, aes(x = reorder(availability_reason, -proportio
     position = position_dodge(width = 0.95), vjust = -0.5, size = 3) +
   guides(fill = guide_legend(title = NULL)) +
   labs(x = "", y = "") +
-  scale_fill_viridis(discrete = TRUE, option = "D") +
+  scale_fill_manual(values = SEA_palette_3) +
   sea::theme_sea() + 
   theme(legend.position = "none",  # Remove the legend
         axis.text.x = element_text(angle = 45, hjust = 1), 
@@ -2871,7 +2890,7 @@ ggplot(availability_reason_data, aes(x = reorder(availability_reason, -proportio
     position = position_dodge(width = 0.95), vjust = -0.5, size = 3) +
   guides(fill = guide_legend(title = NULL)) +
   labs(x = "", y = "") +
-  scale_fill_viridis(discrete = TRUE, option = "D") +
+  scale_fill_manual(values = SEA_palette_3) +
   sea::theme_sea() + 
   theme(
     legend.position = "none",  # Remove the legend
@@ -3089,7 +3108,7 @@ ggplot(trust_proportions, aes(x = party, y = proportion, fill = fct_relevel(trus
             position = position_dodge(width = 0.95), size = 3) +
   guides(fill = guide_legend(title = NULL)) +
   labs(x = NULL, y = NULL, fill = "Frequency of Trust") +
-  scale_fill_viridis(discrete = TRUE, option = "D",labels = c("CAN ALWAYS BE TRUSTED" = "Always Trusted",
+  scale_fill_manual(values = SEA_palette,labels = c("CAN ALWAYS BE TRUSTED" = "Always Trusted",
                                           "CAN MOSTLY BE TRUSTED" = "Mostly Trusted",
                                           "NEUTRAL" = "Neutral",
                                           "CAN RARELY BE TRUSTED" = "Rarely Trusted",
@@ -3208,7 +3227,7 @@ ggplot(conflict_data, aes(x = village, y = proportion * 100, group = fct_relevel
                 position = position_dodge(preserve = "single", width = 0.95), width = 0.1) +
   guides(fill = guide_legend(title = NULL)) +
   labs(x = NULL, y = NULL) +
-  scale_fill_viridis(discrete = TRUE, option = "D", labels = c("OFTEN" = "Often",
+  scale_fill_manual(values = SEA_palette, labels = c("OFTEN" = "Often",
                                           "RARELY" = "Rarely",
                                           "NEVER" = "Never",
                                           "NOT SURE" = "Not Sure")) +
@@ -3273,7 +3292,7 @@ ggplot(conflict_data, aes(x = village, y = proportion * 100, group = fct_relevel
                 position = position_dodge(preserve = "single", width = 0.95), width = 0.1) +
   guides(fill = guide_legend(title = NULL)) +
   labs(x = NULL, y = NULL) +
-  scale_fill_viridis(discrete = TRUE, option = "D", labels = c("MORE" = "More",
+  scale_fill_manual(values = SEA_palette, labels = c("MORE" = "More",
                                           "SAME" = "Same",
                                           "LESS" = "Less",
                                           "NOT SURE" = "Not Sure")) +
@@ -3347,7 +3366,7 @@ ggplot(conflict_reason_data_combined, aes(x = reorder(conflict_reason, -proporti
     position = position_dodge(width = 0.95), vjust = -0.5, size = 3) +
   guides(fill = guide_legend(title = NULL)) +
   labs(x = "", y = "") +
-  scale_fill_viridis(discrete = TRUE, option = "D") +
+  scale_fill_manual(values = SEA_palette_3) +
   sea::theme_sea() + 
   theme(legend.position = "none",  # Remove the legend
         axis.text.x = element_text(angle = 45, hjust = 1), axis.text.y = element_blank(),  
@@ -3416,7 +3435,7 @@ ggplot(conflict_parties_data, aes(x = village, y = proportion * 100, group = con
                 position = position_dodge(preserve = "single", width = 0.95), width = 0.1) +
   guides(fill = guide_legend(title = NULL, nrow = 2)) +
   labs(x = NULL, y = NULL) +
-  scale_fill_viridis(discrete = TRUE, option = "D", labels = c("AMONG FISHERS" = "Among fishers", "AMONG LOCAL VILLAGERS" = "Among local villagers", "BMUS WITH FISHERS" = "BMUs with fishers", "I DON'T KNOW" = "I don't know", "LOCAL VILLAGERS WITH GOVERNMENT" = "With government", "LOCAL VILLAGERS WITH IMMIGRANTS" = "With immigrants", "LOCAL VILLAGERS WITH PEOPLE FROM OTHER VILLAGES" = "With people from other villages", "OTHER" = "Other")) +
+  scale_fill_manual(values = SEA_palette_3, labels = c("AMONG FISHERS" = "Among fishers", "AMONG LOCAL VILLAGERS" = "Among local villagers", "BMUS WITH FISHERS" = "BMUs with fishers", "I DON'T KNOW" = "I don't know", "LOCAL VILLAGERS WITH GOVERNMENT" = "With government", "LOCAL VILLAGERS WITH IMMIGRANTS" = "With immigrants", "LOCAL VILLAGERS WITH PEOPLE FROM OTHER VILLAGES" = "With people from other villages", "OTHER" = "Other")) +
   sea::theme_sea() + 
   theme(legend.position = "bottom",  legend.direction = "horizontal",  legend.justification = "center", 
         axis.text.x = element_text(size = 7), strip.text = element_blank(), panel.grid.major = element_blank(), panel.grid.minor = element_blank(), legend.box = "horizontal") + facet_wrap(~cluster, ncol = 1, scales = "free_x")+
@@ -3479,7 +3498,7 @@ ggplot(conflict_data, aes(x = village, y = proportion * 100, group = fct_relevel
                 position = position_dodge(preserve = "single", width = 0.95), width = 0.1) +
   guides(fill = guide_legend(title = NULL)) +
   labs(x = NULL, y = NULL) +
-  scale_fill_viridis(discrete = TRUE, option = "D", labels = c("YES" = "Yes",
+  scale_fill_manual(values = SEA_palette, labels = c("YES" = "Yes",
                                           "NO" = "No",
                                           "NOT SURE" = "Not Sure")) +
   sea::theme_sea() + 
@@ -3553,7 +3572,7 @@ ggplot(influential_leaders_data_combined, aes(x = reorder(influential_leaders, -
     position = position_dodge(width = 0.95), vjust = -0.5, size = 3) +
   guides(fill = guide_legend(title = NULL)) +
   labs(x = "", y = "") +
-  scale_fill_viridis(discrete = TRUE, option = "D") +
+  scale_fill_manual(values = SEA_palette_3) +
   sea::theme_sea() + 
   theme(legend.position = "none",  # Remove the legend
         axis.text.x = element_text(angle = 45, hjust = 1), axis.text.y = element_blank(),  
@@ -4240,7 +4259,7 @@ ggplot(aggregate_activity_combined, aes(
   geom_bar(stat = "identity", width = 0.75) +
   labs(x = NULL, y = NULL) +
   guides(fill = guide_legend(title = NULL)) + 
-  scale_fill_viridis(discrete = TRUE, option = "D") +
+  scale_fill_manual(values = SEA_palette_3) +
   sea::theme_sea() + 
   theme(
     legend.position = "none", 
@@ -4896,7 +4915,7 @@ ggplot(boat_type_data, aes(x = village, y = proportion * 100, group = boat_type,
   #     position = position_dodge(width = 0.8), vjust = 0, size = 3) +
   guides(fill = guide_legend(title = NULL, nrow = 1, reverse = FALSE)) +
   labs(x = NULL, y = NULL) +
-  scale_fill_viridis(discrete = TRUE, option = "D",labels = c(
+  scale_fill_manual(values = SEA_palette,labels = c(
       "CANOE BOAT" = "Canoe", 
       "CANOE WITHOUT MOTOR" = "Canoe without engine",
       "ENGINE BOAT" = "Engine boat",
@@ -5608,7 +5627,7 @@ ggplot(fishing_gear_data, aes(x = village, y = proportion * 100, group = fishing
     position = position_dodge(width = 0.8), width = 0.25) +
   guides(fill = guide_legend(title = NULL, nrow = 2, reverse = FALSE)) +
   labs(x = NULL, y = NULL) +
-  scale_fill_viridis(discrete = TRUE, option = "D", labels = function(labels) str_to_title(str_to_lower(labels))) +
+  scale_fill_manual(values = SEA_palette_3, labels = function(labels) str_to_title(str_to_lower(labels))) +
   sea::theme_sea() + 
   theme(legend.position = "bottom",  legend.direction = "horizontal",  legend.justification = "center", 
     # axis.text.y = element_blank(),  # Remove y-axis labels
@@ -5703,7 +5722,7 @@ ggplot(aggregate_target_type_combined, aes(x = Fish_Species, y = mean_season_per
             position = position_dodge(width = 0.95), size = 3) +
   labs(x = NULL, y = NULL) +
   guides(fill = guide_legend(title = NULL)) + 
-  scale_fill_viridis(discrete = TRUE, option = "D",labels = function(labels) str_to_title(str_to_lower(labels))) +
+  scale_fill_manual(values = SEA_palette,labels = function(labels) str_to_title(str_to_lower(labels))) +
   sea::theme_sea() + 
   theme(legend.position = "bottom", 
         legend.direction = "horizontal", 
@@ -5982,7 +6001,7 @@ ggplot(combined_target, aes(x = Fish_Species, y = Value, fill = Value_Type)) +
                 position = position_dodge(0.75), width = 0.2) +
   labs(x = NULL, y = "Sale Price (TSh)") +
   guides(fill = guide_legend(title = NULL)) + 
-  scale_fill_viridis(discrete = TRUE, option = "D") +
+  scale_fill_manual(values = SEA_palette) +
   sea::theme_sea() + 
   theme(legend.position = "bottom", 
         axis.text.x = element_text(size = 10), 
@@ -6087,7 +6106,7 @@ ggplot(aggregate_satisfaction_combined, aes(
   geom_bar(stat = "identity", width = 0.75) +
   labs(x = NULL, y = NULL) +
   guides(fill = guide_legend(title = NULL)) + 
-  scale_fill_viridis(discrete = TRUE, option = "D") +
+  scale_fill_manual(values = SEA_palette_3) +
   sea::theme_sea() + 
   theme(
     legend.position = "none", 
@@ -6635,7 +6654,7 @@ ggplot(aggregate_target_type, aes(x = Fish_Species, y = mean_season_percent, gro
             position = position_dodge(width = 0.95), size = 3) +
   labs(x = NULL, y = NULL) +
   guides(fill = guide_legend(title = NULL)) + 
-  scale_fill_viridis(discrete = TRUE, option = "D", labels = function(labels) str_to_title(str_to_lower(labels))) +
+  scale_fill_manual(values = SEA_palette, labels = function(labels) str_to_title(str_to_lower(labels))) +
   sea::theme_sea() + 
   theme(legend.position = "bottom", 
         legend.direction = "horizontal", 
@@ -6650,6 +6669,9 @@ ggplot(aggregate_target_type, aes(x = Fish_Species, y = mean_season_percent, gro
   scale_y_continuous(labels = label_percent(scale = 1)) +
   scale_x_discrete(labels = function(x) str_wrap(x, width = 10)) +
   facet_wrap(~ cluster, nrow = 2, labeller = labeller(cluster = c("Cluster 1" = "Overall North", "Cluster 2" = "Overall South")))  # Custom labels for cluster
+
+
+
 ```
 
 
@@ -6775,7 +6797,7 @@ combined_target <- bind_rows(
     mutate(Value_Type = "Lowest Sale Price", Value = mean_worst_value) %>%
     select(-mean_worst_value))
   
-combined_target$Fish_Species <- gsub("_process", "", combined_target$Fish_Species)
+combined_target$Fish_Species <- gsub("_trade", "", combined_target$Fish_Species)
 
 # Plotting the combined grouped bar chart with facets for each cluster and custom row titles
 ggplot(combined_target, aes(x = Fish_Species, y = Value, fill = Value_Type)) +
@@ -6787,7 +6809,7 @@ ggplot(combined_target, aes(x = Fish_Species, y = Value, fill = Value_Type)) +
                 position = position_dodge(0.75), width = 0.2) +
   labs(x = NULL, y = "Sale Price (TSh)") +
   guides(fill = guide_legend(title = NULL)) + 
-  scale_fill_viridis(discrete = TRUE, option = "D") +
+  scale_fill_manual(values = SEA_palette) +
   sea::theme_sea() + 
   theme(legend.position = "bottom", 
         axis.text.x = element_text(size = 10), 
@@ -6861,7 +6883,7 @@ ggplot(aggregate_satisfaction, aes(
   geom_bar(stat = "identity", width = 0.75) +
   labs(x = NULL, y = NULL) +
   guides(fill = guide_legend(title = NULL)) + 
-  scale_fill_viridis(discrete = TRUE, option = "D") +
+  scale_fill_manual(values = SEA_palette_3) +
   sea::theme_sea() + 
   theme(
     legend.position = "none", 
@@ -7197,7 +7219,7 @@ ggplot(processing_form_data, aes(x = village, y = proportion * 100, group = proc
                 position = position_dodge(preserve = "single", width = 0.95), width = 0.1) +
   guides(fill = guide_legend(title = NULL, nrow = 1)) +
   labs(x = NULL, y = NULL) +
-  scale_fill_viridis(discrete = TRUE, option = "D", labels = function(labels) str_to_title(str_to_lower(labels))) +
+  scale_fill_manual(values = SEA_palette, labels = function(labels) str_to_title(str_to_lower(labels))) +
   sea::theme_sea() + 
   theme(legend.position = "bottom",  legend.direction = "horizontal",  legend.justification = "center", 
         axis.text.x = element_text(size = 7), panel.grid.major = element_blank(), panel.grid.minor = element_blank(), strip.text = element_blank(), legend.box = 
@@ -7262,7 +7284,7 @@ ggplot(processing_equipment_data, aes(x = village, y = proportion * 100, group =
                 position = position_dodge(preserve = "single", width = 0.95), width = 0.1) +
   guides(fill = guide_legend(title = NULL, nrow = 2)) +
   labs(x = NULL, y = NULL) +
-  scale_fill_viridis(discrete = TRUE, option = "D", labels = function(labels) str_to_title(str_to_lower(labels))) +
+  scale_fill_manual(values = SEA_palette_3, labels = function(labels) str_to_title(str_to_lower(labels))) +
   sea::theme_sea() + 
   theme(legend.position = "bottom",  legend.direction = "horizontal",  legend.justification = "center", 
         axis.text.x = element_text(size = 7), panel.grid.major = element_blank(), panel.grid.minor = element_blank(), strip.text = element_blank(), legend.box = 
@@ -7336,7 +7358,7 @@ ggplot(aggregate_target_type, aes(x = Fish_Species, y = mean_season_percent, gro
             position = position_dodge(width = 0.95), size = 3) +
   labs(x = NULL, y = NULL) +
   guides(fill = guide_legend(title = NULL)) + 
-  scale_fill_viridis(discrete = TRUE, option = "D", labels = function(labels) str_to_title(str_to_lower(labels))) +
+  scale_fill_manual(values = SEA_palette, labels = function(labels) str_to_title(str_to_lower(labels))) +
   sea::theme_sea() + 
   theme(legend.position = "bottom", 
         legend.direction = "horizontal", 
@@ -7351,6 +7373,8 @@ ggplot(aggregate_target_type, aes(x = Fish_Species, y = mean_season_percent, gro
   scale_y_continuous(labels = label_percent(scale = 1)) +
   scale_x_discrete(labels = function(x) str_wrap(x, width = 10)) +
   facet_wrap(~ cluster, nrow = 2, labeller = labeller(cluster = c("Cluster 1" = "Overall North", "Cluster 2" = "Overall South")))  # Custom labels for cluster
+
+
 
 ```
 
@@ -7489,7 +7513,7 @@ ggplot(combined_target, aes(x = Fish_Species, y = Value, fill = Value_Type)) +
                 position = position_dodge(0.75), width = 0.2) +
   labs(x = NULL, y = "Sale Price (TSh)") +
   guides(fill = guide_legend(title = NULL)) + 
-  scale_fill_viridis(discrete = TRUE, option = "D") +
+  scale_fill_manual(values = SEA_palette) +
   sea::theme_sea() + 
   theme(legend.position = "bottom", 
         axis.text.x = element_text(size = 10), 
@@ -7561,7 +7585,7 @@ ggplot(aggregate_satisfaction, aes(
   geom_bar(stat = "identity", width = 0.75) +
   labs(x = NULL, y = NULL) +
   guides(fill = guide_legend(title = NULL)) + 
-  scale_fill_viridis(discrete = TRUE, option = "D") +
+  scale_fill_manual(values = SEA_palette_3) +
   sea::theme_sea() + 
   theme(
     legend.position = "none", 
