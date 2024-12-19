@@ -182,7 +182,7 @@ The study population was defined as those households currently living within the
 A stratified random sampling design was employed across the study population. Stratified sampling involved dividing the study population strata (villages) and drawing separate probability samples from each stratum. Stratification ensures that a pre-specified number of observations from each stratum end up in the sample, which is therefore less variable, yet may provide more precise estimates to adequately represent the entire population.
 The strata in this study were defined based on household locations and represent the different villages. By dividing the population into strata, the sampling design aims to capture the variability within these groups and ensure that each important subgroup is well-represented in the final sample. The sampling frame for the stratified design represents the total list of households within the two clusters of villages. A finite population correction (FPC), is applied to reduce the variance of estimates, which accounts for the fact that sampling a substantial proportion of households in each stratum may lead to a decrease in variability. As such, the FPC is incorporated into the weighting of final survey estimates to correct for finite population size. The stratified sampling design ensures that each stratum is adequately represented and reduces variability within the sample, leading to more accurate conclusions and better-informed policy recommendations.
 
-```{r, fig.width=3}
+```{r}
 # Data
 data <- data <- readRDS("cluster_north_sample_design.rds")
 
@@ -212,7 +212,8 @@ data_formatted %>%
     j = 2:ncol(data_formatted),
     i = which(data_formatted$Variables %in% c("Population", "Sample", "Final sample number")),
     digits = 0
-  ) %>% autofit()
+  ) %>%
+  set_table_properties(width = 1, layout = "autofit") 
 
 ```
 
@@ -247,8 +248,8 @@ data_formatted %>%
     j = 2:ncol(data_formatted),
     i = which(data_formatted$Variables %in% c("Population", "Sample", "Final sample number")),
     digits = 0
-  ) %>% autofit()
-  
+  ) %>%
+  set_table_properties(width = 1, layout = "autofit") 
 
 ```
 
