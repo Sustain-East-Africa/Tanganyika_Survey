@@ -9,9 +9,29 @@ library(tidyr)
 library(sea)
 library(viridis)
 
-SEA_palette <- c("#d77e5e", "#a4b792", "#e6e7e2", "#3d5919", "#202C39", "#381D2A", "#000000",
-                 "#f2a084", "#b9c9b1", "#f0f1ed", "#5b7a2e", "#404b58", "#522a3b", "#1a1a1a", 
-                 "#b15e42", "#839c7a", "#d2d2c8", "#293c14", "#151d29", "#2a171e", "#3c3c3c")
+SEA_palette <- c(
+  "#D4A373", # Earthy Beige
+  "#B57F50", # Warm Terracotta
+  "#705D4D", # Deep Taupe
+  "#9E805E", # Golden Brown
+  "#A7B77D", # Olive Green
+  "#6A8A65", # Moss Green
+  "#468D7E", # Deep Teal
+  "#9DB1AA", # Muted Seafoam
+  "#D9C8A1", # Warm Sand
+  "#CDA275", # Camel
+  "#8C7C62", # Muted Olive
+  "#7B9BA6", # Slate Blue
+  "#8E99B3", # Dusky Periwinkle
+  "#5C7183", # Steel Blue
+  "#364F6B", # Deep Slate Blue
+  "#778472", # Muted Sage Green
+  "#A5A58D", # Khaki
+  "#C9CBA3", # Soft Willow Green
+  "#DBC2CF", # Dusty Rose
+  "#9C6644", # Reddish Brown
+  "#5E503F"  # Dark Earth Brown
+)
 
 ###########################################################################################
 
