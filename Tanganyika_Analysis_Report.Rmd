@@ -57,7 +57,7 @@ library(flextable)
 library(viridis)
 
 #Sustain EA colour palette
-SEA_palette <- c("#3d5919",  "#5b7a2e",  "#a4b792", "#d2d2c8", "#b9c9b1", "#839c7a",  "#293c14", "#151d29", "#d77e5e", "#e6e7e2",  "#202C39", "#381D2A", "#000000", "#f2a084", "#f0f1ed", "#404b58", "#522a3b", "#1a1a1a", "#b15e42",   "#2a171e", "#3c3c3c")
+SEA_palette <- c("#3d5919",  "#5b7a2e",  "#a4b792", "#d2d2c8", "#404b58", "#b9c9b1", "#839c7a",  "#293c14", "#151d29", "#d77e5e", "#e6e7e2",  "#202C39", "#381D2A", "#000000", "#f2a084", "#f0f1ed",  "#522a3b", "#1a1a1a", "#b15e42",   "#2a171e", "#3c3c3c")
 
 SEA_palette_2 <- c( "#d2d2c8", "#5b7a2e", "#a4b792")
 
@@ -89,31 +89,42 @@ tanganyika_survey <- tanganyika_clean %>%
     as_survey_design(strata = stype, fpc = fpc)
 
 # Create village clusters for plotting
-cluster_1_villages <- c("Izinga", "Kala", "Katenge", "Kilambo cha Mkolechi", 
-                        "Kizumbi", "Lyapinda", "Mpasa", "Mwinza", "Ng'anga", 
-                        "Tundu", "Wampembe", "Overall North")
-cluster_2_villages <- c("Isasa", "Kalungu", "Kichangani", "Kipili", 
+cluster_1_villages <- c("Isasa", "Kalungu", "Kichangani", "Kipili", 
                         "Majengo Mapya", "Manda Kerenge", "Manda Uhuru", 
-                        "Mkinga", "Mtakuja", "Ntanganyika", "Overall South", "Overall")
+                        "Mkinga", "Mtakuja", "Ntanganyika", "Overall North", "Overall")
+
+cluster_2_villages <- c("Izinga", "Kala", "Katenge", "Kilambo cha Mkolechi", 
+                        "Kizumbi", "Lyapinda", "Mpasa", "Mwinza", "Ng'anga", 
+                        "Tundu", "Wampembe", "Overall South")
+
 ```
 
 \newpage
 
 ### Disclaimer
 
-Disclaimer
+The views and opinions expressed in this report reflect those of the
+authors. Whilst every care has been taken in the writing of this report,
+the authors accept no responsibility for any resultant errors herein,
+any damages or loss whatsoever caused or suffered by any individual or
+organisation.
 
 ### Rights
 
-Rights
+The information in this report is copyrighted, therefore, copying or
+transmitting any part of this report without permission from the authors
+may be a violation. However, we encourage dissemination and use of this
+report with appropriate citation and acknowledgement.
 
 ### Suggested citation
 
-Please cite this report as such :
+Please cite this report as such:
+
+Brehony, P., Bachmann, T., Muiyuro, R. 2024. Baseline Study for the Lake Tanganyika Programme: Household Socioeconomic Assessment. Sustain East Africa, Nairobi, Kenya.
 
 ### Acknowledgements
 
-Acknowledgements
+The authors of this report would like to extend their gratitude to Craig Leisher, Lucy Mlagala, Camilla Herd, Fridolin Nzambimana, Ahmadi Mkali, and Peter Limbu for their support and technical assistance in producing this report. Furthermore, we would like to thank ... for their invaluable assistance as enumerators in conducting all the household surveys.
 
 <!-- inverse gunmetal page -->
 
@@ -121,6 +132,7 @@ Acknowledgements
 # Summary
 
 Provide broad overview of survey and key findings.
+
 :::
 
 <!-- inverse rust page -->
@@ -133,41 +145,24 @@ Provide broad overview of survey and key findings.
 Lake Tanganyika, the world's second-deepest lake and one of the oldest, is a biodiversity
 hotspot and a vital freshwater source for the region. Its shores teem with unique flora and
 fauna, sustaining both aquatic life and the communities living nearby. However, the lake
-and its environs confront various challenges endangering this delicate balance. Population
-growth, unsustainable fishing, deforestation, waste mismanagement, and limited access to
-services threaten the ecosystem and community well-being.
-The Lake Tanganyika Program (LTP) was initiated by building from experience with other fishing communities along the Tanzanian lakeshore and acknowledging the pressing need to tackle these challenges while envisioning a harmonious coexistence between communities and nature. Through collaboration and innovative approaches, LTP aims to establish and support a regional network of community-based co-managed fisheries areas and empower communities to locally co-manage their fisheries, enhance fish value chains,
-improve livelihoods, and support conservation efforts.
-Measuring the program's impact over time is crucial for ensuring effectiveness and
-sustainability and thus the purpose of the survey. This requires understanding local
-contexts, identifying challenges, and devising strategies for lasting development.
+and its environs confront various challenges endangering this delicate balance. Changes in fishing practices, changing local socio-economic and demographic conditions, deforestation, waste mismanagement, and limited access to services threaten the ecosystem and community well-being. The Nature Conservancy (TNC) initiated the Lake Tanganyika Program (LTP) by building from experience with other fishing communities along the Tanzanian lakeshore and acknowledging the pressing need to tackle these challenges while envisioning a harmonious coexistence between communities and nature. Through collaboration and innovative approaches, LTP aims to establish and support a regional network of community-based co-managed fisheries areas and empower communities to locally co-manage their fisheries, enhance fish value chains, improve livelihoods, and support conservation efforts.
+Measuring the programme's impact over time is crucial to ensure its effectiveness and
+sustainability. As such, this survey aims to deliver a household socioeconomic baseline assessment, which requires an understanding of local contexts, the capacity to identify challenges, and the ability to devise strategies for lasting development.
 
 2. Purpose of the Survey
 
-The main objective of the survey was to measure the impact brought about by the Lake
-Tanganyika program over time, and assess the existing conditions, identify challenges, and
+The main objective of the survey was to set a baseline to measure the impact brought about by the Lake
+Tanganyika Program over time, and assess the existing conditions, identify challenges, and
 eventually formulate strategies for sustainable development.
 
 3. Coverage
 
-The survey is intended to cover out in Kirando, Itete, Kipili, Mkinga Ward, Kala,
-Wampembe or Kizumbi? wards (kata), in the following 21 villages (vijiji): Kichangani,
+The survey covered the following wards: Kirando, Itete, Kipili, Mkinga Ward, Kala, and
+Wampembe wards (kata), in the following 21 villages (vijiji): Kichangani,
 Mtakuja, Isasa, Kipili, Manda Kerenge, Mkinga, Ntanganyika, Kalungu, Manda Uhuru,
 Majengo Mapya,Mpasa, Kilambo cha Mkolechi, Tundu, Kala, Wampembe, Mwinza, Izinga,
-Lyapinda, Kizumbi, Katenge, Ng'anga.
+Lyapinda, Kizumbi, Katenge, Ng'anga. For the purposes of this study, the 21 villages were disaggregated into a two clusters based on their geographic location. The northern cluster, generally referred to as "overall north", comprises villages centered around Kipili, including Kichangani, Mtakuja, Mkinga, Majengo Mapya, Manda Uhuru, Kalungu, Ntanganyika, Isasa, and Manda Kerenge. The southern cluster, "overall south", contains the villages of Kala, Mpasa, Kilambo ch Mikolechi, Tundu, Wampembe, Mwinza, Izinga, Kizumbi, Lyapinda, Ng'anga, and Katenge.  
 
-## Enumerator Training
-Training was crucial for enumerators before they began the household surveys to ensure that data collection is accurate, consistent, and ethical. The training covered essential responsibilities, including understanding the code of conduct, managing interview confidentiality, handling incomplete or uncertain responses, and reviewing the questionnaire at the end of each interview.
-Enumerators also learnt about their roles in relation to supervisors, debriefing sessions, and data entry. Through detailed discussions of the survey's sections—ranging from household information to livelihood practices—the enumerators gained a thorough understanding of the questionnaire. Additionally, hands-on training in using tablets and survey software, combined with testing the questions among themselves and a pilot study, prepares them for real-world challenges, ensuring they can manage their workload and accurately capture the data needed.
-
-
-## Pilot Study
-The pilot study was conducted over two days, on October 10th and 11th, with a total of 43
-questionnaires finalized and submitted to the server. This study provided a platform to
-refine all pending errors and issues, which were resolved before the main survey began on
-Saturday, October 12th, 2024.
-Some of the issues raised, particularly regarding the hard copy questionnaire and the Open
-Data Kit (ODK) survey form, were addressed during the supervisor-enumerator training.
 
 :::
 
@@ -180,80 +175,107 @@ Data Kit (ODK) survey form, were addressed during the supervisor-enumerator trai
 
 The study population was defined as those households currently living within the two village clusters, which comprise the 21 villages along the Lake Tanganyika shoreline.
 A stratified random sampling design was employed across the study population. Stratified sampling involved dividing the study population strata (villages) and drawing separate probability samples from each stratum. Stratification ensures that a pre-specified number of observations from each stratum end up in the sample, which is therefore less variable, yet may provide more precise estimates to adequately represent the entire population.
-The strata in this study were defined based on household locations and represent the different villages. By dividing the population into strata, the sampling design aims to capture the variability within these groups and ensure that each important subgroup is well-represented in the final sample. The sampling frame for the stratified design represents the total list of households within the two clusters of villages. A finite population correction (FPC), is applied to reduce the variance of estimates, which accounts for the fact that sampling a substantial proportion of households in each stratum may lead to a decrease in variability. As such, the FPC is incorporated into the weighting of final survey estimates to correct for finite population size. The stratified sampling design ensures that each stratum is adequately represented and reduces variability within the sample, leading to more accurate conclusions and better-informed policy recommendations.
-
-```{r}
-# Data
-data <- data <- readRDS("cluster_north_sample_design.rds")
-
-# Rename columns to preserve spacing
-colnames(data) <- gsub("\\.", " ", colnames(data))
-
-# Round values based on conditions
-data_formatted <- data %>%
-  mutate(across(
-    where(is.numeric),
-    ~ ifelse(Variables %in% c("Population", "Sample", "Final sample number"), round(.), round(., 3))
-  ))
-
-# Create and style flextable
-add_lot_link(caption = 'Northern village cluster sampling design for households along Lake Tanganyika')
-
-data_formatted %>%
-  sea::sea_table(
-    dark_color = sea_colors("gunmetal"),
-    pale_color = sea_colors("grey"),
-    third_color = "white") %>%
-  colformat_double(
-    j = 2:ncol(data_formatted),
-    digits = 3
-  ) %>%
-  colformat_double(
-    j = 2:ncol(data_formatted),
-    i = which(data_formatted$Variables %in% c("Population", "Sample", "Final sample number")),
-    digits = 0
-  ) %>%
-  set_table_properties(width = 1, layout = "autofit") 
-
-```
+The sampling frame for the stratified design represents the total list of households within the two clusters of villages. The northern cluster (overall north) comprises those villages centered around Kipili, in which LTP project activities are ongoing. The southern cluster (overall south) comprises those villages stretched along the Lake Tanganyika shoreline, representing a subset of the strata in which LTP project activities are either absent or just starting up. A finite population correction (FPC), is applied to reduce the variance of estimates, which accounts for the fact that sampling a substantial proportion of households in each stratum may lead to a decrease in variability. As such, the FPC is incorporated into the weighting of final survey estimates to correct for finite population size. The stratified sampling design ensures that each stratum is adequately represented and reduces variability within the sample, leading to more accurate conclusions and better-informed policy recommendations.
 
 
 ```{r, fig.width=5}
 # Data
-data <- readRDS("cluster_south_sample_design.rds")
+data <- readRDS("northern_cluster_sample_design.rds")
 
 # Rename columns to preserve spacing
 colnames(data) <- gsub("\\.", " ", colnames(data))
 
-# Round values based on conditions
 data_formatted <- data %>%
   mutate(across(
-    where(is.numeric),
-    ~ ifelse(Variables %in% c("Population", "Sample", "Final sample number"), round(.), round(., 3))
-  ))
+    c(Population, Sample, `Final Sample Number`),  # Columns to round
+    ~ round(.)  # Round to whole numbers
+  )) %>%
+  rename(
+    `Proportion of Population and Sample` = `Proportion of Population`
+  )
+  
+data_formatted <- data_formatted %>% select(-Sample, -`Proportion of Sample`)
 
 # Create and style flextable
-add_lot_link(caption = 'Southern village cluster sampling design for households along Lake Tanganyika')
+add_lot_link(caption = 'Northern village cluster sampling design for households along Lake Tanganyika')
 
+# Create and style the flextable
 data_formatted %>%
   sea::sea_table(
     dark_color = sea_colors("gunmetal"),
     pale_color = sea_colors("grey"),
-    third_color = "white") %>%
-  colformat_double(
-    j = 2:ncol(data_formatted),
-    digits = 3
+    third_color = "white"
   ) %>%
   colformat_double(
     j = 2:ncol(data_formatted),
-    i = which(data_formatted$Variables %in% c("Population", "Sample", "Final sample number")),
+    digits = 3  # Default precision for other columns
+  ) %>%
+  colformat_double(
+    j = c("Population", "Final Sample Number"),  # Specific columns to format as integers
+    digits = 0
+  ) %>%
+  set_table_properties(width = 1, layout = "autofit") 
+```
+
+
+```{r}
+# Data
+data <- readRDS("southern_cluster_sample_design.rds")
+
+# Rename columns to preserve spacing
+colnames(data) <- gsub("\\.", " ", colnames(data))
+
+data_formatted <- data %>%
+  mutate(across(
+    c(Population, Sample, `Final Sample Number`),  # Columns to round
+    ~ round(.)  # Round to whole numbers
+  )) %>%
+  rename(
+    `Proportion of Population and Sample` = `Proportion of Population`
+  )
+  
+data_formatted <- data_formatted %>% select(-Sample, -`Proportion of Sample`)
+
+
+# Create and style flextable
+add_lot_link(caption = 'Southern village cluster sampling design for households along Lake Tanganyika')
+
+# Create and style the flextable
+data_formatted %>%
+  sea::sea_table(
+    dark_color = sea_colors("gunmetal"),
+    pale_color = sea_colors("grey"),
+    third_color = "white"
+  ) %>%
+  colformat_double(
+    j = 2:ncol(data_formatted),
+    digits = 3  # Default precision for other columns
+  ) %>%
+  colformat_double(
+    j = c("Population", "Final Sample Number"),  # Specific columns to format as integers
     digits = 0
   ) %>%
   set_table_properties(width = 1, layout = "autofit") 
 
 ```
 
+
+## Enumerator Training
+Training was crucial for enumerators before they began the household surveys to ensure that data collection is accurate, consistent, and ethical. The training covered essential responsibilities, including understanding the code of conduct, managing interview confidentiality, handling incomplete or uncertain responses, and reviewing the questionnaire at the end of each interview.
+Enumerators also learnt about their roles in relation to supervisors, debriefing sessions, and data entry. Through detailed discussions of the survey's sections—ranging from household information to livelihood practices—the enumerators gained a thorough understanding of the questionnaire. Additionally, hands-on training in using tablets and survey software, combined with testing the questions among themselves and a pilot study, prepares them for real-world challenges, ensuring they can manage their workload and accurately capture the data needed.
+
+## Pilot Study
+The pilot study was conducted over two days, on October 10th and 11th, with a total of 43
+questionnaires finalized and submitted to the server. This study provided a platform to
+refine all pending errors and issues, which were resolved before the main survey began on
+Saturday, October 12th, 2024.
+Some of the issues raised, particularly regarding the hard copy questionnaire and the Open
+Data Kit (ODK) survey form, were addressed during the supervisor-enumerator training.
+
 \newpage 
+
+<!-- gunmetal page -->
+<div class ="section-gunmetal">
 
 ## General Household Information
 
@@ -391,7 +413,7 @@ ggplot(demo_summary, aes(x = age_group, y = ifelse(sex == "MALE", -percentage, p
 
 ```
 
-The average household size in this survey was 5.2 (Table 4). This is smaller than the 6.7 members found in the 2011 Tuungane survey but higher than the 2022 national average of 4.5 household members (2022 TDHSMIS). Female household heads make up 22% of the sample, which is higher than the findings from the 2011 Tuungane survey but still lower than the national average of 29% (2022 TDHSMIS).
+The average household size in this survey was 5.2 across all villages (Table 4). This is smaller than the 6.7 members found in the 2011 Tuungane survey but higher than the 2022 national average of 4.5 household members (2022 TDHSMIS). Female household heads make up 22% of the sample, which is higher than the findings from the 2011 Tuungane survey but still lower than the national average of 29% (2022 TDHSMIS).
 
 ```{r}
 current_survey <- tanganyika_survey %>%
@@ -459,19 +481,19 @@ main_activity_summary <- tanganyika_survey %>%
     all_percent = round(100 * all_count / sum(all_count), 0),
     female_percent = round(100 * female_count / sum(female_count), 0))
 
-# Add totals row for marital status
-marital_status_summary <- marital_status_summary %>%
-  bind_rows(
-    summarise(
-      .,
-      marital_status = "Overall (%)",
-      all_percent = 100,
-      female_percent = 100)) %>%
-  bind_rows(
-    tibble(
-      marital_status = "n",
-      all_percent = sum(marital_status_summary$all_count, na.rm = TRUE),
-      female_percent = sum(marital_status_summary$female_count, na.rm = TRUE)))
+# # Add totals row for marital status
+# marital_status_summary <- marital_status_summary %>%
+#   bind_rows(
+#     summarise(
+#       .,
+#       marital_status = "Overall (%)",
+#       all_percent = 100,
+#       female_percent = 100)) %>%
+#   bind_rows(
+#     tibble(
+#       marital_status = "n",
+#       all_percent = sum(marital_status_summary$all_count, na.rm = TRUE),
+#       female_percent = sum(marital_status_summary$female_count, na.rm = TRUE)))
 
 # Add totals row for main activity
 main_activity_summary <- main_activity_summary %>%
@@ -594,7 +616,7 @@ combined_table %>%
 The Poverty Probability Index (PPI) is a country-specific poverty measurement tool. Responses to ten simple questions are scored to estimate the probability that a household is poor. The PPI uses an algorithm that processes data that has already been collected by large, nationally representative household surveys to determine both the set of questions that are most informative, and the points attached to each response. The construction of each country-specific PPI has been derived from each country’s Statistics Office representative expenditure/income survey.
 A household is defined as poor, with reference to a poverty line, if its consumption expenditure/consumption/income, adjusted for household size, is below that poverty line. A poverty line is determined based on the cost of consuming a basket of goods and services consistent with a given standard of living.
 
-Overall, 64% of households in the survey live below the upper national poverty line. 26% of households live below the extreme poverty line (Table 7). 
+Overall, 64% of households in the surveyed villages live below the upper national poverty line. 26% of households live below the extreme poverty line (Table 7). 
 
 ```{r}
 # Ensure the age column is numeric for filtering youths
@@ -893,10 +915,10 @@ ggplot(village_poverty_likelihood_long, aes(x = village, y = poverty_likelihood,
 
 <article class="section-gunmetal-inverse">
 
-# Quantitative Analysis
+# Survey Findings
 
 <!-- rust page -->
-<div class="section-gunmetal">
+<div class="section-rust">
 
 
 ## Livelihoods and Living Conditions
@@ -905,7 +927,7 @@ ggplot(village_poverty_likelihood_long, aes(x = village, y = poverty_likelihood,
 
 The majority of households indicated that they either have just enough or have difficulty meeting their daily needs (83%; Figure 4). Approximately 5% of households were able to save extra. Even though there are some differences, this general picture roughly applies to all villages.
 
-```{r,  fig.cap='Self-assessment of the ability to meet daily needs at village level', fig.align='center', out.width = '90%'}
+```{r,  fig.cap='Self-assessment of the ability to meet daily needs at village level', fig.align='center', out.width = '95%'}
 
 village_data <- tanganyika_survey %>%
   group_by(village, household_ability) %>%
@@ -1063,7 +1085,7 @@ ggplot(livelihood_data_combined, aes(x = reorder(livelihood_activities, -proport
         panel.grid.minor = element_blank()) +
   scale_y_continuous(labels = label_percent(scale = 1)) +
   scale_x_discrete(labels = c("Agriculture", "Fishing", "Business", "Fish Trading", "Fish Processing", "Other", 
-                              "Livestock Keeping", "Day Labor", "Taylor", "Employee", "Boat Builder", "Remittances", "Pensions")) +
+                              "Livestock Keeping", "Day Labour", "Tailor", "Employee", "Boat Builder", "Remittances", "Pensions")) +
   facet_wrap(~ cluster, nrow = 2)  # Separate plots for each cluster
 
 ```
@@ -1073,7 +1095,7 @@ ggplot(livelihood_data_combined, aes(x = reorder(livelihood_activities, -proport
 
 ### Water Use
 
-Access to safe drinking water may depend on several variables including the source of the water and the ability to purify it. In this survey, responses were split between dry and rainy seasons, as water sources can change depending on the season. Water sources were categorized as improved or unimproved sources following WHO and UNICEF standards (NBS & ICF Macro, 2011). Improved sources include public taps, protected private or public wells, and rainwater. Unimproved sources include open wells and surface water.
+Access to safe drinking water may depend on several variables including the source of the water and the ability to purify it. In this survey, we asked about the main water sources accessed by households and responses were split between dry and rainy seasons, as water sources can change depending on the season. Water sources were categorized as improved or unimproved sources following WHO and UNICEF standards (NBS & ICF Macro, 2011). Improved sources include public taps, protected private or public wells, and rainwater. Unimproved sources include open wells and surface water.
 
 In the dry season, 62% percent of the households in the southern village cluster use an unimproved source, mainly surface water (i.e. rivers, streams, ponds, lakes), while in the wet season the use of rainwater reduces this to 22% (Figure 6). Respectively, in villages of the northern cluster, 47% of household use unimproved water sources in the dry season, compared to 20% in the wet season. Overall, 76% of households across the study area use an improved water source in the wet season, as opposed to 37% in the dry season (Table 8). 
 
@@ -1417,11 +1439,11 @@ toilet_table <- summary_by_village %>%
   pivot_wider(names_from = toilet_facilities, values_from = proportion   )
 
 # Rename columns for clarity
-colnames(toilet_table) <- c("Village", "Flush to Elsewhere", "Flush to Pit Latrine", "No Facility", "Pit Latrine with Slab", "Pit Latrine without Slab", "Composting Toilet", "Ventilated Improved Pit (VIP) Latrine")
+colnames(toilet_table) <- c("Village", "Flush to Elsewhere", "Flush to Pit Latrine", "No Facility", "Pit with Slab", "Pit without Slab", "Composting Toilet", "Ventilated Improved Pit (VIP) Latrine")
 
 # Format the proportion table values as percentages with one decimal point and add % sign, leave NA as blank
 toilet_table <- toilet_table %>%
-  mutate(across(c("Flush to Elsewhere", "Flush to Pit Latrine", "No Facility", "Pit Latrine with Slab", "Pit Latrine without Slab", "Composting Toilet", "Ventilated Improved Pit (VIP) Latrine"),
+  mutate(across(c("Flush to Elsewhere", "Flush to Pit Latrine", "No Facility", "Pit with Slab", "Pit without Slab", "Composting Toilet", "Ventilated Improved Pit (VIP) Latrine"),
                 ~ ifelse(is.na(.), "", paste0(round(. * 100, 0)))))
 
 # Combine the 'Yes' column from share_facility_table with toilet_table
@@ -1438,8 +1460,8 @@ total_row <- tanganyika_survey %>%
     `Flush to Elsewhere` = survey_mean(toilet_facilities == "FLUSH/ POUR FLUSH TO ELSEWHERE", na.rm = TRUE) * 100,
     `Flush to Pit Latrine` = survey_mean(toilet_facilities == "FLUSH/ POUR FLUSH TO PIT LATRINE", na.rm = TRUE) * 100,
     `No Facility` = survey_mean(toilet_facilities == "NO FACILITY/BUSH/FIELD", na.rm = TRUE) * 100,
-    `Pit Latrine with Slab` = survey_mean(toilet_facilities == "PIT LATRINE WITH SLAB", na.rm = TRUE) * 100,
-    `Pit Latrine without Slab` = survey_mean(toilet_facilities == "PIT LATRINE WITHOUT SLAB/OPEN PIT", na.rm = TRUE) * 100,
+    `Pit with Slab` = survey_mean(toilet_facilities == "PIT LATRINE WITH SLAB", na.rm = TRUE) * 100,
+    `Pit without Slab` = survey_mean(toilet_facilities == "PIT LATRINE WITHOUT SLAB/OPEN PIT", na.rm = TRUE) * 100,
     `Composting Toilet` = survey_mean(toilet_facilities == "COMPOSTING TOILET/ECOSAN", na.rm = TRUE) * 100,
     `Ventilated Improved Pit (VIP) Latrine` = survey_mean(toilet_facilities == "VENTILATED IMPROVED PIT (VIP) LATRINE", na.rm = TRUE) * 100) %>%
   mutate(
@@ -1447,8 +1469,8 @@ total_row <- tanganyika_survey %>%
     `Flush to Elsewhere` = paste0(round(`Flush to Elsewhere`, 0)),
     `Flush to Pit Latrine` = paste0(round(`Flush to Pit Latrine`, 0)),
     `No Facility` = paste0(round(`No Facility`, 0)),
-    `Pit Latrine with Slab` = paste0(round(`Pit Latrine with Slab`, 0)),
-    `Pit Latrine without Slab` = paste0(round(`Pit Latrine without Slab`, 0)),
+    `Pit with Slab` = paste0(round(`Pit with Slab`, 0)),
+    `Pit without Slab` = paste0(round(`Pit without Slab`, 0)),
     `Composting Toilet` = paste0(round(`Composting Toilet`, 0)),
     `Ventilated Improved Pit (VIP) Latrine` = paste0(round(`Ventilated Improved Pit (VIP) Latrine`, 0))) %>%
   # Remove columns with "_se" in their names
@@ -1478,8 +1500,7 @@ combined_table %>%
     third_color = "white"
   ) %>%
   flextable::autofit() %>%
-  flextable::fontsize(size = 10, part = "header")
-
+  flextable::fontsize(size = 10, part = "header") 
 ```
 
 Overall, only 25% of households had handwashing facilities available (Table 10). Households in Kalungu, Mtakuja, and Isasa contained the highest proportion of handwashing facilities. Where handwashing facilities were available, 53% of households indicated there was water and 39% had soap available. Tippy taps were encountered across 8% of all households.
@@ -1595,7 +1616,7 @@ combined_table %>%
 
 ### Household Amenities
 
-Beds and mattresses are most commonly owned of the listed household goods (23% north and 19% south; Figure 9). Thereafter, mobile phones are owned by 19% of households in northern villages and 16% of villages in the southern cluster, respectively, a further 3% and 6% of respondents in the northern and southern villages clusters indicated owning a smartphone. This is significantly lower than the national average of 83% of households that own a mobile phone (2022 TDHSMIS). Radio ownership across the survey population (11%) was also significantly lower than both the 2011 Tuungane survey (75%) and the 2022 national average (44%; 2022 TDHSMIS). Solar panel ownership appears higher in the northern village cluster (20%) in comparison to the southern village cluster (13%).
+Beds and mattresses are most commonly owned of the listed household goods (19% north and 23% south; Figure 9). Thereafter, mobile phones are owned by 19% of households in southern villages and 16% of villages in the northern cluster, respectively, a further 3% and 6% of respondents in the southern and northern villages clusters indicated owning a smartphone. This is significantly lower than the national average of 83% of households that own a mobile phone (2022 TDHSMIS). Radio ownership across the survey population (11%) was also significantly lower than both the 2011 Tuungane survey (75%) and the 2022 national average (44%; 2022 TDHSMIS). Solar panel ownership appears higher in the southern village cluster (20%) in comparison to the northern village cluster (13%).
 
 ```{r,  fig.cap='Household item ownership', fig.align='center', out.width = '90%'}
 household_item_expanded <- tanganyika_clean %>% select(hh_code, village, household_item, stype, fpc) %>%
@@ -1664,7 +1685,7 @@ ggplot(household_item_data_combined, aes(x = reorder(household_item, -proportion
 
 ```
 
-Only 1% of households indicated having access to clean cooking fuel, namely gas. The vast majority of the survey population use solid fuels such as charcoal (42% north; 67% south) and firewood (57% north; 30% south) (Figure 10). This is comparable to the national average, in which 93% of Tanzanian households make use of solid fuels including charcoal and firewood (2022 TDHSMIS). Interestingly, among the northern cluster of villages, with the exception of Wampembe, households appear to use firewood as the primary cooking fuel. In contrast, the majority of villages in the southern cluster make use of charcoal. Gas was only used as a cooking fuel amongst eight villages, of which Kipili indicated the highest use (9%). 
+Only 1% of households indicated having access to clean cooking fuel, namely gas. The vast majority of the survey population use solid fuels such as charcoal (67% north; 42% south) and firewood (30% north; 57% south) (Figure 10). This is comparable to the national average, in which 93% of Tanzanian households make use of solid fuels including charcoal and firewood (2022 TDHSMIS). Interestingly, among the southern cluster of villages, with the exception of Wampembe, households appear to use firewood as the primary cooking fuel. In contrast, the majority of villages in the northern cluster make use of charcoal. Gas was only used as a cooking fuel amongst eight villages, of which Kipili indicated the highest use (9%). 
 
 ```{r, fig.cap='Types of cooking fuels used at village level (%)', fig.align='center', out.width = '90%'}
 fuel_expanded <- tanganyika_clean %>%
@@ -1776,16 +1797,16 @@ proportion_table <- efficient_stove_use_data %>%
     values_from = proportion)
 
 # Rename columns for clarity
-colnames(proportion_table) <- c("Village", "Almost everyday", "At least once a week", "Less than once a week")
+colnames(proportion_table) <- c("Village", "Used almost everyday", "Used at least once a week", "Used less than once a week")
 
 # Format the proportion table values as percentages with one decimal point and add % sign, leave NA as blank
 proportion_table <- proportion_table %>%
-  mutate(across(c("Almost everyday", "At least once a week", "Less than once a week"),
+  mutate(across(c("Used almost everyday", "Used at least once a week", "Used less than once a week"),
                 ~ ifelse(is.na(.), "", paste0(round(. * 100, 0)))))
 
 combined_table <- efficient_stove_table %>%
   select(Village, `Efficient Stove Ownership` = Yes) %>%
-  left_join(proportion_table %>% select(Village, `Almost everyday`, `At least once a week`, `Less than once a week`), by = "Village") 
+  left_join(proportion_table %>% select(Village, `Used almost everyday`, `Used at least once a week`, `Used less than once a week`), by = "Village") 
 
 total_row_stove <- tanganyika_survey %>%
   summarise(
@@ -1798,22 +1819,22 @@ total_row_stove <- tanganyika_survey %>%
 total_row_use <- design %>%
   summarise(
     Village = "Overall",
-    `Almost everyday` = survey_mean(efficient_stove_use == "ALMOST EVERY DAY", na.rm = TRUE) * 100,
-    `At least once a week` = survey_mean(efficient_stove_use == "AT LEAST ONCE A WEEK", na.rm = TRUE) * 100,
-    `Less than once a week` = survey_mean(efficient_stove_use == "LESS THAN ONCE A WEEK", na.rm = TRUE) * 100) %>%
+    `Used almost everyday` = survey_mean(efficient_stove_use == "ALMOST EVERY DAY", na.rm = TRUE) * 100,
+    `Used at least once a week` = survey_mean(efficient_stove_use == "AT LEAST ONCE A WEEK", na.rm = TRUE) * 100,
+    `Used less than once a week` = survey_mean(efficient_stove_use == "LESS THAN ONCE A WEEK", na.rm = TRUE) * 100) %>%
   mutate(
-    `Almost everyday` = paste0(round(`Almost everyday`, 0)),
-    `At least once a week` = paste0(round(`At least once a week`, 0)),
-    `Less than once a week` = paste0(round(`Less than once a week`, 0))) %>%
+    `Used almost everyday` = paste0(round(`Used almost everyday`, 0)),
+    `Used at least once a week` = paste0(round(`Used at least once a week`, 0)),
+    `Used less than once a week` = paste0(round(`Used less than once a week`, 0))) %>%
   # Remove columns with "_se" in their names
   select(-contains("_se"))
 
 total_row <- left_join(total_row_stove, total_row_use, by = "Village") %>%
-  select(Village, `Efficient Stove Ownership`, `Almost everyday`, `At least once a week`, `Less than once a week`)
+  select(Village, `Efficient Stove Ownership`, `Used almost everyday`, `Used at least once a week`, `Used less than once a week`)
 
 # Add the "Total" row to the combined table
 combined_table <- bind_rows(combined_table, total_row)
-colnames(combined_table) <- c("Village", "Efficient Stove Ownership (%)", "Almost everyday (%)", "At least once a week (%)", "Less than once a week (%)")
+colnames(combined_table) <- c("Village", "Efficient Stove Ownership (%)", "Used almost everyday", "Used at least once a week", "Used less than once a week")
 
 add_lot_link(caption = 'Efficient stove ownership and use at village level (%)')
 
@@ -1827,12 +1848,12 @@ combined_table %>%
 
 ```
 
-</div>
+<div class="section-rust">
 \newpage
 
 ## Access to Credit
 
-Overall, approximately 18% of the households had borrowed money at least once in the previous year (Figure 11). The proportion of households that took out credit is highest in Kichangani and Wampembe and lowest in Ng’anga and Tundu.
+Overall, approximately 18% of households had borrowed money at least once in the previous year (Figure 11). The proportion of households that took out credit is highest in Kichangani and Wampembe and lowest in Ng’anga and Tundu.
 
 ```{r, fig.cap='Proportion of households that borrowed money in the last year at village level (%)', fig.align='center', out.width = '90%'}
 village_data <- tanganyika_survey %>%
@@ -1863,10 +1884,10 @@ cluster_summary <- tanganyika_survey %>%
 # Add cluster-level and total summaries to the data
 village_data_yes <- bind_rows(village_data_yes, cluster_summary)
 
-cluster_1_order <- c(
+cluster_2_order <- c(
   "Izinga", "Kala", "Katenge", "Kilambo cha Mkolechi", 
   "Kizumbi", "Lyapinda", "Mpasa", "Mwinza", "Ng'anga", 
-  "Tundu", "Wampembe", "Overall North")
+  "Tundu", "Wampembe", "Overall South")
 
 # Adjust factor levels for villages in Cluster 1 and Cluster 2
 village_data_yes <- village_data_yes %>%
@@ -1874,9 +1895,9 @@ village_data_yes <- village_data_yes %>%
     village = factor(
       village,
       levels = c(
-        cluster_1_order,  # Use the specified order for Cluster 1
-        setdiff(unique(village_data_yes$village[village_data_yes$cluster == "Cluster 2"]), "Overall South"),
-        "Overall South")))
+        cluster_2_order,  # Use the specified order for Cluster 1
+        setdiff(unique(village_data_yes$village[village_data_yes$cluster == "Cluster 1"]), "Overall North"),
+        "Overall North")))
 
 # Create the plot
 ggplot(village_data_yes, aes(x = village, y = proportion * 100, group = borrow_status, fill = borrow_status)) +
@@ -1907,7 +1928,7 @@ ggplot(village_data_yes, aes(x = village, y = proportion * 100, group = borrow_s
   scale_y_continuous(labels = NULL) 
 ```
 
-Business expenses (17% north; 29% south) and farming expenses (21% north; 22%south) were the most common reasons for taking out a loan (Figure 12). In the northern village cluster, other common reasons for taking out a loan included covering household expenses (19%), food (20%), and medical expenses (15%). In the southern village cluster, it was slightly less common to take a loan out for household expenses (15%) and food (12%), whereas loans taken out for medical expenses (17%) were comparable to the northern villages cluster.
+Business expenses (29% north; 17% south) and farming expenses (22% north; 21% south) were the most common reasons for taking out a loan (Figure 12). In the southern village cluster, other common reasons for taking out a loan included covering household expenses (19%), food (20%), and medical expenses (15%). In the northern village cluster, it was slightly less common to take a loan out for household expenses (15%) and food (12%), whereas loans taken out for medical expenses (17%) were comparable to the northern villages cluster.
 
 ```{r, fig.cap='Purpose of the loan', fig.align='center', out.width = '90%'}
 loan_usage_expanded <- tanganyika_clean %>% select(hh_code, village, loan_usage, stype, fpc) %>%
@@ -1977,9 +1998,9 @@ ggplot(loan_usage_data_combined, aes(x = reorder(loan_usage, -proportion),
  
 ```
 
-Half the borrowing households in the northern village cluster receive their loans from friends or neighbours and roughly a quarter of loans were given by family, compared to 38% from friends or neighbours and 20% from family in the southern village cluster (Figure 13). Community Conservation Banks (COCOBA), Savings and Credit Societies (SACCO), Fisher Committee (FICO), and Village Community Banks (VICOBA) accounted for 6% of loans given. COCOBA, SACCOS, and VICOBA all provide savings and loan schemes to groups of villagers.
+Half the borrowing households in the southern village cluster receive their loans from friends or neighbours and roughly a quarter of loans were given by family, compared to 38% from friends or neighbours and 20% from family in the northern village cluster (Figure 13). Community Conservation Banks (COCOBA), Savings and Credit Societies (SACCO), Fisher Committee (FICO), and Village Community Banks (VICOBA) accounted for 6% of loans given. COCOBA, SACCOS, and VICOBA all provide savings and loan schemes to groups of villagers.
 
-```{r, fig.cap='Source of loans', fig.align='center', out.width = '90%'}
+```{r, fig.cap='Source of loans', fig.align='center', out.width = '90%', fig.height=8}
 borrowing_source_expanded <- tanganyika_clean %>% select(hh_code, village, borrowing_source, stype, fpc) %>%
   separate_rows(borrowing_source, sep = "\\|") %>%
   mutate(borrowing_source = trimws(borrowing_source)) %>% 
@@ -2047,9 +2068,9 @@ ggplot(borrowing_source_data_combined, aes(x = reorder(borrowing_source, -propor
 
 ```
 
-The most common reason for not taking out a loan was the fear of being in debt, which was listed by 34% and 41% of respondents that didn’t borrow money in the past year in northern and southern village clusters respectively (Figure 14). A further 20% of respondents in northern villages and 15% in southern villages stated that they found the process of taking out a loan too difficult or had no need for doing so (approx. 16% in both clusters). 
+The most common reason for not taking out a loan was the fear of being in debt, which was listed by 41% and 34% of respondents that didn’t borrow money in the past year in northern and southern village clusters respectively (Figure 14). A further 15% of respondents in northern villages and 20% in southern villages stated that they found the process of taking out a loan too difficult or had no need for doing so (approx. 16% in both clusters). 
 
-```{r,  fig.cap='Reason for not having borrowed any money in the previous year', fig.align='center', out.width = '90%'}
+```{r,  fig.cap='Reason for not having borrowed any money in the previous year', fig.align='center', out.width = '90%', fig.height=8}
 village_data <- tanganyika_survey %>%
     group_by(not_borrowed) %>%
     summarise(proportion = survey_mean(vartype = "ci", na.rm = TRUE), total = survey_total(vartype = "ci", na.rm = TRUE), n = unweighted(n())) %>% drop_na()
@@ -2103,7 +2124,7 @@ ggplot(village_data_combined, aes(x = reorder(not_borrowed, -proportion),
 
 ```
 
-Overall, 14% of household respondents across all villages in the southern cluster stated that they were a member of a COCOBA, SACCO, or FICO. Membership was highest in Manda Uhuru (30%). Only two villages of the northern cluster contained households with COCOBA/SACCO/FICO members, namely Katenge and Wampembe. 
+Overall, 14% of household respondents across all villages in the northern cluster stated that they were a member of a COCOBA, SACCO, or FICO. Membership was highest in Manda Uhuru (30%). Only two villages of the southern cluster contained households with COCOBA/SACCO/FICO members, namely Katenge and Wampembe. 
 
 ```{r, fig.cap='Household membership of a COCOBA, SACCO, or FICO at village level (%)', fig.align='center', out.width = '90%'}
 village_data <- tanganyika_survey %>%
@@ -2142,10 +2163,10 @@ cluster_summary <- tanganyika_survey %>%
 # Add cluster-level and total summaries to the data
 village_data_yes <- bind_rows(village_data_yes, cluster_summary)
 
-cluster_1_order <- c(
+cluster_2_order <- c(
   "Izinga", "Kala", "Katenge", "Kilambo cha Mkolechi", 
   "Kizumbi", "Lyapinda", "Mpasa", "Mwinza", "Ng'anga", 
-  "Tundu", "Wampembe", "Overall North")
+  "Tundu", "Wampembe", "Overall South")
 
 # Adjust factor levels for villages in Cluster 1 and Cluster 2
 village_data <- village_data %>%
@@ -2153,9 +2174,9 @@ village_data <- village_data %>%
     village = factor(
       village,
       levels = c(
-        cluster_1_order,  # Use the specified order for Cluster 1
-        setdiff(unique(village_data_yes$village[village_data_yes$cluster == "Cluster 2"]), "Overall South"),
-        "Overall South")))
+        cluster_2_order,  # Use the specified order for Cluster 1
+        setdiff(unique(village_data_yes$village[village_data_yes$cluster == "Cluster 1"]), "Overall North"),
+        "Overall North")))
 
 # Create the plot
 ggplot(village_data, aes(x = village, y = proportion * 100, group = cocoba_saccos, fill = cocoba_saccos)) +
@@ -2193,7 +2214,7 @@ ggplot(village_data, aes(x = village, y = proportion * 100, group = cocoba_sacco
   facet_wrap(~cluster, ncol = 1, scales = "free_x")
 ```
 
-Roughly two thirds of households use mobile phones to make financial transactions across both village clusters (Figure 17). The frequency of mobile transactions is relatively high, notably so in Isasa (90%) and Mtakjua (82%), only in Ng’anga did less than half of the household make use a mobile phone to make transactions.
+Roughly two thirds of households use mobile phones to make financial transactions across both village clusters (Figure 16). The frequency of mobile transactions is relatively high, notably so in Isasa (90%) and Mtakjua (82%), only in Ng’anga did less than half of the household make use a mobile phone to make transactions.
 
 ```{r, fig.cap='Mobile phone usage for financial transactions at village level (%)', fig.align='center', out.width = '90%'}
 village_data <- tanganyika_survey %>%
@@ -2268,7 +2289,7 @@ ggplot(village_data_yes, aes(x = village, y = proportion * 100, group = mobile_m
 
 ## Food Security and Consumption
 
-All households (not just fishers) were asked how often they eat fish (Figure 17). Migebuka is consumed most frequently on a daily basis, this differs from the 2011 Tuungane survey findings, in which dagaa was consumed most frequently and most often. Consumption of dagaa is most common on a weekly basis.  Other fish are consumed frequently less than once a week. More than two thirds of the fish eaten in the past week stemmed from purchases in the southern village cluster (69%), whereas approximately a quarter was eaten from own catch (25%). In the northern village cluster, 56% of fish eaten stemmed from purchases and 35% from own catch (Figure 18). 
+All households (not just fishers) were asked how often they eat fish (Figure 17). Migebuka is consumed most frequently on a daily basis, this differs from the 2011 Tuungane survey findings, in which dagaa was consumed most frequently and most often. Consumption of dagaa is most common on a weekly basis.  Other fish are consumed less than once a week. 
 
 ```{r, fig.cap='Frequency of eating different fish species ', fig.align='center', out.width = '90%'}
 
@@ -2343,6 +2364,7 @@ ggplot(fish_proportions_combined, aes(x = fish_type, y = proportion, fill = freq
 
 ```
 
+More than two thirds of the fish eaten in the past week stemmed from purchases in the northern village cluster (69%), whereas approximately a quarter was eaten from own catch (25%). In the southern village cluster, 56% of fish eaten stemmed from purchases and 35% from own catch (Figure 18). 
 
 ```{r,  fig.cap='Primary source of fish eaten in the last week', fig.align='center', out.width = '90%'}
 village_data <- tanganyika_survey %>%
@@ -2448,7 +2470,7 @@ ggplot(village_data_combined, aes(x = reorder(eat_changed, -proportion), y = pro
 
 ```
 
-Food shortages occurred amongst 60% and 64% of all households in northern and southern village clusters respectively during the last 12 months (Figure 20). In all villages, half or more than half of the household experienced at least one food shortage over the past 12 months. Shortages were most frequent in Manda Uhuru, where 95% of households were affected. 
+Food shortages occurred amongst 64% and 60% of all households in northern and southern village clusters respectively during the last 12 months (Figure 20). In all villages, half or more than half of households experienced at least one food shortage over the past 12 months. Shortages were most frequent in Manda Uhuru, where 95% of households were affected. 
 
 ```{r, fig.cap='Proportion of food shortages experienced during the last 12 months at village level (%)', fig.align='center', out.width = '90%', fig.height=7}
 
@@ -2517,6 +2539,8 @@ ggplot(village_data_yes, aes(x = village, y = proportion * 100, group = worry_sh
 ```
 
 Respondents were asked to elaborate on the primary reasons for food shortages in their household. Reasons for food shortages experienced in the last 12 months include inadequate storage of food reserves (n = 14), increases in food prices (n = 12), financial strains related to a limited income and/or the rising costs of basic needs (n = 11), and challenges experienced due to a limited harvest season (n = 10). Inadequate food reserves have led to ongoing food insecurity among households; families sold their crops without setting aside sufficient reserves, whilst low crop yields depleted available stores. Other reasons for food shortages pertain to ineffective farming practices, the high costs and limited access of manure, a significant drop in crop sale prices, which adversely affected household income and the ability to cover living expenses. Seven households referred to the adverse impacts of climate change, expressing that severe flooding due to excessive rainfall caused major crop losses and asset damage. Cross-border trading of food resources was stated by one household as a concern, exacerbating limited food supplies as traders opt to export crops to neighboring countries (Democratic Republic of Congo). 
+
+> Chakula kipindi kinapungua sana kwa sababu akiba tulihoweka kutoka kwenye mavuno inaisha
 
 In terms of food shortages, the period between December 2023 and February 2024 appears to have been the worst for households among the survey population (Figure 21). Likewise, a higher frequency of food shortages during the months of May, June, and July 2024 also appeared to affect many households. Despite the frequency of food shortages, many households (70%) across both village clusters indicated that food availability was average or better than usual over the past year (Figure 22). However, food availability was worse than usual for approximately 28% of all households. At village level, half the households in Mwinza expressed having worse food availability in the past year (Table 12).  
 
@@ -2720,10 +2744,10 @@ proportion_table %>%
     pale_color = sea_colors("grey"),
     third_color = "white"
   ) %>%
-  flextable::width(width = 0.5)  
+  flextable::width(width = 0.9)
 ```
 
-When viewed over the period of the last five years, the trend in food availability appears the same (Figure 23). Overall, 18% of households in the northern village cluster and 15% in the southern village cluster experience better food availability, an estimated 54% experience the same availability of food, and 26% and 32% of households in northern and southern village clusters express being worse off now.  
+When viewed over the period of the last five years, the trend in food availability appears similar in the north and south (Figure 23). Overall, 15% of households in the northern village cluster and 18% in the southern village cluster experience better food availability, an estimated 54% experience the same availability of food, and 32% and 26% of households in northern and southern village clusters express being worse off now.  
 
 ```{r, fig.cap='Change in household food availability over the last 5 years', fig.align='center', out.width = '90%', fig.height=8}
 village_data <- tanganyika_survey %>%
@@ -2834,9 +2858,11 @@ ggplot(availability_reason_data, aes(x = reorder(availability_reason, -proportio
 
 ```
 
-The reasons for an increase in food availability vary (Figure 24). Roughly 33% of respondents attributed their increase in food availability to improvements in fish stocks. Reasons also pertained to agriculture, as 33% of respondents in the northern cluster and 25% in the southern cluster attributed the improvements to food availability to thriving crop harvests, whereas 19% of respondents across both clusters linked it to the use of fertilizer applied to their fields. Interestingly, a small subset of respondents linked their improvement in food availability to decreases in fish availability or destroyed crops, this may perhaps be related to a diversification in income or simply a misunderstanding.
+The reasons for an increase in food availability vary (Figure 24). Roughly 33% of respondents attributed their increase in food availability to improvements in fish stocks. Reasons also pertained to agriculture, as 25% of respondents in the northern cluster and 33% in the southern cluster attributed the improvements to food availability to thriving crop harvests, whereas 19% of respondents across both clusters linked it to the use of fertilizer applied to their fields. Interestingly, a small subset of respondents linked their improvement in food availability to decreases in fish availability or destroyed crops, this may perhaps be related to a diversification in income or simply a misunderstanding.
 
 In response to being asked why food availability might be better now due to other reasosn, household respondents mentioned a variety of reasons. Diversification of income sources was stated as another reason as to why food availability had improved over the past year (n = 4). Households expressed that previously, their income was solely dependent on fishing, but now they have diversified their sources of income, such as (poultry) farming, improving their financial situation. Improved farming practices (n = 3), increases in agricultural productivity due to expanding land under cultivation (n = 2), improvements in business activities (n = 2), stabilized food prices  (n = 1), and improvements in personal life (n = 1) and financial support obtained (n = 1) include other reasons for which food availability has improved.
+
+> ninajishughulisha na shughuli mbalimbali ukitoa uvuvi
 
 ```{r,  fig.cap='Reasons for decrease in household food availability', fig.align='center', out.width = '90%', fig.height=9, fig.width=10}
 # Expand the data and add cluster information
@@ -2894,11 +2920,11 @@ ggplot(availability_reason_data, aes(x = reorder(availability_reason, -proportio
 
 ```
 
-The destruction of crops by bad weather and low fish availability were the two primary reasons for a decrease in household food availability (Figure 25). Crop damage could also be attributed to wildlife (6% north; 10% south) and pests (8% north; 5% south). Respondents also expressed other reasons and illness to have affected food availability negatively. 
+The destruction of crops by bad weather and low fish availability were the two primary reasons for a decrease in household food availability (Figure 25). Crop damage could also be attributed to wildlife (10% north; 6% south) and pests (5% north; 8% south). Respondents also expressed other reasons and illness to have affected food availability negatively. 
+
+> Sina kazi maalumu ya kuingiza kipato
 
 Households were further asked to list and elaborate upon the other reasons that they thought had contributed to a decrease in food availability at the moment. Other reasons expressed for a decrease in food availability pertain to financial strains attributed to the lack of a stable income source, with household income falling short of daily expenses (n = 12). Furthermore, limited crop yields and a drop in crop sale prices, as well as a lack of available land for farming, the use of low-quality farming inputs and reliance on basic farming equipment contributed to the reasons related to agricultural productivity, which caused lower food availability. Two households provided responses related to fishing, stating that underinvestment in fishing practices has reduced its potential for high yield. The rising cost of fishing operations and a lack of adequate fishing equipment limit access to abundant fishing ground, as reaching distant waters now requires more advanced vessels.
-
-\newpage
 
 <!-- rust page -->
 <div class ="section-rust">
@@ -2974,9 +3000,11 @@ hh_influence_table %>%
   align(i = 1, align = "center", part = "header")
 ```
 
-Households were asked to describe ow they participate in decision making processes concerning the management fisheries resources and their livelihoods. Respondents provided a variety of answers. Five percent of all household respondents (n = 51) actively participate in the decision-making process about fisheries resources and livelihoods through attending various meetings and workshops. These activities include planning meetings, government meetings, BMU and village meetings, as well as public meetings. A further 3% of households (n = 27) indicated they contribute significantly to decision-making about fisheries resources and livelihoods by providing input and suggestions. Their involvement includes voicing opinions, offering ideas, and participating in discussions to ensure effective management and sustainable practices. 15 respondents suggested that following guidelines and regulations is a way of contributing to decision-making. By adhering to these rules, they ensure sustainable fishing practices and compliance with legal requirements. Other contributions to the decision-making around fisheries resources and livelihoods include involvement as representatives or community leaders (n = 6), encouraging sustainable fishing practices and safeguarding fish breeding zones in their communities through active engagement with BMU activities (n = 4), education and awareness (n = 6), policy enforcement (n = 4), and participation in patrols and conservation efforts (n = 3).
+Households were asked to describe how they participate in decision making processes concerning the management fisheries resources and their livelihoods. Respondents provided a variety of answers. Five percent of all household respondents (n = 51) actively participate in the decision-making process about fisheries resources and livelihoods through attending various meetings and workshops. These activities include planning meetings, government meetings, BMU and village meetings, as well as public meetings. A further 3% of households (n = 27) indicated they contribute significantly to decision-making about fisheries resources and livelihoods by providing input and suggestions. Their involvement includes voicing opinions, offering ideas, and participating in discussions to ensure effective management and sustainable practices. 15 respondents suggested that following guidelines and regulations is a way of contributing to decision-making. By adhering to these rules, they ensure sustainable fishing practices and compliance with legal requirements. Other contributions to the decision-making around fisheries resources and livelihoods include involvement as representatives or community leaders (n = 6), encouraging sustainable fishing practices and safeguarding fish breeding zones in their communities through active engagement with BMU activities (n = 4), education and awareness (n = 6), policy enforcement (n = 4), and participation in patrols and conservation efforts (n = 3).
 
-Respondents were asked whether anyone in their household is a member of a village organisation, such as a cooperative, a self-help group, a women’s group, or some other group (Figure 26). Although the affirmative responses were low overall across both village clusters (10% north; 18% south), group membership in villages such as Mtakuja (45%), Kichangani (26%), and Katenge (20%) was markedly higher.
+> Kupitia vikao mbalimbali na wanakijiji wenzangu, BMU na maafisa uvuvi
+
+Respondents were asked whether anyone in their household is a member of a village organisation, such as a cooperative, a self-help group, a women’s group, or some other group (Figure 26). Although the affirmative responses were low overall across both village clusters (18% north; 10% south), group membership in villages such as Mtakuja (45%), Kichangani (26%), and Katenge (20%) was markedly higher.
 
 ```{r, fig.cap='Village organisation membership at village level (%)', fig.align='center', out.width = '90%', fig.height=8}
 
@@ -3046,7 +3074,7 @@ ggplot(village_data_yes, aes(x = village, y = proportion * 100, group = village_
 
 ```
 
-Trust is vital in establishing relationships between different stakeholders and can be an apt indicator of good relations in local governance. Trust between local villagers and local government authorities was high, as 74% and 63% of respondents in northern and southern village clusters respectively indicated that local government authorities could be trusted always or most of the time. However, people expressed having less trust in people from neighbouring villages or even people from their own village. Approximately 40% of respondents across both clusters indicated that people from neighbouring villages could rarely be trusted or never be trusted, this corresponded to 29% and 32% with regards to people in their own village for villages in the northern and southern cluster respectively.
+Trust is vital in establishing relationships between different stakeholders and can be an apt indicator of good relations in local governance. Trust between local villagers and local government authorities was high, as 63% and 74% of respondents in northern and southern village clusters respectively indicated that local government authorities could be trusted always or most of the time. However, people expressed having less trust in people from neighbouring villages or even people from their own village. Approximately 40% of respondents across both clusters indicated that people from neighbouring villages could rarely be trusted or never be trusted, this corresponded to 32% and 29% with regards to people in their own village for villages in the northern and southern cluster respectively.
 
 ```{r, fig.cap='An indication of trust in people from the same village, neigbouring villages, and the local government', fig.align='center', out.width = '90%'}
 
@@ -3125,7 +3153,7 @@ ggplot(trust_proportions, aes(x = party, y = proportion, fill = fct_relevel(trus
 
 ```
 
-Overall, attendance of public meetings to discuss topics such as village land-use planning, lake management and/or fisheries management was estimated at 41% (Table 14). This reflects the trend observed in Table 13 about household influence on village government decisions. Similarly, three quarters of respondents from Majengo Mapya did not attend any public meetings in the past year.  
+Overall, attendance of public meetings to discuss topics such as village land-use planning, lake management and/or fisheries management was estimated at 41% (Table 14). This reflects the trend observed in Table 13 about household influence on village government decisions. Similarly, three quarters of respondents from Majengo Mapya did not attend any public meetings in the past year. This corroboration of findings across different questions for this village suggests that there are issues in participation.
 
 ```{r}
 summary_by_village <- tanganyika_survey %>%
@@ -3161,7 +3189,7 @@ hh_influence_table %>%
   align(i = 1, align = "center", part = "header")
 ```
 
-Conflicts and/or disputes about fishing occur rarely, with three quarters of all household respondents in the northern cluster and 56% in the southern cluster stating that conflicts occur rarely or never (Figure 28). In total, 14% of respondents indicated that conflicts occur often in the northern cluster. Conflicts appear to happen more frequently in the southern village cluster, as 24% indicated conflicts occur often. Conflicts occur most often in Manda Kerenge (32%), Manda Uhuru (30%), and Mtakuja (29%). Positively, in the past year, the frequency of conflicts has decreased in most villages (Figure 29). Only in Katenge are there more conflicts than there were 12 months ago, as was indicated by 60% of respondents from the village. 
+Conflicts and/or disputes about fishing occur rarely, with three quarters of all household respondents in the southern cluster and 56% in the northern cluster stating that conflicts occur rarely or never (Figure 28). In total, 14% of respondents indicated that conflicts occur often in the southern cluster. Conflicts appear to happen more frequently in the northern village cluster, as 24% indicated conflicts occur often. Conflicts occur most often in Manda Kerenge (32%), Manda Uhuru (30%), and Mtakuja (29%). Positively, in the past year, the frequency of conflicts has decreased in most villages (Figure 29). Only in Katenge are there more conflicts than there were 12 months ago, as was indicated by 60% of respondents from the village. 
 
 ```{r, fig.cap='Frequency of conflicts about fishing at village level (%)', fig.align='center', out.width = '90%'}
 expanded <- tanganyika_clean %>%
@@ -3291,9 +3319,11 @@ ggplot(conflict_data, aes(x = village, y = proportion * 100, group = fct_relevel
 
 ```
 
-Approximately a quarter of all reasons for conflicts in the southern village cluster concern the closure of the lake to fishers or the conflicts surrounding the use of illegal fishing gear (Figure 30). In northern villages, 38% of households attributed conflicts to concern closure of the lake and 34% indicated conflicts to be about the use of illegal fishing gear. Fishing in protected breeding areas and the catching of undersized fish also contributed to conflicts, these reasons appeared higher in the southern village cluster as opposed to the north. 
+Approximately a quarter of all reasons for conflicts in the northern village cluster concern the closure of the lake to fishers or the conflicts surrounding the use of illegal fishing gear (Figure 30). In southern villages, 38% of households attributed conflicts to concern closure of the lake and 34% indicated conflicts to be about the use of illegal fishing gear. Fishing in protected breeding areas and the catching of undersized fish also contributed to conflicts, these reasons appeared higher in the northern village cluster as opposed to the south. 
 
-Respondents were asked about other reasons that conflicts and/or disputes were about. Other conflict reasons described relate to permit challenges (n = 8), as some fishers appear to struggle with the high costs and complicated requirements for obtaining fishing licenses, including having to pay for multiple licenses for both the fisher and the boat. Furthermore, conflict may occur around instances of corruption and/or bribery of BMU officers (n = 2), arguments on the market surrounding fish pricing (n = 2), theft and security issues (n = 2).
+Respondents were asked about other reasons that conflicts and/or disputes were about. Other conflict reasons described relate to permit and licensing challenges (n = 8), as some fishers appear to struggle with the high costs and complicated requirements for obtaining fishing licenses, including having to pay for multiple licenses for both the fisher and the boat. Furthermore, conflict may occur around instances of corruption and/or bribery of BMU officers (n = 2), arguments on the market surrounding fish pricing (n = 2), theft and security issues (n = 2).
+
+> Migogoro kati ya wavuvi na maafisa uvuvi kuhusu leseni za uvuvi, wavuvi wengi kukataa kutozwa leseni > mara mbili (leseni ya mvuvi na leseni ya mtumbwi
 
 ```{r,  fig.cap='Reasons for conflict', fig.align='center', out.width = '90%', fig.height=7}
 
@@ -3367,7 +3397,7 @@ ggplot(conflict_reason_data_combined, aes(x = reorder(conflict_reason, -proporti
 
 ```
 
-Conflicts most commonly occurred with government authorities, among fishers, and between BMUs and fishers (Figure 31). Noticeably, in villages of the northern cluster, BMUs may be considered negligible as a conflict party, and conflicts occurred predominantly with government authorities and among fishers. In the southern cluster, however, half or more of all listed conflicts are said to occur between BMUs and fishers.
+Conflicts most commonly occurred with government authorities, among fishers, and between BMUs and fishers, however, there is high variation in the occurrence of conflicts among the individual villages (Figure 31). Noticeably, in villages of the southern cluster, BMUs may be considered negligible as a conflict party, and conflicts occurred predominantly with government authorities and among fishers. In the southern cluster, however, half or more of all listed conflicts are said to occur between BMUs and fishers.
 
 ```{r,  fig.cap='Conflict parties at village level (%)', fig.align='center', out.width = '90%'}
 
@@ -3432,9 +3462,16 @@ ggplot(conflict_parties_data, aes(x = village, y = proportion * 100, group = con
 
 ```
 
-The majority of conflicts are resolved in a fair manner (Figure 32). Once again, Katenge stands out as a vast majority of respondents do not believe that conflicts are resolved fairly (80%). Unfair conflict resolution also appears high in Izinga and Wampembe. In general, it appears that in the southern cluster of villages fair conflict resolution is higher than in the northern cluster. 
+The majority of conflicts are resolved in a fair manner (Figure 32). Once again, Katenge stands out as a vast majority of respondents do not believe that conflicts are resolved fairly (80%). Unfair conflict resolution also appears high in Izinga and Wampembe. In general, it appears that in the northern cluster of villages fair conflict resolution is higher than in the southern cluster. 
 
-In response to the question “Among whom do these disputes or conflicts mostly occur?”, respondents listed a few other options. Other parties listed among which disputes or conflicts occur include fishers and fisheries officers (n = 17) and include reasons such as conflict over illegal fishing, disagreements over payments and equipment provision, and conflicts regarding the lake closure. Fishers also experience disputes with government (n = 10), including national government, Nkasi district government, and the government of Izinga village. Furthermore, bandits (n = 3) were also listed as a conflict party.
+In response to the question “Among whom do these disputes or conflicts mostly occur?”, respondents listed a few other options. Other parties listed among which disputes or conflicts occur include fishers and fisheries officers (n = 17) and include reasons such as conflict over illegal fishing, disagreements over payments and equipment provision, and conflicts regarding the lake closure. 
+
+> Migogoro kati ya wavuvi na maafisa uvuvi,maafisa uvuvi kula pesa za wavuvi na hawaletewi zana za
+> uvuvi kama makubaliano
+
+Fishers also experience disputes with government (n = 10), including national government, Nkasi district government, and the government of Izinga village. Furthermore, bandits from Congo (n = 3) were also listed as a conflict party.
+
+> Kati wa wavuvi na majambazi kutoka Congo
 
 ```{r, fig.cap='Fair conflict resolution at village level (%)', fig.align='center', out.width = '90%'}
 expanded <- tanganyika_clean %>%
@@ -3502,7 +3539,7 @@ Respondents were asked “If there is a dispute or conflict between BMUs and fis
 
 Respondents were asked about who they thought to be an influential leader among their community, for instance a local leader whom they respect and who they think is good at raising awareness in their village about important communal issues (Figure 33). In response, political leaders and religious leaders were mentioned most commonly. Political party leaders, civil servants, and respected elders were also mentioned frequently across both clusters. Of these influential leaders, more than 70% across both village clusters already occupied a village, ward, or regional government position (Figure 34). 
 
-```{r,  fig.cap='Influential community leaders', fig.align='center', out.width = '90%', fig.height=7, fig.width=8}
+```{r,  fig.cap='Influential community leaders', fig.align='center', out.width = '95%', fig.height=9, fig.width=9}
 
 # Expand and classify data by clusters
 influential_leaders_expanded <- tanganyika_clean %>% 
@@ -3576,7 +3613,7 @@ ggplot(influential_leaders_data_combined, aes(x = reorder(influential_leaders, -
 ```
 
 
-```{r, fig.cap='Influential leaders currently involved in a village, ward, or regional government position at village level (%)', fig.align='center', out.width = '90%', fig.height=9}
+```{r, fig.cap='Are Influential leaders currently involved in a village, ward, or regional government position?', fig.align='center', out.width = '90%', fig.height=9}
 village_data <- tanganyika_survey %>%
   group_by(village, leader_position) %>%
   summarise(proportion = survey_mean(vartype = "ci", na.rm = TRUE), 
@@ -3651,7 +3688,7 @@ ggplot(village_data_yes, aes(x = village, y = proportion * 100, group = leader_p
 
 ## Beach Management Units (BMU)
 
-By establishing Beach Management Units (BMUs), villages are able to enact and enforce their own sustainable fishing regulations and protect fish breeding and nurseries zones. Awareness of BMUs was strikingly low in the northern villages, only a few households in Izinga, Mwinza, and Ng’anga had heard of BMUs (Figure 35). On the contrary, the majority of households in the southern village cluster had an awareness of BMUs in their village, overall this accounted for 83% household awareness of BMUs.
+By establishing Beach Management Units (BMUs), villages are able to enact and enforce their own sustainable fishing regulations and protect fish breeding and nurseries zones. Awareness of BMUs was strikingly low in the southern villages, only a few households in Izinga, Mwinza, and Ng’anga had heard of BMUs (Figure 35). On the contrary, the majority of households in the northern village cluster had an awareness of BMUs in their village, overall this accounted for 83% household awareness of BMUs.
 
 ```{r, fig.cap='Household awareness of BMUs at village level (%)', fig.align='center', out.width = '90%'}
 village_data <- tanganyika_survey %>%
@@ -3689,10 +3726,10 @@ cluster_summary <- tanganyika_survey %>%
 # Add cluster-level and total summaries to the data
 village_data_yes <- bind_rows(village_data_yes, cluster_summary)
 
-cluster_1_order <- c(
+cluster_2_order <- c(
   "Izinga", "Kala", "Katenge", "Kilambo cha Mkolechi", 
   "Kizumbi", "Lyapinda", "Mpasa", "Mwinza", "Ng'anga", 
-  "Tundu", "Wampembe", "Overall North")
+  "Tundu", "Wampembe", "Overall South")
 
 # Adjust factor levels for villages in Cluster 1 and Cluster 2
 village_data <- village_data %>%
@@ -3700,9 +3737,9 @@ village_data <- village_data %>%
     village = factor(
       village,
       levels = c(
-        cluster_1_order,  # Use the specified order for Cluster 1
-        setdiff(unique(village_data_yes$village[village_data_yes$cluster == "Cluster 2"]), "Overall South"),
-        "Overall South")))
+        cluster_2_order,  # Use the specified order for Cluster 1
+        setdiff(unique(village_data_yes$village[village_data_yes$cluster == "Cluster 1"]), "Overall North"),
+        "Overall North")))
 
 ggplot(village_data, aes(x = village, y = proportion * 100, group = awareness_bmu, fill = awareness_bmu)) +
 geom_bar(data = village_data_yes, stat = "identity", position = position_dodge(preserve = "single"), width = 0.95) +
@@ -3740,7 +3777,7 @@ geom_bar(data = village_data_yes, stat = "identity", position = position_dodge(p
   facet_wrap(~cluster, ncol = 1, scales = "free_x")
 ```
 
-Household participation in BMU activities mirrored the trend in BMU awareness, as a subset of households in all villages of the southern cluster had indicated participating in BMU activities in the last year. On average, 34% of southern households had participated in BMU activities as opposed to none in the northern cluster (Figure 36).
+Household participation in BMU activities mirrored the trend in BMU awareness, as a subset of households in all villages of the northern cluster had indicated participating in BMU activities in the last year. On average, 34% of northern households had participated in BMU activities as opposed to none in the northern cluster (Figure 36).
 
 ```{r, fig.cap='Household participation in BMU activities over the past 12 months at village level (%)', fig.align='center', out.width = '90%'}
 village_data <- tanganyika_survey %>%
@@ -3778,10 +3815,10 @@ cluster_summary <- tanganyika_survey %>%
 # Add cluster-level and total summaries to the data
 village_data_yes <- bind_rows(village_data_yes, cluster_summary)
 
-cluster_1_order <- c(
+cluster_2_order <- c(
   "Izinga", "Kala", "Katenge", "Kilambo cha Mkolechi", 
   "Kizumbi", "Lyapinda", "Mpasa", "Mwinza", "Ng'anga", 
-  "Tundu", "Wampembe", "Overall North")
+  "Tundu", "Wampembe", "Overall South")
 
 # Adjust factor levels for villages in Cluster 1 and Cluster 2
 village_data <- village_data %>%
@@ -3789,9 +3826,9 @@ village_data <- village_data %>%
     village = factor(
       village,
       levels = c(
-        cluster_1_order,  # Use the specified order for Cluster 1
-        setdiff(unique(village_data_yes$village[village_data_yes$cluster == "Cluster 2"]), "Overall South"),
-        "Overall South")))
+        cluster_2_order,  # Use the specified order for Cluster 1
+        setdiff(unique(village_data_yes$village[village_data_yes$cluster == "Cluster 1"]), "Overall North"),
+        "Overall North")))
 
 ggplot(village_data, aes(x = village, y = proportion * 100, group = BMU_activity, fill = BMU_activity)) +
 geom_bar(data = village_data_yes, stat = "identity", position = position_dodge(preserve = "single"), width = 0.95) +
@@ -3830,7 +3867,7 @@ geom_bar(data = village_data_yes, stat = "identity", position = position_dodge(p
 
 ```
 
-Overall, BMU membership in the southern village cluster is estimated at 31% of households (Figure 37). Household membership appears highest in Mtakuja (45%) and lowest in Majengo Mapya (17%). Despite 3% of households indicating that they are members of a BMU in Mwinza, it appears that across the whole northern village cluster no BMUs have been established to date. Across the southern cluster, 57% of BMUs are supported by the TNC Lake Tanganyika Project (Figure 38). This support is highest in Ntanganyika, Manda Uhuru, and Mkinga. Households in Isasa and Kalungu expressed having the least support provided by the TNC Lake Tanganyika Project. Overall, representation in the leadership of BMUs appeared equitable, as almost 90% of all household respondents indicated that women and youth made up part of the BMU leadership (Table 15).
+Overall, BMU membership in the northern village cluster is estimated at 31% of households (Figure 37). Household membership appears highest in Mtakuja (45%) and lowest in Majengo Mapya (17%). Despite 3% of households indicating that they are members of a BMU in Mwinza, it appears that across the whole southern village cluster no BMUs have been established to date. 
 
 ```{r, fig.cap='BMU membership at village level (%)', fig.align='center', out.width = '90%'}
 
@@ -3869,10 +3906,10 @@ cluster_summary <- tanganyika_survey %>%
 # Add cluster-level and total summaries to the data
 village_data_yes <- bind_rows(village_data_yes, cluster_summary)
 
-cluster_1_order <- c(
+cluster_2_order <- c(
   "Izinga", "Kala", "Katenge", "Kilambo cha Mkolechi", 
   "Kizumbi", "Lyapinda", "Mpasa", "Mwinza", "Ng'anga", 
-  "Tundu", "Wampembe", "Overall North")
+  "Tundu", "Wampembe", "Overall South")
 
 # Adjust factor levels for villages in Cluster 1 and Cluster 2
 village_data <- village_data %>%
@@ -3880,9 +3917,9 @@ village_data <- village_data %>%
     village = factor(
       village,
       levels = c(
-        cluster_1_order,  # Use the specified order for Cluster 1
-        setdiff(unique(village_data_yes$village[village_data_yes$cluster == "Cluster 2"]), "Overall South"),
-        "Overall South")))
+        cluster_2_order,  # Use the specified order for Cluster 1
+        setdiff(unique(village_data_yes$village[village_data_yes$cluster == "Cluster 1"]), "Overall North"),
+        "Overall North")))
 
 ggplot(village_data, aes(x = village, y = proportion * 100, group = bmu_member, fill = bmu_member)) +
 geom_bar(data = village_data_yes, stat = "identity", position = position_dodge(preserve = "single"), width = 0.95) +
@@ -3920,6 +3957,7 @@ geom_bar(data = village_data_yes, stat = "identity", position = position_dodge(p
   facet_wrap(~cluster, ncol = 1, scales = "free_x")
 ```
 
+Across the northern cluster, 57% of BMUs are supported by the TNC Lake Tanganyika Project (Figure 38). This support is highest in Ntanganyika, Manda Uhuru, and Mkinga. Households in Isasa and Kalungu expressed having the least support provided by the TNC Lake Tanganyika Project. Overall, representation in the leadership of BMUs appeared equitable, as almost 90% of all household respondents indicated that women and youth made up part of the BMU leadership (Table 15).
 
 ```{r, fig.cap='TNC Lake Tanganyika Project supported BMUs at village level (%)', fig.align='center', out.width = '90%'}
 
@@ -3958,10 +3996,10 @@ cluster_summary <- tanganyika_survey %>%
 # Add cluster-level and total summaries to the data
 village_data_yes <- bind_rows(village_data_yes, cluster_summary)
 
-cluster_1_order <- c(
+cluster_2_order <- c(
   "Izinga", "Kala", "Katenge", "Kilambo cha Mkolechi", 
   "Kizumbi", "Lyapinda", "Mpasa", "Mwinza", "Ng'anga", 
-  "Tundu", "Wampembe", "Overall North")
+  "Tundu", "Wampembe", "Overall South")
 
 # Adjust factor levels for villages in Cluster 1 and Cluster 2
 village_data <- village_data %>%
@@ -3969,9 +4007,9 @@ village_data <- village_data %>%
     village = factor(
       village,
       levels = c(
-        cluster_1_order,  # Use the specified order for Cluster 1
-        setdiff(unique(village_data_yes$village[village_data_yes$cluster == "Cluster 2"]), "Overall South"),
-        "Overall South")))
+        cluster_2_order,  # Use the specified order for Cluster 1
+        setdiff(unique(village_data_yes$village[village_data_yes$cluster == "Cluster 1"]), "Overall North"),
+        "Overall North")))
 
 ggplot(village_data, aes(x = village, y = proportion * 100, group = tnc_support_bmu, fill = tnc_support_bmu)) +
 geom_bar(data = village_data_yes, stat = "identity", position = position_dodge(preserve = "single"), width = 0.95) +
@@ -4164,7 +4202,7 @@ combined_table %>%
   flextable::autofit()
 ```
 
-Respondents indicated that they frequently engage in activities organized by the BMU (Figure 39). Common activities that are engaged in frequently include raising awareness around conserving Lake Tanganyika, as well as the monitoring of illegal fishing practices, monitoring use of illegal fishing gear, and performing BMU patrols. Fish catch data is also collected frequently and aids in managing local fisheries resources. Meetings to discuss fisheries management across the BMUs appear to be held occasionally.
+Respondents indicated that BMUs were involved in a number of activities (Figure 39). Common activities that are engaged in frequently include raising awareness around conserving Lake Tanganyika, as well as the monitoring of illegal fishing practices, monitoring use of illegal fishing gear, and performing BMU patrols. Fish catch data is also collected frequently and aids in managing local fisheries resources. Meetings to discuss fisheries management across the BMUs appear to be held occasionally.
 
 ```{r, fig.cap='An indication of frequency for BMU activities', fig.align='center', out.width = '90%'}
 # Mapping activity levels to numeric values
@@ -4278,7 +4316,7 @@ ggplot(aggregate_activity_combined, aes(
   facet_wrap(~ cluster, nrow = 2, scales = "free_y", strip.position = "top") 
 ```
 
-Three quarters of all households in the southern cluster believed that their BMU had good leaders in place (Figure 40). In most instances (85%), respondents indicated that election procedures to choose BMU leaders were fair (Figure 41). Only 8% believed that BMU leaders were elected unfairly. Furthermore, two thirds of people indicated that there is good trust and collaboration between their BMU and government authorities in the management of fishing resources (Figure 42). Please note that the high confidence intervals observed in the northern cluster of figures 40, 41, and 42 can be attributed to the very low sampling size of respondents that had an awareness of BMUs (n = 4).
+Three quarters of all households in the northern cluster believed that their BMU had good leaders in place (Figure 40). In most instances (85%), respondents indicated that election procedures to choose BMU leaders were fair (Figure 41). Only 8% believed that BMU leaders were elected unfairly. Furthermore, two thirds of people indicated that there is good trust and collaboration between their BMU and government authorities in the management of fishing resources (Figure 42). Please note that the large confidence intervals observed in the southern cluster of Figures 40, 41, and 42 can be attributed to the very low sampling size of respondents that had an awareness of BMUs (n = 4).
 
 ```{r, fig.cap='Do you think the BMU has good leaders?', fig.align='center', out.width = '90%', fig.height=9}
 # Expand the data with cluster classification
@@ -4596,7 +4634,7 @@ combined_table %>%
 
 ```
 
-Where BMUs are established, in the southern cluster of villages, almost two thirds of BMUs have written bylaws in place, which is an indication for good governance and fisheries management (Figure 43). At village level, approximately half or more of respondents in each village indicated that written bylaws were in place in their BMU. In response to the statement “BMU bylaws are being followed”, the majority of households responded in agreement (85%). Only 13% of households either disagreed or strongly disagreed to the statement (Figure 44). 
+Where BMUs are established, in the northern cluster of villages, almost two thirds of BMUs have written bylaws in place, which is an indication for good governance and fisheries management (Figure 43). At village level, approximately half or more of respondents in each village indicated that written bylaws were in place in their BMU. 
 
 ```{r, fig.cap='Written BMU bylaws at village level (%)', fig.align='center', out.width = '90%'}
 village_data <- tanganyika_survey %>%
@@ -4635,10 +4673,10 @@ cluster_summary <- tanganyika_survey %>%
 # Add cluster-level and total summaries to the data
 village_data_yes <- bind_rows(village_data_yes, cluster_summary)
 
-cluster_1_order <- c(
+cluster_2_order <- c(
   "Izinga", "Kala", "Katenge", "Kilambo cha Mkolechi", 
   "Kizumbi", "Lyapinda", "Mpasa", "Mwinza", "Ng'anga", 
-  "Tundu", "Wampembe", "Overall North")
+  "Tundu", "Wampembe", "Overall South")
 
 # Adjust factor levels for villages in Cluster 1 and Cluster 2
 village_data <- village_data %>%
@@ -4646,9 +4684,9 @@ village_data <- village_data %>%
     village = factor(
       village,
       levels = c(
-        cluster_1_order,  # Use the specified order for Cluster 1
-        setdiff(unique(village_data_yes$village[village_data_yes$cluster == "Cluster 2"]), "Overall South"),
-        "Overall South")))
+        cluster_2_order,  # Use the specified order for Cluster 1
+        setdiff(unique(village_data_yes$village[village_data_yes$cluster == "Cluster 1"]), "Overall North"),
+        "Overall North")))
 
 # Create the plot
 ggplot(village_data, aes(x = village, y = proportion * 100, group = bmu_bylaws, fill = bmu_bylaws)) +
@@ -4690,6 +4728,7 @@ ggplot(village_data, aes(x = village, y = proportion * 100, group = bmu_bylaws, 
   facet_wrap(~cluster, ncol = 1, scales = "free_x")
 ```
 
+In response to the statement “BMU bylaws are being followed”, the majority of households responded in agreement (85%). Only 13% of households either disagreed or strongly disagreed to the statement (Figure 44). 
 
 ```{r, fig.cap='Statement: BMU bylaws are being followed', fig.align='center', out.width = '90%'}
 
@@ -4760,9 +4799,9 @@ ggplot(bylaws_followed_combined, aes(x = fct_relevel(bylaws_followed,
 
 ```
 
-When asked whether BMUs have improved fishing practices, 44% of households in the southern cluster responded in agreement and a further 23% of households strongly agreed (Figure 45). Few people felt neutral about the impact of BMUs on fishing practices, but 28% of respondents either disagreed or disagreed strongly. In the northern cluster, two out of three respondents that knew about BMUs agreed that they indeed improved fishing practices. Please note the large confidence intervals in this cluster due to low sampling size. 
+When asked whether BMUs have improved fishing practices, 44% of households in the northern cluster responded in agreement and a further 23% of households strongly agreed (Figure 45). Few people felt neutral about the impact of BMUs on fishing practices, but 28% of respondents either disagreed or disagreed strongly. In the southern cluster, two out of three respondents that knew about BMUs agreed that they indeed improved fishing practices. Please note the large confidence intervals in this cluster are due to low sampling size. 
 
-```{r, fig.cap='Do you think the BMU has improved fishing practices?', fig.align='center', out.width = '90%'}
+```{r, fig.cap='Do you think the BMU has improved fishing practices?', fig.align='center', out.width = '90%', fig.height=9}
 
 # Expand the data with cluster classification
 bmu_practice_expanded <- tanganyika_survey %>%
@@ -4833,11 +4872,20 @@ ggplot(bmu_practice_combined, aes(x = fct_relevel(bmu_practice,
 
 ### BMU Challenges
 
-In order to find out what challenges are faced by the BMUs, households were asked to elaborate on the question “What are the challenges that the BMU faces?”. A major challenge faced by BMUs pertains to illegal fishing practices, including the use of unauthorized nets and fishing in protected areas, which was listed by 11% (n = 106) of all households surveyed. According to respondents, BMUs often face resistance from fishers when enforcing regulations, which undermines conservation efforts. A significant proportion of respondents, 9% of all households surveyed (n = 91), also indicated that BMUs face challenges related to a lack of resources and equipment. These include a lack of patrol boats, safety gear, and insufficient funds for operations such as fuel and maintenance. 6% (n = 64)  of all households regarded insecurity, violence, and threats as a significant challenge faced by BMU members. These include physical attacks from illegal fishers, threats to their lives, and verbal abuse from community members. Furthermore, conflict issues were highlighted as a significant challenge faced by BMU (n = 34). These conflicts arise between BMU members and fishers, as well as between BMU and the community and include a lack of understanding, opposition from locals, and disputes during enforcement activities. Several respondents (n = 29) identified inadequate training and knowledge as a significant challenge, including a lack of education about the purpose and regulations of BMUs, insufficient knowledge on conservation, and the absence of regularly held training sessions.
+In order to find out what challenges are faced by the BMUs, households were asked to elaborate on the question “What are the challenges that the BMU faces?”. A major challenge faced by BMUs pertains to illegal fishing practices, including the use of unauthorized nets and fishing in protected areas, which was listed by 11% (n = 106) of all households surveyed. According to respondents, BMUs often face resistance from fishers when enforcing regulations, which undermines conservation efforts. A significant proportion of respondents, 9% of all households surveyed (n = 91), also indicated that BMUs face challenges related to a lack of resources and patrolling equipment. These include a lack of patrol boats, safety gear, and insufficient funds for operations such as fuel and maintenance. 6% (n = 64)  of all households regarded insecurity, violence, and threats as a significant challenge faced by BMU members. These include physical attacks from illegal fishers, threats to their lives, and verbal abuse from community members. Furthermore, conflict issues were highlighted as a significant challenge faced by BMU (n = 34). These conflicts arise between BMU members and fishers, as well as between BMU and the community and include a lack of understanding, opposition from locals, and disputes during enforcement activities. Several respondents (n = 29) identified inadequate training and knowledge as a significant challenge, including a lack of education about the purpose and regulations of BMUs, insufficient knowledge on conservation, and the absence of regularly held training sessions.
+
+> Kupambana na wavuvi haramu na wanaotumia vyombo haramu vya uvuvi
+
+> Vyombo vya doria ni vichache kwahyo wanashindwa kusimamia doria vizuri
+
+> Wavuvi wengi hawana elimu sahihi ya uhifadhi hivyo hupelekea ufanyaji kazi wa BMU kua mgumu
+
 
 Other challenges faced by BMUs include corruption and bribery of BMU leaders and law enforcement officers (n = 14), a lack of collaboration between the BMU, local authorities, and other stakeholders (n = 13), compliance and law enforcement issues (n = 24), administrative challenges (n = 7), financial constraints (n = 13),  environmental challenges (n = 6), interference from local administrations and government officials on BMU activities (n = 5), poor working conditions (n = 3), as well as a lack of support from relevant stakeholders (n = 3). Together, these challenges hamper the effectiveness and compromise the integrity of BMU activities and enforcement of fishing regulations. 
 
 In response to the question “How could the BMU be improved?”, many household respondents (n = 77) emphasized the need to enhance the capacity of BMUs through better tools, infrastructure, and financial resources. Suggestions included improvements to working equipment, funding mechanisms, and infrastructure development to ensure BMUs can perform their duties effectively and sustainably. Respondents (n = 84) also emphasized the need for increased training, education, and capacity building for BMUs, their members, and the fishermen they interact with. The focus should be on providing continuous education on sustainable fishing practices, environmental conservation, and the roles of BMUs. Additionally, many respondents stressed the importance of regular workshops, seminars, and training programs to empower both leaders and members to better manage the fisheries resources and enforce the laws effectively. In order to improve operational efficiency and accountability within BMUs, 35 respondents highlighted the provision of sufficient security, tools, and resources to enhance patrol efforts. Key issues include the provision of safety measures, modern equipment for patrols (i.e. boats, weapons, and protective gear), and formal recognition of BMUs to ensure better enforcement of fisheries laws.
+
+> Ipewe vitendea kazi bora ili kuongeza ufanisi wao
 
 Other improvements to BMUs related to improved governance, stronger leadership, and fairness in BMU operations (n = 34). Suggestions emphasized eliminating corruption and favoritism, enforcing equity among fishers, and strengthening BMUs with better resources and support from the government. Respondents also highlighted the need for clear legal frameworks, fair enforcement of fishing regulations, and collaborative strategies to combat illegal fishing practices. Furthermore, responses provided by 24 households emphasized the importance of fostering strong relationships between BMUs, government officials, and local communities. Participants suggested that BMUs should work collaboratively with fishers, local government authorities, and environmental organizations to address challenges and improve resource management. Many highlighted the need for government support and greater cooperation between BMUs and stakeholders to enhance the effectiveness of fishing regulations and conservation efforts.
 
@@ -4848,7 +4896,7 @@ Other improvements to BMUs related to improved governance, stronger leadership, 
 
 ## Livelihood Practices of Fishers
 
-Overall, in both the northern and southern clusters of villages, canoes without engine are the most frequently used type of fishing boat (Figure 46). Only in Majengo Mapy and Ntanganyika are engine boats more frequently used than canoes without engine. In Izinga, fishers indicated using using large boats with an engine most frequently. Across village clusters, large boats with engine appear more frequently used in the northern villages.
+Overall, in both the northern and southern clusters of villages, canoes without engine are the most frequently used type of fishing boat (Figure 46). Only in Majengo Mapya and Ntanganyika are engine boats more frequently used than canoes without engine. In Izinga, fishers indicated using using large boats with an engine most frequently. Across village clusters, large boats with engine appear more frequently used in the northern villages.
 
 ```{r,  fig.cap='Type of fishing boats used at village level', fig.align='center', out.width = '90%'}
 boat_type_expanded <- tanganyika_clean %>% select(hh_code, village, boat_type, stype, fpc) %>%
@@ -5038,7 +5086,7 @@ ggplot(aggregate_fish_importance, aes(x = village, y = mean_importance_percent, 
 
 ```
 
-Fishers were asked to provide a self-assessment of fisheries resource management over the past five years (Figure 48). Across both village clusters, half of the respondents indicated that they had participated in good fisheries management practices (north 52%; south 49%). Respectively, in the northern and southern village clusters, 37% and 34% indicated that fisheries management had been bad or very bad over the past five years. Overall, 58%of fishers believed that their rights to access and use resources of the fishery are being upheld by regulatory and/or communal systems (Table 17). Additionally, 62% of fishers expressed that they were happy with the current security of their rights over fisheries resources. However, only 24% indicated that they were involved in decision-making processes regarding resource management of their fishery. Of the fishers involved in decision-making processes concerning the fisheries resource, the vast majority of fishers in both the northern and southern clusters of villages stated they were happy with their level of involvement (Figure 49).
+Fishers were asked to provide a self-assessment of fisheries resource management over the past five years (Figure 48). Across both village clusters, half of the respondents indicated that they had participated in good fisheries management practices (north 49%; south 52%). Respectively, in the northern and southern village clusters, 34% and 37% indicated that fisheries management had been bad or very bad over the past five years. Overall, 58% of fishers believed that their rights to access and use resources of the fishery are being upheld by regulatory and/or communal systems (Table 17). Additionally, 62% of fishers expressed that they were happy with the current security of their rights over fisheries resources. However, only 24% indicated that they were involved in decision-making processes regarding resource management of their fishery. Of the fishers involved in decision-making processes concerning the fisheries resource, the vast majority of fishers in both the northern and southern clusters of villages stated they were happy with their level of involvement (Figure 49).
 
 ```{r, fig.cap='Self-assessment of fisheries resource management over the past five years', fig.align='center', out.width = '90%', fig.height=8}
 # Expand the data with cluster classification
@@ -5272,7 +5320,7 @@ ggplot(satisfaction_involvement_combined, aes(x = fct_relevel(satisfaction_invol
 
 ```
 
-Furthermore, fishers were asked to provide an indication of their relationship with fisheries extension officers. In the northern village cluster, 63% of respondents stated they had a good relationship, 20% described their relationship with fisheries extension officers as average, and a further 17% stated they maintained a bad relationship (Figure 50). Similarly, 65% of respondents in the southern village cluster indicated their relationship with fisheries extension officers to be good, while 18% described it as average, and 16% as bad. 
+Furthermore, fishers were asked to provide an indication of their relationship with fisheries extension officers. In the southern village cluster, 63% of respondents stated they had a good relationship, 20% described their relationship with fisheries extension officers as average, and a further 17% stated they maintained a bad relationship (Figure 50). Similarly, 65% of respondents in the northern village cluster indicated their relationship with fisheries extension officers to be good, while 18% described it as average, and 16% as bad. 
 
 ```{r, fig.cap='An indication of the relationship with fisheries extension officers', fig.align='center', out.width = '90%', fig.height=8}
 # Expand the data with cluster classification
@@ -5342,9 +5390,19 @@ ggplot(relationship_officer_combined, aes(x = fct_relevel(relationship_officer, 
 
 Households were asked to list the top three current problems and/or challenges that they experienced with fisheries extension officers. Amongst 14% (n = 144) of all household respondents, no challenges concerning fisheries extension officers were mentioned. In contrast, 7% (n = 65) of all household listed abuse of power by fisheries extension officers as a key issue. Respondents mentioned that officers often apply unfair tactics, such as confiscating fishing gear or boats over minor infractions or expired licenses and imposing fines without clear justification. Fisheries extension officers also use intimidation, force, and harassment, making it difficult for fishers to comply peacefully. Unfair enforcement of fishing regulations was listed by a further 36 households. For instance, license payments are demanded from individuals who aren't even fishers, while allowing illegal fishers to operate freely. Those fishers with valid licenses may also be harassed and fined unnecessarily.
 
+> Kulazimisha kulipa leseni atakama uvui
+
+> Pale wanapokuja kudai leseni hawaulizi chochote wanachukua mashine mpaka pale watakapofatilia
+
+> Maafisa uvuvi wanakatisha leseni muda ukiisha wa kukata leseni ili watoze faini
+
 Issues pertaining to delays in fishing license processing affected 25 respondents. These mentioned that despite paying fees, they often receive receipts instead of licenses, with delays in issuance. The process for obtaining a license is thought to be confusing and fishers are sometimes forced to pay multiple times without receiving proper documentation. High license fees also pose an issue (n = 20), as officers charge large amounts for licenses and impose heavy fines, which are often unrelated to the severity of offenses. The fees vary periodically, sometimes increasing significantly, and many fishers struggle to afford them. Five respondents revealed that fishers continue to pay for licenses during closure of the fishing season, leading to under utilization of the license. The mismatch between the license duration and the actual fishing time results in an unfair distribution of costs and benefits.
 
 Limited transparency and community engagement result in weak relationships, insufficient involvement in decision-making processes, and inadequate information sharing (n = 21). However, a lack of compliance with regulations by fishermen also contributes to challenges (n = 25), leading to the issuance of fines, confiscation of equipment, and restricted access to fishing areas, creating further difficulties for enforcement. A further 13 respondents stated that fisheries officers fail to meet their core responsibilities, including the effective regulation of fishing gear, with some accused of misusing funds meant for fishing equipment.
+
+> Kutokushirikishwa ipasavyo na maafisa uvuvi ivyo hupelekea kua na uhusiano mbaya kati ya wavuvi na  > maafisa uvuvi
+
+> Kama sina leseni ya uvuvi na mtumbwi hauna leseni siwezi kuruhusiwa kuvua
 
 Awareness of fish reserves was uniformly high amongst fishers (81%; Table 18). Furthermore, 84% of respondents were aware of the purpose of fish reserves and 88% indicated that they thought the implementation of fish reserves to be a good idea. Awareness of fish reserves and their respective purpose was lowest in Ng’anga, however this may at least in part be attributed to the low sampling size of fishers in the village (n = 5). 
 
@@ -5447,9 +5505,14 @@ combined_table %>%
 
 Households were posed the question “Why are fish reserves a good idea?” and asked to elaborate on their opinions. The implementation of fish reserves received both positive and negative feedback. Positively, 24% of all household respondents (n = 237) stated that fish reserves are useful because they ensure that fish have adequate time and space to breed without disturbance, helping to preserve and boost fish stocks, support sustainable fishing, and secure long-term availability of fish resources for communities. 5% (n = 53) mentioned that fish reserves are beneficial as they ensure sustainability and abundance of fish for future generations. They also mentioned that fish reserves allow conserving fish stocks for both current and future use, reducing overfishing, and providing long-term benefits for the environment and society. The size of fishes was a consideration too, as 32 respondents highlighted that reserves help prevent the capture of immature fish, thus providing a safe space for fish to grow, and ultimately supporting better fishing practices by increasing the yield of fully grown fish. Another 2% (n = 17) of household respondents said they supported sustainable fishing practices, stating that fish reserves prevent overfishing, safeguard aquatic ecosystems, and ensure that fish populations remain available to the community. Arguments voicing the positive benefits of fish reserves also pertained to financial benefits, as 20 household respondents believed fish reserves generate reliable revenue for the local government, contribute to community development through projects funded by fishing fees, and help ensure fish populations increase and are preserved for better economic returns.
 
+> Kunachochea Samaki kuzaliana, hivyo samaki kupatikana kwa wingi
+
+> Ni sehemu ambapo samaki wanazaliana pasipo kuvuliwa, hvo baada ya muda kadhaa samaki watakuwa wengi
+
+
 Negative opinions on the implementation of fish reserves were varied but limited and pertained to a perceived lack of impact from fish reserves (n = 9), concerns about location and boundaries (n = 8), a loss of income and fish (n = 4), and the idea that the sheer size of Lake Tanganyika aids in self-regulating fish population (n = 3). People that reported a perceived lack of impact from fish reserves argued that fish were reproducing even before the reserves were established, and natural systems were intact. Some shared that fish migrate to reserves, causing scarcity in non-reserve areas, and despite the reserves, fish remain scarce. Those with concerns about the location and boundaries of fish reserves highlighted that within the large areas designated as reserves, the fishing zones are small, and the number of fishers is high. They also criticized the location of the reserves, saying that fish do not remain in those areas, but simply pass through. Financial concerns pertained to the idea that fish reserves lead to a lack of fish, which tend to escape to the reserves, making fishing more difficult in the remaining areas. The fees imposed on fishers in conjunction with short fishing periods, disrupt livelihoods as communities depend on the lake for income. In Manda Kerenge, one respondent shared that households in the village feel heavily restricted because of the intervention.
 
-Half of fishers in the northern and southern village clusters indicated that they believed current fish stocks to be sufficient in meeting the fishing, food, and livelihood needs of their community (Figure 51). Respectively, a further 39% and 44% of fishers in the northern and southern village clusters did not believe this to be true.
+Half of fishers in the northern and southern village clusters indicated that they believed current fish stocks to be sufficient in meeting the fishing, food, and livelihood needs of their community (Figure 51). Respectively, a further 44% and 39% of fishers in the northern and southern village clusters did not believe this to be true.
 
 ```{r, fig.cap='At the moment, do you think the current number of fish in the lake is sufficient to meet the fishing, food, and livelihood needs of the community?', fig.align='center', out.width = '90%', fig.height=8}
 
@@ -5518,7 +5581,7 @@ ggplot(sustainability_population_combined, aes(x = fct_relevel(sustainability_po
 
 ```
 
-In terms of the sustainability of current fishing practices on fish stocks, almost two thirds of fishers in southern villages believed there to be sufficient fish for communities in future (Figure 52). In contrast, merely half of the fishers in northern villages believed this statement to be true. Furthermore, 37% of fishers in the northern villages did not believe there would be enough fish whilst 16% weren’t sure. In southern villages, 30% of fishers did not think there will be sufficient fish for the communities in future. 
+In terms of the sustainability of current fishing practices on fish stocks, almost two thirds of fishers in northern villages believed there to be sufficient fish for communities in future (Figure 52). In contrast, merely half of the fishers in southern villages believed this statement to be true. Furthermore, 37% of fishers in the southern villages did not believe there would be enough fish whilst 16% weren’t sure. In northern villages, 30% of fishers did not think there will be sufficient fish for the communities in future. 
 
 ```{r, fig.cap='In the future, do you think there will be sufficient fish for the communities?', fig.align='center', out.width = '90%'}
 # Expand the data with cluster classification
@@ -5588,13 +5651,16 @@ ggplot(sufficiency_fish_combined, aes(x = fct_relevel(sufficiency_fish, "YES", "
 
 In order to gain a further understanding of the perceived impacts and sustainability of current fishing practices, households were also asked why they thought that there will be sufficient fish for the communities in future. A number of participants (n = 91) highlighted that the protection of fish breeding areas and the establishment of dedicated fish conservation zones are crucial for ensuring sufficient fish populations in the future. Furthermore, the importance of government regulations in managing fishing practices, including enforcing seasonal closures and preventing illegal fishing, was emphasized by 66 household respondents. Participants suggested that measures such as restricting fishing during breeding seasons and maintaining control over illegal fishing practices are crucial for sustaining fish populations. Furthermore, 29 households indicated that fish are able to reproduce naturally, especially during the rainy season, leading to an increase in their numbers. Respondents mentioned that because fish currently breed in large numbers, they will continue to do so in future. Furthermore, a number of respondents (n = 8) indicated that they believe continued effective management to contribute to the future conservation of fish stocks in Lake Tanganyika, with three respondents stating that BMUs play a crucial role.
 
-“BMU wanajitahidi kutunza maeneo ya hifadhi ya samaki”
+> Kwa sababu ya kuwepo maeneo yaliyotengwa kwaajili ya mazalia ya samaki hivyo kupelekea samaki 
+> kuongezeka kwa wingi na kuendelea kupatikana kwa miaka mingine ijayo
+
+> BMU wanajitahidi kutunza maeneo ya hifadhi ya samaki
 
 Concerns about the future availability of fish in Lake Tanganyika were widely expressed. A high number of respondents (n = 55) highlighted the prevalence of illegal fishing as a critical challenge to fish populations and sustainability. They expressed concerns about the destructive impact of illegal practices, which disrupt fish breeding grounds and lead to overfishing. Some respondents (n = 11) expressed concern about the growing amount of fishing gear being used. They believe that the abundance of fishing tools, especially modern equipment, is contributing to overfishing and a significant decline in fish populations. Furthermore, 34 respondents addressed an increased use of illegal fishing gear as a concern. According to them, this equipment catches too many fish, including undersized ones, which threatens fish growth and reproduction. Fishing pressure was further addressed by respondents (n = 13) highlighting concerns about the growing number of fishers, which they believe is contributing to a decline in fish populations.
 
-There appears to be a lot of variation in the type of fishing gear used at village level (Figure 53). Overall, however, ring nets (purse-seine) appear to be most commonly used across all villages in the northern and southern clusters. Thereafter, the use of gill nets, long lines, and lift nets is not uncommon. The use of long lines appears more common in northern villages than in southern villages, especially in Ng’anga and Mpasa is the use of long lines common. Interestingly, in Kipili more than two thirds of the fishing gear used is comprised of gill nets.
+There appears to be a lot of variation in the type of fishing gear used at village level (Figure 53). Overall, however, ring nets (purse-seine) appear to be most commonly used across all villages in the northern and southern clusters. Thereafter, the use of gill nets, long lines, and lift nets is not uncommon. The use of long lines appears more common in southern villages than in northern villages, especially in Ng’anga and Mpasa is the use of long lines common. Interestingly, in Kipili more than two thirds of the fishing gear used is comprised of gill nets.
 
-Respondents were asked to elaborate on the other types of fishing gear that they use. Other types of fishing gear listed by fishers include long lines, hooks, nets, as well as torches/lights, presumably for use at night. In one instance, diving equipment was mentioned.
+Respondents were asked to elaborate on the other types of fishing gear that they use. Other types of fishing gear listed by fishers include hooks, nets, as well as torches/lights, presumably for use at night. In one instance, diving equipment was mentioned.
 
 
 ```{r, fig.cap='Type of fishing gear used at village level (%)', fig.align='center', out.width = '90%'}
@@ -5902,12 +5968,15 @@ combined_table %>%
 
 Fishers were asked to elaborate about why they thought that they now generally require less, the same, or more time to get to their fishing grounds. Respondents who stated they require less time to get to their fishing grounds revealed that they now have access to boats with engines (n = 35). They also highlighted the use of newer fishing tools and engines, which allow for quicker transportation to fishing areas. Interestingly, 50 household respondents mentioned that fish are now found closer to shore due to higher water levels, seasonal changes, and increased fish populations. Additionally, specific fish, such as dagaa, are more readily accessible near shallow waters, leading to shorter travel times for fishermen. Others (n = 10) mentioned that the reduction in time is simply because of the increased demands of other work, time constraints, and the need to balance fishing with business activities. However, they also highlighted that delayed departures make it harder to catch fish early, as fish are found farther away and are caught earlier in the day. 
 
+> Samaki hasa dagaa wanapatikana kwenye kina kifupi cha maji
+
 Many fishers (n = 164) stated that it takes them roughly the same amount of time to reach their fishing ground. These fishers reported that the fishing activities still take place in the same areas, and the time taken to reach the grounds has not changed. Many highlighted that they continue to fish in the same spots, and the environmental conditions have not altered. However, a subset also expressed frustration as a lack of improvement in transportation and equipment, has resulted in no significant change in travel time to fishing areas as compared to five years ago. The challenges they face include using outdated boats and equipment, which are not suitable for long-distance travel, especially when weather conditions, such as wind, are unfavorable. 
 
 Those fishers spending more time getting to their fishing grounds emphasized that, compared to 5 years ago, they need more time to reach the fishing grounds because fish have become scarce and are now found farther away (n = 82). The increasing number of fishers and illegal fishing practices have contributed to the depletion of nearby fish populations. As a result, fishers are traveling greater distances to find fish, which has led to longer travel times. Also, environmental changes, such as rising water levels, have pushed fish to deeper areas, further increasing the distance needed to access them. Five household respondents specifically mentioned that due to the establishment of fishing boundaries, including protected breeding areas and buoy barriers, they are now required to fish farther from the shore compared to five years ago.
 
+> Kwa sababu kutokana na uhitaji mkubwa wa samaki na samaki ni wachache
 
-Sale prices of fish appear to have fluctuated a lot in the past five years (Figure 55). Dagaa fetched the highest sale price in southern villages at TSh 21,039. In northern villages, the highest sale price for dagaa was TSh 17,868. Lowest sale prices for dagaa were estimated at TSh 9,958 in southern villages and TSh 6,744 in northern villages. The highest sale price for migebuka is estimated at TSh 14,570 in in northern villages and TSh 13,587 in southern villages. Migebuka sale prices reached as low as TSh 7,187 in northern villages and TSh 9,236 in southern villages. Interestingly, the average lowest price of sangara in southern villages appears higher than the average best price fetched for this species. However, there appears little variation in the two prices, which may indicate a relatively stable price for sangara over the past five years. This is corroborated by the limited variation observed in the price of sangara in northern villages.
+Sale prices of fish appear to have fluctuated a lot in the past five years (Figure 55). Dagaa fetched the highest average sale price in northern villages at TSh 21,039. In southern villages, the highest sale price for Dagaa was TSh 17,868. Lowest sale prices for Dagaa were estimated at TSh 9,958 in northern villages and TSh 6,744 in southern villages. The highest sale price for Migebuka is estimated at TSh 14,570 in southern villages and TSh 13,587 in northern villages. Migebuka sale prices reached as low as TSh 7,187 in southern villages and TSh 9,236 in northern villages. Interestingly, the average lowest price of Sangara in northern villages appears higher than the average best price fetched for this species. However, there appears to be variation in the two prices, which may indicate a relatively stable price for Sangara over the past five years. This is corroborated by the limited variation observed in the price of Sangara in southern villages.
 
 ```{r, fig.cap='Sale prices (TSh) of fish species over the past five years', fig.align='center', out.width = '90%'}
 # Define target type variables for best values
@@ -6062,6 +6131,11 @@ To gain an understanding of the fish value chain, fishers were asked the questio
 
 Fishers were also asked to think about their perceived reasons for the changes in fish catch that they experienced over the past fiver years. Decreases in catch were attributed to an increase in illegal fishing practices (n = 121). The widespread use of illegal fishing gear, such as monofilament nets, has significantly depleted fish populations. These practices, which include night fishing and the use of harmful nets, not only catch large numbers of fish but also target juvenile fish, disrupting fish breeding areas. Others voiced their concern about increasing fishing pressure (n = 60), increases in the number of fishers, fishing gear, and fishing boats has led to a decrease in fish availability compared to five years ago. The growing demand for fish and the rise in fishing activities have intensified competition for resources, resulting in fewer fish in the waters. On the contrary, some respondents (n = 17) argued that decreases in fish catch are due to a lack of proper fishing equipment, the use of outdated or poor-quality tools, and the absence of modern fishing techniques and machinery such as boats and advanced nets. Some attributed decreases in catch to changing weather patterns, including increased wind, storms, and irregular rainfall. These weather changes have made fish more difficult to find, especially during dry seasons when they move farther away.
 
+> Uvuvi haramu kama filemaya unasababisha samaki kuwa kidogo mana aina hiyo ya uvuvi inavua samaki 
+> wengi bila kujali kama ni wadogo au wakubwa
+
+> Wavuvi wamekuwa wengi na mahitaji yameongezeka
+
 Few fishers indicated stability or an increase in fish catches compared to five years ago. Nine respondents shared that their catch has remained the same as their fishing methods have not changed, whereas five respondents reported that they catch more fish now due to having better and modern fishing equipment, including high-quality tools and nets. Other reasons for unchanged catch levels pertained to increased variability in fish movements, weather patterns, and water levels, but an overall consistency in conditions. Four respondents stated that an increase in the fish caught could be attributed to the decline of illegal fishing practices, which has been controlled and reduced. Positively, respondents also stated that the closure of fishing sites has facilitated fish breeding, leading to a higher number of fish available for capture (n = 30). Also, the enforcement of fishing regulations and the improved management of the lake were mentioned as important factors in the increase in fish caught. 
 
 
@@ -6184,8 +6258,13 @@ ggplot(aggregate_satisfaction_combined, aes(
 
 In response to the question “What are the top 3 current challenges you experience in fishing?”, fishers expressed a variety of challenges that they face on and off the water. Most significantly, unfavorable weather conditions, such as strong winds, storms, and heavy rains, pose significant risks, including accidents and disruptions to fishing activities (n =  232). Inadequate fishing gear and outdated technology (i.e. old boats, engines, and low-quality tools) limit fisher’s efficiency and safety (n = 106), while financial constraints prevent investments in modern equipment (n = 29). Declining fish stock availability and illegal fishing practices exacerbate these difficulties. Piracy was listed as a major concern (n = 74), common issues include theft and destruction of fishing gear, hijacking boats, and violent attacks during fishing activities. Many fishers reported being attacked by pirates at night, losing valuable equipment like engines and nets, and being left without resources. Additional issues include unreliable markets and fluctuating prices. Regulatory challenges, such as high fees and equipment confiscation, were stated to further complicate their work. Furthermore, rising costs, a lack of education, human-wildlife conflict (i.e. hippos, crocodiles), and restrictions imposed on fishing areas due to the implementation conservation zones also pose other challenges.
 
+> Uvamizi na ujambazi wananyang'anya fedha na vifaa
+
 Respondents were asked the question the “What are the key changes for you to improve your fishing practice?”. A large number of fishers highlighted several changes that could improve fishing practices, including access to modern and reliable equipment such as improved boats, modern nets, and even safety tools like buoys and fire extinguishers (n = 181). Improved safety and protective measures were also emphasized to address theft, piracy, and weather-related risks (n = 57). Suggestions focused on both immediate security needs and proactive safety strategies. Access to financial support like loans and microfinance to invest in better gear and increase productivity were also highly sought after (n = 96). Support for education and skill development related to trainings on sustainable fishing methods were also considered vital (n = 61), along with improved governance, stricter enforcement of fishing regulations, and better market access to stabilize fish prices and boost profitability. Strengthened collaboration among fishers and relevant stakeholders was suggested to improve fair representation in decision-making processes and to address challenges. Fishermen consistently emphasized the urgent need to address illegal fishing to sustain fish populations and improve legal fishers' livelihoods (n = 41). Suggestions highlighted stricter enforcement of fishing regulations, eradication of illegal gear, and empowering local authorities to monitor and control illegal practices. Fishers also highlighted the need to protect fish breeding areas, address the impact of changing weather conditions, and promote the use of sustainable fishing tools. They emphasized that improving the ecosystem is essential for ensuring a steady supply of fish and increasing their income.
 
+> Kupata vifaa vya uvuvi kama boya, mashine na vifaa vya kuzimia moto
+
+> Kuzuia uvuvi haramu ili tukienda kuvua samaki wapatikane kwa wingi
 
 Half of all fishers in northern and southern village clusters do not believe that the current number of fish in the lake is sufficient to meet the community's fishing, food, and livelihood needs (Figure 57). On the contrary, approximately 40% fishers believed that there are sufficient fish in the lake. There appear no large differences between the village clusters.
 
@@ -6258,7 +6337,7 @@ ggplot(village_data_combined, aes(x = fct_relevel(sustainability_population, "YE
 
 ```
 
-Three quarters of fishers in the southern village cluster believe that BMUs are helpful to improving fishing practices (Figure 58). There are no estimates for this statistic in the northern village cluster as BMUs do not appear to be established yet. As such, fishing group membership of cooperatives, FICOs, COCOBA or savings groups across villages of the northern cluster appears to be very limited (Table 21).  Where fishermen were members of a group, practically all stated that these were supported by TNC and many indicated the group to be helpful.
+Three quarters of fishers in the northern village cluster believe that BMUs are helpful to improving fishing practices (Figure 58). There are no estimates for this statistic in the southern village cluster as BMUs do not appear to be established yet. As such, fishing group membership of cooperatives, FICOs, COCOBA or savings groups across villages of the southern cluster appears to be very limited (Table 21).  Where fishermen were members of a group, practically all stated that these were supported by TNC and many indicated the group to be helpful.
 
 ```{r, fig.cap='Do you think BMUs are helpful to improving your fishing practices?', fig.align='center', out.width = '90%'}
 # Expand the data with cluster classification
@@ -6479,11 +6558,11 @@ combined_table %>%
 
 ```
 
-In response to the question “What are the top three key changes to improve the group?”, fishing group members indicated the need for increased financial support and resources, such as providing capital or loans, and creating group laws to facilitate access to loans (n = 10). They also mentioned for the members themselves they need to be more accountable in paying their membership shares on time, encouraging timely repayment. Furthermore, respondents shared the need for increased education and training, including education on illegal fishing, entrepreneurship, and loans. They emphasized the importance of seminars and meetings for better management of activities. Furthermore, group members reiterated the need to increase access to improved fishing equipment, group and governance structures.
+In response to the question “What are the top three key changes to improve the group?”, fishing group members indicated the need for increased financial support and resources, such as providing capital or loans, and creating group laws to facilitate access to loans (n = 10). They also mentioned that members themselves need to be more accountable in paying their membership shares on time, encouraging timely repayment. Furthermore, respondents shared the need for increased education and training, including education on illegal fishing, entrepreneurship, and loans. They emphasized the importance of seminars and meetings for better management of activities. Furthermore, group members reiterated the need to increase access to improved fishing equipment, group and governance structures.
 
-Two thirds of fishers in the southern village cluster di not feel that their current activities are likely to support their needs over the long term (Figure 59). There was no data available to gauge this statistic in the northern village cluster.
+Two thirds of fishers in the northern village cluster did not feel that their current activities are likely to support their needs over the long term (Figure 59). There was no data available to gauge this statistic in the southern village cluster.
 
-```{r, fig.cap='Do you think your current activities are likely to support your needs over the long term (next 5 - 10 years)?', fig.align='center', out.width = '90%'}
+```{r, fig.cap='Do you think your current activities are likely to support your needs over the long term (next 5-10 yrs)?', fig.align='center', out.width = '90%'}
 # Expand the data with cluster classification
 village_data_expanded <- tanganyika_survey %>%
   filter(!is.na(activity_long_term)) %>%
@@ -6554,11 +6633,13 @@ ggplot(village_data_combined, aes(x = fct_relevel(activity_long_term, "YES", "NO
 
 In order to gauge the long-term sustainability of fishing practices and livelihood activities, respondents were asked “do you think your current activities are likely to support your needs over the long term (next 5 - 10 years)?”. Households expressed confidence in their current activities, citing financial stability and the ability to meet their needs as well as being able to save for the future (n = 9). Respondents highlighted that their income from activities like fishing and business is sufficient to support their families. They feel secure about their ability to sustain their livelihoods over the next 5-10 years and are satisfied with the level of income they currently earn. One respondent noted that conservation and sustainable fishing practices in their area provide long-term assurance of fish availability. They expressed confidence that such measures would ensure their activities remain viable over the next 5-10 years. Another respondent was optimistic about future improvements in their livelihood, believing that fish populations and agricultural productivity will increase.
 
-Many households (n = 32) expressed that their current income levels are insufficient to meet their basic needs, both in the short and long term. The income they earn is too low to provide long-term financial security, and with current activities offering little opportunity for growth, they are uncertain about sustaining their needs over the next 5-10 years. Respondents felt that their low income, especially from seasonal or unstable sources, makes long-term financial stability unlikely. Four households mentioned that a lack of proper tools and fishing equipment severely limits their ability to generate enough income over the long term. Without adequate equipment, their fishing activities cannot meet their needs consistently, and the time and cost involved in replacing broken tools will make it difficult to sustain their livelihood in the coming years. Others (n = 2) worried about the declining availability of fish due to an increasing number of fishermen and the use of improved fishing equipment. They noted that as more fishermen enter the industry with improved tools, the pressure on fish stocks intensifies, leading to a decrease in the number of fish available for catch. This, combined with occasional poor catches, threatens their ability to rely on fishing as a long-term livelihood. Furthermore, respondents indicated reasons pertaining to pressures exerted by illegal fishing practices, broader economic challenges including high living costs and limited opportunities for alternative income, their age and health affecting their ability to support their livelihood, as well as the pressures and uncertainties surrounding fishing- and farming-based practices, which threaten the long-term sustainability of their livelihoods.
-
-
+A number of households (n = 32) expressed that their current income levels are insufficient to meet their basic needs, both in the short and long term. The income they earn is too low to provide long-term financial security, and with current activities offering little opportunity for growth, they are uncertain about sustaining their needs over the next 5-10 years. Respondents felt that their low income, especially from seasonal or unstable sources, makes long-term financial stability unlikely. Four households mentioned that a lack of proper tools and fishing equipment severely limits their ability to generate enough income over the long term. Without adequate equipment, their fishing activities cannot meet their needs consistently, and the time and cost involved in replacing broken tools will make it difficult to sustain their livelihood in the coming years. Others (n = 2) worried about the declining availability of fish due to an increasing number of fishermen and the use of improved fishing equipment. They noted that as more fishermen enter the industry with improved tools, the pressure on fish stocks intensifies, leading to a decrease in the number of fish available for catch. This, combined with occasional poor catches, threatens their ability to rely on fishing as a long-term livelihood. Furthermore, respondents indicated reasons pertaining to pressures exerted by illegal fishing practices, broader economic challenges including high living costs and limited opportunities for alternative income, their age and health affecting their ability to support their livelihood, as well as the pressures and uncertainties surrounding fishing- and farming-based practices, which threaten the long-term sustainability of their livelihoods.
 
 Households were asked to elaborate on the occurrence of ecologically unsustainable fishing practices. Respondents indicated that ecologically unsustainable fishing practices persist due to the widespread use of illegal nets (i.e. monofilament, kokoro), which damage aquatic ecosystems and deplete fish stocks (n = 51). Pollution from oil spills, improper waste disposal, and the mishandling of fish are also believed to cause harm to the environment, disrupting aquatic ecosystems and compromising vital habitats for fish reproduction (n = 3). Limited capital prevents fishers from acquiring proper tools and equipment needed for sustainable fishing and conservation efforts (n = 4), while security challenges like theft of boats and gear discourage investment in better practices (n = 9). Additionally, one respondent highlighted that gaps in knowledge about sustainable fishing techniques lead to harmful methods that exacerbate resource depletion and threaten the long-term stability of fishing communities.
+
+> Uvuvi wa kutumia makokoro
+
+> Uvuvi wa kutumia monofilament
 
 Respondents from some households (n = 4) stated that there are no unsustainable practices in their fishing activities. These responses might suggest an unfamiliarity with the concept of sustainability or that respondents do not recognize the potentially negative impacts of their fishing methods. This highlights the need for greater education and awareness about sustainable fishing practices and the long-term effects of certain fishing methods on the environment and community livelihoods.
 
@@ -6569,9 +6650,9 @@ Respondents from some households (n = 4) stated that there are no unsustainable 
 
 ## Livelihood Practices of Fish Traders
 
-Although there exist different forms of fish traders, the majority of respondents simply labelled themselves as a trader, whereas a remaining 9% and 8% considered themselves to be someone who prepares fish in northern and southern village clusters (Figure 60). 
+Although there exist different forms of fish traders, the majority of respondents simply labelled themselves as a trader, whereas a remaining 8% and 9% considered themselves to be someone who prepares fish in northern and southern village clusters (Figure 60). 
 
-```{r, fig.cap='Forms of fish trading', fig.align='center', out.width = '90%'}
+```{r, fig.cap='Forms of fish trading', fig.align='center', out.width = '90%', fig.height=8}
 # Expand the data with cluster classification
 village_data_expanded <- tanganyika_survey %>%
   filter(!is.na(trading_form)) %>%
@@ -6642,7 +6723,7 @@ ggplot(village_data_combined, aes(x = fct_relevel(trading_form, "TRADER", "PREPA
 
 To better understand the fish supply chain, fish traders were asked about where they buy their fish from. The majority of fish traders (n = 92) mentioned buying fish directly from fishers at the shore, then selling them fresh or after processing at local markets. Few traders stated that they purchase fish from different villages and coastal areas (n = 25), directly from processing facilities (n = 2), or from local middlemen (n = 2). The primary customer base of fish traders were wholesale buyers (n = 67). Respondents shared that they sell primarily to small and large-scale traders within the region, neighboring areas, and internationally, including markets in Zambia, Burundi, and Congo. Key markets include Namanyere, Sumbawanga, and Songwe, with customers ranging from local vendors to wholesalers and exporters.
 
-Trading of fish species can be bound to seasonal changes in climate and/or lake conditions. However, over the past five years, the majority of fish traders indicated that trading activities of fish species such as dagaa, kuhe, kungura, migebuka, ngege, and sangara may occur during all seasons (Figure 61). With the exception of dagaa, fish species in the northern village cluster are traded more frequently during the dry season. In northern villages, no dagaa is traded in the rainy season. In contrary, across the southern village cluster, the majority of dagaa is traded during the rainy season (42%). Likewise, rainy season trade is higher for all fish species across the southern villages in comparison to the northern cluster. Dry season trade of kuhe (56%), ngege (58%), and sangara (59%) appears particularly high in the northern village cluster. 
+Trading of fish species can be bound to seasonal changes in climate and/or lake conditions. However, over the past five years, the majority of fish traders indicated that trading activities of fish species such as Dagaa, Kuhe, Kungura, Migebuka, Ngege, and Sangara may occur during all seasons (Figure 61). With the exception of Dagaa, fish species in the southern village cluster are traded more frequently during the dry season. In southern villages, no Dagaa is traded in the rainy season. In contrary, across the northern village cluster, the majority of Dagaa is traded during the rainy season (42%). Likewise, rainy season trade is higher for all fish species across the northern villages in comparison to the southern cluster. Dry season trade of Kuhe (56%), Ngege (58%), and Sangara (59%) appears particularly high in the southern village cluster. 
 
 ```{r, fig.cap='Seasonal trading of fish species over the past five years', fig.align='center', out.width = '90%'}
 # Define target type variables
@@ -6748,7 +6829,7 @@ ggplot(aggregate_target_type, aes(x = Fish_Species, y = mean_season_percent, gro
 
 ```
 
-Sale prices of fish according to fish traders displayed notable variation. The highest sale prices are exhibited for dagaa and kungura in southern villages at TSh 18,904 and TSh 17,578 (Table 62). Respectively, the lowest price for dagaa is estimated at TSh 8,002 and TSh 9,700 for migebuka in southern villages. In the northern village cluster, the best price fetched for dagaa was TSh 15,988 and the lowest TSh 6,623. The highest price for kungura in the north was TSh 12,025 and TSh 6,261 at its lowest. Respectively, across the northern and southern cluster, the highest prices fetched for migebuka was TSh 14,617 and TSh 15,740. The lowest sale price for migebuka was TSh 8,153 and TSh 8,326 across northern and southern clusters respectively.
+Sale prices of fish according to fish traders displayed notable variation. The highest sale prices are exhibited for dagaa and kungura in northern villages at TSh 18,904 and TSh 17,578 (Table 62). Respectively, the lowest price for dagaa is estimated at TSh 8,002 and TSh 9,700 for migebuka in northern villages. In the southern village cluster, the best price fetched for dagaa was TSh 15,988 and the lowest TSh 6,623. The highest price for kungura in the south was TSh 12,025 and TSh 6,261 at its lowest. Respectively, across the southern and northern cluster, the highest prices fetched for migebuka was TSh 14,617 and TSh 15,740. The lowest sale price for migebuka was TSh 8,153 and TSh 8,326 across southern and northern clusters respectively.
 
 ```{r, fig.cap='Fish trading sale prices (TSh) of fish species over the past five years', fig.align='center', out.width = '90%'}
 # Define target type variables for best values
@@ -6900,7 +6981,7 @@ ggplot(combined_target, aes(x = Fish_Species, y = Value, fill = Value_Type)) +
 
 ```
 
-Satisfaction levels of fish traders was reflected that of fishers. Fish traders were most satisfied about their skills and business skills (Figure 63). Fish traders appeared least satisfied with the support they receive from groups and/or organizations, this is especially true for villages in the northern cluster.
+Satisfaction levels of fish traders reflected that of fishers. Fish traders were most satisfied about their skills and business skills (Figure 63). Fish traders appeared least satisfied with the support they receive from groups and/or organizations, this is especially true for villages in the southern cluster.
 
 ```{r, fig.cap='Satisfaction of fish traders', fig.align='center', out.width = '90%'}
 # Define the mapping for satisfaction levels
@@ -6993,7 +7074,11 @@ ggplot(aggregate_satisfaction, aes(
 
 Fish traders were asked the question “What are the top 3 current challenges you experience as a fish trader?”. Many indicated a variety of challenges that compromise their operations and profitability. Fluctuating fish prices and market instability often lead to financial losses (n = 43), while limited capital restricts the ability to expand or invest in essential tools (n = 48). Inadequate storage and poor transportation infrastructure contribute to fish spoilage, reducing quality and market value (n = 24). Accessing reliable markets and customers is stated to be difficult and compounded by long travel distances and oversaturation of markets (n = 24). Traders also encounter regulatory hurdles, such as high taxes and permit costs, and financial constraints, including delayed payments and limited access to loans. Poor infrastructure, competition, insufficient equipment, and lack of education in business management further exacerbate these issues. Additionally, seasonal and environmental factors, such as reduced fish availability during rainy seasons, pose significant challenges to sustaining livelihoods.
 
+> Kukosa mtaji wa kundeleza biashara ya samaki
+
 Fish traders were also asked to elaborate on the three key changes that might improve their business activities. To improve fish trader livelihoods, respondents emphasized the need for more accessible and reliable markets, both locally and internationally, with government support to establish and expand connections to external markets for better sales opportunities (n = 33). Respondents advocated for fair and standardized pricing to ensure market stability and profitability (n = 11). Furthermore, access to affordable capital and financial support, such as low-interest loans, is regarded as essential for expanding operations (n = 65). Traders also requested improved tools, storage facilities, and modern preservation technologies to maintain fish quality (n = 16). Better infrastructure, including reliable transportation and electricity, is deemed necessary to enhance fish preservation (n = 12). Education and training in business management and fish preparation were highlighted as critical for improving skills (n = 8). Additionally, respondents called for regulatory reforms for fish trading and improve tax policies  (n = 9), along with establishing fish processing plants to add value and ensure steady market access (n = 2). 
+
+> Serikali ituongezee au kutujengea soko la samaki
 
 Cooperative and/or FICO group membership of fish traders was low (Table 22). Only in five villages did a subset fish traders indicate being part of a cooperative group (Kalungu, Kipili, Majengo Mapya, Manda Uhuru, and Mtakuja). COCOBA or savings groups existed in five villages (Isasa, Kalungu, Kichangani, Manda Kerenge, and Mtakuja). Despite low household representation among different groups, TNC support appeared high among groups (70%) and groups were generally perceived as helpful (81%).
 
@@ -7150,6 +7235,8 @@ combined_table %>%
 
 Fish trading groups may face a variety of challenges, as such, they were asked about the three key challenges that they faced within their group. Fish trading groups face several challenges, including insufficient capital and limited access to loans, which compromise their ability to finance activities and expand operations (n = 7). Three respondents cited that delayed loan repayments create financial strain and disrupt group functionality. Inequitable distribution of group funds further compounds this issue, as leaders benefit disproportionately, leaving other members dissatisfied. A lack of skills, education, and entrepreneurial training further hampers group effectiveness (n = 4), while poor awareness among members about group activities weakens cohesion (n = 3). Additionally, small group sizes limit collective capacity, and irregular meetings and training sessions hinder progress and collaboration. These challenges collectively impact the efficiency and success of trader groups.
 
+> Ukosefu wa pesa za kuendeshea kikundi
+
 Changes to improve fish trading groups include securing access to loans from banks or other institutions to increase capital, receiving direct financial support or loans from the government and/or organizations for the purposes of expanding business ventures (n = 10). Furthermore, to improve groups, key changes highlighted by ten respondents include providing regular seminars and training on entrepreneurship and financial management, sharing experiences and knowledge with other groups within and outside the region, and educating members on the importance of being part of financial cooperatives (FICOs).
 
 Three quarters of fish traders do not believe that their current trading activities are likely to support their needs over the long term (Figure 64). 
@@ -7231,10 +7318,14 @@ ggplot(village_data_combined, aes(x = fct_relevel(trading_long_term, "YES", "NO"
 Fish traders were asked whether they thought their current activities are likely to support their needs over the long-term. Several households expressed satisfaction with their current income from fish trading, noting that it sufficiently meets their basic needs. Respondents (n = 3) also reported that their income from activities like fishing or business is adequate to support their families, and they feel secure in their ability to sustain their livelihoods over the next 5-10 years. Others (n = 2) highlighted the importance of diversifying their activities to ensure long-term stability. By engaging in multiple income-generating activities, they can meet the needs of their families. A small number of respondents emphasized that they are able to save from their income, ensuring that they can meet future needs. Some respondents provided additional factors that contribute to their outlook on long-term sustainability, such as good work practices, timing fishing activities well, and a general improvement in their current economic situation compared to the past (n = 5).
 
 On the contrary, many respondents (n = 47) expressed concerns about their ability to sustain their livelihoods over the next 5-10 years due to low or insufficient income. Respondents noted that their earnings are not enough to meet their families' growing needs, and this lack of financial stability makes it difficult to plan for the future. Another significant number of respondents identified limited capital as a primary constraint to the sustainability of their current activities over the long term (n = 28). They highlighted that insufficient financial resources limit their ability to expand their businesses, invest in operations, and generate adequate returns to support their families. Some respondents highlighted various environmental and external challenges that hinder the sustainability of their current activities (n = 9). These include changes in natural resources, environmental degradation, and regulations that limit access to key livelihood resources like fish. Other concerns addressed broader economic challenges, business challenges in terms of seasonal variability, and the lack of reliable markets.
+
+> Kipato ninachokipata haitoshelezi kulingana na mahitaji kuwa mengi
  
-In response to the question “What unsustainable practices exist in your area when it comes to fish business activities?”, a variety of reasons were mentioned by households involved with the fish trade. Unsustainable practices in the fish trade include the use of illegal and harmful fishing gear such as poisoned nets, non-standard equipment, and filemayaa, which contribute to overfishing and depletion of fish stocks (n = 23). The practices are thought to threaten long-term sustainability by disrupting fish reproduction. Poor resource management, including the destruction of fish habitats and improper handling of fish remains, further exacerbates the problem (n = 3). Over-exploitation, such as harvesting immature fish and dependency solely on lake fisheries, limits resilience to stock depletion (n = 10). These practices, compounded by weak regulatory enforcement and exploitation by large companies and intermediaries, marginalize small-scale traders and undermine the viability of fish-based livelihoods.
+In response to the question “What unsustainable practices exist in your area when it comes to fish business activities?”, a variety of reasons were mentioned by households involved with the fish trade. Unsustainable practices in the fish trade include the use of illegal and harmful fishing gear such as poisoned nets and non-standard equipment, which contribute to overfishing and depletion of fish stocks (n = 23). The practices are thought to threaten long-term sustainability by disrupting fish reproduction. Poor resource management, including the destruction of fish habitats and improper handling of fish remains, further exacerbates the problem (n = 3). Over-exploitation, such as harvesting immature fish and dependency solely on lake fisheries, limits resilience to stock depletion (n = 10). These practices, compounded by weak regulatory enforcement and exploitation by large companies and intermediaries, marginalize small-scale traders and undermine the viability of fish-based livelihoods.
 
 In terms of financial sustainability, some households highlighted the instability of fish prices, with frequent and unpredictable price increases by fishermen (n = 12). The absence of a standardized pricing system renders the market unreliable, and large middlemen often exacerbate the situation by inflating prices. These fluctuations negatively affect the profitability of the fish trade, making it difficult for small-scale traders to plan and sustain their businesses, while also impacting the overall stability of the local fish market. Furthermore, a few households noted that conflicts between fishermen and Beach Management Units (BMUs) disrupt the reliability of fish availability (n = 3). Additionally, the lack of proper licensing often leads to bribery, further complicating the fishing process and contributing to unfair practices that affect the sustainability of fish trade.
+
+> Madalali wakubwa wamekua wakitusumbua kwa kupandisha bei ya samaki
 
 
 \newpage
@@ -7244,7 +7335,7 @@ In terms of financial sustainability, some households highlighted the instabilit
 
 ## Livelihood Practices of Fish Processors
 
-Processing forms vary widely across different villages (Table 65). Overall, most commonly smoking is the preferred method of fish processing. In four villages, namely Lyapinda, Mpasa, Tundu, and Kalungu smoking is the only method of fish processing. Sundrying also forms another method of fish processing, and is most frequently practiced in Kala, Manda Kerenge, and Manda Uhuru. In Kipili, sundrying and cold storage are the most common methods of fish processing. Cold storage facilities appear extremely limited in all other villages, except for Kilambo cha Mikolechi.
+Processing forms vary widely across different villages (Figure 65). Overall, smoking is the preferred method of fish processing. In four villages, namely Lyapinda, Mpasa, Tundu, and Kalungu smoking is the only method of fish processing. Sundrying also forms another method of fish processing, and is most frequently practiced in Kala, Manda Kerenge, and Manda Uhuru. In Kipili, sundrying and cold storage are the most common methods of fish processing. Cold storage facilities appear extremely limited in all other villages, except for Kilambo cha Mikolechi.
 
 ```{r, fig.cap='Processing form at village level (%)', fig.align='center', out.width = '90%'}
 processing_form_expanded <- tanganyika_clean %>% select(hh_code, village, processing_form, stype, fpc) %>%
@@ -7310,7 +7401,7 @@ ggplot(processing_form_data, aes(x = village, y = proportion * 100, group = proc
 
 ```
 
-As varied as the processing forms are at village level, are the equipment used to process fish (Figure 66). As smoking is the most common processing form, twigs and firewood are the most frequently listed equipment used as a fuel source. Cooking oil is also used in southern villages, but not in the northern cluster. Other equipment used includes wire mech, corrugated iron sheets nets, and refrigerators. Use of the latter appears extremely limited across both northern and southern villages. 
+The equipment used to process fish is also varied (Figure 66). As smoking is the most common processing form, twigs and firewood are the most frequently listed equipment used as a fuel source. Cooking oil is also used in northern villages, but not in the southern cluster. Other equipment used includes wire mesh, corrugated iron sheets, nets, and refrigerators. Use of the latter appears extremely limited across both northern and southern villages. 
 
 ```{r, fig.cap='Processing equipment at village level (%)', fig.align='center', out.width = '90%'}
 processing_equipment_expanded <- tanganyika_clean %>% select(hh_code, village, processing_equipment, stype, fpc) %>%
@@ -7375,7 +7466,7 @@ ggplot(processing_equipment_data, aes(x = village, y = proportion * 100, group =
   scale_x_discrete(labels = function(x) str_wrap(x, width = 10))
 ```
 
-Fish processing of different species appears least affected by the seasons (Figure 66). Respondents in the northern village cluster indicated that most species are processed in all seasons. In the southern village cluster however, there appears a uniform distribution of responses, as approximately 20% process fish during all seasons, 40% during dry season, and 40% during the rainy season.
+Fish processing of different species appears least affected by the seasons (Figure 66). Respondents in the southern village cluster indicated that most species are processed in all seasons. In the northern village cluster however, there appears a uniform distribution of responses, as approximately 20% process fish during all seasons, 40% during dry season, and 40% during the rainy season.
 
 ```{r, fig.cap='Seasonal processing of fish species over the past five years', fig.align='center', out.width = '90%'}
 # Define target type variables
@@ -7483,7 +7574,7 @@ ggplot(aggregate_target_type, aes(x = Fish_Species, y = mean_season_percent, gro
 
 ```
 
-Sale prices of fish species also fluctuate for fish processors (Figure 68). The highest prices were fetched for migebuka in the northern village cluster (TSh 20,785), dagaa in the southern village cluster (TSh 20,745), and dagaa in the northern village cluster (TSh 17,237). The lowest prices for these species were TSh 8,078 for dagaa and TSh 8,516 for migebuka in the southern village cluster, and TSh 14,777 for dagaa and TSh 9,751 for migebuka in the northern village cluster.
+Sale prices of fish species also fluctuate for fish processors (Figure 68). The highest prices were fetched for Migebuka in the southern village cluster (TSh 20,785), Dagaa in the northern village cluster (TSh 20,745), and Dagaa in the southern village cluster (TSh 17,237). The lowest prices for these species were TSh 8,078 for Dagaa and TSh 8,516 for Migebuka in the northern village cluster, and TSh 14,777 for Dagaa and TSh 9,751 for Migebuka in the southern village cluster.
 
 ```{r, fig.cap='Sale prices (TSh) of fish species over the past five years for fish processors', fig.align='center', out.width = '90%'}
 # Define target type variables for best values
@@ -7633,7 +7724,7 @@ ggplot(combined_target, aes(x = Fish_Species, y = Value, fill = Value_Type)) +
 
 ```
 
-Again, also fish processors appeared most satisfied with their own processing skills, business skills, and the tools and technologies they and least satisfied with the support they receive from groups and/or organizations (Figure 69). 
+Overall, fish processors do not appear particularly satisfied. Satisfaction of their processing skills and business skills appeared highest. Fish processors appeared least satisfied with the support they receive from groups and/or organizations (Figure 69). 
 
 ```{r, fig.cap='Satisfaction of fish processors', fig.align='center', out.width = '90%'}
 # Define the mapping for satisfaction levels
@@ -7726,7 +7817,13 @@ ggplot(aggregate_satisfaction, aes(
 
 When asked about the three key challenges that they face, fish processors expressed a range of concerns that compromise their businesses and livelihoods. Market-related issues such as fluctuating fish prices, lack of standardized pricing, limited markets for fish products, and interference from middlemen were stated as common (n = 19). Respondents also highlight health risks, which arise from prolonged smoke exposure, leading to respiratory issues, and injuries during processing (n = 13). Outdated equipment, frequent power outages, and limited access to energy resources (i.e. firewood) exacerbate processing difficulties, leading to spoilage of fish (n = 30). Rising input costs, poor infrastructure, and insufficient fish stock create further obstacles. Adverse weather conditions, financial constraints, and limited access to capital limit scalability, while quality control issues and fish spoilage result in financial losses. Additionally, theft during processing, lack of education on modern techniques, and bureaucratic hurdles such as securing permits and paying taxes further complicate their work. These challenges collectively impede the growth and sustainability of fish processing businesses.
 
+> Kukosa zana za kisasa kwa ajili ya uchakataji wa samaki (chanja za waya)
+
 Fish processors were asked to list and elaborate upon the three key changes required to improve fish processing activities. A major concern for respondents was the lack of sufficient capital or loans to enhance their fish processing operations (n = 37). The need for financial support was emphasized repeatedly, with many expressing that without adequate funds, they struggle to invest in necessary equipment required to expand their businesses. They requested access to microloans or financial assistance to improve their fish processing capacity and secure raw materials. Furthermore, access to modern and efficient tools for fish processing was another key request from respondents (n = 32). Many indicated that outdated or inadequate equipment hinders their ability to produce high-quality products and run efficient operations. Respondents highlighted the need for better processing tools, such as modern drying racks, cold storage, and improved fish preservation methods to reduce spoilage. Some respondents suggested that improved market access, both locally and internationally, would help reduce spoilage and increase profits (n = 7). They emphasized the importance of reliable market connections and the establishment of fair pricing systems to ensure that fish processing businesses remain sustainable. Another small group of respondents (n = 10) highlighted that training and education are crucial for improving their fish processing activities. They mentioned the need for learning new and modern ways to process fish, which would help them work more efficiently and produce better quality products. The establishment of a centralized location for fish trade, which could help streamline operations and reduce logistical challenges, was proposed by four processors. They also expressed interest in the availability of alternative energy sources, particularly for smoking fish, which could improve the efficiency of the processing process and reduce reliance on wood.
+
+> Kuwezeshwa kwa mitaji ili kufanya kazi ya uchakataji kwa kiwango kikubwa na kwa manufaa zaidi
+
+> Kuwe na eneo moja la kufanyia biashara
 
 Membership of fish processing groups such as cooperatives and/or FICOs is very low among fish processors (Table 23). Only in Kalungu and Ntanganyika did fish processors indicate being part of these groups. This is also true for COCOBA and/or savings group membership, only in Kalungu, Manda Kerenge, and Ntanganyika did some fish processors indicate membership. TNC support was varied among groups, but highest in Kalungu. Group membership was generally deemed helpful by those that had indicated being a member of a group. 
 
@@ -7879,7 +7976,7 @@ combined_table %>%
  
 ```
 
-Fish processing groups were asked to provide information on the three key challenges that they faced. Challenges pertaining to fish processing groups pertained to financial hardships. Six respondents expressed insufficient group funds, limited capital, and reliance on member contributions as a primary challenge. Financial instability restricts the processing group’s ability to scale up operations, invest in new ventures, or support members adequately during periods of economic strain or fishing bans. A further three households indicated that challenges included low meeting attendance during gatherings, a lack of alternative income-generating activities, and limited education among members. These factors contribute to the group’s inability to sustain operations during difficult periods (i.e. fishing bans) when member contributions are also reduced.
+Fish processing groups were asked to provide information on the three key challenges that they faced. Challenges faced by fish processing groups pertained to financial hardships. Six respondents expressed insufficient group funds, limited capital, and reliance on member contributions as a primary challenge. Financial instability restricts the processing group’s ability to scale up operations, invest in new ventures, or support members adequately during periods of economic strain or fishing bans. A further three households indicated that challenges included low meeting attendance during gatherings, a lack of alternative income-generating activities, and limited education among members. These factors contribute to the group’s inability to sustain operations during difficult periods (i.e. fishing bans) when member contributions are also reduced.
 
 In order to improve conditions of the fish processing groups, respondents emphasized the importance of accessing loans and increasing group capital (n = 6). They noted that the group currently relies on member contributions, which limits its ability to provide sufficient funds for investments, loans, and growth opportunities. Financial empowerment is seen as critical for supporting group sustainability and member livelihoods. A further two respondents identified training as a key improvement area. Skills development could strengthen management, promote better decision-making, and equip members with strategies to improve group operations. One household member proposed seeking external partnerships and funding to ensure group sustainability. They felt collaborations with organizations could reduce reliance on internal contributions and provide additional resources to grow the group. External support would also help stabilize finances and introduce new opportunities for innovation and expansion of group activities.
 
@@ -7957,13 +8054,17 @@ ggplot(village_data_combined, aes(x = fct_relevel(process_long_term, "YES", "NO"
 
 ```
 
-Three quarters of all fish processors did not believe that their current processing activities were likely to support their needs over the long term (Figure 70).
+Three quarters of all fish processors did not believe that their current processing activities were likely to support their needs over the long term (next 5 - 10 years) (Figure 70). A few fish processors (12% north; 17% south) felt their current activities were likely to support their long-term needs as they have a strong production capacity and the ability to access markets in a timely manner, which they believe will enable them to engage in activities sustainably in future. When asked to elaborate on why they thought their current processing practices might support them in future, some reported that their current activities are likely to support their long-term needs because they provide sufficient income to meet their family's basic needs, ensuring financial stability. Some believed that sustainable fishing practices would enhance processing activities, and they anticipated that their business would grow significantly, enabling them to generate sufficient income in the future.
 
-When asked whether they thought that their current activities are likely to support their needs over the long-term (next 5 - 10 years), fish processors felt their current activities were likely to support their long-term needs as they have a strong production capacity and the ability to access markets in a timely manner, which they believe will enable them to engage in activities sustainably in future. Others reported that their current activities are likely to support their long-term needs because they provide sufficient income to meet their family's basic needs, ensuring financial stability. Some stated that sustainable fishing practices would enhance processing activities, and they anticipated that their business would grow significantly, enabling them to generate sufficient income in the future.
+Many households felt that their income will remain insufficient to cover basic needs, including family requirements, and that the limited capital prevents them from reaching their goals or continuing their businesses (n = 52). They also expressed concerns about the instability of their earnings, particularly in times of drought or market fluctuations. Other concerns regarding long-term sustainability of their processing practices pertained to declines in production levels, reductions in fish stock due to overfishing and illegal fishing practices, and constraints related to the seasonal nature of the business, which cannot sustain them throughout the year. These respondents also mentioned that the fish processing industry is unpredictable, with fluctuating availability leading to inconsistent business performance. 
 
-Many household felt that their income will remain insufficient to cover basic needs, including family requirements, and that the limited capital prevents them from reaching their goals or continuing their businesses (n = 52). They also expressed concerns about the instability of their earnings, particularly in times of drought or market fluctuations. Other concerns regarding long-term sustainability of their processing practices pertained to declines in production levels, reductions in fish stock due to overfishing and illegal fishing practices, and constraints related to the seasonal nature of the business, which cannot sustain them throughout the year. These respondents also mentioned that the fish processing industry is unpredictable, with fluctuating availability leading to inconsistent business performance. 
+> Ni kazi ya msimu tu siyo endelevu kwa kipindi chote cha mwaka
 
 Fish processors were also asked “What unsustainable practices exist in your area when it comes to fish business activities?”. In response, processors indicated that they encounter various unsustainable practices that undermine their livelihoods and environment. Most significantly, the purchase of fish caught using illegal fishing methods result in the spoilage of fish, which are often unfit for processing (n = 21). Illegal fishing, particularly targeting small fish, depletes fish stocks and disrupts breeding, negatively affecting the processing supply chain. Unhygienic and unsustainable processing practices contribute to environmental degradation, by means of tree cutting for firewood and improper disposal of fish waste into water bodies (n = 20). Market practices, including reliance on middlemen, fluctuating fish prices, and insufficient customer engagement compromise the financial sustainability of processing (n = 11). Collectively, these practices threaten the sustainability of the fish processing industry.
+
+> Samaki kuvuliwa kwa zana haramu za uvuvi, hii hupelekea sisi wachakataji kushindwa kuchakata zile 
+> samaki
+
 
 
 </div>
