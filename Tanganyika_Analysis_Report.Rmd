@@ -124,14 +124,55 @@ Brehony, P., Bachmann, T., Muiyuro, R. 2024. Baseline Study for the Lake Tangany
 
 ### Acknowledgements
 
-The authors of this report would like to extend their gratitude to Craig Leisher, Lucy Mlagala, Camilla Herd, Fridolin Nzambimana, Ahmadi Mkali, and Peter Limbu for their support and technical assistance in producing this report. Furthermore, we would like to thank ... for their invaluable assistance as enumerators in conducting all the household surveys.
+The authors of this report would like to extend their gratitude to Craig Leisher, Lucy Mlagala, Camilla Herd, Fridolin Nzambimana, Ahmadi Mkali, and Peter Limbu for their support and technical assistance in producing this report. Furthermore, we would like to thank Joseph Emmanuel Sikorei, Monica Mbogo Mabula, Masanja Bahati Limbu, Aloyce Filbert Lumbert, Saning’o Richard Mollel, Jamila Athumani Mkwizu, Assa Amon Hamad, Zuhura Sharifu Kulanga, Jesca Andrea Baroga, and Linda Shubi Charles for their invaluable assistance as enumerators in conducting all the household surveys, as well as Sophia Shaban, Christina Misana, and Sood Ndimuligo for acting as supervisors to the team. We would also like to extend a special thank you to Dominico Kilemo from ENVEX who led the data collection stage, and Noel Mbanguka who provided invaluable advice throughout the data collection stage.
 
 <!-- inverse gunmetal page -->
 
 ::: {.section-gunmetal-inverse}
 # Summary
 
-Provide broad overview of survey and key findings.
+The Lake Tanganyika baseline survey highlights critical aspects of household livelihoods, water and sanitation, governance, and fisheries management across 21 villages in the region. The study reveals that households are predominantly agriculture (44%) and fishing (27%) dependent. Poverty is widespread, with 64% living below the national upper poverty line. Household demographics show a young population, with 45.5% under 15 years, and a notable 22% of households headed by women, many of whom are widowed or divorced.
+
+Water access and sanitation remain pressing challenges. In the dry season, only 37% of households rely on improved water sources, increasing to 76% during the wet season. Basic sanitation is prevalent, with 57% using open pit latrines and limited access to handwashing facilities (25%). These deficits pose significant health risks and highlight the need for infrastructure improvements.
+
+Fisheries are vital to livelihoods but face sustainability challenges. Illegal fishing practices, declining fish stocks, and inadequate enforcement of regulations strain the sector. While awareness of fish reserves is high (81%) and there is support for their conservation role, over two-thirds of fishers report reduced catches in the past five years. Governance initiatives like Beach Management Units (BMUs) have seen stronger participation in northern villages, but southern regions lag behind.
+
+The findings underscore the need for targeted support to enhance resource management, improve water and sanitation infrastructure, and support sustainable livelihoods. Strengthening governance structures, providing financial and technical support, and fostering economic diversification are critical to addressing these challenges and promoting long-term community resilience.
+
+### High Level Statistics: 
+
+Household Information
+
+•	Population & Demographics:
+  o	45.5% of the population is under 15 years; 52.2% is aged 15-64.
+  o	Average household size: 5.2 (higher than the national average of 4.5 but lower than the 2011 Tuungane survey at 6.7).
+  o	Female-headed households: 22% (widowed: 45%, divorced/separated: 32%).
+•	Poverty Levels:
+  o	64% live below the national upper poverty line; 26% below the extreme poverty line.
+
+Livelihoods
+
+•	Agriculture is the primary activity (44%), followed by fishing (27%).
+•	In the northern villages, 41% engage in fish-related activities; in the south, 23% fish, and 17% process or trade fish.
+•	Village-specific disparities highlight limited economic diversification.
+
+Water & Sanitation
+
+•	In the dry season, 37% use improved water sources; this increases to 76% in the wet season.
+•	55% boil water as a treatment method; few use advanced filters.
+•	Sanitation access is limited, with 57% using open pit latrines and only 25% having handwashing facilities.
+
+Governance
+
+•	41% of households believe they influence local government decisions, up from 24% in 2011.
+•	Awareness of Beach Management Units (BMUs) is higher in northern villages (83%), with active participation by 34%.
+
+Livelihood Practices of Fishers, Fish traders, and Fish Processors
+
+•	Fishers report significant challenges:
+  o	68% state decreased fish catches over five years.
+  o	Ring nets are the most common fishing gear, though illegal practices persist.
+•	Awareness of fish reserves is high (81%), with support for their role in boosting fish stocks.
 
 :::
 
@@ -271,6 +312,16 @@ refine all pending errors and issues, which were resolved before the main survey
 Saturday, October 12th, 2024.
 Some of the issues raised, particularly regarding the hard copy questionnaire and the Open
 Data Kit (ODK) survey form, were addressed during the supervisor-enumerator training.
+
+## Analysis of Household Survey Data
+All the analysis of the household survey was done in R (R Core Team, 2019), using
+the packages survey (Lumley, 2019, version 3.35-1) and srvyr (Ellis, 2019, version
+0.3.5), through the tidyverse package environment (Wickham, 2017, version 1.2.1). All
+maps were created in ArcMap 10.4 (ESRI, 2018a). The R codes used to analyse data
+and draw figures are available for each of the chapters, upon request.
+
+## Interpretation of Figures
+In this report, results presented in the figures are predominantly disaggregated by villages, clustered into those centred around Kipili in the north and those located to the south along the Lake Tanzania shoreline. We provide overall percentages for each cluster individually, Overall North and Overall South respectively. Where specific village findings are less relevant, we broadly provide the overall percentages across villages in each of the two clusters.
 
 \newpage 
 
@@ -8072,3 +8123,54 @@ Fish processors were also asked “What unsustainable practices exist in your ar
 <!-- putting bibliography before appendix -->
 <div id="refs">
 ## Bibliography
+:::
+
+<!-- grey section - for appendix only -->
+
+::: {.appendix-section-grey}
+# Appendix
+
+## Appendix 1 - Consent Form English
+
+Firstly, would you prefer we talk in English, or Kiswahili?
+
+My name is _____ and I am conducting research on behalf of the TNC Tanganyika Project and would like to interview you today to better understand how things are in your area before the project starts. Your household was randomly selected for an interview.
+
+ASK TO SPEAK TO THE HOUSEHOLD HEAD, OR IF THE HOUSEHOLD HEAD IS NOT THERE OR BUSY, ASK TO  SPEAK TO ANOTHER ADULT MEMBER OF THE HOUSEHOLD (18 OR OLDER)
+
+You are being asked to take part in a household survey to understand people’s lives and livelihoods. We will be asking you about your household’s economic wellbeing, health, relationship with the environment, and relationship with the community. 
+
+The interview will take about 60 minutes to complete. While there are no direct benefits to you, your views are important and you will be aiding in the decision-making regarding further programming conducted by the Tuungane project. Your answers will be recorded electronically or on paper. 
+
+Please ask any questions you have now. If you have any questions during the interview, please hold these until after we have finished. If you have questions after today, you may contact the study leader XXX. 
+
+Taking part in this study is completely voluntary. You may skip any questions that you do not want to answer or stop the interview at any time. If you agree to talk with us, the information will only be heard by me and seen by our analysis team after the interview.  We’ll not be sharing any data which would reveal a person’s race, health status, ethnic social origin, conscience, belief, genetic data, biometric data, property details, marital status, family details, sex, or sexual orientation. 
+
+
+May we proceed with the interview?
+
+
+After the survey: Thank you for the time that you have given us, we have brought a small token of appreciation.
+
+\newpage
+
+## Appendix 1 - Consent Form Kiswahili
+
+Kwanza kabisa, ungependelea tuongee kwa Kiingereza, au Kiswahili?
+
+Jina langu ni _____ na ninafanya utafiti kwa niaba ya Mradi wa TNC Tanganyika na ningependa kukuhoji leo ili kuelewa zaidi jinsi mambo yalivyo katika eneo lako kabla ya mradi kuanza. Kaya yako imechaguliwa bila mpangilio maalum kwa ajili ya mahojiano.
+
+MAELEKEZO KWA MUULIZA MASWALI: OMBA KUONGEA NA MKUU WA KAYA, AU IWAPO MKUU WA KAYA HAYUPO AU ANA SHUGHULI, OMBA KUONGEA NA MWANAKAYA MWINGINE (MWENYE UMRI WA MIAKA 18 AU ZAIDI).
+
+Unaombwa kushiriki katika utafiti wa kaya ili kuelewa maisha ya watu na shughuli zao. Tutakuwa tunakuuliza maswali kuhusu uwezo wa kaya yako kiuchumi, uhusiano na mazingira, raslimali za uvuvi na uhusiano na jamii. 
+
+Mahojiano yanaweza kuchukua dakika 60 kukamilika. Ingawa hakuna manufaa ya moja kwa moja kwako, maoni yako ni ya muhimu na utakuwa unasaidia kwenye ufanyaji maamuzi kuhusu upangaji wa programu unaofanywa na mradi wa TNC. Majibu yako yatarekodiwa kwa njia ya kielektroniki au kwenye karatasi.
+
+Tafadhali uliza maswali yoyote uliyo nayo mpaka hapa tulipofikia. Ikiwa utakuwa na maswali wakati wa mahojiano, tafadhali yaulize pale tutakapokuwa tumemaliza. Kama utakuwa na maswali baada ya leo unaweza kuwasiliana na kiongozi wa utafiti ………………………………………………….
+
+Kushiriki katika utafiti huu ni kwa hiari kabisa. Unaweza kuruka maswali yoyote ambayo hutotaka kujibu au kusitisha mahojiano wakati wowote. Ikiwa unakubali kuzungumza nasi, taarifa utakazotupa zitasikilizwa na mimi tu na nakala zake za maandishi zitaonwa na timu yetu ya uchambuzi baada ya mahojiano. Hatutagawa data yoyote ambayo itafichua rangi ya  mtu, hali yake ya afya, asili yake ya kijamii, dhamiri, imani, data ya kinasaba au mwelekeo wa kijinsia.
+
+Je, tunaweza kuendelea na mahojiano?
+
+
+:::
